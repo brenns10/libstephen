@@ -1,0 +1,33 @@
+################################################################################
+#################################### README ####################################
+################################################################################
+
+Library: libstephen
+
+Description: a static library containing basic generic data structures, and also
+some headers that are useful for general development.  Some other stuff too, if
+I think about it.  If I do think of anything else, I'll document it.
+
+############################### DATA STRUCTURES ################################
+
+Linked List
+
+Function prefix: "ll_"
+
+The linked list data structure is a bunch of chained nodes.  Each node holds my
+"generic" data structure and pointers to the next and previous nodes.  The
+generic data structure can hold the following data types:
+
+- long long int
+- double
+- void *
+
+This is just because using a char, short int, int, long int, or a float would
+fill this out, so it would be a little redundant.  Type "checking" is all up to
+the programmer (i.e. making sure that the values are not too big for the smaller
+versions).
+
+Functions (remember the prefix):
+
+create() - Returns a pointer to a new linked list.
+
