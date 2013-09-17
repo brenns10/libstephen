@@ -10,9 +10,29 @@ I think about it.  If I do think of anything else, I'll document it.
 
 ############################### DATA STRUCTURES ################################
 
-Linked List
+##### Linked List (linkedlist/linkedlist.h)
 
-Function prefix: "ll_"
+Component Data Types:
+
+DATA (union long_data): Structure containing data.  
+- Feel free to modify anything in it.  It is yours to mess with.  Type safety is
+  up to the programmer as well.
+
+NODE (struct ll_node): Structure holding pointers and data.
+- You shouldn't have any interaction with this.  Use the functions that act on 
+  the list itself.
+
+LINKED_LIST (struct ll_obj): The actual object.
+- This is the data type you'll be using.  You'll always use a pointer to it.
+  That's what the constructor functions return, and every function takes one as
+  well.
+- The only field you should be accessing is the length field.  Everything else
+  is off limits.
+
+LL_ITERATOR (struct ll_iter): An iterator object.
+- You should use the built in functions for this bad boy.  Feel free to access
+  (read only) the pointer to the list, or the index.  But don't modify them.
+  And don't mess with nodes either.
 
 The linked list data structure is a bunch of chained nodes.  Each node holds my
 "generic" data structure and pointers to the next and previous nodes.  The
@@ -27,7 +47,29 @@ fill this out, so it would be a little redundant.  Type "checking" is all up to
 the programmer (i.e. making sure that the values are not too big for the smaller
 versions).
 
-Functions (remember the prefix):
+Linked List Functions (prefix: "ll_"):
 
-create() - Returns a pointer to a new linked list.
+create() - Returns a pointer to a new linked list.  Takes initial data.
+create_empty() - Returns a pointer to a new, empty linked list.
+append() - Add a data element to the end of the list.
+prepend() - Add a data element to the end of the list.
+push_back() - Push to back (append()).
+pop_back() - Pop from back.
+peek_back() - Peek at back.
+push_front() - Push to front (prepend()).
+pop_front() - Pop from front.
+peek_front() - Peek at front.
+get() - Get the data element at the specified index.
+remove() - Remove the element at the specified index.
+insert() - Insert the element at the specified index.
+delete() - Delete the list.
+get_iter() - Return an iterator set to the first element.
 
+Iterator functions (prefix: "ll_iter_")
+
+next() - Advance and return.
+prev() - Move back and return.
+curr() - Return current data.
+has_next()
+has_prev()
+valid() - Check if the iterator points to anything useful.
