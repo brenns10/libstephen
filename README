@@ -73,3 +73,21 @@ curr() - Return current data.
 has_next()
 has_prev()
 valid() - Check if the iterator points to anything useful.
+
+##### Array List
+
+The array list is the next planned data structure.  It will store data in a
+dynamically allocated array.  All data will be stored in a single contiugous
+block of memory, and on expansion, all data in the block will be copied over to
+the new block.  Although I find that this is a bit inefficient, it is a typical
+implementation and I will include it.
+
+##### Chunked Array List
+
+The chunked array list is an array list with my own personal twist to it.
+Instead of storing all data in one contiguous block of memory, we store the data
+in segments of memory.  When we must expand, we simply allocate an additional
+chunk of memory and use that.  Some mechanism of storage will be used to store
+the initial memory address of each block of memory.  Access will still be
+constant time, but there will no longer be the same overhead for expansion or
+memory allocation.
