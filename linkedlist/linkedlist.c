@@ -12,8 +12,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include "linkedlist.h"
-#include "../common_include.h"
+#include "../libstephen.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE FUNCTIONS
@@ -311,4 +310,123 @@ int ll_iter_valid(LL_ITERATOR *iter)
     return 1;
 
   return 0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Adapter functions for generic list structure
+
+void ll_append_adapter(LIST *l, DATA newData)
+{
+  LINKED_LIST *list = (LINKED_LIST*) (l->data);
+  return ll_append(list, newData);
+}
+
+void ll_prepend_adapter(LIST *l, DATA newData)
+{
+  LINKED_LIST *list = (LINKED_LIST*) (l->data);
+  return ll_prepend(list, newData);
+}
+
+DATA ll_get_adapter(LIST *l, int index)
+{
+  LINKED_LIST *list = (LINKED_LIST*) (l->data);
+  return ll_get(list, index);
+}
+
+int ll_remove_adapter(LIST *l, int index)
+{
+  LINKED_LIST *list = (LINKED_LIST*) (l->data);
+  return ll_remove(list, index);
+}
+
+void ll_insert_adapter(LIST *l, int index, DATA newData)
+{
+  LINKED_LIST *list = (LINKED_LIST*) (l->data);
+  return ll_insert(list, index, newData);
+}
+
+void ll_delete_adapter(LIST *l)
+{
+  LINKED_LIST *list = (LINKED_LIST*) (l->data);
+  ll_delete(list);
+  l->data = NULL;
+  return;
+}
+
+void ll_push_back_adapter(LIST *l, DATA newData)
+{
+  LINKED_LIST *list = (LINKED_LIST*) (l->data);
+  return ll_push_back(list, newData);
+}
+
+DATA ll_pop_back_adapter(LIST *l)
+{
+  LINKED_LIST *list = (LINKED_LIST*) (l->data);
+  return ll_pop_back(list);
+}
+
+DATA ll_peek_back_adapter(LIST *l)
+{
+  LINKED_LIST *list = (LINKED_LIST*) (l->data);
+  return ll_peek_back(list);
+}
+
+void ll_push_front_adapter(LIST *l, DATA newData)
+{
+  LINKED_LIST *list = (LINKED_LIST*) (l->data);
+  return  ll_push_front(list, newData);
+}
+
+DATA ll_pop_front_adapter(LIST *l)
+{
+  LINKED_LIST *list = (LINKED_LIST*) (l->data);
+  return ll_pop_front(list);
+}
+
+DATA ll_peek_front_adapter(LIST *l)
+{
+  LINKED_LIST *list = (LINKED_LIST*) (l->data);
+  return ll_peek_front(list);
+}
+
+void ll_fill_funtions(LIST *genericList)
+{
+  genericList->append = ll_append_adapter;
+  genericList->prepend = ll_prepend_adapter;
+  genericList->get = ll_get_adapter;
+  genericList->remove = ll_remove_adapter;
+  genericList->insert = ll_insert_adapter;
+  genericList->delete = ll_delete_adapter;
+  genericList->push_back = ll_push_back_adapter;
+  genericList->pop_back = ll_pop_back_adapter;
+  genericList->peek_back = ll_peek_back_adapter;
+  genericList->push_front = ll_push_front_adapter;
+  genericList->pop_front = ll_pop_front_adapter;
+  genericList->peek_front = ll_peek_front_adapter;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// PUBLIC GENERIC LIST FUNCTIONS
+
+LIST ll_cast_to_list(LINKED_LIST *list)
+{
+  LIST genericList;
+  genericList.data = list;
+  
+  ll_fill_funtions(&genericList);
+
+  return genericList;
+}
+
+LIST ll_create_list(DATA newData)
+{
+  LINKED_LIST *list = ll_create(newData);
+
+  return ll_cast_to_list(list);
+}
+
+LIST ll_create_empty_list()
+{
+  LINKED_LIST *list = ll_create_empty();
+  return ll_cast_to_list(list);
 }

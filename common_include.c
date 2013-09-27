@@ -7,7 +7,7 @@
                   programming.
 
 *******************************************************************************/
-#include "common_include.h"
+#include "libstephen.h"
 
 static size_t mallocs;
 

@@ -35,10 +35,10 @@ bin/testlib: bin/libstephen.a $(TESTOBJECTS)
 
 # Library objects
 
-obj/linkedlist.o: linkedlist/linkedlist.c linkedlist/linkedlist.h generic.h
+obj/linkedlist.o: linkedlist/linkedlist.c libstephen.h
 	$(CC) $(CFLAGS) linkedlist/linkedlist.c -o obj/linkedlist.o
 
-obj/common_include.o: common_include.c common_include.h
+obj/common_include.o: common_include.c libstephen.h
 	$(CC) $(CFLAGS) common_include.c -o obj/common_include.o
 
 # Test objects
@@ -46,5 +46,5 @@ obj/common_include.o: common_include.c common_include.h
 obj/main.o: test/main.c test/tests.h
 	$(CC) $(CFLAGS) test/main.c -o obj/main.o
 
-obj/linkedlisttest.o: test/linkedlisttest.c test/tests.h linkedlist/linkedlist.h common_include.h
+obj/linkedlisttest.o: test/linkedlisttest.c test/tests.h libstephen.h
 	$(CC) $(CFLAGS) test/linkedlisttest.c -o obj/linkedlisttest.o

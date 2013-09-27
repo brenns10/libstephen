@@ -12,8 +12,7 @@
 
 #include <stdio.h>
 #include "tests.h"
-#include "../linkedlist/linkedlist.h"
-#include "../common_include.h"
+#include "../libstephen.h"
 
 void print_list_int(LINKED_LIST *list)
 {
