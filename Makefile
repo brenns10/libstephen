@@ -4,7 +4,7 @@ CC=gcc
 FLAGS=
 CFLAGS=$(FLAGS) -c -std=c99
 LFLAGS=$(FLAGS)
-LIBOBJECTS=obj/linkedlist.o obj/common_include.o
+LIBOBJECTS=obj/linkedlist.o obj/common_include.o obj/arraylist.o
 TESTOBJECTS=obj/main.o obj/linkedlisttest.o
 
 .PHONY: all test lib clean testlib
@@ -37,6 +37,9 @@ bin/testlib: bin/libstephen.a $(TESTOBJECTS)
 
 obj/linkedlist.o: linkedlist.c libstephen.h
 	$(CC) $(CFLAGS) linkedlist.c -o obj/linkedlist.o
+
+obj/arraylist.o: arraylist.c libstephen.h
+	$(CC) $(CFLAGS) arraylist.c -o obj/arraylist.o
 
 obj/common_include.o: common_include.c libstephen.h
 	$(CC) $(CFLAGS) common_include.c -o obj/common_include.o

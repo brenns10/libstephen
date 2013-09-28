@@ -210,17 +210,17 @@ DATA ll_get(LINKED_LIST *list, int index)
   return mockData;
 }
 
-int ll_remove(LINKED_LIST *list, int index)
+void ll_remove(LINKED_LIST *list, int index)
 {
   // Fond the node
   NODE *theNode = ll_navigate(list, index);
-  if (!theNode)
-    return 0;
-
+  if (!theNode) {
+    RAISE(INDEX_ERROR);
+    return;
+  }
   // Remove it (managing the links and the list header)
   ll_remove_node(list, theNode);
   list->length--;
-  return 1;
 }
 
 void ll_insert(LINKED_LIST *list, int index, DATA newData)
@@ -256,14 +256,14 @@ void ll_delete(LINKED_LIST *list)
   SMB_DECREMENT_MALLOC_COUNTER(1);
 }
 
-int ll_set(LINKED_LIST *list, int index, DATA newData)
+void ll_set(LINKED_LIST *list, int index, DATA newData)
 {
   NODE *current = ll_navigate(list, index);
   if (current) {
     current->data = newData;
-    return 1;
+  } else {
+    RAISE(INDEX_ERROR);
   }
-  return 0;
 }
 
 LL_ITERATOR ll_get_iter(LINKED_LIST *list)
@@ -343,7 +343,7 @@ DATA ll_get_adapter(LIST *l, int index)
   return ll_get(list, index);
 }
 
-int ll_remove_adapter(LIST *l, int index)
+void ll_remove_adapter(LIST *l, int index)
 {
   LINKED_LIST *list = (LINKED_LIST*) (l->data);
   return ll_remove(list, index);
@@ -363,7 +363,7 @@ void ll_delete_adapter(LIST *l)
   return;
 }
 
-int ll_set_adapter(LIST *l, int index, DATA newData)
+void ll_set_adapter(LIST *l, int index, DATA newData)
 {
   LINKED_LIST *list = (LINKED_LIST*) (l->data);
   return ll_set(list, index, newData);
@@ -452,5 +452,6 @@ LIST ll_create_list(DATA newData)
 LIST ll_create_empty_list()
 {
   LINKED_LIST *list = ll_create_empty();
+
   return ll_cast_to_list(list);
 }

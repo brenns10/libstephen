@@ -104,6 +104,7 @@ size_t smb___helper_get_malloc_counter();
 
 // Not for external use
 #define ERROR_VAR smb___error_var_
+extern unsigned int ERROR_VAR;
 
 // Error codes
 #define ALLOCATION_ERROR 0x0001
@@ -203,8 +204,8 @@ typedef struct smb_list
   void (*prepend)(struct smb_list *l, DATA newData);
   
   DATA (*get)(struct smb_list *l, int index);
-  int (*set)(struct smb_list *l, int index, DATA newData);
-  int (*remove)(struct smb_list *l, int index);
+  void (*set)(struct smb_list *l, int index, DATA newData);
+  void (*remove)(struct smb_list *l, int index);
   void (*insert)(struct smb_list *l, int index, DATA newData);
   void (*delete)(struct smb_list *l);
   int (*length)(struct smb_list *l);
@@ -310,7 +311,7 @@ DATA ll_get(LINKED_LIST *list, int index);
 /**
    Removes the node at the given index.
  */
-int ll_remove(LINKED_LIST *list, int index);
+void ll_remove(LINKED_LIST *list, int index);
 
 /**
    Inserts the item at the specified location in the list, pushing back
@@ -325,10 +326,8 @@ void ll_delete(LINKED_LIST *list);
 
 /**
    Sets an existing element to a new value.
-
-   Returns 1 if successful, 0 if fail.
  */
-int ll_set(LINKED_LIST *list, int index, DATA newData);
+void ll_set(LINKED_LIST *list, int index, DATA newData);
 
 /**
    Get an iterator for the linked list.
@@ -382,5 +381,29 @@ ARRAY_LIST *al_create_empty();
 void al_append(ARRAY_LIST *list, DATA newData);
 
 void al_prepend(ARRAY_LIST *list, DATA newData);
+
+DATA al_get(ARRAY_LIST *list, int index);
+
+void al_set(ARRAY_LIST *list, int index, DATA newData);
+
+void al_remove(ARRAY_LIST *list, int index);
+
+void al_insert(ARRAY_LIST *list, int index, DATA newData);
+
+void al_delete(ARRAY_LIST *list);
+
+int al_length(ARRAY_LIST *list);
+
+void al_push_back(ARRAY_LIST *list, DATA newData);
+
+DATA al_pop_back(ARRAY_LIST *list);
+
+DATA al_peek_back(ARRAY_LIST *list);
+
+void al_push_front(ARRAY_LIST *list, DATA newData);
+
+DATA al_pop_back(ARRAY_LIST *list);
+
+DATA al_peek_back(ARRAY_LIST *list);
 
 #endif // SMB___LIBSTEPHEN_H_

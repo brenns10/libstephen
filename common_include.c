@@ -10,7 +10,7 @@
 #include "libstephen.h"
 
 static size_t mallocs;
-static unsigned int ERROR_VAR;
+unsigned int ERROR_VAR;
 
 void smb___helper_inc_malloc_counter(size_t number_of_mallocs)
 {
