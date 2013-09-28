@@ -99,6 +99,25 @@ size_t smb___helper_get_malloc_counter();
 
 
 ////////////////////////////////////////////////////////////////////////////////
+// ERROR HANDLING
+////////////////////////////////////////////////////////////////////////////////
+
+// Not for external use
+#define ERROR_VAR smb___error_var_
+
+// Error codes
+#define ALLOCATION_ERROR 0x0001
+#define INDEX_ERROR 0x0002
+
+// Error checking
+#define RAISE(x) (ERROR_VAR |= x)
+#define CHECK(x) (ERROR_VAR & x)
+#define CLEAR(x) (ERROR_VAR &= (~x))
+
+// Clear all errors
+#define CLEAR_ALL_ERRORS ERROR_VAR = 0
+
+////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 // DATA TYPE DECLARATIONS
 ////////////////////////////////////////////////////////////////////////////////
@@ -153,6 +172,18 @@ typedef struct ll_iter
 
 } LL_ITERATOR;
 
+///////////////////////////////////////////////////////////////////////////////
+// ARRAY LIST
+///////////////////////////////////////////////////////////////////////////////
+
+typedef struct al_obj
+{
+  DATA *data;
+  int length;
+  int allocated;
+
+} ARRAY_LIST;
+
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 // GENERIC TYPE DEFINITIONS
@@ -172,6 +203,7 @@ typedef struct smb_list
   void (*prepend)(struct smb_list *l, DATA newData);
   
   DATA (*get)(struct smb_list *l, int index);
+  int (*set)(struct smb_list *l, int index, DATA newData);
   int (*remove)(struct smb_list *l, int index);
   void (*insert)(struct smb_list *l, int index, DATA newData);
   void (*delete)(struct smb_list *l);
@@ -292,6 +324,13 @@ void ll_insert(LINKED_LIST *list, int index, DATA newData);
 void ll_delete(LINKED_LIST *list);
 
 /**
+   Sets an existing element to a new value.
+
+   Returns 1 if successful, 0 if fail.
+ */
+int ll_set(LINKED_LIST *list, int index, DATA newData);
+
+/**
    Get an iterator for the linked list.
  */
 LL_ITERATOR ll_get_iter(LINKED_LIST *list);
@@ -325,5 +364,23 @@ int ll_iter_has_prev(LL_ITERATOR *iterator);
    Check if the iterator is valid.
  */
 int ll_iter_valid(LL_ITERATOR *iterator);
+
+////////////////////////////////////////////////////////////////////////////////
+// ARRAY LIST
+////////////////////////////////////////////////////////////////////////////////
+
+/**
+   Create an ARRAY_LIST initialized with the given first element.
+ */
+ARRAY_LIST *al_create(DATA newData);
+
+/**
+   Create an ARRAY_LIST with no data.
+ */
+ARRAY_LIST *al_create_empty();
+
+void al_append(ARRAY_LIST *list, DATA newData);
+
+void al_prepend(ARRAY_LIST *list, DATA newData);
 
 #endif // SMB___LIBSTEPHEN_H_

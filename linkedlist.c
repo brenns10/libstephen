@@ -256,6 +256,16 @@ void ll_delete(LINKED_LIST *list)
   SMB_DECREMENT_MALLOC_COUNTER(1);
 }
 
+int ll_set(LINKED_LIST *list, int index, DATA newData)
+{
+  NODE *current = ll_navigate(list, index);
+  if (current) {
+    current->data = newData;
+    return 1;
+  }
+  return 0;
+}
+
 LL_ITERATOR ll_get_iter(LINKED_LIST *list)
 {
   LL_ITERATOR iter;
@@ -353,6 +363,12 @@ void ll_delete_adapter(LIST *l)
   return;
 }
 
+int ll_set_adapter(LIST *l, int index, DATA newData)
+{
+  LINKED_LIST *list = (LINKED_LIST*) (l->data);
+  return ll_set(list, index, newData);
+}
+
 void ll_push_back_adapter(LIST *l, DATA newData)
 {
   LINKED_LIST *list = (LINKED_LIST*) (l->data);
@@ -395,7 +411,7 @@ int ll_length_adapter(LIST *l)
   return list->length;
 }
 
-void ll_fill_funtions(LIST *genericList)
+void ll_fill_functions(LIST *genericList)
 {
   genericList->append = ll_append_adapter;
   genericList->prepend = ll_prepend_adapter;
@@ -410,6 +426,7 @@ void ll_fill_funtions(LIST *genericList)
   genericList->pop_front = ll_pop_front_adapter;
   genericList->peek_front = ll_peek_front_adapter;
   genericList->length = ll_length_adapter;
+  genericList->set = ll_set_adapter;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -420,7 +437,7 @@ LIST ll_cast_to_list(LINKED_LIST *list)
   LIST genericList;
   genericList.data = list;
   
-  ll_fill_funtions(&genericList);
+  ll_fill_functions(&genericList);
 
   return genericList;
 }
