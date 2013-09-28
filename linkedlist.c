@@ -12,7 +12,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include "../libstephen.h"
+#include "libstephen.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 // PRIVATE FUNCTIONS

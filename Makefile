@@ -35,8 +35,8 @@ bin/testlib: bin/libstephen.a $(TESTOBJECTS)
 
 # Library objects
 
-obj/linkedlist.o: linkedlist/linkedlist.c libstephen.h
-	$(CC) $(CFLAGS) linkedlist/linkedlist.c -o obj/linkedlist.o
+obj/linkedlist.o: linkedlist.c libstephen.h
+	$(CC) $(CFLAGS) linkedlist.c -o obj/linkedlist.o
 
 obj/common_include.o: common_include.c libstephen.h
 	$(CC) $(CFLAGS) common_include.c -o obj/common_include.o
