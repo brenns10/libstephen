@@ -174,7 +174,8 @@ typedef struct smb_list
   DATA (*get)(struct smb_list *l, int index);
   int (*remove)(struct smb_list *l, int index);
   void (*insert)(struct smb_list *l, int index, DATA newData);
-  void (*delete)(struct smb_list *l);  
+  void (*delete)(struct smb_list *l);
+  int (*length)(struct smb_list *l);
 
   // Stack/Queue/Deque Functions
   void (*push_back)(struct smb_list *l, DATA newData);

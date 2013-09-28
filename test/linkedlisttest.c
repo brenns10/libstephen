@@ -25,6 +25,15 @@ void print_list_int(LINKED_LIST *list)
   }
 }
 
+void print_list_int_interface(LIST list)
+{
+  DATA d;
+  for (int i = 0; i < list.length(&list); i++) {
+    d = list.get(&list, i);
+    printf("Item %d: %d\n", i, d.data_llint);
+  }
+}
+
 void test_push_pop()
 {
   printf("################################################################################\n");
@@ -122,8 +131,61 @@ void test_insert_remove()
   printf("################################################################################\n");
 }
 
+void test_push_pop_interface()
+{
+  printf("################################################################################\n");
+  printf("##### BEGIN test_push_pop_interface()\n");
+  printf("################################################################################\n\n");
+
+  DATA theData;
+  LIST list = ll_create_empty_list();
+
+  printf("##### Initialized the list\n");
+
+  int number = 10;
+  while (number < 20) {
+    theData.data_llint = number++;
+    list.push_front(&list, theData);
+  }
+
+  printf("##### Pushed to the front\n");
+
+  print_list_int_interface(list);
+
+  while (number < 30) {
+    theData.data_llint = number++;
+    list.push_back(&list, theData);
+  }
+
+  printf("##### Pushed to the back\n");
+  
+  print_list_int_interface(list);
+  
+  while (number < 35) {
+    printf("Pop front: %d\n", list.pop_front(&list).data_llint);
+    number++;
+  }
+
+  while (number < 40) {
+    printf("Pop back: %d\n", list.pop_back(&list).data_llint);
+    number++;
+  }
+
+  print_list_int_interface(list);
+
+  printf("Malloc count: %d\n", SMB_GET_MALLOC_COUNTER);
+
+  list.delete(&list);
+  printf("Malloc count: %d\n", SMB_GET_MALLOC_COUNTER);
+
+  printf("\n################################################################################\n");
+  printf("##### END test_push_pop_interface()\n");
+  printf("################################################################################\n");
+}
+
 void linked_list_test()
 {
   test_push_pop();
   test_insert_remove();
+  test_push_pop_interface();
 }

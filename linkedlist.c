@@ -389,6 +389,12 @@ DATA ll_peek_front_adapter(LIST *l)
   return ll_peek_front(list);
 }
 
+int ll_length_adapter(LIST *l)
+{
+  LINKED_LIST *list = (LINKED_LIST*) (l->data);
+  return list->length;
+}
+
 void ll_fill_funtions(LIST *genericList)
 {
   genericList->append = ll_append_adapter;
@@ -403,6 +409,7 @@ void ll_fill_funtions(LIST *genericList)
   genericList->push_front = ll_push_front_adapter;
   genericList->pop_front = ll_pop_front_adapter;
   genericList->peek_front = ll_peek_front_adapter;
+  genericList->length = ll_length_adapter;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

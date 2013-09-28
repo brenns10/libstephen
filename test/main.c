@@ -10,6 +10,8 @@
 
 *******************************************************************************/
 
+#include <stdio.h>
+#include "../libstephen.h"
 #include "tests.h"
 
 /**
@@ -17,5 +19,13 @@
  */
 int main(int argc, char ** argv)
 {
+  int mallocs;
   linked_list_test();
+
+  if (mallocs = SMB_GET_MALLOC_COUNTER) {
+    printf("#### MEMORY LEAK DETECTED!!  MALLOCS: %d. ####\n", mallocs);
+    return 1;
+  } else {
+    return 0;
+  }
 }
