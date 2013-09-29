@@ -119,6 +119,57 @@ extern unsigned int ERROR_VAR;
 #define CLEAR_ALL_ERRORS ERROR_VAR = 0
 
 ////////////////////////////////////////////////////////////////////////////////
+// UNIT TESTING
+////////////////////////////////////////////////////////////////////////////////
+
+#define SMB_UNIT_DESCRIPTION_SIZE 20
+#define SMB_UNIT_TESTS_PER_GROUP 20
+
+/**
+   smb_unit_test:
+
+   Defines a single unit test.
+
+   # Members #
+   
+   - char description[20]: a 20 character null-terminated string that identifies
+     this particular test.
+
+   - int (*run)(): function pointer to the test to run.  The function should
+     return 0 if the test is successful.
+
+   - int expected_errors: contains error flags to CHECK() for after execution of
+     the test.  The test will fail if at least one of the errors in the flag are
+     not raised.
+ */
+typedef struct smb_unit_test
+{
+  char description[SMB_UNIT_DESCRIPTION_SIZE];
+  int (*run)();
+  int expected_errors;
+  int check_mem_leaks;
+
+} TEST;
+
+typedef struct smb_unit_test_group
+{
+  char description[SMB_UNIT_DESCRIPTION_SIZE];
+  int num_tests;
+  TEST *tests[SMB_UNIT_TESTS_PER_GROUP];
+
+} TEST_GROUP;
+
+TEST *su_create_test(char *description, int (*run)(), int expected_errors, int check_mem_leaks);
+TEST_GROUP *su_create_test_group(char *description);
+void su_add_test(TEST_GROUP *group, TEST *test);
+int su_run_test(TEST *test);
+int su_run_group(TEST_GROUP *group);
+void su_delete_test(TEST *test);
+void su_delete_group(TEST_GROUP *group);
+
+#define TEST_ASSERT(expr, retval) if(!(expr)) return retval
+
+////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 // DATA TYPE DECLARATIONS
 ////////////////////////////////////////////////////////////////////////////////
