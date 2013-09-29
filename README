@@ -105,3 +105,21 @@ chunk of memory and use that.  Some mechanism of storage will be used to store
 the initial memory address of each block of memory.  Access will still be
 constant time, but there will no longer be the same overhead for expansion or
 memory allocation.
+
+############################### ERROR REPORTING ################################
+
+This library has a uniform way of reporting errors. Instead of return values,
+which can be a flakey way of communicating at best, my library functions use
+flags to communicate errors.  Macros for CHECK, RAISE, and CLEAR errors are
+provided.  Plenty of the total (32) error slots are available for user defined
+errors.  On each library call, the errors are cleared, and if any errors occur,
+they are noted in the flags.
+
+################################# UNIT TESTING #################################
+
+This library also has unit testing capabilities.  The functions are documented
+in the header, but the gist is that you can create tests and name them using
+function pointers, specify their conditions, and run them sequentially.  They
+run until one in the group fails.  Their advantage is brevity (output is uniform
+and one line per test) and the automatic nature.  No user input or checking is
+required to see if they pass or fail.  That information is just printed.
