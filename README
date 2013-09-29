@@ -4,68 +4,80 @@
 
 Library: libstephen
 
-Description: a static library containing basic generic data structures, and also
-some headers that are useful for general development.  Some other stuff too, if
-I think about it.  If I do think of anything else, I'll document it.
+Description: a library (currently static, but I may compile as dynamic in the
+near future) containing basic generic data structures, and also some headers
+that are useful for general development.  Additionally, it contains a unit
+testing framework that allows for expecting errors, and memory leak detection.
 
 ############################### DATA STRUCTURES ################################
 
-##### Linked List (linkedlist/linkedlist.h)
+All my data structures are based on the single basic data type DATA.  It is an 8
+byte union that can contain an integer, a double, or a pointer.  
 
-Component Data Types:
+The library attempts to use interface based programming.  That is, the list is
+an interface implemented by the linked list and the array list.  To achieve
+this, I use stack-based structs that contain void pointers and function
+pointers.  A function call in this system looks something like this:
 
-DATA (union long_data): Structure containing data.  
-- Feel free to modify anything in it.  It is yours to mess with.  Type safety is
-  up to the programmer as well.
+	   structure.function(&structure /* , ... args ... */);
 
-NODE (struct ll_node): Structure holding pointers and data.
-- You shouldn't have any interaction with this.  Use the functions that act on 
-  the list itself.
+Each implementation, however, should be usable without the interface struct
+form.  The reason for this is that the struct form contains tons of function
+pointers, and it's really grossly inefficient.  So each implementation I create
+has an interface all to itself.  It usually implements the exact same functions
+as the interface.  But, instead of taking a struct pointer as their first
+argument, they take a pointer to the actual data structure.  Then, for every
+interface function, an "adapter" function is created.  Struct versions are
+loaded with pointers to these functions.  The adapter functions are not publicly
+accessible.
 
-LINKED_LIST (struct ll_obj): The actual object.
-- This is the data type you'll be using.  You'll always use a pointer to it.
-  That's what the constructor functions return, and every function takes one as
-  well.
-- The only field you should be accessing is the length field.  Everything else
-  is off limits.
+So, first I'll give an interface, followed by its implementations.
 
-LL_ITERATOR (struct ll_iter): An iterator object.
-- You should use the built in functions for this bad boy.  Feel free to access
-  (read only) the pointer to the list, or the index.  But don't modify them.
-  And don't mess with nodes either.
+##### LIST (libstephen.h)
 
-The linked list data structure is a bunch of chained nodes.  Each node holds my
-"generic" data structure and pointers to the next and previous nodes.  The
-generic data structure can hold the following data types:
+Holds sequential data.  Allows for deletion and insertion into arbitrary
+locations in the list.
 
-- long long int
-- double
-- void *
+Functions:
 
-This is just because using a char, short int, int, long int, or a float would
-fill this out, so it would be a little redundant.  Type "checking" is all up to
-the programmer (i.e. making sure that the values are not too big for the smaller
-versions).
-
-Linked List Functions (prefix: "ll_"):
-
-create() - Returns a pointer to a new linked list.  Takes initial data.
-create_empty() - Returns a pointer to a new, empty linked list.
 append() - Add a data element to the end of the list.
 prepend() - Add a data element to the end of the list.
+get() - Get the data element at the specified index.
+set() - Set the data element at the specified index.
+remove() - Remove the element at the specified index.
+insert() - Insert an element at the specified index.
+delete() - Delete the list.
+// get_iter() - Return an iterator set to the first element. *
+
 push_back() - Push to back (append()).
 pop_back() - Pop from back.
 peek_back() - Peek at back.
 push_front() - Push to front (prepend()).
 pop_front() - Pop from front.
 peek_front() - Peek at front.
-get() - Get the data element at the specified index.
-remove() - Remove the element at the specified index.
-insert() - Insert the element at the specified index.
-delete() - Delete the list.
-get_iter() - Return an iterator set to the first element.
 
-Iterator functions (prefix: "ll_iter_")
+* The get_iter() and the iterator functions are not yet implemented on all list
+  implementations
+
+##### LINKED_LIST (linkedlist.c)
+
+The linked list is an implementation of the list interface.  It works by storing
+each element in dynamically allocated memory with pointers to the next and
+previous element.  Access time suffers, but insertion and removal require no
+shifting.  It has all the functions required by the list interface.  The
+prefixes for normal linked list functions is "ll_".  Additional to the interface
+are the following functions:
+
+LINKED_LIST *ll_create(DATA d);
+LINKED_LIST *ll_create_empty();
+LIST *ll_create_list(DATA d);
+LIST *ll_create_empty_list();
+LIST ll_cast_to_list(LINKED_LIST *list);
+
+These functions are critical because interfaces don't provide means for
+instantiation.  Additionally, these functions, prefixed by "ll_iter_", are the
+iterator functions.  They are completely usable as is, and they are to be used
+for the upcoming interface for LIST iterators.
 
 next() - Advance and return.
 prev() - Move back and return.
@@ -74,13 +86,15 @@ has_next()
 has_prev()
 valid() - Check if the iterator points to anything useful.
 
-##### Array List
+##### ARRAY_LIST (arraylist.c)
 
-The array list is the next planned data structure.  It will store data in a
-dynamically allocated array.  All data will be stored in a single contiugous
-block of memory, and on expansion, all data in the block will be copied over to
-the new block.  Although I find that this is a bit inefficient, it is a typical
-implementation and I will include it.
+The array list is an implementation of the list interface It works by storing
+each element in a single contiguous block of memory.  Access is constant time
+through indexing, but insertion and deletion can suffer in runtime due to
+occasional reallocations of memory.  It contains all required list interface
+functions.  Its function prefix is "al_".  It additionally has the same create
+and cast functions that the linked list has.  It does not have any iterator
+capability yet.
 
 ##### Chunked Array List
 
