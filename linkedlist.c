@@ -50,8 +50,10 @@ void ll_remove_node(LINKED_LIST *list, NODE *theNode)
 NODE * ll_navigate(LINKED_LIST *list, int index)
 {
   NODE *node = list->head;
-  if (index < 0) return NULL;
-  else if (index >= list->length) return NULL;
+  if (index < 0 || index >= list->length) {
+    RAISE(INDEX_ERROR);
+    return NULL;
+  }
   int i = 0;
   while (i < index) {
     node = node->next;
@@ -67,6 +69,12 @@ NODE * ll_navigate(LINKED_LIST *list, int index)
 NODE *ll_create_node(DATA data)
 {
   NODE *newNode = (NODE*) malloc(sizeof(NODE));
+  
+  if (!newNode) {
+    RAISE(ALLOCATION_ERROR);
+    return NULL;
+  }
+
   newNode->data = data;
   newNode->next = NULL;
   newNode->prev = NULL;
@@ -79,12 +87,26 @@ NODE *ll_create_node(DATA data)
 
 LINKED_LIST *ll_create(DATA newData)
 {
+  CLEAR_ALL_ERRORS;
+
   // Allocate space for the struct that represents the list.
   LINKED_LIST *newList = (LINKED_LIST *) malloc(sizeof(LINKED_LIST));
+  if (!newList) {
+    RAISE(ALLOCATION_ERROR);
+    return NULL;
+  }
   SMB_INCREMENT_MALLOC_COUNTER(1);
 
   // Create the first node
   NODE *newNode = ll_create_node(newData);
+
+  if (CHECK(ALLOCATION_ERROR)) {
+    // If we can't allocate the first node, destroy the list, leave the error
+    // flag, and return.
+    free(newList);
+    SMB_DECREMENT_MALLOC_COUNTER(1);
+    return NULL;
+  }
 
   // Link things together and setup variables
   newList->head = newNode;
@@ -96,7 +118,15 @@ LINKED_LIST *ll_create(DATA newData)
 
 LINKED_LIST *ll_create_empty()
 {
+  CLEAR_ALL_ERRORS;
+
   LINKED_LIST *newList = (LINKED_LIST *) malloc(sizeof(LINKED_LIST));
+
+  if (!newList) {
+    RAISE(ALLOCATION_ERROR);
+    return NULL;
+  }
+
   SMB_INCREMENT_MALLOC_COUNTER(1);
   newList->length = 0;
   newList->head = NULL;
@@ -106,8 +136,16 @@ LINKED_LIST *ll_create_empty()
 
 void ll_append(LINKED_LIST *list, DATA newData)
 {
+  CLEAR_ALL_ERRORS;
+  
   // Create the new node
   NODE *newNode = ll_create_node(newData);
+
+  if (!newNode) {
+    // ALLOCATION_ERROR has been raised by ll_create_node.  Pass it on to the
+    // user.
+    return;
+  }
 
   // Get the last node in the list
   NODE *lastNode = list->tail;
@@ -124,9 +162,16 @@ void ll_append(LINKED_LIST *list, DATA newData)
 
 void ll_prepend(LINKED_LIST *list, DATA newData)
 {
+  CLEAR_ALL_ERRORS;
+
   // Create the new NODE
   NODE *newNode = ll_create_node(newData);
-  
+  if (!newNode) {
+    // ALLOCATION_ERROR has been raised by ll_create_node.  Pass it on to the
+    // user.
+    return;
+  }
+
   NODE *firstNode = list->head;
   newNode->next = firstNode;
   if (firstNode)
@@ -144,6 +189,8 @@ void ll_push_back(LINKED_LIST *list, DATA newData)
 
 DATA ll_pop_back(LINKED_LIST *list)
 {
+  CLEAR_ALL_ERRORS;
+
   NODE *lastNode = list->tail;
   if (lastNode) {
     DATA toReturn = lastNode->data;
@@ -151,6 +198,7 @@ DATA ll_pop_back(LINKED_LIST *list)
     list->length--;
     return toReturn;
   } else {
+    RAISE(INDEX_ERROR); // The list is empty
     DATA mockData;
     return mockData;
   }
@@ -158,10 +206,13 @@ DATA ll_pop_back(LINKED_LIST *list)
 
 DATA ll_peek_back(LINKED_LIST *list)
 {
+  CLEAR_ALL_ERRORS;
+
   NODE *lastNode = list->tail;
   if (lastNode) {
     return lastNode->data;
   } else {
+    RAISE(INDEX_ERROR); // The list is empty
     DATA mockData;
     return mockData;
   }
@@ -174,6 +225,8 @@ void ll_push_front(LINKED_LIST *list, DATA newData)
 
 DATA ll_pop_front(LINKED_LIST *list)
 {
+  CLEAR_ALL_ERRORS;
+
   NODE *firstNode = list->head;
   if (firstNode) {
     DATA toReturn = firstNode->data;
@@ -181,6 +234,7 @@ DATA ll_pop_front(LINKED_LIST *list)
     list->length--;
     return toReturn;
   } else {
+    RAISE(INDEX_ERROR); // The list is empty
     DATA mockData;
     return mockData;
   }
@@ -188,10 +242,13 @@ DATA ll_pop_front(LINKED_LIST *list)
 
 DATA ll_peek_front(LINKED_LIST *list)
 {
+  CLEAR_ALL_ERRORS;
+
   NODE *firstNode = list->head;
   if (firstNode) {
     return firstNode->data;
   } else {
+    RAISE(INDEX_ERROR); // The list is empty
     DATA mockData;
     return mockData;
   }
@@ -199,13 +256,16 @@ DATA ll_peek_front(LINKED_LIST *list)
 
 DATA ll_get(LINKED_LIST *list, int index)
 {
+  CLEAR_ALL_ERRORS;
+
   // Navigate to that position in the node.
   NODE * theNode = ll_navigate(list, index);
   if (theNode)
     return theNode->data;
 
-  // Unfortunately, there is no good return value to signify that the index was
-  // out of bounds.  So we just create a "mock" data thing and return that.
+  // There is no good return value to signify that the index was out of range.
+  // However, the ll_navigate function raised INDEX_ERROR, so calling code can
+  // check that.  We still need to return a "mock" set of data though.
   DATA mockData;
   return mockData;
 }
@@ -215,8 +275,7 @@ void ll_remove(LINKED_LIST *list, int index)
   // Fond the node
   NODE *theNode = ll_navigate(list, index);
   if (!theNode) {
-    RAISE(INDEX_ERROR);
-    return;
+    return; // Return the INDEX_ERROR
   }
   // Remove it (managing the links and the list header)
   ll_remove_node(list, theNode);
@@ -225,6 +284,8 @@ void ll_remove(LINKED_LIST *list, int index)
 
 void ll_insert(LINKED_LIST *list, int index, DATA newData)
 {
+  CLEAR_ALL_ERRORS;
+
   if (index <= 0) {
     ll_prepend(list, newData);
   } else if (index >= list->length) {
@@ -232,6 +293,9 @@ void ll_insert(LINKED_LIST *list, int index, DATA newData)
   } else {
     // Valid territory
     NODE *newNode = ll_create_node(newData);
+    if (!newNode) {
+      return; // Return the allocation error.
+    }
     NODE *current = ll_navigate(list, index);
     current->prev->next = newNode;
     newNode->prev = current->prev;
