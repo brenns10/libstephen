@@ -35,25 +35,25 @@ bin/testlib: bin/libstephen.a $(TESTOBJECTS)
 
 # Library objects
 
-obj/linkedlist.o: linkedlist.c libstephen.h
-	$(CC) $(CFLAGS) linkedlist.c -o obj/linkedlist.o
+obj/linkedlist.o: src/linkedlist.c src/libstephen.h
+	$(CC) $(CFLAGS) src/linkedlist.c -o obj/linkedlist.o
 
-obj/arraylist.o: arraylist.c libstephen.h
-	$(CC) $(CFLAGS) arraylist.c -o obj/arraylist.o
+obj/arraylist.o: src/arraylist.c src/libstephen.h
+	$(CC) $(CFLAGS) src/arraylist.c -o obj/arraylist.o
 
-obj/smbunit.o: smbunit.c libstephen.h
-	$(CC) $(CFLAGS) smbunit.c -o obj/smbunit.o
+obj/smbunit.o: src/smbunit.c src/libstephen.h
+	$(CC) $(CFLAGS) src/smbunit.c -o obj/smbunit.o
 
-obj/common_include.o: common_include.c libstephen.h
-	$(CC) $(CFLAGS) common_include.c -o obj/common_include.o
+obj/common_include.o: src/common_include.c src/libstephen.h
+	$(CC) $(CFLAGS) src/common_include.c -o obj/common_include.o
 
 # Test objects
 
-obj/main.o: test/main.c test/tests.h
-	$(CC) $(CFLAGS) test/main.c -o obj/main.o
+obj/main.o: src/test/main.c src/test/tests.h
+	$(CC) $(CFLAGS) src/test/main.c -o obj/main.o
 
-obj/linkedlisttest.o: test/linkedlisttest.c test/tests.h libstephen.h
-	$(CC) $(CFLAGS) test/linkedlisttest.c -o obj/linkedlisttest.o
+obj/linkedlisttest.o: src/test/linkedlisttest.c src/test/tests.h src/libstephen.h
+	$(CC) $(CFLAGS) src/test/linkedlisttest.c -o obj/linkedlisttest.o
 
-obj/arraylisttest.o: test/arraylisttest.c test/tests.h libstephen.h
-	$(CC) $(CFLAGS) test/arraylisttest.c -o obj/arraylisttest.o
+obj/arraylisttest.o: src/test/arraylisttest.c src/test/tests.h src/libstephen.h
+	$(CC) $(CFLAGS) src/test/arraylisttest.c -o obj/arraylisttest.o
