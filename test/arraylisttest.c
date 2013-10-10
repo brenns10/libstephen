@@ -16,7 +16,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 // TESTS
 
-int test_create()
+int al_test_create()
 {
   DATA d;
   d.data_llint = 13;
@@ -34,7 +34,7 @@ int test_create()
   return 0;
 }
 
-int test_create_empty()
+int al_test_create_empty()
 {
   DATA d;
   d.data_llint = 13;
@@ -50,7 +50,7 @@ int test_create_empty()
   return 0;
 }
 
-int test_append()
+int al_test_append()
 {
   DATA d;
   d.data_llint = 0;
@@ -74,7 +74,7 @@ int test_append()
   return 0;
 }
 
-int test_prepend()
+int al_test_prepend()
 {
   DATA d;
   d.data_llint = 0;
@@ -98,7 +98,7 @@ int test_prepend()
   return 0;
 }
 
-int test_set()
+int al_test_set()
 {
   DATA d;
   ARRAY_LIST *list = al_create_empty();
@@ -138,7 +138,7 @@ int test_set()
   return 0;
 }
 
-int test_remove()
+int al_test_remove()
 {
   DATA d;
   ARRAY_LIST *list = al_create_empty();
@@ -197,7 +197,7 @@ int test_remove()
   return 0;
 }
 
-int test_insert()
+int al_test_insert()
 {
   DATA d;
   ARRAY_LIST *list = al_create_empty();
@@ -258,25 +258,25 @@ void array_list_test()
 {
   TEST_GROUP *group = su_create_test_group("array list");
 
-  TEST *create = su_create_test("create", test_create, 0, 1);
+  TEST *create = su_create_test("create", al_test_create, 0, 1);
   su_add_test(group, create);
   
-  TEST *create_empty = su_create_test("create_empty", test_create_empty, 0, 1);
+  TEST *create_empty = su_create_test("create_empty", al_test_create_empty, 0, 1);
   su_add_test(group, create_empty);
 
-  TEST *append = su_create_test("append", test_append, 0, 1);
+  TEST *append = su_create_test("append", al_test_append, 0, 1);
   su_add_test(group, append);
 
-  TEST *prepend = su_create_test("prepend", test_prepend, 0, 1);
+  TEST *prepend = su_create_test("prepend", al_test_prepend, 0, 1);
   su_add_test(group, prepend);
   
-  TEST *set = su_create_test("set", test_set, 0, 1);
+  TEST *set = su_create_test("set", al_test_set, 0, 1);
   su_add_test(group, set);
   
-  TEST *remove = su_create_test("remove", test_remove, 0, 1);
+  TEST *remove = su_create_test("remove", al_test_remove, 0, 1);
   su_add_test(group, remove);
 
-  TEST *insert = su_create_test("insert", test_remove, 0, 1);
+  TEST *insert = su_create_test("insert", al_test_remove, 0, 1);
   su_add_test(group, insert);
 
   // The other elementary operations on the ARRAY_LIST, i.e. the push, pop and
