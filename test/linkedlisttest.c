@@ -137,6 +137,112 @@ int ll_test_set()
   return 0;
 }
 
+int ll_test_remove()
+{
+  DATA d;
+  d.data_llint = 0;
+  LINKED_LIST *list = ll_create_empty();
+  int current_assertion = 1;
+  const int length = 20;
+
+  // Create the data
+  for (d.data_llint = 0 ; d.data_llint < length; d.data_llint++) {
+    ll_append(list, d);
+  }
+
+  // Verify the data
+  for (d.data_llint = 0 ; d.data_llint < length; d.data_llint++) {
+    TEST_ASSERT(ll_get(list, d.data_llint).data_llint == d.data_llint, current_assertion);
+    current_assertion++;
+  }
+
+  // Remove first element
+  ll_remove(list, 0);
+  TEST_ASSERT(ll_length(list) == length - 1, current_assertion);
+  current_assertion++;
+  TEST_ASSERT(ll_get(list, 0).data_llint == 1, current_assertion);
+  current_assertion++;
+
+  // Remove middle element
+  ll_remove(list, 10); // list[10] == 11 before
+  TEST_ASSERT(ll_length(list) == length - 2, current_assertion);
+  current_assertion++;
+  TEST_ASSERT(ll_get(list, 10).data_llint == 12, current_assertion);
+  current_assertion++;
+  
+  // Remove last element
+  ll_remove(list, ll_length(list) - 1);
+  TEST_ASSERT(ll_length(list) == length - 3, current_assertion);
+  current_assertion++;
+
+  // Test all elements values
+  int value = 1;
+  for (int i = 0; i < length - 3; i++) {
+    if (i == 10) value++;
+    TEST_ASSERT(ll_get(list, i).data_llint == value, current_assertion);
+    current_assertion++;
+    value++;
+  }
+
+  ll_delete(list);
+  return 0;
+}
+
+int ll_test_insert()
+{
+  DATA d;
+  d.data_llint = 0;
+  LINKED_LIST *list = ll_create_empty();
+  int current_assertion = 1;
+  const int length = 20;
+
+  // Create the data
+  for (d.data_llint = 0 ; d.data_llint < length; d.data_llint++) {
+    ll_append(list, d);
+  }
+
+  // Verify the data
+  for (d.data_llint = 0 ; d.data_llint < length; d.data_llint++) {
+    TEST_ASSERT(ll_get(list, d.data_llint).data_llint == d.data_llint, current_assertion);
+    current_assertion++;
+  }
+
+  // Here are the three insertions for the test:
+  d.data_llint = 100;
+  ll_insert(list, 0, d);
+  TEST_ASSERT(ll_length(list) == length + 1, current_assertion);
+  current_assertion++;
+
+  d.data_llint = 101;
+  ll_insert(list, 10, d);
+  TEST_ASSERT(ll_length(list) == length + 2, current_assertion);
+  current_assertion++;
+  
+  d.data_llint = 102;
+  ll_insert(list, ll_length(list), d);
+  TEST_ASSERT(ll_length(list) == length + 3, current_assertion);
+  current_assertion++;
+  
+  int value = 0;
+  
+  for (int i = 0; i < ll_length(list); i++) {
+    if (i == 0) {
+      TEST_ASSERT(ll_get(list, i).data_llint == 100, current_assertion);
+    } else if (i == 10) {
+      TEST_ASSERT(ll_get(list, i).data_llint == 101, current_assertion);
+    } else if (i == ll_length(list) - 1) {
+      TEST_ASSERT(ll_get(list, i).data_llint == 102, current_assertion);
+    } else {
+      TEST_ASSERT(ll_get(list, i).data_llint == value, current_assertion);
+      value++;
+    }
+    current_assertion++;
+  }
+
+  ll_delete(list);
+  return 0;
+}
+
 void linked_list_test()
 {
   // Use the smbunit test framework.  Load tests and run them.
@@ -157,7 +263,11 @@ void linked_list_test()
   TEST *set = su_create_test("set", ll_test_set, 0, 1);
   su_add_test(group, set);
 
+  TEST *remove = su_create_test("remove", ll_test_remove, 0, 1);
+  su_add_test(group, remove);
   
+  TEST *insert = su_create_test("insert", ll_test_insert, 0, 1);
+  su_add_test(group, insert);
 
   su_run_group(group);
   su_delete_group(group);
