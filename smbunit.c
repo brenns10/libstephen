@@ -55,36 +55,36 @@ int su_run_test(TEST *test)
   mallocs = SMB_GET_MALLOC_COUNTER - mallocs;
 
   if (result) {
-    printf ("## TEST \"%s\" failed with code: %d\n",test->description, result);
+    printf ("TEST \"%s\" failed with code: %d\n",test->description, result);
     return 1;
   }
 
   if (test->expected_errors && !CHECK(test->expected_errors)) {
-    printf ("## TEST \"%s\" did not raise: %X\n",test->description, test->expected_errors);
+    printf ("TEST \"%s\" did not raise: %X\n",test->description, test->expected_errors);
     return 2;
   }
 
   if (test->check_mem_leaks && mallocs) {
-    printf ("## TEST \"%s\" LEAKED %d MALLOCS!\n", test->description, mallocs);
+    printf ("TEST \"%s\" LEAKED %d MALLOCS!\n", test->description, mallocs);
     return 3;
   }
 
-  printf ("## TEST \"%s\" passed!\n",test->description);
+  printf ("TEST \"%s\" passed!\n",test->description);
   return 0;
 }
 
 int su_run_group(TEST_GROUP *group)
 {
   int result = 0;
-  printf ("### GROUP \"%s\" running...\n",group->description);
+  printf ("## GROUP \"%s\" running...\n",group->description);
   for (int i = 0; i < group->num_tests; i++) {
     result = su_run_test(group->tests[i]);
     if (result) {
-      printf ("### GROUP \"%s\" failed on test: %d\n", group->description, i);
+      printf ("## GROUP \"%s\" failed on test: %d\n\n", group->description, i);
       return result;
     }
   }
-  printf ("### GROUP \"%s\" passed!\n", group->description);
+  printf ("## GROUP \"%s\" passed!\n\n", group->description);
   return 0;
 }
 
