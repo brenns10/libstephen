@@ -266,6 +266,11 @@ void ll_set(LINKED_LIST *list, int index, DATA newData)
   }
 }
 
+int ll_length(LINKED_LIST *list)
+{
+  return list->length;
+}
+
 LL_ITERATOR ll_get_iter(LINKED_LIST *list)
 {
   LL_ITERATOR iter;
@@ -408,7 +413,7 @@ DATA ll_peek_front_adapter(LIST *l)
 int ll_length_adapter(LIST *l)
 {
   LINKED_LIST *list = (LINKED_LIST*) (l->data);
-  return list->length;
+  return ll_length(list);
 }
 
 void ll_fill_functions(LIST *genericList)

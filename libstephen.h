@@ -381,6 +381,11 @@ void ll_delete(LINKED_LIST *list);
 void ll_set(LINKED_LIST *list, int index, DATA newData);
 
 /**
+   Returns the length of the given list.
+ */
+int ll_length(LINKED_LIST *list);
+
+/**
    Get an iterator for the linked list.
  */
 LL_ITERATOR ll_get_iter(LINKED_LIST *list);
