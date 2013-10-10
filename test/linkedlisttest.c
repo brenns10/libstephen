@@ -20,7 +20,7 @@ void print_list_int(LINKED_LIST *list)
   DATA d;
   while (ll_iter_valid(&iter)) {
     d = ll_iter_curr(&iter);
-    printf("Item %d: %d\n", iter.index, d.data_llint);
+    printf("Item %d: %Ld\n", iter.index, d.data_llint);
     ll_iter_next(&iter);
   }
 }
@@ -30,7 +30,7 @@ void print_list_int_interface(LIST list)
   DATA d;
   for (int i = 0; i < list.length(&list); i++) {
     d = list.get(&list, i);
-    printf("Item %d: %d\n", i, d.data_llint);
+    printf("Item %d: %Ld\n", i, d.data_llint);
   }
 }
 
@@ -65,21 +65,21 @@ void test_push_pop()
   print_list_int(list);
   
   while (number < 35) {
-    printf("Pop front: %d\n", ll_pop_front(list).data_llint);
+    printf("Pop front: %Ld\n", ll_pop_front(list).data_llint);
     number++;
   }
 
   while (number < 40) {
-    printf("Pop back: %d\n", ll_pop_back(list).data_llint);
+    printf("Pop back: %Ld\n", ll_pop_back(list).data_llint);
     number++;
   }
 
   print_list_int(list);
 
-  printf("Malloc count: %d\n", SMB_GET_MALLOC_COUNTER);
+  printf("Malloc count: %zd\n", SMB_GET_MALLOC_COUNTER);
 
   ll_delete(list);
-  printf("Malloc count: %d\n", SMB_GET_MALLOC_COUNTER);
+  printf("Malloc count: %zd\n", SMB_GET_MALLOC_COUNTER);
 
   printf("\n################################################################################\n");
   printf("##### END test_push_pop()\n");
@@ -123,9 +123,9 @@ void test_insert_remove()
 
   printf("##### Inserted at end\n");
   print_list_int(list);
-  printf("Malloc count: %d\n", SMB_GET_MALLOC_COUNTER);
+  printf("Malloc count: %zd\n", SMB_GET_MALLOC_COUNTER);
   ll_delete(list);
-  printf("Malloc count: %d\n", SMB_GET_MALLOC_COUNTER);
+  printf("Malloc count: %zd\n", SMB_GET_MALLOC_COUNTER);
   printf("\n################################################################################\n");
   printf("##### END test_insert_remove()\n");
   printf("################################################################################\n");
@@ -162,21 +162,21 @@ void test_push_pop_interface()
   print_list_int_interface(list);
   
   while (number < 35) {
-    printf("Pop front: %d\n", list.pop_front(&list).data_llint);
+    printf("Pop front: %Ld\n", list.pop_front(&list).data_llint);
     number++;
   }
 
   while (number < 40) {
-    printf("Pop back: %d\n", list.pop_back(&list).data_llint);
+    printf("Pop back: %Ld\n", list.pop_back(&list).data_llint);
     number++;
   }
 
   print_list_int_interface(list);
 
-  printf("Malloc count: %d\n", SMB_GET_MALLOC_COUNTER);
+  printf("Malloc count: %zd\n", SMB_GET_MALLOC_COUNTER);
 
   list.delete(&list);
-  printf("Malloc count: %d\n", SMB_GET_MALLOC_COUNTER);
+  printf("Malloc count: %zd\n", SMB_GET_MALLOC_COUNTER);
 
   printf("\n################################################################################\n");
   printf("##### END test_push_pop_interface()\n");
