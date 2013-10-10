@@ -39,13 +39,24 @@ void ll_remove_node(LINKED_LIST *list, NODE *theNode)
 }
 
 /**
+   ll_navigate:
+
    Navigates to the given index in the list.
 
-   LINKED_LIST *list - the list
+  # Parameters #
 
-   int index - the index to find in the list
+  - LINKED_LIST *list: the list
 
-   returns - a pointer to that node. null if the index was out of range.
+  - int index: the index to find in the list
+
+  # Returns #
+
+  A pointer to the node navigated to. NULL if the index was out of range.
+
+  # Raises #
+
+  Does not clear errors.  Raises INDEX_ERROR if the given index was out of
+  range.
  */
 NODE * ll_navigate(LINKED_LIST *list, int index)
 {
@@ -63,8 +74,24 @@ NODE * ll_navigate(LINKED_LIST *list, int index)
 }
 
 /**
+   ll_create_node:
+
    Allocates space for a node with the given data.  Takes care of the malloc
    counter stuff too.
+
+   # Parameters #
+   
+   - DATA data: the data to insert into the new node.
+
+   # Returns #
+ 
+   A pointer to the node created.  If the node could not be created, returns
+   null.
+
+   # Raises #
+
+   Does not clear errors.  Raises ALLOCATION_ERROR if malloc() fails.  In that
+   case, return value is NULL.
  */
 NODE *ll_create_node(DATA data)
 {

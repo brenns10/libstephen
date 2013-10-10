@@ -126,9 +126,10 @@ extern unsigned int ERROR_VAR;
 #define SMB_UNIT_TESTS_PER_GROUP 20
 
 /**
-   smb_unit_test:
+   TEST:
 
-   Defines a single unit test.
+   Defines a single unit test.  Members should be modified with care, preferably
+   not at all, except by using the smbunit functions.
 
    # Members #
    
@@ -151,6 +152,23 @@ typedef struct smb_unit_test
 
 } TEST;
 
+/**
+   TEST_GROUP:
+
+   A structure holding a group of unit tests that are all related.  Members
+   shouldn't me modified by client code.  All should be managed by the functions
+   in smbunit.
+
+   # Members #
+
+   - char description[]: a short description (length defined by
+     SMB_UNIT_DESCRIPTION_SIZE) for the test.
+
+   - int num_tests: the number of tests in the group.
+
+   - TEST *tests[]: pointers to the tests contained.  Max tests defined by
+     SMB_UNIT_TESTS_PER_GROUP.
+ */
 typedef struct smb_unit_test_group
 {
   char description[SMB_UNIT_DESCRIPTION_SIZE];
@@ -159,7 +177,42 @@ typedef struct smb_unit_test_group
 
 } TEST_GROUP;
 
+/**
+   su_create_test:
+   
+   Create and return a new unit test.
+
+   # Parameters #
+
+   - char *description: a description of the test.
+
+   - int (*run)(): a function pointer to the test function.
+
+   - int expected_errors: the errors you expect from the test function.  0 if
+     non.  You can combine more than one error with &.
+
+   - int check_mem_leaks: whether to check if the mallocs before = mallocs
+     after.  0 for no, 1 for yes.
+
+   # Returns #
+
+   A pointer to the new test.
+ */
 TEST *su_create_test(char *description, int (*run)(), int expected_errors, int check_mem_leaks);
+
+/**
+   su_create_test_group:
+   
+   Create and return a new test group.
+
+   # Parameters #
+
+   - char *description: a short description for the group.
+
+   # Returns #
+
+   A pointer to the test group.
+ */
 TEST_GROUP *su_create_test_group(char *description);
 void su_add_test(TEST_GROUP *group, TEST *test);
 int su_run_test(TEST *test);
