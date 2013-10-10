@@ -7,7 +7,7 @@ LFLAGS=$(FLAGS)
 LIBOBJECTS=obj/linkedlist.o obj/common_include.o obj/arraylist.o obj/smbunit.o
 TESTOBJECTS=obj/main.o obj/linkedlisttest.o obj/arraylisttest.o
 
-.PHONY: all test lib clean testlib
+.PHONY: all test lib clean testlib documentation
 
 # Main targets
 
@@ -18,6 +18,9 @@ test: bin/test
 testlib: bin/testlib
 
 lib: bin/libstephen.a
+
+documentation: src/* src/test/*
+	doxygen
 
 clean:
 	rm -rf obj/* bin/*
