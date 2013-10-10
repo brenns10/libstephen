@@ -19,11 +19,11 @@ testlib: bin/testlib
 
 lib: bin/libstephen.a
 
-documentation: src/* src/test/*
+docs: src/* src/test/*
 	doxygen
 
 clean:
-	rm -rf obj/* bin/*
+	rm -rf obj/* bin/* doc/*
 
 # Main Binaries
 
