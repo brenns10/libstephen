@@ -14,178 +14,151 @@
 #include "tests.h"
 #include "../libstephen.h"
 
-void print_list_int(LINKED_LIST *list)
-{
-  LL_ITERATOR iter = ll_get_iter(list);
-  DATA d;
-  while (ll_iter_valid(&iter)) {
-    d = ll_iter_curr(&iter);
-    printf("Item %d: %Ld\n", iter.index, d.data_llint);
-    ll_iter_next(&iter);
-  }
-}
+// These tests use the smbunit framework!
 
-void print_list_int_interface(LIST list)
+int ll_test_create()
 {
   DATA d;
-  for (int i = 0; i < list.length(&list); i++) {
-    d = list.get(&list, i);
-    printf("Item %d: %Ld\n", i, d.data_llint);
-  }
-}
-
-void test_push_pop()
-{
-  printf("################################################################################\n");
-  printf("##### BEGIN test_push_pop()\n");
-  printf("################################################################################\n\n");
-
-  DATA theData;
-  LINKED_LIST *list = ll_create_empty();
-
-  printf("##### Initialized the list\n");
-
-  int number = 10;
-  while (number < 20) {
-    theData.data_llint = number++;
-    ll_push_front(list, theData);
-  }
-
-  printf("##### Pushed to the front\n");
-
-  print_list_int(list);
-
-  while (number < 30) {
-    theData.data_llint = number++;
-    ll_push_back(list, theData);
-  }
-
-  printf("##### Pushed to the back\n");
+  d.data_llint = 13;
   
-  print_list_int(list);
+  LINKED_LIST *list = ll_create(d);
+
+  // Assert that it was allocated correctly
+  //TEST_ASSERT(!CHECK(ALLOCATION_ERROR), 1);
   
-  while (number < 35) {
-    printf("Pop front: %Ld\n", ll_pop_front(list).data_llint);
-    number++;
-  }
+  TEST_ASSERT(ll_length(list) == 1, 2);
 
-  while (number < 40) {
-    printf("Pop back: %Ld\n", ll_pop_back(list).data_llint);
-    number++;
-  }
-
-  print_list_int(list);
-
-  printf("Malloc count: %zd\n", SMB_GET_MALLOC_COUNTER);
+  TEST_ASSERT(ll_get(list, 0).data_llint == 13, 3);
 
   ll_delete(list);
-  printf("Malloc count: %zd\n", SMB_GET_MALLOC_COUNTER);
-
-  printf("\n################################################################################\n");
-  printf("##### END test_push_pop()\n");
-  printf("################################################################################\n");
+  return 0;
 }
 
-void test_insert_remove()
+int ll_test_create_empty()
 {
-  printf("################################################################################\n");
-  printf("##### BEGIN test_insert_remove()\n");
-  printf("################################################################################\n\n");
-
-  DATA theData;
   LINKED_LIST *list = ll_create_empty();
   
-  printf("##### Initialized the list\n");
+  // Assert that allocation went OK
+  //TEST_ASSERT(!CHECK(ALLOCATION_ERROR), 1);
 
-  for (int i = 0; i < 20; i++) {
-    theData.data_llint = i;
-    ll_insert(list, i, theData);
-    // print_list_int(list);
-  }
+  TEST_ASSERT(ll_length(list) == 0, 2);
 
-  printf("##### Inserted 20 items\n");
-  print_list_int(list);
-
-  theData.data_llint = 100;
-  ll_insert(list, 10, theData);
-
-  printf("##### Inserted in middle\n");
-  print_list_int(list);
-
-  theData.data_llint++;
-  ll_insert(list, 0, theData);
-
-  printf("##### Inserted at beginning\n");
-  print_list_int(list);
-
-  theData.data_llint++;
-  ll_insert(list, list->length, theData);
-
-  printf("##### Inserted at end\n");
-  print_list_int(list);
-  printf("Malloc count: %zd\n", SMB_GET_MALLOC_COUNTER);
   ll_delete(list);
-  printf("Malloc count: %zd\n", SMB_GET_MALLOC_COUNTER);
-  printf("\n################################################################################\n");
-  printf("##### END test_insert_remove()\n");
-  printf("################################################################################\n");
+  return 0;
 }
 
-void test_push_pop_interface()
+int ll_test_append()
 {
-  printf("################################################################################\n");
-  printf("##### BEGIN test_push_pop_interface()\n");
-  printf("################################################################################\n\n");
+  DATA d;
+  d.data_llint = 0;
 
-  DATA theData;
-  LIST list = ll_create_empty_list();
+  int current_assertion = 1;
 
-  printf("##### Initialized the list\n");
+  LINKED_LIST *list = ll_create_empty();
 
-  int number = 10;
-  while (number < 20) {
-    theData.data_llint = number++;
-    list.push_front(&list, theData);
+  for ( ; d.data_llint < 200; d.data_llint++) {
+    // Put a small, 200 item load on it.  This tests appending on
+    // empty and general appending.
+    ll_append(list, d);
+
+    TEST_ASSERT(ll_length(list) == d.data_llint + 1, current_assertion);
+    current_assertion++;
+
+    // Test that the data is correct.
+    for (int i = 0; i < ll_length(list); i++) {
+      TEST_ASSERT(ll_get(list, i).data_llint == i, current_assertion);
+      current_assertion++;
+    }
   }
 
-  printf("##### Pushed to the front\n");
+  ll_delete(list);
+  return 0;
+}
 
-  print_list_int_interface(list);
+int ll_test_prepend()
+{
+  DATA d;
+  d.data_llint = 0;
+  int current_assertion = 1;
+  LINKED_LIST *list = ll_create_empty();
 
-  while (number < 30) {
-    theData.data_llint = number++;
-    list.push_back(&list, theData);
+  // Test prepend about 200 times...
+  for ( ; d.data_llint < 200; d.data_llint++) {
+    ll_prepend(list, d);
+    
+    TEST_ASSERT(ll_length(list) == d.data_llint + 1, current_assertion);
+    current_assertion++;
+
+    for (int i = 0; i < ll_length(list); i++) {
+      TEST_ASSERT(ll_get(list, i).data_llint == d.data_llint - i, current_assertion);
+      current_assertion++;
+    }
   }
-
-  printf("##### Pushed to the back\n");
   
-  print_list_int_interface(list);
+  ll_delete(list);
+  return 0;
+}
+
+int ll_test_set()
+{
+  DATA d;
+  LINKED_LIST *list = ll_create_empty();
+  const int length = 30;
+  int current_assertion = 1;
   
-  while (number < 35) {
-    printf("Pop front: %Ld\n", list.pop_front(&list).data_llint);
-    number++;
+  // Create the data
+  for (d.data_llint = 0 ; d.data_llint < length; d.data_llint++) {
+    ll_append(list, d);
   }
 
-  while (number < 40) {
-    printf("Pop back: %Ld\n", list.pop_back(&list).data_llint);
-    number++;
+  // Verify the data
+  for (d.data_llint = 0 ; d.data_llint < length; d.data_llint++) {
+    TEST_ASSERT(ll_get(list, d.data_llint).data_llint == d.data_llint, current_assertion);
+    current_assertion++;
   }
 
-  print_list_int_interface(list);
+  // Test that the length is correct
+  TEST_ASSERT(ll_length(list) == length, current_assertion);
+  current_assertion++;
+  
+  // Test set
+  for (int i = 0; i < ll_length(list); i++) {
+    d.data_llint = length - i;
+    ll_set(list, i, d);
+    TEST_ASSERT(ll_get(list, i).data_llint == d.data_llint, current_assertion);
+    current_assertion++;
+  }
 
-  printf("Malloc count: %zd\n", SMB_GET_MALLOC_COUNTER);
+  // Test that the length is still correct
+  TEST_ASSERT(ll_length(list) == length, current_assertion);
+  current_assertion++;
 
-  list.delete(&list);
-  printf("Malloc count: %zd\n", SMB_GET_MALLOC_COUNTER);
-
-  printf("\n################################################################################\n");
-  printf("##### END test_push_pop_interface()\n");
-  printf("################################################################################\n");
+  ll_delete(list);
+  return 0;
 }
 
 void linked_list_test()
 {
-  test_push_pop();
-  test_insert_remove();
-  test_push_pop_interface();
+  // Use the smbunit test framework.  Load tests and run them.
+  TEST_GROUP *group = su_create_test_group("linked list");
+
+  TEST *create = su_create_test("create", ll_test_create, 0, 1);
+  su_add_test(group, create);
+
+  TEST *create_empty = su_create_test("create_empty", ll_test_create_empty, 0, 1);
+  su_add_test(group, create_empty);
+
+  TEST *append = su_create_test("append", ll_test_append, 0, 1);
+  su_add_test(group, append);
+
+  TEST *prepend = su_create_test("prepend", ll_test_prepend, 0, 1);
+  su_add_test(group, prepend);
+
+  TEST *set = su_create_test("set", ll_test_set, 0, 1);
+  su_add_test(group, set);
+
+  
+
+  su_run_group(group);
+  su_delete_group(group);
 }
