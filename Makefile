@@ -4,7 +4,7 @@ CC=gcc
 FLAGS=
 CFLAGS=$(FLAGS) -c -std=c99
 LFLAGS=$(FLAGS)
-LIBOBJECTS=obj/linkedlist.o obj/common_include.o obj/arraylist.o obj/smbunit.o
+LIBOBJECTS=obj/linkedlist.o obj/common_include.o obj/arraylist.o obj/smbunit.o obj/args.o
 TESTOBJECTS=obj/main.o obj/linkedlisttest.o obj/arraylisttest.o
 
 .PHONY: all test lib clean testlib documentation
@@ -49,6 +49,9 @@ obj/smbunit.o: src/smbunit.c src/libstephen.h
 
 obj/common_include.o: src/common_include.c src/libstephen.h
 	$(CC) $(CFLAGS) src/common_include.c -o obj/common_include.o
+
+obj/args.o: src/args.c src/libstephen.h
+	$(CC) $(CFLAGS) src/args.c -o obj/args.o
 
 # Test objects
 

@@ -18,6 +18,8 @@
 
 // Required for size_t
 #include <stdlib.h>
+// Required for uint64_t
+#include <stdint.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 // USEFUL MACROS
@@ -427,6 +429,24 @@ typedef struct al_obj
   int allocated;
 
 } ARRAY_LIST;
+
+////////////////////////////////////////////////////////////////////////////////
+// ARGUMENT DATA
+////////////////////////////////////////////////////////////////////////////////
+
+/**
+   Data structure to store information on arguments passed to the program.
+ */
+#define MAX_FLAGS 52
+#define ARG_DATA struct arg_data
+ARG_DATA
+{
+  uint64_t flags; // bit field for all 52 alphabetical characters
+  char *flag_strings[MAX_FLAGS];
+  LINKED_LIST *long_flags;
+  LINKED_LIST *long_flag_strings;
+  LINKED_LIST *bare_strings;
+};
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -1143,5 +1163,107 @@ void al_push_front(ARRAY_LIST *list, DATA newData);
 DATA al_pop_back(ARRAY_LIST *list);
 
 DATA al_peek_back(ARRAY_LIST *list);
+
+////////////////////////////////////////////////////////////////////////////////
+// ARGUMENT DATA
+////////////////////////////////////////////////////////////////////////////////
+
+/**
+   Analyze the argument data passed to the program.  Pass in the argc and argv,
+   but make sure to decrement and increment each respective variable so they do
+   not include the name of the program.
+
+   # Parameters #
+
+   - int argc: The number of arguments (not including program name).
+
+   - char **argv: The arguments themselves (not including program name).
+
+   # Return #
+
+   A pointer to an ARG_DATA object.  Use provided functions to query the object
+   about every desired flag.
+ */
+ARG_DATA *process_args(int argc, char **argv);
+
+/**
+   Delete an ARG_DATA object returned by process_args().
+
+   # Parameters #
+
+   - ARG_DATA *data: The object returned by process_args().
+ */
+void arg_data_delete(ARG_DATA *data);
+
+/**
+   Check whether a flag is raised.
+
+   # Parameters #
+
+   - ARG_DATA *data: The ARG_DATA returned by process_args().
+
+   - char flag: The character flag to check.  Alphabetical only.
+
+   # Return #
+
+   An integer, 0 iff the flag was not set.
+ */
+int check_flag(ARG_DATA *data, char flag);
+
+/**
+   Check whether a long flag appeared.  It must occur verbatim.
+
+   # Parameters #
+
+   - ARG_DATA *data: The ARG_DATA returned by process_args().
+
+   - char *flag: The string flag to check for.
+
+   # Return #
+
+   An integer, 0 iff the flag was not set.
+ */
+int check_long_flag(ARG_DATA *data, char *flag);
+
+/**
+   Check whether a bare string appeared.  It must occur verbatim.
+
+   # Parameters #
+
+   - ARG_DATA *data: The ARG_DATA returned by process_args().
+
+   - char *string: The string to search for.
+ */
+int check_bare_string(ARG_DATA *data, char *string);
+
+/**
+   Return the string parameter associated with the flag.
+
+   # Parameters #
+
+   - ARG_DATA *data: The ARG_DATA returned by process_args().
+
+   - char flag: The flag to find parameters of.
+
+   # Return #
+
+   The parameter of the flag.
+ */
+char *get_flag_parameter(ARG_DATA *data, char flag);
+
+/**
+   Return the string parameter associated with the long string.
+
+   # Parameters #
+
+   - ARG_DATA *data: The ARG_DATA returned by process_args().
+
+   - char *string: The long flag to find parameters of.
+
+   # Return #
+
+   The parameter of the long flag.  NULL if no parameter or if flag not found.
+ */
+char *get_long_flag_parameter(ARG_DATA *data, char *string);
 
 #endif // SMB___LIBSTEPHEN_H_
