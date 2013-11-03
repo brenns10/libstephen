@@ -25,7 +25,7 @@ void iterate_flags(ARG_DATA *pArgData, char start, char end)
       printf("Flag \'%c\' set.\n", c);
       char *param = get_flag_parameter(pArgData, c);
       if (param)
-        printf("Flag parameter: %s\n", param);
+        printf("-->Flag parameter: %s\n", param);
     }
   }
 }
@@ -41,7 +41,7 @@ void iterate_long_flags(ARG_DATA *pArgData)
 
     char *param = get_long_flag_parameter(pArgData, string);
     if (param)
-      printf("Flag parameter: %s\n", param);
+      printf("-->Flag parameter: %s\n", param);
     ll_iter_next(&iter);
   }
 }
@@ -60,13 +60,16 @@ void iterate_bare_strings(ARG_DATA *pArgData)
 
 int args_test_main(int argc, char **argv)
 {
+  printf("Mallocs: %d\n", SMB_GET_MALLOC_COUNTER);
   ARG_DATA *pArgData = process_args(argc - 1, argv + 1);
-  printf("Flags: %X\n", pArgData->flags);
 
   iterate_flags(pArgData, 'A', 'Z');
   iterate_flags(pArgData, 'a', 'z');
 
   iterate_long_flags(pArgData);
   iterate_bare_strings(pArgData);
+  printf("Mallocs: %d\n", SMB_GET_MALLOC_COUNTER);
+  arg_data_delete(pArgData);
+  printf("Mallocs: %d\n", SMB_GET_MALLOC_COUNTER);
   return 0;
 }

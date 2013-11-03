@@ -89,9 +89,11 @@ char process_flag(ARG_DATA *pData, char *cFlags)
  */
 char *process_long_flag(ARG_DATA *pData, char *sTitle)
 {
-  DATA d;
+  DATA d, e;
   d.data_ptr = sTitle + 2;
   ll_append(pData->long_flags, d); // Add the portion AFTER the "--"
+  e.data_ptr = NULL;
+  ll_append(pData->long_flag_strings, e);
   return sTitle + 2;
 }
 
@@ -101,7 +103,8 @@ void process_bare_string(ARG_DATA *pData, char *sStr, char *previous_long_flag,
   if (previous_long_flag) {
     DATA d;
     d.data_ptr = sStr;
-    ll_append(pData->long_flag_strings, d);
+    ll_pop_back(pData->long_flag_strings);
+    ll_push_back(pData->long_flag_strings, d);
   } else if (previous_flag != EOF) {
     int idx = flag_index(previous_flag);
     // The flag index would be negative if the previous flag was not a
@@ -128,6 +131,7 @@ int find_string(LINKED_LIST *toSearch, char *toFind)
     if (strcmp(toFind, sCurr) == 0) {
       return iterator.index;
     }
+    ll_iter_next(&iterator);
   }
   return -1;
 }
