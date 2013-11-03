@@ -19,3 +19,8 @@ void linked_list_test();
    Run the array list tests
  */
 void array_list_test();
+
+/**
+   Output statistics of main function args.
+ */
+int args_test_main(int argc, char **argv);

@@ -57,9 +57,9 @@ int flag_index(char c)
 {
   int idx;
   if (c >= 'A' && c <= 'Z') {
-    idx = 26 + c - 'A';
+    idx = 26 + (c - 'A');
   } else if (c >= 'a' && c <= 'z') {
-    idx = c - 'a';
+    idx = (c - 'a');
   } else {
     idx = -1;
   }
@@ -74,11 +74,12 @@ char process_flag(ARG_DATA *pData, char *cFlags)
   char last;
   int idx;
 
-  while (cFlags) {
+  while (*cFlags != '\0') {
     if ((idx = flag_index(*cFlags)) != -1) {
       last = *cFlags;
-      pData->flags |= 1 << idx;
+      pData->flags |= 1UL << idx;
     }
+    cFlags++;
   }
   return last;
 }
@@ -202,10 +203,12 @@ void arg_data_delete(ARG_DATA * data)
  */
 int check_flag(ARG_DATA *pData, char flag)
 {
-  int idx;
+  uint64_t idx;
   idx = flag_index(flag);
-  if (idx != 0)
-    return pData->flags & (1 << idx);
+  if (idx != -1) {
+    idx =  pData->flags & (1UL << idx);
+    if (idx) return 1;
+  }
   return 0;
 }
 
@@ -231,7 +234,7 @@ int check_bare_string(ARG_DATA *data, char *string)
 char *get_flag_parameter(ARG_DATA *data, char flag)
 {
   int index = flag_index(flag);
-  if (index = -1)
+  if (index == -1)
     return NULL;
   else 
     return data->flag_strings[index];
@@ -243,7 +246,7 @@ char *get_flag_parameter(ARG_DATA *data, char flag)
 char *get_long_flag_parameter(ARG_DATA *data, char *string)
 {
   int index = find_string(data->long_flags, string);
-  if (index = -1)
+  if (index == -1)
     return NULL;
   else {
     DATA d;

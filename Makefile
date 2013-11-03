@@ -1,11 +1,11 @@
 # libstephen makefile
 
 CC=gcc
-FLAGS=
+FLAGS=-g
 CFLAGS=$(FLAGS) -c -std=c99
 LFLAGS=$(FLAGS)
 LIBOBJECTS=obj/linkedlist.o obj/common_include.o obj/arraylist.o obj/smbunit.o obj/args.o
-TESTOBJECTS=obj/main.o obj/linkedlisttest.o obj/arraylisttest.o
+TESTOBJECTS=obj/main.o obj/linkedlisttest.o obj/arraylisttest.o obj/argstest.o
 
 .PHONY: all test lib clean testlib documentation
 
@@ -63,3 +63,6 @@ obj/linkedlisttest.o: src/test/linkedlisttest.c src/test/tests.h src/libstephen.
 
 obj/arraylisttest.o: src/test/arraylisttest.c src/test/tests.h src/libstephen.h
 	$(CC) $(CFLAGS) src/test/arraylisttest.c -o obj/arraylisttest.o
+
+obj/argstest.o: src/test/argstest.c src/libstephen.h
+	$(CC) $(CFLAGS) src/test/argstest.c -o obj/argstest.o

@@ -19,6 +19,7 @@
  */
 int main(int argc, char ** argv)
 {
+  /*
   int mallocs;
 
   linked_list_test();
@@ -30,4 +31,6 @@ int main(int argc, char ** argv)
   } else {
     return 0;
   }
+  */
+  return args_test_main(argc, argv);
 }
