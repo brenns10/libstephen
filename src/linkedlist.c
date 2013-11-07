@@ -35,7 +35,7 @@ void ll_remove_node(LINKED_LIST *list, NODE *theNode)
     list->tail = previous;
   }
   free(theNode);
-  SMB_DECREMENT_MALLOC_COUNTER(1);
+  SMB_DECREMENT_MALLOC_COUNTER(sizeof(NODE));
 }
 
 /**
@@ -105,7 +105,7 @@ NODE *ll_create_node(DATA data)
   newNode->data = data;
   newNode->next = NULL;
   newNode->prev = NULL;
-  SMB_INCREMENT_MALLOC_COUNTER(1);
+  SMB_INCREMENT_MALLOC_COUNTER(sizeof(NODE));
   return newNode;
 }
 
@@ -122,7 +122,7 @@ LINKED_LIST *ll_create(DATA newData)
     RAISE(ALLOCATION_ERROR);
     return NULL;
   }
-  SMB_INCREMENT_MALLOC_COUNTER(1);
+  SMB_INCREMENT_MALLOC_COUNTER(sizeof(LINKED_LIST));
 
   // Create the first node
   NODE *newNode = ll_create_node(newData);
@@ -131,7 +131,7 @@ LINKED_LIST *ll_create(DATA newData)
     // If we can't allocate the first node, destroy the list, leave the error
     // flag, and return.
     free(newList);
-    SMB_DECREMENT_MALLOC_COUNTER(1);
+    SMB_DECREMENT_MALLOC_COUNTER(sizeof(LINKED_LIST));
     return NULL;
   }
 
@@ -154,7 +154,7 @@ LINKED_LIST *ll_create_empty()
     return NULL;
   }
 
-  SMB_INCREMENT_MALLOC_COUNTER(1);
+  SMB_INCREMENT_MALLOC_COUNTER(sizeof(LINKED_LIST));
   newList->length = 0;
   newList->head = NULL;
   newList->tail = NULL;
@@ -344,7 +344,7 @@ void ll_delete(LINKED_LIST *list)
   }
   // Free the list header
   free(list);
-  SMB_DECREMENT_MALLOC_COUNTER(1);
+  SMB_DECREMENT_MALLOC_COUNTER(sizeof(LINKED_LIST));
 }
 
 void ll_set(LINKED_LIST *list, int index, DATA newData)

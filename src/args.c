@@ -43,7 +43,7 @@
 ARG_DATA *arg_data_new()
 {
   ARG_DATA *data = (ARG_DATA*) malloc(sizeof(ARG_DATA));
-  SMB_INCREMENT_MALLOC_COUNTER(1);
+  SMB_INCREMENT_MALLOC_COUNTER(sizeof(ARG_DATA));
   data->flags = 0;
   for (int i = 0; i < MAX_FLAGS; i++) data->flag_strings[i] = NULL;
   data->long_flags = ll_create_empty();
@@ -199,7 +199,7 @@ void arg_data_delete(ARG_DATA * data)
   ll_delete(data->bare_strings);
   ll_delete(data->long_flag_strings);
   free(data);
-  SMB_DECREMENT_MALLOC_COUNTER(1);
+  SMB_DECREMENT_MALLOC_COUNTER(sizeof(ARG_DATA));
 }
 
 /**

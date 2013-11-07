@@ -75,7 +75,7 @@ size_t smb___helper_get_malloc_counter();
 #ifdef SMB_ENABLE_MEMORY_DIAGNOSTICS
 #define SMB_GET_MALLOC_COUNTER smb___helper_get_malloc_counter()
 #else
-#define SMB_GET_MALLOC_COUNTER
+#define SMB_GET_MALLOC_COUNTER 0
 #endif // SMB_ENABLE_MEMORY_DIAGNOSTICS
 
 /*******************************************************************************

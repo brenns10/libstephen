@@ -44,7 +44,7 @@ void al_expand(ARRAY_LIST *list)
     return;
   }
 
-  SMB_INCREMENT_MALLOC_COUNTER(SMB_AL_BLOCK_SIZE);
+  SMB_INCREMENT_MALLOC_COUNTER(SMB_AL_BLOCK_SIZE * sizeof(DATA));
   list->data = newBlock;
   list->allocated = newAllocation;
 }
@@ -135,18 +135,18 @@ ARRAY_LIST *al_create_empty()
     RAISE(ALLOCATION_ERROR);
     return NULL;
   }
-  SMB_INCREMENT_MALLOC_COUNTER(1);
+  SMB_INCREMENT_MALLOC_COUNTER(sizeof(ARRAY_LIST));
   
   list->data = (DATA*) malloc(SMB_AL_BLOCK_SIZE * sizeof(DATA));
   if (!list->data) {
     free(list);
-    SMB_DECREMENT_MALLOC_COUNTER(1);
+    SMB_DECREMENT_MALLOC_COUNTER(sizeof(ARRAY_LIST));
     RAISE(ALLOCATION_ERROR);
     return NULL;
   }
   list->length = 0;
   list->allocated = SMB_AL_BLOCK_SIZE;
-  SMB_INCREMENT_MALLOC_COUNTER(SMB_AL_BLOCK_SIZE);
+  SMB_INCREMENT_MALLOC_COUNTER(SMB_AL_BLOCK_SIZE * sizeof(DATA));
 
   return list;
 }
@@ -238,9 +238,9 @@ void al_delete(ARRAY_LIST *list)
   CLEAR_ALL_ERRORS;
 
   free(list->data);
-  SMB_DECREMENT_MALLOC_COUNTER(list->allocated);
+  SMB_DECREMENT_MALLOC_COUNTER(list->allocated * sizeof(DATA));
   free(list);
-  SMB_DECREMENT_MALLOC_COUNTER(1);
+  SMB_DECREMENT_MALLOC_COUNTER(sizeof(ARRAY_LIST));
 }
 
 int al_length(ARRAY_LIST *list)

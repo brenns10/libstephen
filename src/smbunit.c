@@ -18,7 +18,7 @@
 TEST *su_create_test(char * description, int (*run)(), int expected_errors, int check_mem_leaks)
 {
   TEST *test = (TEST*) malloc(sizeof(TEST));
-  SMB_INCREMENT_MALLOC_COUNTER(1);
+  SMB_INCREMENT_MALLOC_COUNTER(sizeof(TEST));
   strncpy(test->description, description, SMB_UNIT_DESCRIPTION_SIZE - 1);
   test->description[SMB_UNIT_DESCRIPTION_SIZE - 1] = 0;
   
@@ -32,7 +32,7 @@ TEST *su_create_test(char * description, int (*run)(), int expected_errors, int 
 TEST_GROUP *su_create_test_group(char * description)
 {
   TEST_GROUP *group = (TEST_GROUP*) malloc(sizeof(TEST_GROUP));
-  SMB_INCREMENT_MALLOC_COUNTER(1);
+  SMB_INCREMENT_MALLOC_COUNTER(sizeof(TEST_GROUP));
   strncpy(group->description, description, SMB_UNIT_DESCRIPTION_SIZE - 1);
   group->description[SMB_UNIT_DESCRIPTION_SIZE - 1] = 0;
 
@@ -65,7 +65,7 @@ int su_run_test(TEST *test)
   }
 
   if (test->check_mem_leaks && mallocs) {
-    printf ("TEST \"%s\" LEAKED %d MALLOCS!\n", test->description, mallocs);
+    printf ("TEST \"%s\" LEAKED %d BYTES!\n", test->description, mallocs);
     return 3;
   }
 
@@ -91,7 +91,7 @@ int su_run_group(TEST_GROUP *group)
 void su_delete_test(TEST *test)
 {
   free(test);
-  SMB_DECREMENT_MALLOC_COUNTER(1);
+  SMB_DECREMENT_MALLOC_COUNTER(sizeof(TEST));
 }
 
 void su_delete_group(TEST_GROUP *group)
@@ -101,5 +101,5 @@ void su_delete_group(TEST_GROUP *group)
       su_delete_test(group->tests[i]);
   }
   free(group);
-  SMB_DECREMENT_MALLOC_COUNTER(1);
+  SMB_DECREMENT_MALLOC_COUNTER(sizeof(TEST_GROUP));
 }
