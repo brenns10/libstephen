@@ -129,6 +129,11 @@ extern unsigned int ERROR_VAR;
 #define INDEX_ERROR 0x0002
 
 /**
+   NOT_FOUND_ERROR: Set when an item is not found, mainly in the hash table.
+ */
+#define NOT_FOUND_ERROR 0x0004
+
+/**
    Set the flag corresponding to the given error code.
  */
 #define RAISE(x) (ERROR_VAR |= x)
