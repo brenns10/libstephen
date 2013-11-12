@@ -2,7 +2,7 @@
 
 CC=gcc
 FLAGS=-g
-CFLAGS=$(FLAGS) -c -std=c99
+CFLAGS=$(FLAGS) -c -std=c99 -fPIC
 LFLAGS=$(FLAGS)
 LIBOBJECTS=obj/linkedlist.o obj/common_include.o obj/arraylist.o obj/smbunit.o obj/args.o
 TESTOBJECTS=obj/main.o obj/linkedlisttest.o obj/arraylisttest.o obj/argstest.o
@@ -11,13 +11,15 @@ TESTOBJECTS=obj/main.o obj/linkedlisttest.o obj/arraylisttest.o obj/argstest.o
 
 # Main targets
 
-all: lib test testlib
+all: lib so test testlib
 
 test: bin/test
 
 testlib: bin/testlib
 
 lib: bin/libstephen.a
+
+so: bin/libstephen.so
 
 docs: src/* src/test/*
 	doxygen
@@ -35,6 +37,9 @@ bin/libstephen.a: $(LIBOBJECTS)
 
 bin/testlib: bin/libstephen.a $(TESTOBJECTS)
 	$(CC) $(LFLAGS) $(TESTOBJECTS) -L bin -lstephen -o bin/testlib
+
+bin/libstephen.so: $(LIBOBJECTS)
+	$(CC) $(LFLAGS) -shared -Wl,-soname,libstephen.so -o bin/libstephen.so $(LIBOBJECTS)
 
 # Library objects
 
