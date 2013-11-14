@@ -36,7 +36,7 @@ bin/libstephen.a: $(LIBOBJECTS)
 	ar rcs bin/libstephen.a $(LIBOBJECTS)
 
 bin/testlib: bin/libstephen.a $(TESTOBJECTS)
-	$(CC) $(LFLAGS) $(TESTOBJECTS) -L bin -lstephen -o bin/testlib
+	$(CC) $(LFLAGS) $(TESTOBJECTS) --static -L bin -lstephen -o bin/testlib
 
 bin/libstephen.so: $(LIBOBJECTS)
 	$(CC) $(LFLAGS) -shared -Wl,-soname,libstephen.so -o bin/libstephen.so $(LIBOBJECTS)
