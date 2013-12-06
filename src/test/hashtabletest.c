@@ -38,6 +38,11 @@ unsigned int ht_test_constant_hash(DATA dKey)
   return 4;
 }
 
+unsigned int ht_test_linear_hash(DATA dKey)
+{
+  return (unsigned int) dKey.data_llint;
+}
+
 /**
    This doesn't really just test insert.  It also tests create and get.  But I
    can't really isolate *just* insert.
@@ -181,6 +186,52 @@ int ht_test_buckets()
   return 0;
 }
 
+/**
+   This test adds to the hash table until it is forced to reallocate.  Then it
+   checks that every value is still accessible.  
+ */
+int ht_test_resize()
+{
+  DATA key, value;
+  int i;
+  int a = 1;
+  // Truncating addition will trim this to the number just before expanding.
+  int last_stable = 1 + (int) (HASH_TABLE_INITIAL_SIZE * HASH_TABLE_MAX_LOAD_FACTOR);
+
+  HASH_TABLE *table = ht_create(ht_test_linear_hash);
+  for (i = 0; i < last_stable; i++) {
+    key.data_llint = i;
+    value.data_llint = -i;
+    ht_insert(table, key, value);
+    TEST_ASSERT(table->allocated == HASH_TABLE_INITIAL_SIZE, a);
+    a++;
+    TEST_ASSERT(table->length == i + 1, a);
+    a++;
+  }
+
+  //ht_print(table, 1);
+
+  key.data_llint = last_stable;
+  value.data_llint = -last_stable;
+  ht_insert(table, key, value);
+  TEST_ASSERT(table->allocated > HASH_TABLE_INITIAL_SIZE, a);
+  a++;
+  TEST_ASSERT(table->length == last_stable + 1, a);
+  a++;
+
+  //ht_print(table, 1);
+
+  for (i = 0; i <= last_stable; i++) {
+    key.data_llint = i;
+    value = ht_get(table, key);
+    TEST_ASSERT(value.data_llint == -i, a);
+    a++;
+  }
+
+  ht_delete(table);
+  return 0;
+}
+
 void hash_table_test() 
 {
   TEST_GROUP *group = su_create_test_group("hash table");
@@ -197,6 +248,9 @@ void hash_table_test()
 
   TEST *buckets = su_create_test("buckets", ht_test_buckets, 0, 1);
   su_add_test(group, buckets);
+
+  TEST *resize = su_create_test("resize", ht_test_resize, 0, 1);
+  su_add_test(group, resize);
 
   su_run_group(group);
   su_delete_group(group);
