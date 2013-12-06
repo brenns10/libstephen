@@ -249,8 +249,10 @@ void ht_remove(HASH_TABLE *pTable, DATA dKey)
   int index = pTable->hash(dKey) % pTable->allocated;
 
   // Stop if the key doesn't exist in the table.
-  if (!pTable->table[index])
+  if (!pTable->table[index]) {
+    RAISE(NOT_FOUND_ERROR);
     return;
+  }
 
   curr = pTable->table[index];
   prev = NULL;
@@ -260,11 +262,19 @@ void ht_remove(HASH_TABLE *pTable, DATA dKey)
     curr = curr->next;
   }
 
-  if (curr) {
-    // Cut curr out of the list
+  if (curr && prev) {
+    // Found a match, and there is something before it in the linked list.
     prev->next = curr->next;
     ht_bucket_delete(curr);
     pTable->length--;
+  } else if (curr && !prev) {
+    // Found a match, and it is the first in the linked list
+    pTable->table[index] = curr->next;
+    ht_bucket_delete(curr);
+    pTable->length--;
+  } else {
+    // Didn't find a match in this bucket list
+    RAISE(NOT_FOUND_ERROR);
   }
 }
 
@@ -325,5 +335,6 @@ void ht_print(HASH_TABLE const *pTable, int full_mode)
   }
 
   if (printed != pTable->length)
-    printf("Error: %d items printed, but %d items are recorded by hash table.\n");
+    printf("Error: %d items printed, but %d items are recorded by hash table.\n", 
+           printed, pTable->length);
 }
