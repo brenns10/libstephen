@@ -380,10 +380,13 @@ typedef union long_data {
 } DATA;
 
 /**
-   A type of function that takes a DATA and does anything necessary to delete
-   it.  EG, freeing it if it's a pointer.
+   A function pointer that takes a DATA and performs an action on it (counts it,
+   calls free on it, prints it, etc.).  Useful for stuff like deleting data
+   structures full of items (if they're pointers to dynamically allocated data,
+   they'll need to be freed), applying an action to every item in a list
+   (e.g. printing), and many more applications.
  */
-typedef void (*DATA_DELETER)(DATA toDelete);
+typedef void (*DATA_ACTION)(DATA toDelete);
 
 ////////////////////////////////////////////////////////////////////////////////
 // LINKED LIST
@@ -1271,13 +1274,13 @@ void ht_remove(HASH_TABLE *pTable, DATA dKey);
 
    - DATA dKey: key to delete.
 
-   - DATA_DELETER deleter: action to perform on the value before removing it.
+   - DATA_ACTION deleter: action to perform on the value before removing it.
 
    # Error Handling #
 
    Clears all errors on function call.
  */
-void ht_remove_act(HASH_TABLE *pTable, DATA dKey, DATA_DELETER deleter);
+void ht_remove_act(HASH_TABLE *pTable, DATA dKey, DATA_ACTION deleter);
 
 /**
    Return the value associated with the key provided.
@@ -1337,14 +1340,14 @@ void ht_delete(HASH_TABLE *pTable);
 
    - HASH_TABLE *pTable: The table to free.
 
-   - DATA_DELETER deleter: The action to perform on each value in the hash table
+   - DATA_ACTION deleter: The action to perform on each value in the hash table
      before deletion.
 
    # Error Handling #
 
    No effect.
  */
-void ht_delete_act(HASH_TABLE *pTable, DATA_DELETER deleter);
+void ht_delete_act(HASH_TABLE *pTable, DATA_ACTION deleter);
 
 /**
    Print the entire hash table.

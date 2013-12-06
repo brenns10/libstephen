@@ -202,7 +202,7 @@ HASH_TABLE *ht_create(unsigned int (*hash_function)(DATA dData))
   return pTable;
 }
 
-void ht_delete_act(HASH_TABLE *pTable, DATA_DELETER deleter)
+void ht_delete_act(HASH_TABLE *pTable, DATA_ACTION deleter)
 {
   int i;
   HT_BUCKET *curr, *temp;
@@ -252,7 +252,7 @@ void ht_insert(HASH_TABLE *pTable, DATA dKey, DATA dValue)
   ht_insert_bucket(pTable, pBucket);
 }
 
-void ht_remove_act(HASH_TABLE *pTable, DATA dKey, DATA_DELETER deleter)
+void ht_remove_act(HASH_TABLE *pTable, DATA dKey, DATA_ACTION deleter)
 {
   CLEAR_ALL_ERRORS;
 
