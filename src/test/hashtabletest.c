@@ -32,6 +32,10 @@ char *test_values[] = {
   "fifth value"
 };
 
+/**
+   This doesn't really just test insert.  It also tests create and get.  But I
+   can't really isolate *just* insert.
+ */
 int ht_test_insert()
 {
   DATA key, value;
@@ -55,12 +59,67 @@ int ht_test_insert()
   ht_delete(table);
 }
 
+int ht_test_remove()
+{
+  DATA key, value;
+  int a = 1;
+  int i;
+
+  HASH_TABLE *table = ht_create(&ht_string_hash);
+
+  for (i = 0; i < TEST_PAIRS; i++) {
+    key.data_ptr = test_keys[i];
+    value.data_ptr = test_values[i];
+    ht_insert(table, key, value);
+  }
+
+  TEST_ASSERT(table->length == TEST_PAIRS, a);
+  a++;
+
+  for (i = 0; i < TEST_PAIRS; i++) {
+    key.data_ptr = test_keys[i];
+    value = ht_get(table, key);
+    TEST_ASSERT(test_values[i] == value.data_ptr, a);
+    a++;
+    ht_remove(table, key);
+    TEST_ASSERT(table->length == TEST_PAIRS - i - 1, a);
+    a++;
+  }
+
+  ht_delete(table);
+}
+
+/*
+  This test expecs a NOT_FOUND_ERROR
+ */
+int ht_test_remove_invalid()
+{
+  DATA key, value;
+  int i;
+  int a = 1;
+
+  HASH_TABLE *table = ht_create(&ht_string_hash);
+
+  key.data_ptr = "invalid key";
+  value = ht_get(table, key);
+
+  ht_delete(table);
+}
+
 void hash_table_test() 
 {
   TEST_GROUP *group = su_create_test_group("hash table");
 
   TEST *insert = su_create_test("insert", ht_test_insert, 0, 1);
   su_add_test(group, insert);
+
+  TEST *remove = su_create_test("remove", ht_test_remove, 0, 1);
+  su_add_test(group, remove);
+
+  TEST *remove_invalid = su_create_test("remove_invalid", ht_test_remove_invalid, 
+                                        NOT_FOUND_ERROR, 1);
+  su_add_test(group, remove_invalid);
+  
 
   su_run_group(group);
   su_delete_group(group);
