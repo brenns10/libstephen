@@ -29,6 +29,17 @@ int data_equal(DATA d1, DATA d2)
 }
 
 /*
+  Returns the next hashtable size.
+ */
+int ht_next_size(int current)
+{
+  return 2 * current + 1; // Try not to use something with a common factor of 1.
+                          // I'm also striving for simplicity here.  It would
+                          // probably be best to use only prime numbers here,
+                          // but this is considerably simpler.
+}
+
+/*
   Create a hash table bucket.
  */
 HT_BUCKET *ht_bucket_create(DATA dKey, DATA dValue, HT_BUCKET *pNext)
@@ -100,7 +111,7 @@ void ht_insert_bucket(HASH_TABLE *pTable, HT_BUCKET *pBucket)
 /*
   Resize the hash table, adding increment to the capacity of the table.
  */
-void ht_resize(HASH_TABLE *pTable, size_t increment)
+void ht_resize(HASH_TABLE *pTable)
 {
   HT_BUCKET **pOldBuffer;
   HT_BUCKET *curr, *temp;
@@ -111,7 +122,7 @@ void ht_resize(HASH_TABLE *pTable, size_t increment)
   oldLength = pTable->length;
   oldAllocated = pTable->allocated;
   pTable->length = 0;
-  pTable->allocated += increment;
+  pTable->allocated = ht_next_size(oldLength);
   pTable->table = (HT_BUCKET**) malloc(pTable->allocated * sizeof(HT_BUCKET*));
   if (!pTable->table) {
     // We want to preserve the data already contained in the table.
@@ -220,7 +231,7 @@ void ht_insert(HASH_TABLE *pTable, DATA dKey, DATA dValue)
   CLEAR_ALL_ERRORS;
 
   if (ht_load_factor(pTable) > HASH_TABLE_MAX_LOAD_FACTOR) {
-    ht_resize(pTable, HASH_TABLE_INITIAL_SIZE);
+    ht_resize(pTable);
     if (CHECK(ALLOCATION_ERROR)) return;
   }
 

@@ -456,7 +456,7 @@ HASH_TABLE
   HT_BUCKET **table;
 };
 
-#define HASH_TABLE_INITIAL_SIZE 256
+#define HASH_TABLE_INITIAL_SIZE 233 // prime number close to 256
 #define HASH_TABLE_MAX_LOAD_FACTOR 0.7
 
 ////////////////////////////////////////////////////////////////////////////////
