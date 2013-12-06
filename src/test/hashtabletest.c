@@ -50,6 +50,8 @@ int ht_test_insert()
     TEST_ASSERT(test_values[i] == ht_get(table, key).data_ptr, i+1);
   }
 
+  // ht_print(table, 0);
+
   ht_delete(table);
 }
 

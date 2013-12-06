@@ -452,7 +452,7 @@ HASH_TABLE
 {
   int length;
   int allocated;
-  int (*hash)(DATA dData);
+  unsigned int (*hash)(DATA dData);
   HT_BUCKET **table;
 };
 
@@ -1214,7 +1214,7 @@ DATA al_peek_back(ARRAY_LIST *list);
   Clears all errors on function call.  If malloc fails, then no hash table is
   created, NULL is returned, and the ALLOCATION_ERROR flag is raised.
  */
-HASH_TABLE *ht_create(int (*hash_function)(DATA dData));
+HASH_TABLE *ht_create(unsigned int (*hash_function)(DATA dData));
 
 /**
    Insert data into the hash table.  Expands the hash table if the load factor
@@ -1287,7 +1287,7 @@ DATA ht_get(HASH_TABLE const *pTable, DATA dKey);
 
    No effect.
  */
-int ht_string_hash(DATA data);
+unsigned int ht_string_hash(DATA data);
 
 /**
    Free the hash table.  No pointers contained in the table will be freed.
@@ -1301,6 +1301,21 @@ int ht_string_hash(DATA data);
    No effect.
  */
 void ht_delete(HASH_TABLE *pTable);
+
+/**
+   Print the entire hash table.
+
+   # Parameters #
+
+   - HASH_HABLE *pTable: The table to print.
+
+   - int full_mode: Whether to print every row in the hash table.
+
+   # Error Handling #
+   
+   No effect.
+ */
+void ht_print(HASH_TABLE const *pTable, int full_mode);
 
 ////////////////////////////////////////////////////////////////////////////////
 // ARGUMENT DATA

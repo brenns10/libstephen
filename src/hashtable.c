@@ -11,6 +11,7 @@
 *******************************************************************************/
 
 #include <string.h>
+#include <stdio.h>
 #include "libstephen.h"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -74,7 +75,7 @@ HT_BUCKET *ht_find_in_bucket(HT_BUCKET *pBucket, DATA dKey)
 void ht_insert_bucket(HASH_TABLE *pTable, HT_BUCKET *pBucket)
 {
   HT_BUCKET *curr;
-  int index = pTable->hash(pBucket->key) % pTable->allocated;
+  unsigned int index = pTable->hash(pBucket->key) % pTable->allocated;
   
   if (pTable->table[index]) {
     // A linked list already exists here.
@@ -86,13 +87,14 @@ void ht_insert_bucket(HASH_TABLE *pTable, HT_BUCKET *pBucket)
     } else {
       // assert curr->next == NULL
       curr->next = pBucket;
+      pTable->length++;
     }
   } else {
     // No linked list exists yet
     pTable->table[index] = pBucket;
+    pTable->length++;
   }
-  
-  pTable->length++;
+ 
 }
 
 /*
@@ -151,7 +153,7 @@ double ht_load_factor(HASH_TABLE *pTable)
 // Public Interface Functions
 ////////////////////////////////////////////////////////////////////////////////
 
-HASH_TABLE *ht_create(int (*hash_function)(DATA dData))
+HASH_TABLE *ht_create(unsigned int (*hash_function)(DATA dData))
 {
   CLEAR_ALL_ERRORS;
 
@@ -274,15 +276,43 @@ DATA ht_get(HASH_TABLE const *pTable, DATA dKey)
   return d;
 }
 
-int ht_string_hash(DATA data)
+unsigned int ht_string_hash(DATA data)
 {
   char *theString = (char *)data.data_ptr;
-  int hash = 0;
+  unsigned int hash = 0;
 
   while (theString && *theString != '\0' ) {
-    hash = hash << 5 - hash + *theString;
+    hash = (hash << 5) - hash + *theString;
     theString++;
   }
-  
+
+  // printf("Hash of \"%s\": %u\n", (char*)data.data_ptr, hash);
   return hash;
+}
+
+/*
+  Print the hash table.  If full_mode is nonzero, it will print every cell of
+  the hash table, regardless of whether or not it contains anything.
+ */
+void ht_print(HASH_TABLE const *pTable, int full_mode)
+{
+  HT_BUCKET *curr = NULL;
+  int i;
+  int printed = 0;
+
+  for (i = 0; i < pTable->allocated; i++) {
+    curr = pTable->table[i];
+    if (pTable->table[i] || full_mode)
+      printf("[%d]: ", i);
+    while (curr) {
+      printf("0x%Lx|0x%Lx, ", curr->key.data_llint, curr->value.data_llint);
+      curr = curr->next;
+      printed++;
+    }
+    if (pTable->table[i] || full_mode)
+      printf("\n");
+  }
+
+  if (printed != pTable->length)
+    printf("Error: %d items printed, but %d items are recorded by hash table.\n");
 }
