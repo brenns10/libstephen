@@ -32,6 +32,13 @@ char *test_values[] = {
   "fifth value"
 };
 
+int ht_test_deletions = 0;
+
+void ht_test_deleter(DATA dValue)
+{
+  ht_test_deletions++;
+}
+
 unsigned int ht_test_constant_hash(DATA dKey)
 {
   // return random_die_roll();
@@ -76,8 +83,8 @@ int ht_test_remove()
   DATA key, value;
   int a = 1;
   int i;
-
   HASH_TABLE *table = ht_create(&ht_string_hash);
+  ht_test_deletions = 0;
 
   for (i = 0; i < TEST_PAIRS; i++) {
     key.data_ptr = test_keys[i];
@@ -93,12 +100,14 @@ int ht_test_remove()
     value = ht_get(table, key);
     TEST_ASSERT(test_values[i] == value.data_ptr, a);
     a++;
-    ht_remove(table, key);
+    ht_remove_act(table, key, ht_test_deleter);
     TEST_ASSERT(table->length == TEST_PAIRS - i - 1, a);
     a++;
   }
 
-  ht_delete(table);
+  ht_delete_act(table, ht_test_deleter);
+  TEST_ASSERT(ht_test_deletions == TEST_PAIRS, a);
+  a++;
   return 0;
 }
 
@@ -130,8 +139,8 @@ int ht_test_buckets()
   DATA key, value;
   int i;
   int a = 1;
-
   HASH_TABLE *table = ht_create(&ht_test_constant_hash);
+  ht_test_deletions = 0;
   
   for (i = 0; i < 20; i++) {
     key.data_llint = i;
@@ -145,7 +154,7 @@ int ht_test_buckets()
 
   // Remove one from the middle of the bucket list.
   key.data_llint = 10;
-  ht_remove(table, key);
+  ht_remove_act(table, key, ht_test_deleter);
   TEST_ASSERT(table->length == 19, a);
   a++;
 
@@ -153,7 +162,7 @@ int ht_test_buckets()
 
   // Remove one from the beginning of the bucket list.
   key.data_llint = 0;
-  ht_remove(table, key);
+  ht_remove_act(table, key, ht_test_deleter);
   TEST_ASSERT(table->length == 18, a);
   a++;
 
@@ -161,7 +170,7 @@ int ht_test_buckets()
 
   // Remove from the end of the list.
   key.data_llint = 19;
-  ht_remove(table, key);
+  ht_remove_act(table, key, ht_test_deleter);
   TEST_ASSERT(table->length == 17, a);
   a++;
 
@@ -182,7 +191,9 @@ int ht_test_buckets()
     a++;
   }
 
-  ht_delete(table);
+  ht_delete_act(table, ht_test_deleter);
+  TEST_ASSERT(ht_test_deletions == 20, a);
+  a++;
   return 0;
 }
 
@@ -197,8 +208,9 @@ int ht_test_resize()
   int a = 1;
   // Truncating addition will trim this to the number just before expanding.
   int last_stable = 1 + (int) (HASH_TABLE_INITIAL_SIZE * HASH_TABLE_MAX_LOAD_FACTOR);
-
   HASH_TABLE *table = ht_create(ht_test_linear_hash);
+  ht_test_deletions = 0;
+
   for (i = 0; i < last_stable; i++) {
     key.data_llint = i;
     value.data_llint = -i;
@@ -228,7 +240,9 @@ int ht_test_resize()
     a++;
   }
 
-  ht_delete(table);
+  ht_delete_act(table, ht_test_deleter);
+  TEST_ASSERT(ht_test_deletions == last_stable + 1, a);
+  a++;
   return 0;
 }
 

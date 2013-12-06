@@ -202,7 +202,7 @@ HASH_TABLE *ht_create(unsigned int (*hash_function)(DATA dData))
   return pTable;
 }
 
-void ht_delete(HASH_TABLE *pTable)
+void ht_delete_act(HASH_TABLE *pTable, DATA_DELETER deleter)
 {
   int i;
   HT_BUCKET *curr, *temp;
@@ -214,6 +214,8 @@ void ht_delete(HASH_TABLE *pTable)
     curr = pTable->table[i];
     while (curr) {
       temp = curr->next;
+      if (deleter)
+        deleter(curr->value);
       ht_bucket_delete(curr);
       curr = temp;
     }
@@ -224,6 +226,11 @@ void ht_delete(HASH_TABLE *pTable)
   free(pTable->table);
   SMB_DECREMENT_MALLOC_COUNTER(sizeof(HASH_TABLE));
   free(pTable);
+}
+
+void ht_delete(HASH_TABLE *pTable)
+{
+  ht_delete_act(pTable, NULL);
 }
 
 /*
@@ -245,7 +252,7 @@ void ht_insert(HASH_TABLE *pTable, DATA dKey, DATA dValue)
   ht_insert_bucket(pTable, pBucket);
 }
 
-void ht_remove(HASH_TABLE *pTable, DATA dKey)
+void ht_remove_act(HASH_TABLE *pTable, DATA dKey, DATA_DELETER deleter)
 {
   CLEAR_ALL_ERRORS;
 
@@ -269,17 +276,26 @@ void ht_remove(HASH_TABLE *pTable, DATA dKey)
   if (curr && prev) {
     // Found a match, and there is something before it in the linked list.
     prev->next = curr->next;
+    if (deleter)
+      deleter(curr->value); // Perform user requested action
     ht_bucket_delete(curr);
     pTable->length--;
   } else if (curr && !prev) {
     // Found a match, and it is the first in the linked list
     pTable->table[index] = curr->next;
+    if (deleter)
+      deleter(curr->value); // Perform user requested action
     ht_bucket_delete(curr);
     pTable->length--;
   } else {
     // Didn't find a match in this bucket list
     RAISE(NOT_FOUND_ERROR);
   }
+}
+
+void ht_remove(HASH_TABLE *pTable, DATA dKey)
+{
+  ht_remove_act(pTable, dKey, NULL);
 }
 
 DATA ht_get(HASH_TABLE const *pTable, DATA dKey)

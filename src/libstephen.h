@@ -379,6 +379,12 @@ typedef union long_data {
 
 } DATA;
 
+/**
+   A type of function that takes a DATA and does anything necessary to delete
+   it.  EG, freeing it if it's a pointer.
+ */
+typedef void (*DATA_DELETER)(DATA toDelete);
+
 ////////////////////////////////////////////////////////////////////////////////
 // LINKED LIST
 ////////////////////////////////////////////////////////////////////////////////
@@ -439,6 +445,11 @@ typedef struct al_obj
 // HASH TABLE
 ////////////////////////////////////////////////////////////////////////////////
 
+/**
+   A hash function declaration.
+ */
+typedef unsigned int (*HASH_FUNCTION)(DATA toHash);
+
 #define HT_BUCKET struct ht_bucket
 HT_BUCKET
 {
@@ -452,7 +463,7 @@ HASH_TABLE
 {
   int length;
   int allocated;
-  unsigned int (*hash)(DATA dData);
+  HASH_FUNCTION hash;
   HT_BUCKET **table;
 };
 
@@ -1252,6 +1263,23 @@ void ht_insert(HASH_TABLE *pTable, DATA dKey, DATA dValue);
 void ht_remove(HASH_TABLE *pTable, DATA dKey);
 
 /**
+   Remove the key, value pair stored in the hash table.
+
+   # Parameters #
+
+   - HASH_TABLE *pTable: Pointer to the hash table.
+
+   - DATA dKey: key to delete.
+
+   - DATA_DELETER deleter: action to perform on the value before removing it.
+
+   # Error Handling #
+
+   Clears all errors on function call.
+ */
+void ht_remove_act(HASH_TABLE *pTable, DATA dKey, DATA_DELETER deleter);
+
+/**
    Return the value associated with the key provided.
 
    # Parameters #
@@ -1301,6 +1329,22 @@ unsigned int ht_string_hash(DATA data);
    No effect.
  */
 void ht_delete(HASH_TABLE *pTable);
+
+/**
+   Free the hash table.  No pointers contained in the table will be freed.
+
+   # Parameters #
+
+   - HASH_TABLE *pTable: The table to free.
+
+   - DATA_DELETER deleter: The action to perform on each value in the hash table
+     before deletion.
+
+   # Error Handling #
+
+   No effect.
+ */
+void ht_delete_act(HASH_TABLE *pTable, DATA_DELETER deleter);
 
 /**
    Print the entire hash table.
