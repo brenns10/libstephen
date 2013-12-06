@@ -32,6 +32,12 @@ char *test_values[] = {
   "fifth value"
 };
 
+unsigned int ht_test_constant_hash(DATA dKey)
+{
+  // return random_die_roll();
+  return 4;
+}
+
 /**
    This doesn't really just test insert.  It also tests create and get.  But I
    can't really isolate *just* insert.
@@ -57,6 +63,7 @@ int ht_test_insert()
   // ht_print(table, 0);
 
   ht_delete(table);
+  return 0;
 }
 
 int ht_test_remove()
@@ -87,6 +94,7 @@ int ht_test_remove()
   }
 
   ht_delete(table);
+  return 0;
 }
 
 /*
@@ -104,6 +112,73 @@ int ht_test_remove_invalid()
   value = ht_get(table, key);
 
   ht_delete(table);
+  return 0;
+}
+
+/**
+   This test intentionally uses a very bad hash function that returns a
+   constant.  This way, I can test whether the insertion and removal for large
+   buckets is working.
+ */
+int ht_test_buckets()
+{
+  DATA key, value;
+  int i;
+  int a = 1;
+
+  HASH_TABLE *table = ht_create(&ht_test_constant_hash);
+  
+  for (i = 0; i < 20; i++) {
+    key.data_llint = i;
+    value.data_llint = -i;
+    ht_insert(table, key, value);
+    TEST_ASSERT(table->length == i+1, a);
+    a++;
+  }
+
+  //ht_print(table, 0);
+
+  // Remove one from the middle of the bucket list.
+  key.data_llint = 10;
+  ht_remove(table, key);
+  TEST_ASSERT(table->length == 19, a);
+  a++;
+
+  //ht_print(table, 0);
+
+  // Remove one from the beginning of the bucket list.
+  key.data_llint = 0;
+  ht_remove(table, key);
+  TEST_ASSERT(table->length == 18, a);
+  a++;
+
+  //ht_print(table, 0);
+
+  // Remove from the end of the list.
+  key.data_llint = 19;
+  ht_remove(table, key);
+  TEST_ASSERT(table->length == 17, a);
+  a++;
+
+  //ht_print(table, 0);
+
+  // Verify that the other items are still there.
+  for (i = 1; i < 10; i++) {
+    key.data_llint = i;
+    value = ht_get(table, key);
+    TEST_ASSERT(value.data_llint == -i, a);
+    a++;
+  }
+
+  for (i = 11; i < 19; i++) {
+    key.data_llint = i;
+    value = ht_get(table, key);
+    TEST_ASSERT(value.data_llint == -i, a);
+    a++;
+  }
+
+  ht_delete(table);
+  return 0;
 }
 
 void hash_table_test() 
@@ -119,7 +194,9 @@ void hash_table_test()
   TEST *remove_invalid = su_create_test("remove_invalid", ht_test_remove_invalid, 
                                         NOT_FOUND_ERROR, 1);
   su_add_test(group, remove_invalid);
-  
+
+  TEST *buckets = su_create_test("buckets", ht_test_buckets, 0, 1);
+  su_add_test(group, buckets);
 
   su_run_group(group);
   su_delete_group(group);
