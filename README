@@ -1,125 +1,66 @@
-################################################################################
-#################################### README ####################################
-################################################################################
 
-Library: libstephen
+                                   libstephen
 
-Description: a library (currently static, but I may compile as dynamic in the
-near future) containing basic generic data structures, and also some headers
-that are useful for general development.  Additionally, it contains a unit
-testing framework that allows for expecting errors, and memory leak detection.
+  Author:    Stephen Brennan
+  Version:   Prerelease
+  Homepage:  https://www.bitbucket.org/brenns10/libstephen
 
-############################### DATA STRUCTURES ################################
+  Description
+  -----------
 
-All my data structures are based on the single basic data type DATA.  It is an 8
-byte union that can contain an integer, a double, or a pointer.  
+  libstephen is a C library, compiled as both static and dynamic, which provides
+  a number of basic tools on which to base software programs.  Its primary
+  purpose is to be a meaningful programming project for the author, and to be
+  the foundation for future projects.
 
-The library attempts to use interface based programming.  That is, the list is
-an interface implemented by the linked list and the array list.  To achieve
-this, I use stack-based structs that contain void pointers and function
-pointers.  A function call in this system looks something like this:
+  libstephen provides a set of data structures for general purpose programming:
+  - Linked list (ll)
+  - Array list (al)
+  - Hash table (ht)
 
-	   structure.function(&structure /* , ... args ... */);
+  libstephen provides the following tools for general purpose programming:
+  - Unit testing framework (su)
+  - Command line argument parser
 
-Each implementation, however, should be usable without the interface struct
-form.  The reason for this is that the struct form contains tons of function
-pointers, and it's really grossly inefficient.  So each implementation I create
-has an interface all to itself.  It usually implements the exact same functions
-as the interface.  But, instead of taking a struct pointer as their first
-argument, they take a pointer to the actual data structure.  Then, for every
-interface function, an "adapter" function is created.  Struct versions are
-loaded with pointers to these functions.  The adapter functions are not publicly
-accessible.
 
-So, first I'll give an interface, followed by its implementations.
+  Documentation
+  -------------
 
-##### LIST (libstephen.h)
+  Technical documentation on the source code and functions is available as
+  documentation comments in source code.  This can be put into a more readable
+  form by running the command "make docs" in the project root directory.
+  Reference materials will be produced in the doc/ folder.  Please note that the
+  tools Doxygen and Graphviz are required to produce this documentation.
 
-Holds sequential data.  Allows for deletion and insertion into arbitrary
-locations in the list.
+  More user-friendly documentation may be found at the project's home:
+  https://www.bitbucket.org/brenns10/libstephen
 
-Functions:
 
-append() - Add a data element to the end of the list.
-prepend() - Add a data element to the end of the list.
-get() - Get the data element at the specified index.
-set() - Set the data element at the specified index.
-remove() - Remove the element at the specified index.
-insert() - Insert an element at the specified index.
-delete() - Delete the list.
-// get_iter() - Return an iterator set to the first element. *
+  Contributing
+  ------------
 
-push_back() - Push to back (append()).
-pop_back() - Pop from back.
-peek_back() - Peek at back.
-push_front() - Push to front (prepend()).
-pop_front() - Pop from front.
-peek_front() - Peek at front.
+  If anyone feels so generous as to contribute in any way, it is always
+  appreciated.  Bug reports are welcome, as well as code improvements in the
+  form of Bitbucket pull requests.  All these things are available at the
+  project homepage:
+  https://www.bitbucket.org/brenns10/libstephen
 
-* The get_iter() and the iterator functions are not yet implemented on all list
-  implementations
 
-##### LINKED_LIST (linkedlist.c)
+  License
+  -------
 
-The linked list is an implementation of the list interface.  It works by storing
-each element in dynamically allocated memory with pointers to the next and
-previous element.  Access time suffers, but insertion and removal require no
-shifting.  It has all the functions required by the list interface.  The
-prefixes for normal linked list functions is "ll_".  Additional to the interface
-are the following functions:
+  libstephen is free software: you can redistribute it and/or modify it under
+  the terms of the GNU Lesser General Public License as published by the Free
+  Software Foundation, either version 3 of the License, or any later version.
 
-LINKED_LIST *ll_create(DATA d);
-LINKED_LIST *ll_create_empty();
-LIST *ll_create_list(DATA d);
-LIST *ll_create_empty_list();
-LIST ll_cast_to_list(LINKED_LIST *list);
+  libstephen is distributed in the hope that it will be useful, but WITHOUT ANY
+  WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+  A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more
+  details.
 
-These functions are critical because interfaces don't provide means for
-instantiation.  Additionally, these functions, prefixed by "ll_iter_", are the
-iterator functions.  They are completely usable as is, and they are to be used
-for the upcoming interface for LIST iterators.
+  You should have received a copy of the GNU Lesser General Public License along
+  with libstephen.  If not, see <http://www.gnu.org/licenses/>.
 
-next() - Advance and return.
-prev() - Move back and return.
-curr() - Return current data.
-has_next()
-has_prev()
-valid() - Check if the iterator points to anything useful.
-
-##### ARRAY_LIST (arraylist.c)
-
-The array list is an implementation of the list interface It works by storing
-each element in a single contiguous block of memory.  Access is constant time
-through indexing, but insertion and deletion can suffer in runtime due to
-occasional reallocations of memory.  It contains all required list interface
-functions.  Its function prefix is "al_".  It additionally has the same create
-and cast functions that the linked list has.  It does not have any iterator
-capability yet.
-
-##### Chunked Array List
-
-The chunked array list is an array list with my own personal twist to it.
-Instead of storing all data in one contiguous block of memory, we store the data
-in segments of memory.  When we must expand, we simply allocate an additional
-chunk of memory and use that.  Some mechanism of storage will be used to store
-the initial memory address of each block of memory.  Access will still be
-constant time, but there will no longer be the same overhead for expansion or
-memory allocation.
-
-############################### ERROR REPORTING ################################
-
-This library has a uniform way of reporting errors. Instead of return values,
-which can be a flakey way of communicating at best, my library functions use
-flags to communicate errors.  Macros for CHECK, RAISE, and CLEAR errors are
-provided.  Plenty of the total (32) error slots are available for user defined
-errors.  On each library call, the errors are cleared, and if any errors occur,
-they are noted in the flags.
-
-################################# UNIT TESTING #################################
-
-This library also has unit testing capabilities.  The functions are documented
-in the header, but the gist is that you can create tests and name them using
-function pointers, specify their conditions, and run them sequentially.  They
-run until one in the group fails.  Their advantage is brevity (output is uniform
-and one line per test) and the automatic nature.  No user input or checking is
-required to see if they pass or fail.  That information is just printed.
+  Please see the included COPYING and COPYING.LESSER files for the included
+  copies of the GNU General Public License and GNU Lesser General Public
+  License, respectively.
