@@ -122,7 +122,7 @@ void ht_resize(HASH_TABLE *pTable)
   oldLength = pTable->length;
   oldAllocated = pTable->allocated;
   pTable->length = 0;
-  pTable->allocated = ht_next_size(oldLength);
+  pTable->allocated = ht_next_size(oldAllocated);
   pTable->table = (HT_BUCKET**) malloc(pTable->allocated * sizeof(HT_BUCKET*));
   if (!pTable->table) {
     // We want to preserve the data already contained in the table.
@@ -132,6 +132,9 @@ void ht_resize(HASH_TABLE *pTable)
     pTable->allocated = oldAllocated;
     return;
   }
+  // Zero out the new block too.
+  memset((void*)pTable->table, 0, pTable->allocated * sizeof(HT_BUCKET*));
+  SMB_INCREMENT_MALLOC_COUNTER(pTable->allocated * sizeof(HT_BUCKET*));
   
   // Step two, add the old items to the new table (no freeing, please)
   for (index = 0; index < oldAllocated; index++) {
@@ -141,6 +144,7 @@ void ht_resize(HASH_TABLE *pTable)
       while (curr) {
         temp = curr->next; // Hang on to the next pointer...it could be changed
                            // once added to the "new" hash table
+        curr->next = NULL;
         ht_insert_bucket(pTable, curr);
         curr = temp;
       }
