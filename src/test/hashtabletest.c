@@ -246,6 +246,56 @@ int ht_test_resize()
   return 0;
 }
 
+int ht_test_duplicate()
+{
+  DATA key, value;
+  int i;
+  int a = 1;
+  char *newKey = "not the first value";
+  HASH_TABLE *table = ht_create(ht_string_hash);
+  ht_test_deletions = 0;
+
+  for (i = 0; i < TEST_PAIRS; i++) {
+    key.data_ptr = test_keys[i];
+    value.data_ptr = test_values[i];
+    ht_insert(table, key, value);
+  }
+
+  //ht_print(table, 0);
+
+  for (i = 0; i < TEST_PAIRS; i += 2) {
+    TEST_ASSERT(table->length == TEST_PAIRS, a);
+    a++;
+
+    key.data_ptr = test_keys[i];
+    value.data_ptr = newKey;
+    ht_insert(table, key, value);
+    value = ht_get(table, key);
+
+    TEST_ASSERT(value.data_ptr == newKey, a);
+    a++;
+  }
+
+  for (i = 0; i < TEST_PAIRS; i++) {
+    key.data_ptr = test_keys[i];
+    value = ht_get(table, key);
+    if (i % 2 == 1) {
+      TEST_ASSERT(value.data_ptr == test_values[i], a);
+      a++;
+    } else {
+      TEST_ASSERT(value.data_ptr == newKey, a);
+      a++;
+    }
+  }
+
+  //ht_print(table, 0);
+
+  ht_delete_act(table, ht_test_deleter);
+  TEST_ASSERT(ht_test_deletions == TEST_PAIRS, a);
+  a++;
+  return 0;
+}
+
 void hash_table_test() 
 {
   TEST_GROUP *group = su_create_test_group("hash table");
@@ -265,6 +315,9 @@ void hash_table_test()
 
   TEST *resize = su_create_test("resize", ht_test_resize, 0, 1);
   su_add_test(group, resize);
+
+  TEST *duplicate = su_create_test("duplicate", ht_test_duplicate, 0, 1);
+  su_add_test(group, duplicate);
 
   su_run_group(group);
   su_delete_group(group);
