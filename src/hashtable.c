@@ -14,30 +14,6 @@
 #include "libstephen.h"
 
 ////////////////////////////////////////////////////////////////////////////////
-// Data structure definitions
-////////////////////////////////////////////////////////////////////////////////
-
-#define HT_BUCKET struct ht_bucket
-HT_BUCKET
-{
-  DATA key;
-  DATA value;
-  HT_BUCKET *next;
-};
-
-#define HASH_TABLE struct hash_table
-HASH_TABLE
-{
-  int length;
-  int allocated;
-  int (*hash)(DATA dData);
-  HT_BUCKET **table;
-};
-
-#define HASH_TABLE_INITIAL_SIZE 256
-#define HASH_TABLE_MAX_LOAD_FACTOR 0.7
-
-////////////////////////////////////////////////////////////////////////////////
 // Private Helper Functions
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -209,6 +185,30 @@ HASH_TABLE *ht_create(int (*hash_function)(DATA dData))
   return pTable;
 }
 
+void ht_delete(HASH_TABLE *pTable)
+{
+  int i;
+  HT_BUCKET *curr, *temp;
+
+  if (!pTable) return;
+
+  // Free all HT_BUCKET's in the table
+  for (i = 0; i < pTable->allocated; i++) {
+    curr = pTable->table[i];
+    while (curr) {
+      temp = curr->next;
+      ht_bucket_delete(curr);
+      curr = temp;
+    }
+    pTable->table[i] = NULL;
+  }
+
+  SMB_DECREMENT_MALLOC_COUNTER(pTable->allocated * sizeof(HT_BUCKET*));
+  free(pTable->table);
+  SMB_DECREMENT_MALLOC_COUNTER(sizeof(HASH_TABLE));
+  free(pTable);
+}
+
 /*
   Insert data into the hash table.  If the key already exists in the table,
   overwrites with a new value.
@@ -219,9 +219,11 @@ void ht_insert(HASH_TABLE *pTable, DATA dKey, DATA dValue)
 
   if (ht_load_factor(pTable) > HASH_TABLE_MAX_LOAD_FACTOR) {
     ht_resize(pTable, HASH_TABLE_INITIAL_SIZE);
+    if (CHECK(ALLOCATION_ERROR)) return;
   }
 
   HT_BUCKET *pBucket = ht_bucket_create(dKey, dValue, NULL);
+  if (!pBucket) return;
   
   ht_insert_bucket(pTable, pBucket);
 }

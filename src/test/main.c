@@ -19,11 +19,12 @@
  */
 int main(int argc, char ** argv)
 {
-  /*
+
   int mallocs;
 
   linked_list_test();
   array_list_test();
+  hash_table_test();
 
   if (mallocs = SMB_GET_MALLOC_COUNTER) {
     printf("#### MEMORY LEAK DETECTED!!  MALLOCS: %d. ####\n", mallocs);
@@ -31,6 +32,6 @@ int main(int argc, char ** argv)
   } else {
     return 0;
   }
-  */
-  return args_test_main(argc, argv);
+
+  // return args_test_main(argc, argv);
 }

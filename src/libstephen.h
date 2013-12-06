@@ -436,6 +436,30 @@ typedef struct al_obj
 } ARRAY_LIST;
 
 ////////////////////////////////////////////////////////////////////////////////
+// HASH TABLE
+////////////////////////////////////////////////////////////////////////////////
+
+#define HT_BUCKET struct ht_bucket
+HT_BUCKET
+{
+  DATA key;
+  DATA value;
+  HT_BUCKET *next;
+};
+
+#define HASH_TABLE struct hash_table
+HASH_TABLE
+{
+  int length;
+  int allocated;
+  int (*hash)(DATA dData);
+  HT_BUCKET **table;
+};
+
+#define HASH_TABLE_INITIAL_SIZE 256
+#define HASH_TABLE_MAX_LOAD_FACTOR 0.7
+
+////////////////////////////////////////////////////////////////////////////////
 // ARGUMENT DATA
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -1264,6 +1288,19 @@ DATA ht_get(HASH_TABLE const *pTable, DATA dKey);
    No effect.
  */
 int ht_string_hash(DATA data);
+
+/**
+   Free the hash table.  No pointers contained in the table will be freed.
+
+   # Parameters #
+
+   - HASH_TABLE *pTable: The table to free.
+
+   # Error Handling #
+
+   No effect.
+ */
+void ht_delete(HASH_TABLE *pTable);
 
 ////////////////////////////////////////////////////////////////////////////////
 // ARGUMENT DATA
