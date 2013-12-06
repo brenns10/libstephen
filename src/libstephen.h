@@ -1170,6 +1170,102 @@ DATA al_pop_back(ARRAY_LIST *list);
 DATA al_peek_back(ARRAY_LIST *list);
 
 ////////////////////////////////////////////////////////////////////////////////
+// HASH TABLE
+////////////////////////////////////////////////////////////////////////////////
+
+/**
+   Create a hash table.
+
+   # Parameters #
+
+   - int (*hash_function*)(DATA dData): A function that takes one DATA and
+     returns a hash value generated from it.  It should be a good hash function.
+
+  # Return #
+
+  A pointer to the new hash table.
+
+  # Error Handling #
+
+  Clears all errors on function call.  If malloc fails, then no hash table is
+  created, NULL is returned, and the ALLOCATION_ERROR flag is raised.
+ */
+HASH_TABLE *ht_create(int (*hash_function)(DATA dData));
+
+/**
+   Insert data into the hash table.  Expands the hash table if the load factor
+   is below a threshold.  If the key already exists in the table, then the
+   function will overwrite it with the new data provided.
+
+   # Parameters #
+
+   - HASH_TABLE *pTable: Pointer to the hash table.
+
+   - DATA dKey: The key to insert.
+
+   - DATA dValue: The value to insert at the key.
+
+   # Error Handling #
+
+   Clears all errors on function call.  Function call fails with
+   ALLOCATION_ERROR if resize fails, or if bucket creation fails.
+ */
+void ht_insert(HASH_TABLE *pTable, DATA dKey, DATA dValue);
+
+/**
+   Remove the key, value pair stored in the hash table.
+
+   # Parameters #
+
+   - HASH_TABLE *pTable: Pointer to the hash table.
+
+   - DATA dKey: key to delete.
+
+   # Error Handling #
+
+   Clears all errors on function call.
+ */
+void ht_remove(HASH_TABLE *pTable, DATA dKey);
+
+/**
+   Return the value associated with the key provided.
+
+   # Parameters #
+
+   - HASH_TABLE const *pTable: Pointer to the hash table.
+
+   - DATA dKey: key whose value to retrieve.
+
+   # Return #
+
+   The value associated the key.
+
+   # Error Handling #
+
+   Clears all errors on function call.  If the key is not found in the table,
+   then raises NOT_FOUND_ERROR.
+ */
+DATA ht_get(HASH_TABLE const *pTable, DATA dKey);
+
+/**
+   Return the hash of the data, interpreting it as a string.
+
+   # Parameters #
+
+   - DATA data: The string to hash, assuming that the value contained is a
+     char*.
+
+   # Return #
+
+   The hash value of the string.
+
+   # Error Handling #
+
+   No effect.
+ */
+int ht_string_hash(DATA data);
+
+////////////////////////////////////////////////////////////////////////////////
 // ARGUMENT DATA
 ////////////////////////////////////////////////////////////////////////////////
 
