@@ -119,6 +119,33 @@ int bf_test_clear() {
   return 0;
 }
 
+int bf_test_flip() {
+  unsigned char field[SMB_BITFIELD_SIZE(test_bools)];
+  int assert = 1;
+  int i;
+
+  // Set all the even numbered fields
+  for (i = 0; i < test_bools; i += 2) {
+    bf_set(field, i); //tested
+  }
+
+  // Flip them all
+  for (i = 0; i < test_bools; i++) {
+    bf_flip(field, i);
+  }
+
+  for (i = 0; i < test_bools; i++) {
+    if (i % 2 == 0) {// even
+      TEST_ASSERT(!bf_check(field, i), assert);
+    } else {
+      TEST_ASSERT(bf_check(field, i), assert);
+    }
+    assert++;
+  }
+
+  return 0;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // TEST LOADER AND RUNNER
 
@@ -139,6 +166,9 @@ void bit_field_test() {
 
   TEST *clear = su_create_test("clear", bf_test_set, 0, 1);
   su_add_test(group, clear);
+
+  TEST *flip = su_create_test("flip", bf_test_set, 0, 1);
+  su_add_test(group, flip);
 
   su_run_group(group);
   su_delete_group(group);
