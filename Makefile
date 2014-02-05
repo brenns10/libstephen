@@ -4,8 +4,8 @@ CC=gcc
 FLAGS=-g
 CFLAGS=$(FLAGS) -c -std=c99 -fPIC
 LFLAGS=$(FLAGS)
-LIBOBJECTS=obj/linkedlist.o obj/common_include.o obj/arraylist.o obj/smbunit.o obj/args.o obj/hashtable.o
-TESTOBJECTS=obj/main.o obj/linkedlisttest.o obj/arraylisttest.o obj/argstest.o obj/hashtabletest.o
+LIBOBJECTS=obj/linkedlist.o obj/common_include.o obj/arraylist.o obj/smbunit.o obj/args.o obj/hashtable.o obj/bitfield.o
+TESTOBJECTS=obj/main.o obj/linkedlisttest.o obj/arraylisttest.o obj/argstest.o obj/hashtabletest.o obj/bitfieldtest.o
 
 .PHONY: all test lib clean testlib documentation
 
@@ -61,6 +61,9 @@ obj/args.o: src/args.c src/libstephen.h
 obj/hashtable.o: src/hashtable.c src/libstephen.h
 	$(CC) $(CFLAGS) src/hashtable.c -o obj/hashtable.o
 
+obj/bitfield.o: src/bitfield.c src/libstephen.h
+	$(CC) $(CFLAGS) src/bitfield.c -o obj/bitfield.o
+
 # Test objects
 
 obj/main.o: src/test/main.c src/test/tests.h
@@ -77,3 +80,6 @@ obj/argstest.o: src/test/argstest.c src/libstephen.h
 
 obj/hashtabletest.o: src/test/hashtabletest.c src/libstephen.h src/test/tests.h
 	$(CC) $(CFLAGS) src/test/hashtabletest.c -o obj/hashtabletest.o
+
+obj/bitfieldtest.o: src/test/bitfieldtest.c src/libstephen.h src/test/tests.h
+	$(CC) $(CFLAGS) src/test/bitfieldtest.c -o obj/bitfieldtest.o

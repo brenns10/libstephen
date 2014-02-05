@@ -1466,4 +1466,128 @@ char *get_flag_parameter(ARG_DATA *data, char flag);
  */
 char *get_long_flag_parameter(ARG_DATA *data, char *string);
 
+////////////////////////////////////////////////////////////////////////////////
+// Bit Field
+
+#define BIT_PER_CHAR 8
+#define SMB_BITFIELD_SIZE(num_bools) ((int)((num_bools) / BIT_PER_CHAR) + \
+                                      ((num_bools) % BIT_PER_CHAR == 0 ? 0 : 1))
+
+/**
+   Allocate a bitfield capable of holding the given number of bools.  Will be
+   allocated in dynamic memory, and a pointer will be returned.
+
+   # Parameters #
+
+   - int num_bools: The number of bools to fit in the bit field.
+
+   # Return #
+
+   A pointer to the bitfield.
+
+   # Error Handling #
+
+   Clears all errors on function call.  If the memory cannot be allocated,
+   raises ALLOCATION_ERROR.
+ */
+unsigned char *bf_create(int num_bools);
+
+/**
+   Delete the bitfield pointed to.  Only do this if you created the bitfield via
+   bf_create().
+
+   # Parameters #
+
+   - unsigned char *data: A pointer to the bitfield.
+
+   - int num_bools: The number of bools contained in the bitfield.
+
+   # Error Handling #
+
+   No effect.
+ */
+void bf_delete(unsigned char *data, int num_bools);
+
+/**
+   Initialize the memory where a bitfield is contained to all 0's.  This is
+   public so people can use the function to allocate their own bitfields on
+   function stacks instead of via the heap.
+
+   # Parameters #
+
+   - unsigned char *data: A pointer to the bitfield.
+
+   - int num_bools: The size of the bitfield, in number of bools (aka bits, not
+     bytes).
+
+   # Error Handling #
+   
+   No effect
+ */
+void bf_init(unsigned char *data, int num_bools);
+
+/**
+   Check whether the given bit is set.
+
+   # Parameters #
+
+   - unsigned char *data: A pointer to the bitfield.
+
+   - int index: The index of the bit to Check
+
+   # Return #
+
+   0 if the bit is not set.  Non zero if the bit is set.
+
+   # Error Handling #
+
+   No effect.
+ */
+int bf_check(unsigned char *data, int index);
+
+/**
+   Set a bit.
+
+   # Parameters #
+
+   - unsigned char *data: A pointer to the bitfield
+
+   - int index: The index of the bit to set.
+
+   # Error Handling #
+
+   No effect.
+ */
+void bf_set(unsigned char *data, int index);
+
+/**
+   Clear a bit.
+
+   # Parameters #
+
+   - unsigned char *data: A pointer to the bitfield.
+
+   - int index: The index of the bit to clear.
+
+   # Error Handling #
+
+   No effect.
+ */
+void bf_clear(unsigned char *data, int index);
+
+/**
+   Clear a bit.
+
+   # Parameters #
+
+   - unsigned char *data: A pointer to the bitfield.
+
+   - int index: The index of the bit to flip.
+
+   # Error Handling #
+
+   No effect.
+ */
+void bf_flip(unsigned char *data, int index);
+
 #endif // SMB___LIBSTEPHEN_H_
