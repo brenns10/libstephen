@@ -63,6 +63,32 @@ int bf_test_check() {
   return 0;
 }
 
+int bf_test_set() {
+  unsigned char field[SMB_BITFIELD_SIZE(test_bools)];
+  int assert = 1;
+  int i;
+
+  bf_init(field, test_bools);
+  for (i = 0; i < test_bools; i += 2) {
+    TEST_ASSERT(!bf_check(field, i), assert);
+    //    assert++;
+    bf_set(field, i);
+    TEST_ASSERT(bf_check(field, i), assert);
+    assert++;
+  }
+
+  for (i = 0; i < test_bools; i++) {
+    if (i % 2 == 0) {// even
+      TEST_ASSERT(bf_check(field, i), assert);
+    } else {
+      TEST_ASSERT(!bf_check(field, i), assert);
+    }
+    assert++;
+  }
+
+  return 0;
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // TEST LOADER AND RUNNER
 
@@ -77,6 +103,9 @@ void bit_field_test() {
 
   TEST *check = su_create_test("check", bf_test_check, 0, 1);
   su_add_test(group, check);
+
+  TEST *set = su_create_test("set", bf_test_set, 0, 1);
+  su_add_test(group, set);
 
   su_run_group(group);
   su_delete_group(group);
