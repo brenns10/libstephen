@@ -1,24 +1,42 @@
-/*******************************************************************************
+/**
 
-  File:         linkedlist.c
+  @file    linkedlist.c
 
-  Author:       Stephen Brennan
+  @author  Stephen Brennan
 
-  Date Created: Thursday, 12 September 2013
+  @date    Created Thursday, 12 September 2013
 
-  Description:  A linked list data structure
+  @brief   A linked list data structure
 
-*******************************************************************************/
+  This linked list data structure provides most basic features necessary in a
+  linked list, along with some more advanced ones like iterators, stack
+  functionality, and a generic list data structure that can use a different
+  implementation.
+
+*/
 
 #include <stdlib.h>
 #include <stdio.h>
 #include "libstephen.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// PRIVATE FUNCTIONS
+/*******************************************************************************
+
+                               Private Functions
+
+*******************************************************************************/
 
 /**
-   Removes the given node, reassigning the links to and from it.
+   @brief Removes the given node, reassigning the links to and from it.
+
+   Frees the node, in addition no reassigning links.  Once this function is
+   called, theNode is invlidated.
+
+   This function is a *private* function, not declared in libstephen.h for a
+   reason.  It is only necessary for the implementation functions within this
+   file.
+
+   @param list The list that contains this node.
+   @param theNode The node to delete.
  */
 void ll_remove_node(smb_ll *list, smb_ll_node *theNode)
 {
@@ -39,24 +57,17 @@ void ll_remove_node(smb_ll *list, smb_ll_node *theNode)
 }
 
 /**
-   ll_navigate:
+   @brief Navigates to the given index in the list, returning the correct node,
+   or NULL.
 
-   Navigates to the given index in the list.
+   This function is a *private* function, not declared in libstephen.h for a
+   reason.
 
-  # Parameters #
-
-  - smb_ll *list: the list
-
-  - int index: the index to find in the list
-
-  # Returns #
-
-  A pointer to the node navigated to. NULL if the index was out of range.
-
-  # Raises #
-
-  Does not clear errors.  Raises INDEX_ERROR if the given index was out of
-  range.
+   @param list The list to navigate within.
+   @param index The index to find in the list.
+   @returns A pointer to the node navigated to. 
+   @retval NULL if the index was out of range.
+   @exception INDEX_ERROR if the given index was out of range.
  */
 smb_ll_node * ll_navigate(smb_ll *list, int index)
 {
@@ -74,24 +85,14 @@ smb_ll_node * ll_navigate(smb_ll *list, int index)
 }
 
 /**
-   ll_create_node:
+   @brief Allocates and initializes a node with the given data.
 
-   Allocates space for a node with the given data.  Takes care of the malloc
-   counter stuff too.
+   @param data The data to insert into the new node.
 
-   # Parameters #
-   
-   - DATA data: the data to insert into the new node.
-
-   # Returns #
- 
-   A pointer to the node created.  If the node could not be created, returns
-   null.
-
-   # Raises #
-
-   Does not clear errors.  Raises ALLOCATION_ERROR if malloc() fails.  In that
-   case, return value is NULL.
+   @return A pointer to the node created.
+   @retval NULL if the node couldn't be created.
+   @exception ALLOCATION_ERROR if malloc() fails.  In that case, return value is
+   NULL.
  */
 smb_ll_node *ll_create_node(DATA data)
 {
@@ -109,9 +110,17 @@ smb_ll_node *ll_create_node(DATA data)
   return newNode;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// PUBLIC METHODS
+/*******************************************************************************
 
+                                Public Functions
+
+*******************************************************************************/
+
+/**
+   @brief Initializes a new list in memory which has already been allocated.
+
+   @param newList A pointer to the memory to initialize.
+ */
 void ll_init(smb_ll *newList)
 {
   newList->length = 0;
@@ -119,6 +128,13 @@ void ll_init(smb_ll *newList)
   newList->tail = NULL;
 }
 
+/**
+   @brief Allocates and initializes a new, empty linked list.
+
+   @returns A pointer to the new list.
+   @exception ALLOCATION_ERROR If memory allocation fails, returns NULL and
+   raises error.
+ */
 smb_ll *ll_create()
 {
   CLEAR_ALL_ERRORS;
@@ -136,6 +152,52 @@ smb_ll *ll_create()
   return newList;
 }
 
+/**
+   @brief Frees all the resources held by the linked list without freeing the
+   actual pointer to the list.
+
+   If you create a list on the stack and use ll_init to initialize it, calling
+   ll_delete will attempt to free your stack memory (bad).  Use this to free all
+   the resources of the list without freeing the pointer.
+
+   @param list The list to destroy.
+ */
+void ll_destroy(smb_ll *list)
+{
+  // Iterate through each node, deleting them as we go
+  smb_ll_node *iter = list->head;
+  smb_ll_node *temp;
+  while (iter) {
+    temp = iter->next;
+    ll_remove_node(list, iter);
+    iter = temp;
+  }
+}
+
+/**
+   @brief Frees the resources held by the linked list, and the memory allocated
+   to the smb_ll object.
+
+   This is equivalent to calling ll_destroy on the pointer, and then calling
+   free() on the pointer (so long as you then decrement the malloc counter).
+
+   @param list A pointer to the list to delete.
+ */
+void ll_delete(smb_ll *list);void ll_delete(smb_ll *list)
+{
+  ll_destroy(list);
+  // Free the list header
+  free(list);
+  SMB_DECREMENT_MALLOC_COUNTER(sizeof(smb_ll));
+}
+
+/**
+   @brief Append the given data to the end of the list.
+
+   @param list A pointer to the list to append to.
+   @param newData The data to append.
+   @exception ALLOCATION_ERROR
+ */
 void ll_append(smb_ll *list, DATA newData)
 {
   CLEAR_ALL_ERRORS;
@@ -162,6 +224,14 @@ void ll_append(smb_ll *list, DATA newData)
   list->length++;
 }
 
+/**
+   @brief Prepend the given data to the beginning of the list.  All other data
+   is shifted forward one index.
+
+   @param list A pointer to the list.
+   @param newData The data to prepend.
+   @exception ALLOCATION_ERROR
+ */
 void ll_prepend(smb_ll *list, DATA newData)
 {
   CLEAR_ALL_ERRORS;
@@ -184,11 +254,33 @@ void ll_prepend(smb_ll *list, DATA newData)
   list->length++;
 }
 
+/**
+   @brief Push the data to the back of the list.  An alias for ll_append. @see
+   ll_append
+
+   Push, of course, refers to its usage in the context of stacks.  In other
+   words, the function appends an item at the end fo the list.
+
+   @param list A pointer to the list to push to.
+   @param newData The data to push.
+   @exception ALLOCATION_ERROR
+ */
 void ll_push_back(smb_ll *list, DATA newData)
 {
   ll_append(list, newData);
 }
 
+/**
+   @brief Pop data from the back of the list.
+
+   Pop, of course, refers to its usage in the context of stacks.  In other
+   words, the function removes the item at the back/end of the list and returns
+   it.
+
+   @param list A pointer to the list to pop from.
+   @returns The item from the back of the list.
+   @exception INDEX_ERROR
+ */
 DATA ll_pop_back(smb_ll *list)
 {
   CLEAR_ALL_ERRORS;
@@ -206,6 +298,16 @@ DATA ll_pop_back(smb_ll *list)
   }
 }
 
+/**
+   @brief Peek at the back of the list.
+
+   Peek, of course, refers to its usage in the context of stacks.  So this
+   returns the item at the end/back of the list without removing it.
+
+   @param list A pointer to the list to peek from.
+   @returns The item from the back of the list.
+   @exception INDEX_ERROR
+ */
 DATA ll_peek_back(smb_ll *list)
 {
   CLEAR_ALL_ERRORS;
@@ -220,11 +322,28 @@ DATA ll_peek_back(smb_ll *list)
   }
 }
 
+/**
+   @brief Push the data to the front of the list.  An alias for ll_prepend.
+   @see ll_push_back If the term 'push' is unfamiliar.
+
+   @param list A pointer to the list.
+   @param newData The data to push.
+   @exception ALLOCATION_ERROR
+ */
+
 void ll_push_front(smb_ll *list, DATA newData)
 {
   ll_prepend(list, newData);
 }
 
+/**
+   @brief Pop the data from the front of the list.
+   @see ll_pop_back If the term 'pop' is unfamiliar.
+
+   @param list A pointer to the list to pop from
+   @returns The data from the front of the list.
+   @exception INDEX_ERROR
+ */
 DATA ll_pop_front(smb_ll *list)
 {
   CLEAR_ALL_ERRORS;
@@ -242,6 +361,14 @@ DATA ll_pop_front(smb_ll *list)
   }
 }
 
+/**
+   @brief Peek at the front of the list.
+   @see ll_peek_back If the term 'peek' is unfamiliar.
+
+   @param list A pointer to the list to peek from.
+   @return The data from the front of the list.
+   @exception INDEX_ERROR
+ */
 DATA ll_peek_front(smb_ll *list)
 {
   CLEAR_ALL_ERRORS;
@@ -256,6 +383,17 @@ DATA ll_peek_front(smb_ll *list)
   }
 }
 
+/**
+   @brief Gets the data from the given index.  
+
+   However, there is no guarantee that the index was valid.  An empty DATA
+   object is returned in that case, and an INDEX_ERROR is raised.
+
+   @param list A pointer to the list to get from.
+   @param index The index to get from the list.
+   @return The data at the specified index, if it exists.
+   @exception INDEX_ERROR
+ */
 DATA ll_get(smb_ll *list, int index)
 {
   CLEAR_ALL_ERRORS;
@@ -272,6 +410,16 @@ DATA ll_get(smb_ll *list, int index)
   return mockData;
 }
 
+/**
+   @brief Removes the node at the given index, if the index exists.
+
+   If the item is not at the end of the list, the index of every item after this
+   one will be shifted down one.
+
+   @param list A pointer to the list to remove from.
+   @param index The index to remove from the list.
+   @exception INDEX_ERROR
+ */
 void ll_remove(smb_ll *list, int index)
 {
   // Fond the node
@@ -284,6 +432,20 @@ void ll_remove(smb_ll *list, int index)
   list->length--;
 }
 
+/**
+   @brief Inserts an item at the specified location in the list.
+
+   If the location is not the end of the list, then every item at the given
+   index and after will be shifted up one index.  If the provided location is
+   less than 0, the location will be treated as 0.  If the provided location is
+   greater than the length of the list, the item will be added to the end of the
+   list.
+
+   @param list A pointer to the list to insert into.
+   @param index The index to insert at.
+   @param newData The data to insert.
+   @exception ALLOCATION_ERROR
+ */
 void ll_insert(smb_ll *list, int index, DATA newData)
 {
   CLEAR_ALL_ERRORS;
@@ -307,26 +469,17 @@ void ll_insert(smb_ll *list, int index, DATA newData)
   }
 }
 
-void ll_destroy(smb_ll *list)
-{
-  // Iterate through each node, deleting them as we go
-  smb_ll_node *iter = list->head;
-  smb_ll_node *temp;
-  while (iter) {
-    temp = iter->next;
-    ll_remove_node(list, iter);
-    iter = temp;
-  }
-}
+/**
+   @brief Sets an existing element to a new value.
 
-void ll_delete(smb_ll *list)
-{
-  ll_destroy(list);
-  // Free the list header
-  free(list);
-  SMB_DECREMENT_MALLOC_COUNTER(sizeof(smb_ll));
-}
+   It is illegal to call ll_set on an out of bounds index.  You must use
+   ll_insert for that.
 
+   @param list The list to modify.
+   @param index The index of the item to set.
+   @param newData The data to set the index to.
+   @exception INDEX_ERROR If the index is out of bounds
+ */
 void ll_set(smb_ll *list, int index, DATA newData)
 {
   smb_ll_node *current = ll_navigate(list, index);
@@ -337,11 +490,23 @@ void ll_set(smb_ll *list, int index, DATA newData)
   }
 }
 
+/**
+   @brief Returns the length of the given list.
+
+   @param list A pointer to the list
+   @returns The length of the list.
+ */
 int ll_length(smb_ll *list)
 {
   return list->length;
 }
 
+/**
+   @brief Get an iterator for the linked list.
+
+   @param list A pointer to the list.
+   @returns an iterator
+ */
 smb_ll_iter ll_get_iter(smb_ll *list)
 {
   smb_ll_iter iter;
@@ -351,6 +516,12 @@ smb_ll_iter ll_get_iter(smb_ll *list)
   return iter;
 }
 
+/**
+   @brief Advance the iterator and return the data at it.
+
+   @param iterator A pointer to the iterator.
+   @returns The data at the new location of the iterator.
+ */
 DATA ll_iter_next(smb_ll_iter *iter)
 {
   iter->current = iter->current->next;
@@ -358,6 +529,12 @@ DATA ll_iter_next(smb_ll_iter *iter)
   return ll_iter_curr(iter);
 }
 
+/**
+   @brief Move the iterator back and return the data at it.
+
+   @param iterator A pointer to the iterator.
+   @param The data at the new location of the iterator.
+ */
 DATA ll_iter_prev(smb_ll_iter *iter)
 {
   iter->current = iter->current->prev;
@@ -365,6 +542,12 @@ DATA ll_iter_prev(smb_ll_iter *iter)
   return ll_iter_curr(iter);
 }
 
+/**
+   @brief Get the current data for this iterator.
+
+   @param iterator A pointer to the iterator.
+   @returns The data at the current location of the iterator.
+ */
 DATA ll_iter_curr(smb_ll_iter *iter)
 {
   if (iter && iter->current)
@@ -374,6 +557,12 @@ DATA ll_iter_curr(smb_ll_iter *iter)
   return mockData;
 }
 
+/**
+   @brief Check if the iterator can be advanced.
+
+   @param iterator A pointer to the iterator.
+   @returns Whether the iterator can be advanced.
+ */
 int ll_iter_has_next(smb_ll_iter *iter)
 {
   if (iter && iter->current && iter->current->next)
@@ -382,6 +571,12 @@ int ll_iter_has_next(smb_ll_iter *iter)
   return 0;
 }
 
+/**
+   @brief Check if the iterator can be moved back.
+
+   @param iterator A pointer to the iterator.
+   @returns Whether the iterator can be moved back
+ */
 int ll_iter_has_prev(smb_ll_iter *iter)
 {
   if (iter && iter->current && iter->current->prev)
@@ -390,6 +585,12 @@ int ll_iter_has_prev(smb_ll_iter *iter)
   return 0;
 }
 
+/**
+   @brief Check if the iterator is valid.
+
+   @param iterator A pointer to the iterator.
+   @return Whether the iterator is valid.
+ */
 int ll_iter_valid(smb_ll_iter *iter)
 {
   if (iter && iter->current)
@@ -398,8 +599,14 @@ int ll_iter_valid(smb_ll_iter *iter)
   return 0;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// Adapter functions for generic list structure
+/*******************************************************************************
+
+                         Linked List Adapter Functions
+
+  These guys are used as the function pointers for the smb_list.  They really
+  don't need any documentation.
+  
+*******************************************************************************/
 
 void ll_append_adapter(smb_list *l, DATA newData)
 {
@@ -487,6 +694,16 @@ int ll_length_adapter(smb_list *l)
   return ll_length(list);
 }
 
+/**
+   @brief Populate a generic smb_list with function pointers necessary to use
+   smb_ll with it.
+
+   Note that this is a *private* function, not defined in libstephen.h for a
+   reason.  You shouldn't need the function, as there is library functionality
+   that provides it for you.
+
+   @param genericList The smb_list to populate with function pointers.
+ */
 void ll_fill_functions(smb_list *genericList)
 {
   genericList->append = ll_append_adapter;
@@ -505,9 +722,29 @@ void ll_fill_functions(smb_list *genericList)
   genericList->set = ll_set_adapter;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// PUBLIC GENERIC LIST FUNCTIONS
+/**
+   @brief Creates a new, empty list, and returns it as an instance of the
+   generic smb_list data structure. @see smb_list
 
+   @returns A generic list interface object.
+
+   @exception ALLOCATION_ERROR.
+ */
+smb_list ll_create_list()
+{
+  smb_ll *list = ll_create();
+
+  return ll_cast_to_list(list);
+}
+
+/**
+   @brief Cast a smb_ll pointer to an instance of the smb_list interface.  @see
+   smb_list
+
+   @param list The linked list to cast to a generic list.
+
+   @return A generic list interface object.
+ */
 smb_list ll_cast_to_list(smb_ll *list)
 {
   smb_list genericList;
@@ -516,11 +753,4 @@ smb_list ll_cast_to_list(smb_ll *list)
   ll_fill_functions(&genericList);
 
   return genericList;
-}
-
-smb_list ll_create_list()
-{
-  smb_ll *list = ll_create();
-
-  return ll_cast_to_list(list);
 }

@@ -1,27 +1,23 @@
-/*******************************************************************************
-
-  @file         libstephen.h
+/**
+  @file    libstephen.h
   
-  Author:       Stephen Brennan
+  @author  Stephen Brennan
 
-  Date Created: Friday, 27 September 2013
+  @date    Created Friday, 27 September 2013
 
-  @brief
+  @brief   Public interface of libstephen
 
-  Description: The public interface of libstephen.  Libstephen is a C library
-  designed to provide basic data structures and operations to supplement the
-  standard C library.  It is mainly a hobby programming project, but on
-  completion it should be usable for basing future projects on it.
-
-*******************************************************************************/
+  Libstephen is a C library designed to provide basic data structures and
+  operations to supplement the standard C library.  It is mainly a hobby
+  programming project, but on completion it should be usable for basing future
+  projects on it.
+*/
 
 #ifndef SMB___LIBSTEPHEN_H_
 #define SMB___LIBSTEPHEN_H_
 
-// Required for size_t
-#include <stdlib.h>
-// Required for uint64_t
-#include <stdint.h>
+#include <stdlib.h>       /* size_t */
+#include <stdint.h>       /* uint64_t */
 
 ////////////////////////////////////////////////////////////////////////////////
 // USEFUL MACROS
@@ -751,427 +747,66 @@ typedef struct smb_list
 
 } smb_list;
 
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-// "BARE" DATA TYPE FUNCTION DECLARATION
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
+/*******************************************************************************
 
-////////////////////////////////////////////////////////////////////////////////
-// LINKED LIST
-////////////////////////////////////////////////////////////////////////////////
+                              Linked List (smb_ll)
 
-/**
-   Initializes a new list which has already been allocated.
- */
+*******************************************************************************/
+
 void ll_init(smb_ll *newList);
-
-/**
-   Creates a new, empty linked list.
-
-   # Returns #
-
-   A pointer to the new list.
-
-   # Error Handling #
-
-   Clears all errors.  Can raise ALLOCATION_ERROR.  In this case, returns NULL,
-   and no memory is leaked.
- */
 smb_ll *ll_create();
-
-/**
-   Creates a new list with initial data.  Returns an instance of the interface.
-
-   # Parameters #
-
-   - DATA newData: The initial data
-
-   # Returns #
-
-   A generic list interface object.
-
-   # Error Handling #
-
-   Clears all errors.  Can raise ALLOCATION_ERROR.
- */
-smb_list ll_create_list();
-
-/**
-   Create a new list empty.  Returns an instance of the list interface.
-
-   # Returns #
-
-   A generic list interface object.
-
-   # Error Handling #
-
-   Clears all errors. Can raise ALLOCATION_ERROR.
- */
-smb_list ll_create_empty_list();
-
-/**
-   Cast a smb_ll pointer to an instance of the list interface.
-
-   # Parameters #
-
-   - smb_ll *list: the linked list to cast to an generic list.
-
-   # Returns #
-
-   A generic list interface object.
-   
-   # Error Handling #
-
-   No effect on flags.
- */
-smb_list ll_cast_to_list(smb_ll *list);
-
-/**
-   Append the given data to the end of the list.
-
-   # Parameters #
-
-   - smb_ll *list: a pointer to the list
-
-   - DATA newData: the data to append
-
-   # Error Handling #
-
-   Clears all errors.  Can raise an ALLOCATION_ERROR.
- */
-void ll_append(smb_ll *list, DATA newData);
-
-/**
-   Prepend the given data to the beginning of the list.
-
-   # Parameters #
-
-   - smb_ll *list: a pointer to the list
-   
-   - DATA newData: the data to prepend
-
-   # Error Handling #
-
-   Clears all errors.  Can raise ALLOCATION_ERROR.
- */
-void ll_prepend(smb_ll *list, DATA newData);
-
-/**
-   Push the data to the back of the list.  An alias for ll_append.
-
-   # Parameters #
-
-   - smb_ll *list: a pointer to the list
-
-   - DATA newData: the data to push
-
-   # Error Handling #
-
-   Clears all errors.  Can raise ALLOCATION_ERROR.
- */
-void ll_push_back(smb_ll *list, DATA newData);
-
-/**
-   Pop data from the back of the list.
-
-   # Parameters #
-
-   - smb_ll *list: a pointer to the list
-
-   # Returns #
-
-   The data from the back of the list.
-
-   # Error Handling #
-
-   Clears all errors.  Can raise INDEX_ERROR.
- */
-DATA ll_pop_back(smb_ll *list);
-
-/**
-   Peek at the back of the list.
-
-   # Parameters #
-
-   - smb_ll *list: a pointer to the list
-
-   # Returns #
-
-   The data from the back of the list.
-
-   # Error Handling #
-
-   Clears all errors.  Can raise INDEX_ERROR.
- */
-DATA ll_peek_back(smb_ll *list);
-
-/**
-   Push the data to the front of the list.  An alias for ll_prepend.
-
-   # Parameters #
-   
-   - smb_ll *list: a pointer to the list
-
-   - DATA newData: the data to push
-
-   # Error Handling #
-
-   Clears all errors.  Can raise ALLOCATION_ERROR.
- */
-void ll_push_front(smb_ll *list, DATA newData);
-
-/**
-   Pop the data from the front of the list.
-
-   # Parameters #
-
-   - smb_ll *list: a pointer to the list
-
-   # Returns #
-   
-   The data from the front of the list.
-
-   # Error Handling #
-
-   Clears all errors.  Can raise INDEX_ERROR.
- */
-DATA ll_pop_front(smb_ll *list);
-
-/**
-   Peek at the front of the list.
-
-   # Parameters #
-
-   - smb_ll *list: a pointer to the list.
-
-   # Returns #
-
-   The data from the front of the list.
-
-   # Error Handling #
-
-   Clears all errors.  Can raise INDEX_ERROR.
- */
-DATA ll_peek_front(smb_ll *list);
-
-/**
-   Gets the data from the given index.  However, there is no guarantee that the
-   index was valid.  An empty DATA object is returned in that case, and an
-   INDEX_ERROR is raised.
-
-   # Parameters #
-
-   - smb_ll *list: a pointer to the list
-
-   - int index: the index to get
-
-   # Return #
-
-   The data at the specified index.
-
-   # Error Handling #
-
-   Clears all errors.  Can raise INDEX_ERROR.
- */
-DATA ll_get(smb_ll *list, int index);
-
-/**
-   Removes the node at the given index.
-
-   # Parameters #
-
-   - smb_ll *list: a pointer to the list.
-
-   - int index: the index to remove
-
-   # Error Handling #
-
-   Clears all errors.  Can raise INDEX_ERROR.
- */
-void ll_remove(smb_ll *list, int index);
-
-/**
-   Inserts the item at the specified location in the list, pushing back
-   elements.
-
-   # Parameters #
-
-   - smb_ll *list: a pointer to the list
-
-   - int index: the index to insert at
-
-   - DATA newData: the data to insert.
-
-   # Error Handling #
-
-   Clears all errors.  Can raise ALLOCATION_ERROR.
- */
-void ll_insert(smb_ll *list, int index, DATA newData);
-
-/**
-   Removes the linked list.
-
-   # Parameters #
-
-   - smb_ll *list: a pointer to the list.
-
-   # Error Handling #
-
-   No effect.
- */
+void ll_destroy(smb_ll *list);
 void ll_delete(smb_ll *list);
 
-/**
-   Sets an existing element to a new value.
+smb_list ll_create_list();
+smb_list ll_cast_to_list(smb_ll *list);
 
-   # Parameters #
-
-   - smb_ll *list: a pointer to the list
-
-   - int index: the index to set at
-
-   - DATA newData: the data to set to.
-
-   # Error Handling #
-
-   Clears all errors. Can raise INDEX_ERROR.
- */
+void ll_append(smb_ll *list, DATA newData);
+void ll_prepend(smb_ll *list, DATA newData);
+void ll_push_back(smb_ll *list, DATA newData);
+DATA ll_pop_back(smb_ll *list);
+DATA ll_peek_back(smb_ll *list);
+void ll_push_front(smb_ll *list, DATA newData);
+DATA ll_pop_front(smb_ll *list);
+DATA ll_peek_front(smb_ll *list);
+DATA ll_get(smb_ll *list, int index);
+void ll_remove(smb_ll *list, int index);
+void ll_insert(smb_ll *list, int index, DATA newData);
 void ll_set(smb_ll *list, int index, DATA newData);
-
-/**
-   Returns the length of the given list.
-
-   # Parameters #
-
-   - smb_ll *list: a pointer to the list
-
-   # Returns #
-
-   The length of the list.
-
-   # Error Handling #
-
-   No effect.
- */
 int ll_length(smb_ll *list);
 
-/**
-   Get an iterator for the linked list.
-
-   # Parameters #
-
-   - smb_ll *list: a pointer to the list
-
-   # Returns #
-   
-   An iterator
-
-   # Error Handling #
-
-   No effect (not yet defined)
- */
 smb_ll_iter ll_get_iter(smb_ll *list);
-
-/**
-   Advance the iterator and return the data at it.
-
-   # Parameters #
-
-   - smb_ll_iter *iterator: the iterator
-
-   # Return #
-
-   The data at the new location of the iterator.
- */
 DATA ll_iter_next(smb_ll_iter *iterator);
-
-/**
-   Move the iterator back and return the data at it.
-
-   # Parameters #
-
-   - smb_ll_iter *iterator: the iterator
-
-   # Return #
-
-   The data at the new location of the iterator
- */
 DATA ll_iter_prev(smb_ll_iter *iterator);
-
-/**
-   Get the current data.
-
-   # Parameters #
-
-   - smb_ll_iter *iterator: the iterator
-
-   # Return #
-
-   The data at the current location of the iterator.
- */
 DATA ll_iter_curr(smb_ll_iter *iterator);
-
-/**
-   Check if the iterator can be advanced.
-
-   # Parameters #
-
-   - smb_ll_iter *iterator: the iterator
-
-   # Return #
-
-   Whether the iterator can be advanced.
- */
 int ll_iter_has_next(smb_ll_iter *iterator);
-
-/**
-  Check if the iterator can be moved back.
-
-  # Parameters #
-
-  - smb_ll_iter *iterator: the iterator
-
-  # Return #
-  
-  Whether the iterator can be moved back
- */
 int ll_iter_has_prev(smb_ll_iter *iterator);
-
-/**
-   Check if the iterator is valid.
-
-   # Parameters #
-
-   - smb_ll_iter *iterator: the iterator
-
-   # Return #
-
-   Whether the iterator is valid.
- */
 int ll_iter_valid(smb_ll_iter *iterator);
 
-////////////////////////////////////////////////////////////////////////////////
-// ARRAY LIST
-////////////////////////////////////////////////////////////////////////////////
+/*******************************************************************************
+
+                              Array List (smb_al)
+
+*******************************************************************************/
 
 void al_init(smb_al *list);
 smb_al *al_create();
+void al_destroy(smb_al *list);
+void al_delete(smb_al *list);
+
 void al_append(smb_al *list, DATA newData);
 void al_prepend(smb_al *list, DATA newData);
 DATA al_get(smb_al *list, int index);
-void al_set(smb_al *list, int index, DATA newData);
 void al_remove(smb_al *list, int index);
 void al_insert(smb_al *list, int index, DATA newData);
-void al_destroy(smb_al *list);
-void al_delete(smb_al *list);
-int al_length(smb_al *list);
+void al_set(smb_al *list, int index, DATA newData);
 void al_push_back(smb_al *list, DATA newData);
 DATA al_pop_back(smb_al *list);
 DATA al_peek_back(smb_al *list);
 void al_push_front(smb_al *list, DATA newData);
 DATA al_pop_back(smb_al *list);
 DATA al_peek_back(smb_al *list);
+int al_length(smb_al *list);
 
 ////////////////////////////////////////////////////////////////////////////////
 // HASH TABLE
