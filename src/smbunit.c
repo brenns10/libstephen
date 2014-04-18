@@ -1,6 +1,6 @@
 /**
 
-  @file    ~/repos/libstephen/smbunit.c
+  @file    smbunit.c
 
   @author  Stephen Brennan
 
@@ -8,7 +8,7 @@
 
   @brief   A simple, lightweight unit test runner based on function pointers.
 
-*******************************************************************************/
+*/
 
 #include <stdio.h>
 #include <string.h>
