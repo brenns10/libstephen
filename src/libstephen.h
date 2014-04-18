@@ -1169,42 +1169,22 @@ int ll_iter_valid(LL_ITERATOR *iterator);
 // ARRAY LIST
 ////////////////////////////////////////////////////////////////////////////////
 
-/**
-   Create an ARRAY_LIST initialized with the given first element.
- */
-ARRAY_LIST *al_create(DATA newData);
-
-/**
-   Create an ARRAY_LIST with no data.
- */
-ARRAY_LIST *al_create_empty();
-
+void al_init(ARRAY_LIST *list);
+ARRAY_LIST *al_create();
 void al_append(ARRAY_LIST *list, DATA newData);
-
 void al_prepend(ARRAY_LIST *list, DATA newData);
-
 DATA al_get(ARRAY_LIST *list, int index);
-
 void al_set(ARRAY_LIST *list, int index, DATA newData);
-
 void al_remove(ARRAY_LIST *list, int index);
-
 void al_insert(ARRAY_LIST *list, int index, DATA newData);
-
+void al_destroy(ARRAY_LIST *list);
 void al_delete(ARRAY_LIST *list);
-
 int al_length(ARRAY_LIST *list);
-
 void al_push_back(ARRAY_LIST *list, DATA newData);
-
 DATA al_pop_back(ARRAY_LIST *list);
-
 DATA al_peek_back(ARRAY_LIST *list);
-
 void al_push_front(ARRAY_LIST *list, DATA newData);
-
 DATA al_pop_back(ARRAY_LIST *list);
-
 DATA al_peek_back(ARRAY_LIST *list);
 
 ////////////////////////////////////////////////////////////////////////////////

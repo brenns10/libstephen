@@ -21,7 +21,8 @@ int al_test_create()
   DATA d;
   d.data_llint = 13;
 
-  ARRAY_LIST *list = al_create(d);
+  ARRAY_LIST *list = al_create();
+  al_append(list, d);
   
   // Assert that it was allocated correctly.
   TEST_ASSERT(!CHECK(ALLOCATION_ERROR), 1);
@@ -39,7 +40,7 @@ int al_test_create_empty()
   DATA d;
   d.data_llint = 13;
 
-  ARRAY_LIST *list = al_create_empty();
+  ARRAY_LIST *list = al_create();
 
   // Assert that it was allocated correctly.
   TEST_ASSERT(!CHECK(ALLOCATION_ERROR), 1);
@@ -55,7 +56,7 @@ int al_test_append()
   DATA d;
   d.data_llint = 0;
 
-  ARRAY_LIST *list = al_create_empty();
+  ARRAY_LIST *list = al_create();
   
   // Test append about 21 times to check that reallocation works successfully
   for ( ; d.data_llint < 22; d.data_llint++) {
@@ -79,7 +80,7 @@ int al_test_prepend()
   DATA d;
   d.data_llint = 0;
 
-  ARRAY_LIST *list = al_create_empty();
+  ARRAY_LIST *list = al_create();
   
   // Test prepend about 21 times to check that reallocation works successfully
   for ( ; d.data_llint < 22; d.data_llint++) {
@@ -101,7 +102,7 @@ int al_test_prepend()
 int al_test_set()
 {
   DATA d;
-  ARRAY_LIST *list = al_create_empty();
+  ARRAY_LIST *list = al_create();
   const int length = 30;
 
   // Create data
@@ -141,7 +142,7 @@ int al_test_set()
 int al_test_remove()
 {
   DATA d;
-  ARRAY_LIST *list = al_create_empty();
+  ARRAY_LIST *list = al_create();
   const int length = 23;
 
   // Create data
@@ -200,7 +201,7 @@ int al_test_remove()
 int al_test_insert()
 {
   DATA d;
-  ARRAY_LIST *list = al_create_empty();
+  ARRAY_LIST *list = al_create();
   const int length = 20;
 
   // Create data

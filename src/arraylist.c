@@ -111,22 +111,26 @@ void al_shift_down(ARRAY_LIST *list, int to_index)
 ////////////////////////////////////////////////////////////////////////////////
 // Public Functions
 
-ARRAY_LIST *al_create(DATA newData)
+/*
+  Initialize fields of a newly allocated array list.
+ */
+void al_init(ARRAY_LIST *list)
 {
-  CLEAR_ALL_ERRORS;
-
-  ARRAY_LIST *list = al_create_empty();
-
-  if (list) {
-    al_append(list, newData);
-    // No need to check for ALLOCATION_ERROR, as no memory is allocated when
-    // appending to size 0 array list.p
+  list->data = (DATA*) malloc(SMB_AL_BLOCK_SIZE * sizeof(DATA));
+  if (!list->data) {
+    free(list);
+    SMB_DECREMENT_MALLOC_COUNTER(sizeof(ARRAY_LIST));
+    RAISE(ALLOCATION_ERROR);
   }
-
-  return list; // NULL if failed
+  list->length = 0;
+  list->allocated = SMB_AL_BLOCK_SIZE;
+  SMB_INCREMENT_MALLOC_COUNTER(SMB_AL_BLOCK_SIZE * sizeof(DATA));
 }
 
-ARRAY_LIST *al_create_empty()
+/*
+  Allocate and initialize an empty array list on the heap.
+ */
+ARRAY_LIST *al_create()
 {
   CLEAR_ALL_ERRORS;
 
@@ -136,17 +140,8 @@ ARRAY_LIST *al_create_empty()
     return NULL;
   }
   SMB_INCREMENT_MALLOC_COUNTER(sizeof(ARRAY_LIST));
-  
-  list->data = (DATA*) malloc(SMB_AL_BLOCK_SIZE * sizeof(DATA));
-  if (!list->data) {
-    free(list);
-    SMB_DECREMENT_MALLOC_COUNTER(sizeof(ARRAY_LIST));
-    RAISE(ALLOCATION_ERROR);
-    return NULL;
-  }
-  list->length = 0;
-  list->allocated = SMB_AL_BLOCK_SIZE;
-  SMB_INCREMENT_MALLOC_COUNTER(SMB_AL_BLOCK_SIZE * sizeof(DATA));
+
+  al_init(list);
 
   return list;
 }
@@ -233,12 +228,19 @@ void al_insert(ARRAY_LIST *list, int index, DATA newData)
   list->data[index] = newData;
 }
 
-void al_delete(ARRAY_LIST *list)
+void al_destroy(ARRAY_LIST *list)
 {
   CLEAR_ALL_ERRORS;
 
   free(list->data);
   SMB_DECREMENT_MALLOC_COUNTER(list->allocated * sizeof(DATA));
+}
+
+void al_delete(ARRAY_LIST *list)
+{
+  CLEAR_ALL_ERRORS;
+
+  al_destroy(list);
   free(list);
   SMB_DECREMENT_MALLOC_COUNTER(sizeof(ARRAY_LIST));
 }
@@ -404,16 +406,9 @@ LIST al_cast_to_list(ARRAY_LIST *list)
   return genericList;
 }
 
-LIST al_create_list(DATA newData)
+LIST al_create_list()
 {
-  ARRAY_LIST *list = al_create(newData);
+  ARRAY_LIST *list = al_create();
 
-  return al_cast_to_list(list);
-}
-
-LIST al_create_empty_list()
-{
-  ARRAY_LIST *list = al_create_empty();
-  
   return al_cast_to_list(list);
 }
