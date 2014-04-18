@@ -184,14 +184,13 @@ extern unsigned int ERROR_VAR;
      the test.  The test will fail if at least one of the errors in the flag are
      not raised.
  */
-typedef struct smb_unit_test
+struct smb_ut_test
 {
   char description[SMB_UNIT_DESCRIPTION_SIZE];
   int (*run)();
   int expected_errors;
   int check_mem_leaks;
-
-} TEST;
+};
 
 /**
    A structure holding a group of unit tests that are all related.  Members
@@ -205,16 +204,15 @@ typedef struct smb_unit_test
 
    - int num_tests: the number of tests in the group.
 
-   - TEST *tests[]: pointers to the tests contained.  Max tests defined by
+   - struct smb_ut_test *tests[]: pointers to the tests contained.  Max tests defined by
      SMB_UNIT_TESTS_PER_GROUP.
  */
-typedef struct smb_unit_test_group
+struct smb_ut_group
 {
   char description[SMB_UNIT_DESCRIPTION_SIZE];
   int num_tests;
-  TEST *tests[SMB_UNIT_TESTS_PER_GROUP];
-
-} TEST_GROUP;
+  struct smb_ut_test *tests[SMB_UNIT_TESTS_PER_GROUP];
+};
 
 /**
    Create and return a new unit test.
@@ -235,7 +233,8 @@ typedef struct smb_unit_test_group
 
    A pointer to the new test.
  */
-TEST *su_create_test(char *description, int (*run)(), int expected_errors, int check_mem_leaks);
+struct smb_ut_test *su_create_test(char *description, int (*run)(), 
+                                   int expected_errors, int check_mem_leaks);
 
 /**
    Create and return a new test group.
@@ -248,7 +247,7 @@ TEST *su_create_test(char *description, int (*run)(), int expected_errors, int c
 
    A pointer to the test group.
  */
-TEST_GROUP *su_create_test_group(char *description);
+struct smb_ut_group *su_create_test_group(char *description);
 
 /**
    Add a test to the given test group.  A maximum of SMB_UNIT_TESTS_PER_GROUP
@@ -257,11 +256,11 @@ TEST_GROUP *su_create_test_group(char *description);
 
    # Parameters #
 
-   - TEST_GROUP *group: a pointer to the group to add the test to.
+   - struct smb_ut_group *group: a pointer to the group to add the test to.
 
-   - TEST *test: a pointer to the test.
+   - struct smb_ut_test *test: a pointer to the test.
  */
-void su_add_test(TEST_GROUP *group, TEST *test);
+void su_add_test(struct smb_ut_group *group, struct smb_ut_test *test);
 
 /**
    Run the given test.  Tracks memory allocations and thrown errors.  In order
@@ -269,7 +268,7 @@ void su_add_test(TEST_GROUP *group, TEST *test);
 
    # Parameters #
    
-   - TEST *test: the test to run
+   - struct smb_ut_test *test: the test to run
 
    # Returns # 
    
@@ -289,7 +288,7 @@ void su_add_test(TEST_GROUP *group, TEST *test);
    - Code 3: Memory was leaked.  The test returned 0 and all expected errors
      were found (or no errors were expected or found), but memory leaked.
  */
-int su_run_test(TEST *test);
+int su_run_test(struct smb_ut_test *test);
 
 /**
    Run a group of tests.  The tests are run sequentially (in the order they were
@@ -297,7 +296,7 @@ int su_run_test(TEST *test);
 
    # Parameters #
 
-   - TEST_GROUP *group: a pointer to the TEST_GROUP to run.
+   - struct smb_ut_group *group: a pointer to the struct smb_ut_group to run.
 
    # Returns #
 
@@ -305,7 +304,7 @@ int su_run_test(TEST *test);
    su_run_test() function, it returns 0 if all tests succeeded, or else the
    return code of the failed test from su_run_test().
  */
-int su_run_group(TEST_GROUP *group);
+int su_run_group(struct smb_ut_group *group);
 
 /**
    Frees the memory associated with the test, and performs cleanup.  
@@ -320,26 +319,26 @@ int su_run_group(TEST_GROUP *group);
 
    # Parameters #
 
-   - TEST *test: the test to free
+   - struct smb_ut_test *test: the test to free
  */
-void su_delete_test(TEST *test);
+void su_delete_test(struct smb_ut_test *test);
 
 /**
    Free the memory associated with the group AND ALL TESTS WITHIN IT.  You MUST
    use this to delete test groups.  
 
-   Note that if a pointer to a TEST within the TEST_GROUP is already invalid
-   (freed), then su_delete_group() assumes that it has been freed and moves on.
-   So you may include a single test in more than one group and safely delete
-   them both (but after deleting the first group, the test will no longer be
-   valid and a segmentation fault will occur if you try to run the second
-   group).
+   Note that if a pointer to a struct smb_ut_test within the struct smb_ut_group
+   is already invalid (freed), then su_delete_group() assumes that it has been
+   freed and moves on.  So you may include a single test in more than one group
+   and safely delete them both (but after deleting the first group, the test
+   will no longer be valid and a segmentation fault will occur if you try to run
+   the second group).
 
    # Parameters #
 
-   TEST_GROUP *group: a pointer to the group to free
+   struct smb_ut_group *group: a pointer to the group to free
  */
-void su_delete_group(TEST_GROUP *group);
+void su_delete_group(struct smb_ut_group *group);
 
 /**
    Asserts that an expression is true.  If false, returns a given value.

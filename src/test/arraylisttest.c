@@ -257,27 +257,27 @@ int al_test_insert()
 
 void array_list_test()
 {
-  TEST_GROUP *group = su_create_test_group("array list");
+  struct smb_ut_group *group = su_create_test_group("array list");
 
-  TEST *create = su_create_test("create", al_test_create, 0, 1);
+  struct smb_ut_test *create = su_create_test("create", al_test_create, 0, 1);
   su_add_test(group, create);
   
-  TEST *create_empty = su_create_test("create_empty", al_test_create_empty, 0, 1);
+  struct smb_ut_test *create_empty = su_create_test("create_empty", al_test_create_empty, 0, 1);
   su_add_test(group, create_empty);
 
-  TEST *append = su_create_test("append", al_test_append, 0, 1);
+  struct smb_ut_test *append = su_create_test("append", al_test_append, 0, 1);
   su_add_test(group, append);
 
-  TEST *prepend = su_create_test("prepend", al_test_prepend, 0, 1);
+  struct smb_ut_test *prepend = su_create_test("prepend", al_test_prepend, 0, 1);
   su_add_test(group, prepend);
   
-  TEST *set = su_create_test("set", al_test_set, 0, 1);
+  struct smb_ut_test *set = su_create_test("set", al_test_set, 0, 1);
   su_add_test(group, set);
   
-  TEST *remove = su_create_test("remove", al_test_remove, 0, 1);
+  struct smb_ut_test *remove = su_create_test("remove", al_test_remove, 0, 1);
   su_add_test(group, remove);
 
-  TEST *insert = su_create_test("insert", al_test_remove, 0, 1);
+  struct smb_ut_test *insert = su_create_test("insert", al_test_remove, 0, 1);
   su_add_test(group, insert);
 
   // The other elementary operations on the ARRAY_LIST, i.e. the push, pop and
