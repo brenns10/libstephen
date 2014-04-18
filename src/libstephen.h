@@ -19,34 +19,56 @@
 #include <stdlib.h>       /* size_t */
 #include <stdint.h>       /* uint64_t */
 
-////////////////////////////////////////////////////////////////////////////////
-// USEFUL MACROS
-////////////////////////////////////////////////////////////////////////////////
 
 /*******************************************************************************
-    Configuration Section
-    Comment/Uncomment the #defines to enable or disable functionality
+
+                                 Miscellaneous
+
 *******************************************************************************/
 
 #define SMB_ENABLE_MEMORY_DIAGNOSTICS
 #define SMB_ENABLE_DIAGNOSTIC_CODE
 #define SMB_ENABLE_DIAGNOSTIC_PRINTING
 
-/*******************************************************************************
-    SMB_ENABLE_MEMORY_DIAGNOSTICS
-    All this functionality is enabled when SMB_MEMORY_DIAGNOSTICS is defined.
-*******************************************************************************/
+/**
+   @brief Increments the memory allocation counter.  Don't use this.
 
-// These functions should NOT be called on their own.  The macros should be
-// used, as they are macro controlled.
+   This function is used for memory management.  It is enabled and disabled by
+   the preprocessor.  So you should stick to the macros for this.
+
+   @see SMB_INCREMENT_MALLOC_COUNTER
+
+   @param number_of_mallocs The number of bytes allocated.
+ */
 void smb___helper_inc_malloc_counter(size_t number_of_mallocs);
+
+/**
+   @brief Decrements memory allocation counter.  Don't use.  
+
+   @see smb___helper_inc_malloc_counter
+   @see SMB_DECREMENT_MALLOC_COUNTER
+
+   @param The number of bytes freed.
+ */
 void smb___helper_dec_malloc_counter(size_t number_of_frees);
+
+/**
+   @brief Gets the memory allocation counter.  Don't use.
+
+   @see smb___helper_inc_malloc_counter
+   @see SMB_GET_MALLOC_COUNTER
+
+   @returns The number of bytes allocated.
+ */
 size_t smb___helper_get_malloc_counter();
 
 /**
+   @brief Increment the memory allocation counter.
+
    Call this function with the number of bytes every time you allocate memory.
-   Alternatively, call it with the number of times you use the malloc function.
-   Whichever policy you use, stick to it.
+   This will only do anything if SMB_MEMORY_DIAGNOSTICS is defined.
+
+   @param The number of bytes allocated.
 */
 #ifdef SMB_ENABLE_MEMORY_DIAGNOSTICS
 #define SMB_INCREMENT_MALLOC_COUNTER(x) smb___helper_inc_malloc_counter(x)
@@ -55,8 +77,12 @@ size_t smb___helper_get_malloc_counter();
 #endif // SMB_ENABLE_MEMORY_DIAGNOSTICS
 
 /**
+   @brief Decrement the memory allocation couter.
+
    Call this function with the number of bytes every time you free memory.
-   Alternatively, call it with the number of times you called free.
+   This will only do anything if SMB_MEMORY_DIAGNOSTICS is defined.
+
+   @param The number of bytes freed.
 */
 #ifdef SMB_ENABLE_MEMORY_DIAGNOSTICS
 #define SMB_DECREMENT_MALLOC_COUNTER(x) smb___helper_dec_malloc_counter(x)
@@ -65,38 +91,31 @@ size_t smb___helper_get_malloc_counter();
 #endif // SMB_ENABLE_MEMORY_DIAGNOSTICS
 
 /**
-   Call this function to get the number of bytes currently allocated by my code.
+   @brief Get the memory allocation counter.
 
-   Returns a size_t representing the value of the malloc counter, which could be
-   in bytes or mallocs, depending on your convention.
+   Call this function to get the number of bytes currently allocated by my code.
+   Only does anything if SMB_MEMORY_DIAGNOSTICS is defined.  If it's not
+   defined, evaluates to 0.
+   
+   @returns The number of bytes allocated right now.
 */
 #ifdef SMB_ENABLE_MEMORY_DIAGNOSTICS
 #define SMB_GET_MALLOC_COUNTER smb___helper_get_malloc_counter()
 #else
 #define SMB_GET_MALLOC_COUNTER 0
-#endif // SMB_ENABLE_MEMORY_DIAGNOSTICS
-
-/*******************************************************************************
-    SMB_ENABLE_DIAGNOSTIC_CODE
-    Allows writing diagnostic code.  Enabled by SMB_DIAGNOSTIC_CODE
-*******************************************************************************/
+#endif
 
 /**
-   Run the given statement only in diagnostic code.
-*/
+   @brief Run this code only if SMB_ENABLE_DIAGNOSTIC_CODE is defined.
+ */
 #ifdef SMB_ENABLE_DIAGNOSTIC_CODE
 #define SMB_DIAG_ONLY(x) x
 #else
 #define SMB_DIAG_ONLY(x)
 #endif // SMB_ENABLE_DIAGNOSTIC_CODE
 
-/*******************************************************************************
-    SMB_ENABLE_DIAGNOSTIC_PRINTING
-*******************************************************************************/
-
 /**
-   Pass these parameters to printf only in diagnostic code.  Equivalent to
-   SMB_DIAG_ONLY(printf(...)), but SMB_DIAG_PRINT(...) is much nicer.
+   @brief Print this (printf) only if SMB_ENABLE_DIAGNOSTIC_PRINTING is defined.
 */
 #ifdef SMB_ENABLE_DIAGNOSTIC_PRINTING
 #define SMB_DIAG_PRINT(x...) printf(x)
@@ -104,243 +123,105 @@ size_t smb___helper_get_malloc_counter();
 #define SMB_DIAG_PRINT(x...)
 #endif // SMB_ENABLE_DIAGNOSTIC_PRINTING
 
+/**
+   @brief Base data type for the data structures.
 
-////////////////////////////////////////////////////////////////////////////////
-// ERROR HANDLING
-////////////////////////////////////////////////////////////////////////////////
+   Capable of containing long integers, double precision floats, or pointers.
+   Takes up 8 bytes.
+ */
+typedef union DATA {
+  long long int data_llint;
+  double data_dbl;
+  void * data_ptr;
 
-// Not for external use
-#define ERROR_VAR smb___error_var_
-extern unsigned int ERROR_VAR;
-
-// Error codes //
+} DATA;
 
 /**
-   ALLOCATION_ERROR: Reserved for communicating errors with malloc().
+   @brief A function pointer that takes a DATA and performs an action on it 
+
+   The function could count it, call free on it, print it, etc.  Useful for
+   stuff like deleting data structures full of items (if they're pointers to
+   dynamically allocated data, they'll need to be freed), applying an action to
+   every item in a list (e.g. printing), and many more applications.
+ */
+typedef void (*DATA_ACTION)(DATA toDelete);
+
+/*******************************************************************************
+
+                                 Error Handling
+
+*******************************************************************************/
+
+/**
+   @brief The name of the error variable.
+
+   It's supposed to be a bit mangled and useless to avoid naming conflicts.
+ */
+#define ERROR_VAR smb___error_var_
+
+/**
+   @brief A variable declared in some far-off C file, which contains your
+   errors.
+ */
+extern unsigned int ERROR_VAR;
+
+/**
+   @brief Reserved for communicating errors with malloc().
  */
 #define ALLOCATION_ERROR 0x0001
 
 /**
-   INDEX_ERROR: Set when an provided index is out of range.  Includes incidents
-   when you try to pop or peek at an empty list.
+   @brief Set when an provided index is out of range.  Includes incidents when
+   you try to pop or peek at an empty list.
  */
 #define INDEX_ERROR 0x0002
 
 /**
-   NOT_FOUND_ERROR: Set when an item is not found, mainly in the hash table.
+   @brief Set when an item is not found, mainly in the hash table.
  */
 #define NOT_FOUND_ERROR 0x0004
 
 /**
-   Set the flag corresponding to the given error code.
+   @brief Set the flag corresponding to the given error code.
  */
 #define RAISE(x) (ERROR_VAR |= x)
 
 /**
-   Test the flag corresponding to the given error code.  Returns 1 if flag set,
-   0 if flag cleared.
+   @brief Test the flag corresponding to the given error code.  
+
+   @retval 1 if flag set.
+   @retval 0 if flag cleared.
  */
 #define CHECK(x) (ERROR_VAR & x)
 
 /**
-   Clear the flag corresponding to the given error code.
+   @brief Clear the flag corresponding to the given error code.
  */
 #define CLEAR(x) (ERROR_VAR &= (~x))
 
 /**
-   Clear the flags for all errors.
+   @brief Clear the flags for all errors.
  */
 #define CLEAR_ALL_ERRORS ERROR_VAR = 0
 
-////////////////////////////////////////////////////////////////////////////////
-// UNIT TESTING
-////////////////////////////////////////////////////////////////////////////////
+/*******************************************************************************
+
+                             Unit Testing (smb_ut)
+
+*******************************************************************************/
 
 /**
-   The size of a description text field (in characters) for an smbunit test.
+   @brief The size of a description text field (in characters) for an smbunit test.
  */
 #define SMB_UNIT_DESCRIPTION_SIZE 20
 
 /**
-   The max number of unit tests in a single test group.
+   @brief The max number of unit tests in a single test group.
  */
 #define SMB_UNIT_TESTS_PER_GROUP 20
 
 /**
-   Defines a single unit test.  Members should be modified with care, preferably
-   not at all, except by using the smbunit functions.
-
-   # Members #
-   
-   - char description[20]: a 20 character null-terminated string that identifies
-     this particular test.
-
-   - int (*run)(): function pointer to the test to run.  The function should
-     return 0 if the test is successful.
-
-   - int expected_errors: contains error flags to CHECK() for after execution of
-     the test.  The test will fail if at least one of the errors in the flag are
-     not raised.
- */
-typedef struct smb_ut_test
-{
-  char description[SMB_UNIT_DESCRIPTION_SIZE];
-  int (*run)();
-  int expected_errors;
-  int check_mem_leaks;
-} smb_ut_test;
-
-/**
-   A structure holding a group of unit tests that are all related.  Members
-   shouldn't me modified by client code.  All should be managed by the functions
-   in smbunit.
-
-   # Members #
-
-   - char description[]: a short description (length defined by
-     SMB_UNIT_DESCRIPTION_SIZE) for the test.
-
-   - int num_tests: the number of tests in the group.
-
-   - struct smb_ut_test *tests[]: pointers to the tests contained.  Max tests defined by
-     SMB_UNIT_TESTS_PER_GROUP.
- */
-typedef struct smb_ut_group
-{
-  char description[SMB_UNIT_DESCRIPTION_SIZE];
-  int num_tests;
-  smb_ut_test *tests[SMB_UNIT_TESTS_PER_GROUP];
-
-} smb_ut_group;
-
-/**
-   Create and return a new unit test.
-
-   # Parameters #
-
-   - char *description: a description of the test.
-
-   - int (*run)(): a function pointer to the test function.
-
-   - int expected_errors: the errors you expect from the test function.  0 if
-     non.  You can combine more than one error with &.
-
-   - int check_mem_leaks: whether to check if the mallocs before = mallocs
-     after.  0 for no, 1 for yes.
-
-   # Returns #
-
-   A pointer to the new test.
- */
-smb_ut_test *su_create_test(char *description, int (*run)(), 
-                                   int expected_errors, int check_mem_leaks);
-
-/**
-   Create and return a new test group.
-
-   # Parameters #
-
-   - char *description: a short description for the group.
-
-   # Returns #
-
-   A pointer to the test group.
- */
-smb_ut_group *su_create_test_group(char *description);
-
-/**
-   Add a test to the given test group.  A maximum of SMB_UNIT_TESTS_PER_GROUP
-   may be added to the group.  After the limit is reached, this function fails
-   *silently*, so as to prevent interference with the actual tests.
-
-   # Parameters #
-
-   - smb_ut_group *group: a pointer to the group to add the test to.
-
-   - smb_ut_test *test: a pointer to the test.
- */
-void su_add_test(smb_ut_group *group, smb_ut_test *test);
-
-/**
-   Run the given test.  Tracks memory allocations and thrown errors.  In order
-   to do this, all errors are cleared before execution of the test.
-
-   # Parameters #
-   
-   - smb_ut_test *test: the test to run
-
-   # Returns # 
-   
-   Returns a code based on the execution of the test (and whether or not the
-   feature is enabled for the test):
-
-   - Code 0: Test passed all its conditions.
-
-   - Code 1: Test returned a non-zero return code.  This will be reported on
-     stdout, along with the specific return code.  The reason for a non-zero
-     return code is usually a failed assertion, in which case the code
-     corresponds to the assertion number.
-
-   - Code 2: Expected errors not encountered.  The test expected at least one
-     error, and none of the expected errors were raised by the function.
-
-   - Code 3: Memory was leaked.  The test returned 0 and all expected errors
-     were found (or no errors were expected or found), but memory leaked.
- */
-int su_run_test(smb_ut_test *test);
-
-/**
-   Run a group of tests.  The tests are run sequentially (in the order they were
-   added to the group).  If a test fails, the remaining tests are not executed.
-
-   # Parameters #
-
-   - smb_ut_group *group: a pointer to the smb_ut_group to run.
-
-   # Returns #
-
-   Returns an integer.  Since the tests are run sequentially via the
-   su_run_test() function, it returns 0 if all tests succeeded, or else the
-   return code of the failed test from su_run_test().
- */
-int su_run_group(smb_ut_group *group);
-
-/**
-   Frees the memory associated with the test, and performs cleanup.  
-
-   Note that no actual cleanup is required by the test, so the only benefit to
-   using this function is that it is future-safe (updates to smbunit may require
-   cleanup to be performed in this function), and that it automatically calls
-   SMB_DECREMENT_MALLOC_COUNTER().  Failing to call that when freeing a test
-   WILL result in a detected memory leak if you place appropriate code in the
-   main method, but WILL NOT result in a detected memory leak in any tests.
-   Remember that no actual memory leak would have actually occurred.
-
-   # Parameters #
-
-   - smb_ut_test *test: the test to free
- */
-void su_delete_test(smb_ut_test *test);
-
-/**
-   Free the memory associated with the group AND ALL TESTS WITHIN IT.  You MUST
-   use this to delete test groups.  
-
-   Note that if a pointer to a smb_ut_test within the smb_ut_group
-   is already invalid (freed), then su_delete_group() assumes that it has been
-   freed and moves on.  So you may include a single test in more than one group
-   and safely delete them both (but after deleting the first group, the test
-   will no longer be valid and a segmentation fault will occur if you try to run
-   the second group).
-
-   # Parameters #
-
-   smb_ut_group *group: a pointer to the group to free
- */
-void su_delete_group(smb_ut_group *group);
-
-/**
-   Asserts that an expression is true.  If false, returns a given value.
+   @brief Asserts that an expression is true.  If false, returns a given value.
 
    Note that this is a macro, so using some things (++ and -- operators
    especially) can have unintended results.  Any code in expr will be executed
@@ -360,130 +241,411 @@ void su_delete_group(smb_ut_group *group);
  */
 #define TEST_ASSERT(expr, retval) if(!(expr)) return retval
 
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-// DATA TYPE DECLARATIONS
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-
 /**
-   Generic data type for storage in the data structures.  Each data type takes
-   up 8 bytes of memory.
+   @brief Defines a single unit test.  
+
+   Members should be modified with care, preferably not at all, except by using
+   the smbunit functions.
+
  */
-typedef union DATA {
-  long long int data_llint;
-  double data_dbl;
-  void * data_ptr;
+typedef struct smb_ut_test
+{
+  /**
+     @brief A 20 character null-terminated string that identifies this
+     particular test.
+   */
+  char description[SMB_UNIT_DESCRIPTION_SIZE];
 
-} DATA;
+  /**
+     @brief Function pointer to the test to run.  The function should return 0
+     if the test is successful.
+   */
+  int (*run)();
+
+  /**
+     @brief The error value of any expected errors from this test.
+   */
+  int expected_errors;
+
+  /**
+     @brief Should we check for memory leaks?
+   */
+  int check_mem_leaks;
+
+} smb_ut_test;
 
 /**
-   A function pointer that takes a DATA and performs an action on it (counts it,
-   calls free on it, prints it, etc.).  Useful for stuff like deleting data
-   structures full of items (if they're pointers to dynamically allocated data,
-   they'll need to be freed), applying an action to every item in a list
-   (e.g. printing), and many more applications.
+   @brief A structure holding a group of unit tests that are all related.  
+
+   Members shouldn't me modified by client code.  All should be managed by the
+   functions in smbunit.
  */
-typedef void (*DATA_ACTION)(DATA toDelete);
+typedef struct smb_ut_group
+{
+  /**
+     @brief A short description (length defined by SMB_UNIT_DESCRIPTION_SIZE)
+     for the test.
+   */
+  char description[SMB_UNIT_DESCRIPTION_SIZE];
 
-////////////////////////////////////////////////////////////////////////////////
-// LINKED LIST
-////////////////////////////////////////////////////////////////////////////////
+  /**
+     @brief The number of tests in the group.
+  */
+  int num_tests;
+
+  /**
+     @brief Pointers to the tests contained.  Max amount of tests is SMB_UNIT_TESTS_PER_GROUP.
+   */
+  smb_ut_test *tests[SMB_UNIT_TESTS_PER_GROUP];
+
+} smb_ut_group;
+
+smb_ut_test *su_create_test(char *description, int (*run)(), 
+                                   int expected_errors, int check_mem_leaks);
+smb_ut_group *su_create_test_group(char *description);
+void su_add_test(smb_ut_group *group, smb_ut_test *test);
+int su_run_test(smb_ut_test *test);
+int su_run_group(smb_ut_group *group);
+void su_delete_test(smb_ut_test *test);
+void su_delete_group(smb_ut_group *group);
+
+/*******************************************************************************
+
+                              Linked List (smb_ll)
+
+*******************************************************************************/
 
 /**
-   Node structure for linked list.  This must be exposed in order for other data
-   types to be public.  This should not be used by users of the library.
+   @brief Node structure for linked list.  
+
+   This must be exposed in order for other data types to be public.  This should
+   not be used by users of the library.
  */
 typedef struct smb_ll_node
 {
+  /**
+     @brief The previous node in the linked list.
+   */
   struct smb_ll_node *prev;
+
+  /**
+     @brief The next node in the linked list.
+   */
   struct smb_ll_node *next;
+
+  /**
+     @brief The data stored in this node.
+   */
   DATA data;
+
 } smb_ll_node;
 
 /**
-   The actual linked list data type.  "Bare" functions return a pointer to this
-   structure.
+   @brief The actual linked list data type.  "Bare" functions return a pointer
+   to this structure.
  */
 typedef struct smb_ll
 {
+  /**
+     @brief A pointer to the head of the list.
+   */
   struct smb_ll_node *head;
+
+  /**
+     @brief A pointer to the tail of the list.  Useful for speeding up
+     navigation to a particular spot.
+   */
   struct smb_ll_node *tail;
+
+  /**
+     @brief The number of items stored in the list.
+   */
   int length;
+
 } smb_ll;
 
 /**
-   A linked list iterator.  Do not modify the structure yourself.
+   @brief A linked list iterator.  Do not modify the structure yourself.
  */
 typedef struct smb_ll_iter
 {
+  /**
+     @brief A pointer to the list being used.
+   */
   struct smb_ll *list;
+
+  /**
+     @brief A pointer to the current node in the list.
+   */
   struct smb_ll_node *current;
+
+  /**
+     @brief The index associated with this item.
+   */
   int index;
+
 } smb_ll_iter;
 
-///////////////////////////////////////////////////////////////////////////////
-// ARRAY LIST
-///////////////////////////////////////////////////////////////////////////////
+void ll_init(smb_ll *newList);
+smb_ll *ll_create();
+void ll_destroy(smb_ll *list);
+void ll_delete(smb_ll *list);
+
+smb_list ll_create_list();
+smb_list ll_cast_to_list(smb_ll *list);
+
+void ll_append(smb_ll *list, DATA newData);
+void ll_prepend(smb_ll *list, DATA newData);
+void ll_push_back(smb_ll *list, DATA newData);
+DATA ll_pop_back(smb_ll *list);
+DATA ll_peek_back(smb_ll *list);
+void ll_push_front(smb_ll *list, DATA newData);
+DATA ll_pop_front(smb_ll *list);
+DATA ll_peek_front(smb_ll *list);
+DATA ll_get(smb_ll *list, int index);
+void ll_remove(smb_ll *list, int index);
+void ll_insert(smb_ll *list, int index, DATA newData);
+void ll_set(smb_ll *list, int index, DATA newData);
+int ll_length(smb_ll *list);
+
+smb_ll_iter ll_get_iter(smb_ll *list);
+DATA ll_iter_next(smb_ll_iter *iterator);
+DATA ll_iter_prev(smb_ll_iter *iterator);
+DATA ll_iter_curr(smb_ll_iter *iterator);
+int ll_iter_has_next(smb_ll_iter *iterator);
+int ll_iter_has_prev(smb_ll_iter *iterator);
+int ll_iter_valid(smb_ll_iter *iterator);
+
+/*******************************************************************************
+
+                                   Array List
+
+*******************************************************************************/
 
 /**
-   The actual array list data type.  "Bare" functions return a pointer to this
-   structure.  You should not use any of the members, as they are implementation
-   specific and subject to change.
+   @brief The actual array list data type.
+
+   "Bare" functions return a pointer to this structure.  You should not use any
+   of the members, as they are implementation specific and subject to change.
  */
 typedef struct smb_al
 {
+  /**
+     @brief The area of memory containing the data.
+   */
   DATA *data;
+
+  /**
+     @brief The number of items in the list.
+   */
   int length;
+
+  /**
+     @brief The space allocated for the list.
+   */
   int allocated;
+
 } smb_al;
 
-////////////////////////////////////////////////////////////////////////////////
-// HASH TABLE
-////////////////////////////////////////////////////////////////////////////////
+void al_init(smb_al *list);
+smb_al *al_create();
+void al_destroy(smb_al *list);
+void al_delete(smb_al *list);
+
+void al_append(smb_al *list, DATA newData);
+void al_prepend(smb_al *list, DATA newData);
+DATA al_get(smb_al *list, int index);
+void al_remove(smb_al *list, int index);
+void al_insert(smb_al *list, int index, DATA newData);
+void al_set(smb_al *list, int index, DATA newData);
+void al_push_back(smb_al *list, DATA newData);
+DATA al_pop_back(smb_al *list);
+DATA al_peek_back(smb_al *list);
+void al_push_front(smb_al *list, DATA newData);
+DATA al_pop_back(smb_al *list);
+DATA al_peek_back(smb_al *list);
+int al_length(smb_al *list);
+
+/*******************************************************************************
+
+                              Hash Table (smb_ht)
+
+*******************************************************************************/
 
 /**
-   A hash function declaration.
+   @brief An initial amount of rows in the hash table.  Something just off of a
+   power of 2.
+ */
+#define HASH_TABLE_INITIAL_SIZE 257
+
+/**
+   @brief The maximum load factor that can be allowed in the hash table.
+ */
+#define HASH_TABLE_MAX_LOAD_FACTOR 0.7
+
+/**
+   @brief A hash function declaration.
+
+   @param toHash The data that will be passed to the hash function.
+   @returns The hash value
  */
 typedef unsigned int (*HASH_FUNCTION)(DATA toHash);
 
+/**
+   @brief The bucket of a hash table.  Contains key,value pairs, and is a singly
+   linked list.
+ */
 typedef struct smb_ht_bckt
 {
+  /**
+     @brief The key of this entry.
+   */
   DATA key;
+
+  /**
+     @brief The value of this entry.
+   */
   DATA value;
+
+  /**
+     @brief The next item in the linked list.
+   */
   struct smb_ht_bckt *next;
 
 } smb_ht_bckt;
 
+/**
+   @brief A hash table data structure.
+ */
 typedef struct smb_ht
 {
+  /**
+     @brief The number of items in the hash table.
+   */
   int length;
+
+  /**
+     @brief The number of slots allocated in the hash table.
+   */
   int allocated;
+
+  /**
+     @brief The hash function for this hash table.
+   */
   HASH_FUNCTION hash;
+
+  /**
+     @brief Pointer to the data of the table.
+   */
   struct smb_ht_bckt **table;
 
 } smb_ht;
 
-#define HASH_TABLE_INITIAL_SIZE 257 // prime number close to 256
-#define HASH_TABLE_MAX_LOAD_FACTOR 0.7
+void ht_init(smb_ht *pTable, HASH_FUNCTION hash_func);
+smb_ht *ht_create(HASH_FUNCTION hash_func);
+void ht_destroy_act(smb_ht *pTable, DATA_ACTION deleter);
+void ht_destroy(smb_ht *pTable);
+void ht_delete_act(smb_ht *pTable, DATA_ACTION deleter);
+void ht_delete(smb_ht *pTable);
 
-////////////////////////////////////////////////////////////////////////////////
-// ARGUMENT DATA
-////////////////////////////////////////////////////////////////////////////////
+void ht_insert(smb_ht *pTable, DATA dKey, DATA dValue);
+void ht_remove_act(smb_ht *pTable, DATA dKey, DATA_ACTION deleter);
+void ht_remove(smb_ht *pTable, DATA dKey);
+DATA ht_get(smb_ht const *pTable, DATA dKey);
+unsigned int ht_string_hash(DATA data);
+void ht_print(smb_ht const *pTable, int full_mode);
+
+/*******************************************************************************
+
+                               Arg Data (smb_ad)
+
+*******************************************************************************/
 
 /**
-   Data structure to store information on arguments passed to the program.
+   @brief The number of regular flags.  52 = 26 + 26.
  */
 #define MAX_FLAGS 52
+
+/**
+   @brief Data structure to store information on arguments passed to the program.
+ */
 typedef struct smb_ad
 {
-  uint64_t flags; // bit field for all 52 alphabetical characters
+  /**
+     @brief Holds boolean value for whether each character flag is set.
+   */
+  uint64_t flags;
+
+  /**
+     @brief Holds the parameters for each regular (character) flag.
+   */
   char *flag_strings[MAX_FLAGS];
+
+  /**
+     @brief Holds the long flags.
+   */
   struct smb_ll *long_flags;
+
+  /**
+     @brief Holds the parameters of the long flags.
+   */
   struct smb_ll *long_flag_strings;
+
+  /**
+     @brief Holds the bare strings (strings that aren't flags or flag params).
+   */
   struct smb_ll *bare_strings;
 
 } smb_ad;
+
+void arg_data_init(smb_ad *data);
+smb_ad *arg_data_create();
+void arg_data_destroy(smb_ad *data);
+void arg_data_delete(smb_ad *data);
+
+void process_args(smb_ad *data, int argc, char **argv);
+int check_flag(smb_ad *data, char flag);
+int check_long_flag(smb_ad *data, char *flag);
+int check_bare_string(smb_ad *data, char *string);
+char *get_flag_parameter(smb_ad *data, char flag);
+char *get_long_flag_parameter(smb_ad *data, char *string);
+
+/*******************************************************************************
+
+                  Bitfield Macros and Data Structures (smb_bf)
+
+*******************************************************************************/
+
+/**
+   @brief Number of bits in a char type.  Shouldn't really change...
+ */
+#define BIT_PER_CHAR 8
+
+/**
+   @brief Get the number amount of space eneded for a bitfield of the specified
+   amount of booleans.
+
+   If you want to allocate a buffer on the stack, you need this macro.
+
+   @param num_bools The number of booleans.
+   @returns The number of bytes
+ */
+#define SMB_BITFIELD_SIZE(num_bools) ((int)((num_bools) / BIT_PER_CHAR) + \
+                                      ((num_bools) % BIT_PER_CHAR == 0 ? 0 : 1))
+
+void bf_init(unsigned char *data, int num_bools);
+unsigned char *bf_create(int num_bools);
+void bf_delete(unsigned char *data, int num_bools);
+int bf_check(unsigned char *data, int index);
+void bf_set(unsigned char *data, int index);
+void bf_clear(unsigned char *data, int index);
+void bf_flip(unsigned char *data, int index);
+
+/*******************************************************************************
+
+                          Generic List Data Structure
+
+*******************************************************************************/
 
 /**
    @brief A generic list data structure.
@@ -575,226 +737,5 @@ typedef struct smb_list
   DATA (*peek_front)(struct smb_list *l);
 
 } smb_list;
-
-/*******************************************************************************
-
-                              Linked List (smb_ll)
-
-*******************************************************************************/
-
-void ll_init(smb_ll *newList);
-smb_ll *ll_create();
-void ll_destroy(smb_ll *list);
-void ll_delete(smb_ll *list);
-
-smb_list ll_create_list();
-smb_list ll_cast_to_list(smb_ll *list);
-
-void ll_append(smb_ll *list, DATA newData);
-void ll_prepend(smb_ll *list, DATA newData);
-void ll_push_back(smb_ll *list, DATA newData);
-DATA ll_pop_back(smb_ll *list);
-DATA ll_peek_back(smb_ll *list);
-void ll_push_front(smb_ll *list, DATA newData);
-DATA ll_pop_front(smb_ll *list);
-DATA ll_peek_front(smb_ll *list);
-DATA ll_get(smb_ll *list, int index);
-void ll_remove(smb_ll *list, int index);
-void ll_insert(smb_ll *list, int index, DATA newData);
-void ll_set(smb_ll *list, int index, DATA newData);
-int ll_length(smb_ll *list);
-
-smb_ll_iter ll_get_iter(smb_ll *list);
-DATA ll_iter_next(smb_ll_iter *iterator);
-DATA ll_iter_prev(smb_ll_iter *iterator);
-DATA ll_iter_curr(smb_ll_iter *iterator);
-int ll_iter_has_next(smb_ll_iter *iterator);
-int ll_iter_has_prev(smb_ll_iter *iterator);
-int ll_iter_valid(smb_ll_iter *iterator);
-
-/*******************************************************************************
-
-                              Array List (smb_al)
-
-*******************************************************************************/
-
-void al_init(smb_al *list);
-smb_al *al_create();
-void al_destroy(smb_al *list);
-void al_delete(smb_al *list);
-
-void al_append(smb_al *list, DATA newData);
-void al_prepend(smb_al *list, DATA newData);
-DATA al_get(smb_al *list, int index);
-void al_remove(smb_al *list, int index);
-void al_insert(smb_al *list, int index, DATA newData);
-void al_set(smb_al *list, int index, DATA newData);
-void al_push_back(smb_al *list, DATA newData);
-DATA al_pop_back(smb_al *list);
-DATA al_peek_back(smb_al *list);
-void al_push_front(smb_al *list, DATA newData);
-DATA al_pop_back(smb_al *list);
-DATA al_peek_back(smb_al *list);
-int al_length(smb_al *list);
-
-/*******************************************************************************
-
-                              Hash Table (smb_ht)
-
-*******************************************************************************/
-
-void ht_init(smb_ht *pTable, HASH_FUNCTION hash_func);
-smb_ht *ht_create(HASH_FUNCTION hash_func);
-void ht_destroy_act(smb_ht *pTable, DATA_ACTION deleter);
-void ht_destroy(smb_ht *pTable);
-void ht_delete_act(smb_ht *pTable, DATA_ACTION deleter);
-void ht_delete(smb_ht *pTable);
-
-void ht_insert(smb_ht *pTable, DATA dKey, DATA dValue);
-void ht_remove_act(smb_ht *pTable, DATA dKey, DATA_ACTION deleter);
-void ht_remove(smb_ht *pTable, DATA dKey);
-DATA ht_get(smb_ht const *pTable, DATA dKey);
-unsigned int ht_string_hash(DATA data);
-void ht_print(smb_ht const *pTable, int full_mode);
-
-////////////////////////////////////////////////////////////////////////////////
-// ARGUMENT DATA
-////////////////////////////////////////////////////////////////////////////////
-
-void arg_data_init(smb_ad *data);
-smb_ad *arg_data_create();
-void arg_data_destroy(smb_ad *data);
-void arg_data_delete(smb_ad *data);
-
-void process_args(smb_ad *data, int argc, char **argv);
-int check_flag(smb_ad *data, char flag);
-int check_long_flag(smb_ad *data, char *flag);
-int check_bare_string(smb_ad *data, char *string);
-char *get_flag_parameter(smb_ad *data, char flag);
-char *get_long_flag_parameter(smb_ad *data, char *string);
-
-////////////////////////////////////////////////////////////////////////////////
-// Bit Field
-
-#define BIT_PER_CHAR 8
-#define SMB_BITFIELD_SIZE(num_bools) ((int)((num_bools) / BIT_PER_CHAR) + \
-                                      ((num_bools) % BIT_PER_CHAR == 0 ? 0 : 1))
-
-/**
-   Allocate a bitfield capable of holding the given number of bools.  Will be
-   allocated in dynamic memory, and a pointer will be returned.
-
-   # Parameters #
-
-   - int num_bools: The number of bools to fit in the bit field.
-
-   # Return #
-
-   A pointer to the bitfield.
-
-   # Error Handling #
-
-   Clears all errors on function call.  If the memory cannot be allocated,
-   raises ALLOCATION_ERROR.
- */
-unsigned char *bf_create(int num_bools);
-
-/**
-   Delete the bitfield pointed to.  Only do this if you created the bitfield via
-   bf_create().
-
-   # Parameters #
-
-   - unsigned char *data: A pointer to the bitfield.
-
-   - int num_bools: The number of bools contained in the bitfield.
-
-   # Error Handling #
-
-   No effect.
- */
-void bf_delete(unsigned char *data, int num_bools);
-
-/**
-   Initialize the memory where a bitfield is contained to all 0's.  This is
-   public so people can use the function to allocate their own bitfields on
-   function stacks instead of via the heap.
-
-   # Parameters #
-
-   - unsigned char *data: A pointer to the bitfield.
-
-   - int num_bools: The size of the bitfield, in number of bools (aka bits, not
-     bytes).
-
-   # Error Handling #
-   
-   No effect
- */
-void bf_init(unsigned char *data, int num_bools);
-
-/**
-   Check whether the given bit is set.
-
-   # Parameters #
-
-   - unsigned char *data: A pointer to the bitfield.
-
-   - int index: The index of the bit to Check
-
-   # Return #
-
-   0 if the bit is not set.  Non zero if the bit is set.
-
-   # Error Handling #
-
-   No effect.
- */
-int bf_check(unsigned char *data, int index);
-
-/**
-   Set a bit.
-
-   # Parameters #
-
-   - unsigned char *data: A pointer to the bitfield
-
-   - int index: The index of the bit to set.
-
-   # Error Handling #
-
-   No effect.
- */
-void bf_set(unsigned char *data, int index);
-
-/**
-   Clear a bit.
-
-   # Parameters #
-
-   - unsigned char *data: A pointer to the bitfield.
-
-   - int index: The index of the bit to clear.
-
-   # Error Handling #
-
-   No effect.
- */
-void bf_clear(unsigned char *data, int index);
-
-/**
-   Clear a bit.
-
-   # Parameters #
-
-   - unsigned char *data: A pointer to the bitfield.
-
-   - int index: The index of the bit to flip.
-
-   # Error Handling #
-
-   No effect.
- */
-void bf_flip(unsigned char *data, int index);
 
 #endif // SMB___LIBSTEPHEN_H_
