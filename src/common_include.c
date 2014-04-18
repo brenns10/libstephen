@@ -1,12 +1,14 @@
-/*******************************************************************************
+/**
 
-    File:         common_include.c
-    Auhtor:       Stephen Brennan
-    Date Created: 9/1/2013
-    Description:  Contains macros and useful things for general purpose
-                  programming.
+    @file    common_include.c
 
-*******************************************************************************/
+    @author  Stephen Brennan
+
+    @date    Created: September 1, 2013
+
+    @brief   Contains definitions for the general purpose items in libstephen.
+*/
+
 #include "libstephen.h"
 
 static size_t mallocs;

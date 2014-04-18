@@ -8,7 +8,7 @@
 
   @brief   A tiny little bit of code that allows for efficent storage and access
            to large amounts of boolean data.
-*/
+*/ 
 
 #include "libstephen.h"
 #include <string.h>
