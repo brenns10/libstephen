@@ -8,34 +8,23 @@
 
   @brief   Contains functions to simplify processing command line args.
 
+  The args library analyzes args as generally as possible.  It recognizes three
+  different types.  First is the 'flag' or 'regular flag', which is simply one
+  character.  Their order doesn't matter.  They're placed on the command line
+  after a single hyphen.
+
+  Then there are long flags, which are strings that come after two hyphens.
+  Both flags and long flags are allowed to have parameters passed with them.
+
+  Finally are bare strings, which are things that aren't passed as parameters or
+  as flags.
+
   @todo    Possibly add support for flags that aren't alphabetical.
 */
 
 #include "libstephen.h"
 #include <stdio.h>
 #include <string.h>
-
-/*
-  
-  The args part of the library should be able to analyze args as general as
-  possible.  It will accept three different types of arguments.  There is the
-  "flag", which is a single character only.  Flags are placed on the command
-  line after a single hyphen.  It represents something similar to a boolean
-  value (ie, whether the flag is present or not).  A flag can also contain an
-  argument.  This argument will come directly after the flag.  It is a single
-  string.  Flags also can be grouped after a single hyphen.  For example, the
-  command "pacman -Syu" has S, y, and u flags set.
-
-  The second type of argument is the long flag.  It is a string value (no
-  spaces) that comes after two hyphens.  It also can represent a boolean type
-  value.  It is usually used as a verbose alternative so that the nature of that
-  option is either hard to type, or easy to read.  It can also have a string
-  value that occurs with it.
-
-  The final type of argument is the bare string.  This is basically any string
-  that is not preceeded by a flag or long flag.
-
- */
 
 /*******************************************************************************
 
