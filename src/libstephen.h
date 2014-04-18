@@ -485,12 +485,6 @@ typedef struct smb_ad
 
 } smb_ad;
 
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-// GENERIC TYPE DEFINITIONS
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-
 /**
    @brief A generic list data structure.
 
@@ -672,93 +666,11 @@ smb_ad *arg_data_create();
 void arg_data_destroy(smb_ad *data);
 void arg_data_delete(smb_ad *data);
 
-/**
-   Analyze the argument data passed to the program.  Pass in the argc and argv,
-   but make sure to decrement and increment each respective variable so they do
-   not include the name of the program.
-
-   # Parameters #
-
-   - int argc: The number of arguments (not including program name).
-
-   - char **argv: The arguments themselves (not including program name).
-
-   # Return #
-
-   A pointer to an smb_ad object.  Use provided functions to query the object
-   about every desired flag.
- */
 void process_args(smb_ad *data, int argc, char **argv);
-
-/**
-   Check whether a flag is raised.
-
-   # Parameters #
-
-   - smb_ad *data: The smb_ad returned by process_args().
-
-   - char flag: The character flag to check.  Alphabetical only.
-
-   # Return #
-
-   An integer, 0 iff the flag was not set.
- */
 int check_flag(smb_ad *data, char flag);
-
-/**
-   Check whether a long flag appeared.  It must occur verbatim.
-
-   # Parameters #
-
-   - smb_ad *data: The smb_ad returned by process_args().
-
-   - char *flag: The string flag to check for.
-
-   # Return #
-
-   An integer, 0 iff the flag was not set.
- */
 int check_long_flag(smb_ad *data, char *flag);
-
-/**
-   Check whether a bare string appeared.  It must occur verbatim.
-
-   # Parameters #
-
-   - smb_ad *data: The smb_ad returned by process_args().
-
-   - char *string: The string to search for.
- */
 int check_bare_string(smb_ad *data, char *string);
-
-/**
-   Return the string parameter associated with the flag.
-
-   # Parameters #
-
-   - smb_ad *data: The smb_ad returned by process_args().
-
-   - char flag: The flag to find parameters of.
-
-   # Return #
-
-   The parameter of the flag.
- */
 char *get_flag_parameter(smb_ad *data, char flag);
-
-/**
-   Return the string parameter associated with the long string.
-
-   # Parameters #
-
-   - smb_ad *data: The smb_ad returned by process_args().
-
-   - char *string: The long flag to find parameters of.
-
-   # Return #
-
-   The parameter of the long flag.  NULL if no parameter or if flag not found.
- */
 char *get_long_flag_parameter(smb_ad *data, char *string);
 
 ////////////////////////////////////////////////////////////////////////////////

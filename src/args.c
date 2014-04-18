@@ -1,14 +1,15 @@
-/*******************************************************************************
+/**
 
-  File:         args.c
+  @file    args.c
 
-  Author:       Stephen Brennan
+  @author  Stephen Brennan
 
-  Date Created: Thursday, 31 October 2013
+  @date    Created Thursday, 31 October 2013
 
-  Description:  Contains functions to simplify processing command line args.
+  @brief   Contains functions to simplify processing command line args.
 
-*******************************************************************************/
+  @todo    Possibly add support for flags that aren't alphabetical.
+*/
 
 #include "libstephen.h"
 #include <stdio.h>
@@ -36,10 +37,21 @@
 
  */
 
-////////////////////////////////////////////////////////////////////////////////
-// AUXILIARY FUNCTIONS
-////////////////////////////////////////////////////////////////////////////////
+/*******************************************************************************
 
+                               Private Functions
+
+*******************************************************************************/
+
+/**
+   @brief Returns the index of a flag for a specific character.
+
+   Currently, only alphabetical characters are allowed.  This could change.  See
+   the top of the file for the todo entry on this.
+
+   @param c The character to find the index of.
+   @returns The index of the flag.
+ */
 int flag_index(char c)
 {
   int idx;
@@ -54,7 +66,11 @@ int flag_index(char c)
 }
 
 /**
-   Add the regular to the flag to the data structure.
+   @brief Add regular flags (i.e. characters) to the smb_ad structure.
+
+   @param pData The structure containing the arg data.
+   @param cFlags The string of flags.  Null terminated.
+   @returns The last flag in the string (for parameter purposes).
  */
 char process_flag(smb_ad *pData, char *cFlags)
 {
@@ -72,7 +88,11 @@ char process_flag(smb_ad *pData, char *cFlags)
 }
 
 /**
-   Add the long flag to the data structure.
+   @brief Add the long flag to the data structure.
+
+   @param pData The structure containing the arg data.
+   @param sTitle The title of the long flag, including '--'
+   @returns The adjusted pointer to the title, without '--'.
  */
 char *process_long_flag(smb_ad *pData, char *sTitle)
 {
@@ -84,6 +104,18 @@ char *process_long_flag(smb_ad *pData, char *sTitle)
   return sTitle + 2;
 }
 
+/**
+   @brief Add the bare string to the data structure.
+
+   This function will first attempt to add the string as an argument to the
+   previous flag, then the previous long flag, and then, finally, it will add
+   itself as just a bare string.
+
+   @param pData The structure with argument data.
+   @param sStr The string to add.
+   @param previous_long_flag The last long flag encountered.
+   @param previous_flag The last regular (character) flag encountered.
+ */
 void process_bare_string(smb_ad *pData, char *sStr, char *previous_long_flag, 
                          char previous_flag)
 {
@@ -105,7 +137,12 @@ void process_bare_string(smb_ad *pData, char *sStr, char *previous_long_flag,
 }
 
 /**
-   Find the string in the list and return its index, or -1.
+   @brief Find the string in the list and return its index, or -1.
+
+   @param toSearch Pointer to list to search.
+   @param toFind String to find.
+   @returns Index of the string.
+   @retval -1 String is not in the list.
  */
 int find_string(smb_ll *toSearch, char *toFind)
 {
@@ -123,10 +160,18 @@ int find_string(smb_ll *toSearch, char *toFind)
   return -1;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// Public Functions
-////////////////////////////////////////////////////////////////////////////////
+/*******************************************************************************
 
+                                Public Functions
+
+*******************************************************************************/
+
+/**
+   @brief Initialize an smb_ad structure in memory that has already ben
+   allocated.
+
+   @param data The pointer to the memory to allocate in.
+ */
 void arg_data_init(smb_ad *data)
 {
   data->flags = 0;
@@ -136,6 +181,10 @@ void arg_data_init(smb_ad *data)
   data->bare_strings = ll_create();
 }
 
+/**
+   @brief Allocate and initialize a smb_ad structure for argument parsing.
+   @returns A pointer to the structure.
+ */
 smb_ad *arg_data_create()
 {
   smb_ad *data = (smb_ad*) malloc(sizeof(smb_ad));
@@ -147,7 +196,43 @@ smb_ad *arg_data_create()
 }
 
 /**
-   Process args.  ASSUMES THAT THE PROGRAM IS REMOVED FROM THE LIST OF ARGS.
+   @brief Free the resources of an arg_data object, but do not free it.
+
+   @param data The arg data to destroy.
+ */
+void arg_data_destroy(smb_ad * data)
+{
+  ll_delete(data->long_flags);
+  ll_delete(data->bare_strings);
+  ll_delete(data->long_flag_strings);
+}
+
+/**
+   @brief Free the resources of an arg data object, and then free the object
+   itself.
+
+   @param data The arg data to delete.
+ */
+void arg_data_delete(smb_ad *data)
+{
+  arg_data_destroy(data);
+
+  free(data);
+  SMB_DECREMENT_MALLOC_COUNTER(sizeof(smb_ad));
+}
+
+/**
+   @brief Analyze the argument data passed to the program.  
+
+   Pass in the argc and argv, but make sure to decrement and increment each
+   respective variable so they do not include the name of the program.
+
+   @param argc The number of arguments (not including program name).
+
+   @param argv The arguments themselves (not including program name).
+
+   @params A pointer to an smb_ad object.  Use provided functions to query the
+   object about every desired flag.
  */
 void process_args(smb_ad *data, int argc, char **argv)
 {
@@ -194,25 +279,12 @@ void process_args(smb_ad *data, int argc, char **argv)
 }
 
 /**
-   Free the resources of an arg_data object.
- */
-void arg_data_destroy(smb_ad * data)
-{
-  ll_delete(data->long_flags);
-  ll_delete(data->bare_strings);
-  ll_delete(data->long_flag_strings);
-}
+   @brief Check whether a flag is raised.
 
-void arg_data_delete(smb_ad *data)
-{
-  arg_data_destroy(data);
-
-  free(data);
-  SMB_DECREMENT_MALLOC_COUNTER(sizeof(smb_ad));
-}
-
-/**
-   Checks whether a short flag was set.
+   @param data The smb_ad returned by process_args().
+   @param flag The character flag to check.  Alphabetical only.
+   @retval 0 if the flag was not set.
+   @retval 1 otherwise.
  */
 int check_flag(smb_ad *pData, char flag)
 {
@@ -226,7 +298,12 @@ int check_flag(smb_ad *pData, char flag)
 }
 
 /**
-   Check whether a long flag was set.  Return the index + 1 of the flag.
+   @brief Check whether a long flag appeared.  It must occur verbatim.
+
+   @param data The smb_ad returned by process_args().
+   @param flag The string flag to check for.
+   @returns the index of the flag + 1 if it is set.
+   @retval 0 if the flag was not set.
  */
 int check_long_flag(smb_ad *data, char *flag)
 {
@@ -234,7 +311,12 @@ int check_long_flag(smb_ad *data, char *flag)
 }
 
 /**
-   Check whether a bare string appeared.
+   @brief Check whether a bare string appeared.  It must occur verbatim.
+
+   @param data The smb_ad returned by process_args().
+   @param string The string to search for.
+   @returns the index of the flag + 1 if it is set.
+   @retval 0 iff the flag was not set.
  */
 int check_bare_string(smb_ad *data, char *string)
 {
@@ -242,7 +324,11 @@ int check_bare_string(smb_ad *data, char *string)
 }
 
 /**
-   Get the parameter associated with a flag.
+   @brief Return the string parameter associated with the flag.
+
+   @param data The smb_ad returned by process_args().
+   @param flag The flag to find parameters of.
+   @returns The parameter of the flag.
  */
 char *get_flag_parameter(smb_ad *data, char flag)
 {
@@ -254,7 +340,12 @@ char *get_flag_parameter(smb_ad *data, char flag)
 }
 
 /**
-   Get the parameter associated with a long flag.
+   @brief Return the string parameter associated with the long string.
+
+   @param data The smb_ad returned by process_args().
+   @param string The long flag to find parameters of.
+   @returns The parameter of the long flag.  
+   @retval NULL if no parameter or if flag not found.
  */
 char *get_long_flag_parameter(smb_ad *data, char *string)
 {
