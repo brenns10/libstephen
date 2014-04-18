@@ -808,190 +808,24 @@ DATA al_pop_back(smb_al *list);
 DATA al_peek_back(smb_al *list);
 int al_length(smb_al *list);
 
-////////////////////////////////////////////////////////////////////////////////
-// HASH TABLE
-////////////////////////////////////////////////////////////////////////////////
+/*******************************************************************************
 
-/**
-   Initialize a hash table in memory already allocated.
+                              Hash Table (smb_ht)
 
-   # Parameters #
+*******************************************************************************/
 
-   - smb_ht *pTable: pointer to the table to initialize.
-
-   - HASH_FUNCTION *hash_func: hash function for the table.
- */
 void ht_init(smb_ht *pTable, HASH_FUNCTION hash_func);
-
-/**
-   Create a hash table.
-
-   # Parameters #
-
-   - HASH_FUNCTION: A function that takes one DATA and returns a hash value
-     generated from it.  It should be a good hash function.
-
-  # Return #
-
-  A pointer to the new hash table.
-
-  # Error Handling #
-
-  Clears all errors on function call.  If malloc fails, then no hash table is
-  created, NULL is returned, and the ALLOCATION_ERROR flag is raised.
- */
 smb_ht *ht_create(HASH_FUNCTION hash_func);
-
-/**
-   Insert data into the hash table.  Expands the hash table if the load factor
-   is below a threshold.  If the key already exists in the table, then the
-   function will overwrite it with the new data provided.
-
-   # Parameters #
-
-   - smb_ht *pTable: Pointer to the hash table.
-
-   - DATA dKey: The key to insert.
-
-   - DATA dValue: The value to insert at the key.
-
-   # Error Handling #
-
-   Clears all errors on function call.  Function call fails with
-   ALLOCATION_ERROR if resize fails, or if bucket creation fails.
- */
-void ht_insert(smb_ht *pTable, DATA dKey, DATA dValue);
-
-/**
-   Remove the key, value pair stored in the hash table.
-
-   # Parameters #
-
-   - smb_ht *pTable: Pointer to the hash table.
-
-   - DATA dKey: key to delete.
-
-   # Error Handling #
-
-   Clears all errors on function call.
- */
-void ht_remove(smb_ht *pTable, DATA dKey);
-
-/**
-   Remove the key, value pair stored in the hash table.
-
-   # Parameters #
-
-   - smb_ht *pTable: Pointer to the hash table.
-
-   - DATA dKey: key to delete.
-
-   - DATA_ACTION deleter: action to perform on the value before removing it.
-
-   # Error Handling #
-
-   Clears all errors on function call.
- */
-void ht_remove_act(smb_ht *pTable, DATA dKey, DATA_ACTION deleter);
-
-/**
-   Return the value associated with the key provided.
-
-   # Parameters #
-
-   - smb_ht const *pTable: Pointer to the hash table.
-
-   - DATA dKey: key whose value to retrieve.
-
-   # Return #
-
-   The value associated the key.
-
-   # Error Handling #
-
-   Clears all errors on function call.  If the key is not found in the table,
-   then raises NOT_FOUND_ERROR.
- */
-DATA ht_get(smb_ht const *pTable, DATA dKey);
-
-/**
-   Return the hash of the data, interpreting it as a string.
-
-   # Parameters #
-
-   - DATA data: The string to hash, assuming that the value contained is a
-     char*.
-
-   # Return #
-
-   The hash value of the string.
-
-   # Error Handling #
-
-   No effect.
- */
-unsigned int ht_string_hash(DATA data);
-
-/**
-   Free any resources used by the hash table, but does not call free on the
-   pointer itself (useful for tables created on the stack).
-
-   If pointers are contained within the hash table, they are not freed.  Use
-   ht_destroy_act to specify a deletion action on the hash table.
- */
-void ht_destroy(smb_ht *pTable);
-
-/**
-   Free resources used by the hash table, but does not free the pointer itself.
-   Useful for stack valued hash tables.  A deleter must be specified in this
-   function call.
- */
 void ht_destroy_act(smb_ht *pTable, DATA_ACTION deleter);
-
-/**
-   Free the hash table and its resources.  No pointers contained in the table
-   will be freed.
-
-   # Parameters #
-
-   - smb_ht *pTable: The table to free.
-
-   # Error Handling #
-
-   No effect.
- */
+void ht_destroy(smb_ht *pTable);
+void ht_delete_act(smb_ht *pTable, DATA_ACTION deleter);
 void ht_delete(smb_ht *pTable);
 
-/**
-   Free the hash table and its resources.  Perform an action on each data before
-   freeing the table.  Useful for freeing pointers stored in the table.
-
-   # Parameters #
-
-   - smb_ht *pTable: The table to free.
-
-   - DATA_ACTION deleter: The action to perform on each value in the hash table
-     before deletion.
-
-   # Error Handling #
-
-   No effect.
- */
-void ht_delete_act(smb_ht *pTable, DATA_ACTION deleter);
-
-/**
-   Print the entire hash table.
-
-   # Parameters #
-
-   - HASH_HABLE *pTable: The table to print.
-
-   - int full_mode: Whether to print every row in the hash table.
-
-   # Error Handling #
-   
-   No effect.
- */
+void ht_insert(smb_ht *pTable, DATA dKey, DATA dValue);
+void ht_remove_act(smb_ht *pTable, DATA dKey, DATA_ACTION deleter);
+void ht_remove(smb_ht *pTable, DATA dKey);
+DATA ht_get(smb_ht const *pTable, DATA dKey);
+unsigned int ht_string_hash(DATA data);
 void ht_print(smb_ht const *pTable, int full_mode);
 
 ////////////////////////////////////////////////////////////////////////////////

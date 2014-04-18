@@ -1,25 +1,32 @@
-/*******************************************************************************
+/**
 
-  File:         hashtable.c
+  @file    hashtable.c
 
-  Author:       Stephen Brennan
+  @author  Stephen Brennan
 
-  Date Created: Thursday,  7 November 2013
+  @date    Created Thursday, 7 November 2013
 
-  Description:  A simple hash table, with an included hash function for strings.
+  @brief   A simple hash table, with an included hash function for strings.
 
-*******************************************************************************/
+*/
 
 #include <string.h>
 #include <stdio.h>
 #include "libstephen.h"
 
-////////////////////////////////////////////////////////////////////////////////
-// Private Helper Functions
-////////////////////////////////////////////////////////////////////////////////
+/*******************************************************************************
 
-/*
-  Returns whether or not two DATA structs are equal.
+                               Private Functions
+
+*******************************************************************************/
+
+/**
+   @brief Detrmines whether or not two DATA unions are equal.
+
+   @param d1 The first DATA to compare.
+   @param d2 The second DATA to compare.
+   @retval 0 if not equal.
+   @retval Nonzero if equal.
  */
 int data_equal(DATA d1, DATA d2)
 {
@@ -28,8 +35,11 @@ int data_equal(DATA d1, DATA d2)
     && (d1.data_ptr == d2.data_ptr);
 }
 
-/*
-  Returns the next hashtable size.
+/**
+   @brief Returns the next hashtable size.
+
+   @param current The current size of the hash table.
+   @returns The next size in the sequence for hash tables.
  */
 int ht_next_size(int current)
 {
@@ -39,8 +49,14 @@ int ht_next_size(int current)
                           // but this is considerably simpler.
 }
 
-/*
-  Create a hash table bucket.
+/**
+   @brief Allocate and initialize a hash table bucket.
+
+   @param dKey The key stored
+   @param dValue The value stored
+   @param pNext The next bucket pointer
+   @returns A pointer to a new hash table bucket.
+   @exception ALLOCATION_ERROR
  */
 smb_ht_bckt *ht_bucket_create(DATA dKey, DATA dValue, smb_ht_bckt *pNext)
 {
@@ -57,8 +73,10 @@ smb_ht_bckt *ht_bucket_create(DATA dKey, DATA dValue, smb_ht_bckt *pNext)
   return pBucket;
 }
 
-/*
-  Delete a hash table bucket.
+/**
+   @brief Free a hash table bucket.
+
+   @param pToDelete The bucket to delete.
  */
 void ht_bucket_delete(smb_ht_bckt *pToDelete)
 {
@@ -66,9 +84,19 @@ void ht_bucket_delete(smb_ht_bckt *pToDelete)
   SMB_DECREMENT_MALLOC_COUNTER(sizeof(smb_ht_bckt));
 }
 
-/*
-  Find a pointer to the first hash entry with key==dKey.  If it doesn't exist,
-  return a pointer to the tail of the list.  If the bucket is null, return NULL.
+/**
+  @brief Finds a value within a singly linked hash table bucket list.
+
+  This function actually performs a lot of tasks rolled into one.  First, if you
+  pass NULL as the pBucket, it will return NULL.  More interestingly, it will
+  return the pointer to the bucket that equals dKey if it exists, or the last
+  bucket in the list if there is none equalling dKey.  This way, you can just
+  check the return value, and if dKey == pBucket->key, you have the pre-xisting
+  spot for dKey.  Otherwise, you can just create the next item in the list.
+
+  @param pBucket The bucket to search within.
+  @param dKey The key to search for.
+  @returns The bucket containing dKey.
  */
 smb_ht_bckt *ht_find_in_bucket(smb_ht_bckt *pBucket, DATA dKey)
 {
@@ -79,9 +107,17 @@ smb_ht_bckt *ht_find_in_bucket(smb_ht_bckt *pBucket, DATA dKey)
   return pBucket;
 }
 
-/*
-  Insert data into the hash table.  If the key already exists in the table,
-  overwrites with a new value.
+/**
+   @brief Insert a bucket with data into the hash table.  If the key already
+   exists in the table, overwrites with a new value.
+
+   This function is at a lower lever than ht_insert.  In order to properly
+   implement a hash table, the table must expand as you add to it, which is the
+   part that ht_insert takes care of.
+
+   @param pTable The table to insert into.
+   @param pBucket The bucket containing the data to insert.  Note that this
+   bucket may not be the final bucket containing the data.
  */
 void ht_insert_bucket(smb_ht *pTable, smb_ht_bckt *pBucket)
 {
@@ -108,8 +144,12 @@ void ht_insert_bucket(smb_ht *pTable, smb_ht_bckt *pBucket)
  
 }
 
-/*
-  Resize the hash table, adding increment to the capacity of the table.
+/**
+   @brief Expand the hash table, adding increment to the capacity of the table.
+
+   @param pTable The table to expand.  
+   @exception ALLOCATION_ERROR If the new table couldn't be allocated, no change
+   is made.
  */
 void ht_resize(smb_ht *pTable)
 {
@@ -156,8 +196,11 @@ void ht_resize(smb_ht *pTable)
   SMB_DECREMENT_MALLOC_COUNTER(oldAllocated * sizeof(smb_ht_bckt*));
 }
 
-/*
-  Return the load factor of a hash table.
+/**
+   @brief Return the load factor of a hash table.
+
+   @param pTable The table to find the load factor of.
+   @returns The load factor of the hash table.
  */
 double ht_load_factor(smb_ht *pTable)
 {
@@ -168,6 +211,13 @@ double ht_load_factor(smb_ht *pTable)
 // Public Interface Functions
 ////////////////////////////////////////////////////////////////////////////////
 
+/**
+   @brief Initialize a hash table in memory already allocated.
+
+   @param pTable A pointer to the table to initialize.
+   @param hash_func A hash function for the table.
+   @exception ALLOCATION_ERROR
+ */
 void ht_init(smb_ht *pTable, HASH_FUNCTION hash_func)
 {
   CLEAR_ALL_ERRORS;
@@ -191,6 +241,14 @@ void ht_init(smb_ht *pTable, HASH_FUNCTION hash_func)
   memset((void*)pTable->table, 0, HASH_TABLE_INITIAL_SIZE * sizeof(smb_ht_bckt*));  
 }
 
+/**
+   @brief Allocate and initialize a hash table.
+
+   @param hash_func A function that takes one DATA and returns a hash value
+   generated from it.  It should be a good hash function.
+   @returns A pointer to the new hash table.
+   @exception ALLOCATION_ERROR
+ */
 smb_ht *ht_create(HASH_FUNCTION hash_func)
 {
   CLEAR_ALL_ERRORS;
@@ -212,6 +270,16 @@ smb_ht *ht_create(HASH_FUNCTION hash_func)
   return pTable;
 }
 
+/**
+   @brief Free resources used by the hash table, but does not free the pointer
+   itself.  Perform an action on the data as it is deleted.
+
+   Useful for stack valued hash tables.  A deleter must be specified in this
+   function call.
+
+   @param pTable The table to destroy.
+   @param deleter The deletion action on the data.
+ */
 void ht_destroy_act(smb_ht *pTable, DATA_ACTION deleter)
 {
   int i;
@@ -233,11 +301,28 @@ void ht_destroy_act(smb_ht *pTable, DATA_ACTION deleter)
   }
 }
 
+/**
+   @brief Free any resources used by the hash table, but doesn't free the
+   pointer.  Doesn't perform any actions on the data as it is deleted.
+
+   If pointers are contained within the hash table, they are not freed.  Use
+   ht_destroy_act to specify a deletion action on the hash table.
+
+   @param pTable The table to destroy.
+ */
 void ht_destroy(smb_ht *pTable)
 {
   ht_destroy_act(pTable, NULL);
 }
 
+/**
+   @brief Free the hash table and its resources.  Perform an action on each data before
+   freeing the table.  Useful for freeing pointers stored in the table.
+
+   @param pTable The table to free.
+   @param deleter The action to perform on each value in the hash table before
+   deletion.
+ */
 void ht_delete_act(smb_ht *pTable, DATA_ACTION deleter)
 {
   if (!pTable) return;
@@ -250,14 +335,28 @@ void ht_delete_act(smb_ht *pTable, DATA_ACTION deleter)
   free(pTable);
 }
 
+/**
+   @brief Free the hash table and its resources.  No pointers contained in the
+   table will be freed.
+
+   @param pTable The table to free.
+ */
 void ht_delete(smb_ht *pTable)
 {
   ht_delete_act(pTable, NULL);
 }
 
-/*
-  Insert data into the hash table.  If the key already exists in the table,
-  overwrites with a new value.
+/**
+   @brief Insert data into the hash table.  
+
+   Expands the hash table if the load factor is below a threshold.  If the key
+   already exists in the table, then the function will overwrite it with the new
+   data provided.
+
+   @param pTable A pointer to the hash table.
+   @param dKey The key to insert.
+   @param dValue The value to insert at the key.
+   @exception ALLOCATION_ERROR
  */
 void ht_insert(smb_ht *pTable, DATA dKey, DATA dValue)
 {
@@ -274,6 +373,13 @@ void ht_insert(smb_ht *pTable, DATA dKey, DATA dValue)
   ht_insert_bucket(pTable, pBucket);
 }
 
+/**
+   @brief Remove the key, value pair stored in the hash table.
+
+   @param pTable A pointer to the hash table.
+   @param dKey The key to delete.
+   @param deleter The action to perform on the value before removing it.
+ */
 void ht_remove_act(smb_ht *pTable, DATA dKey, DATA_ACTION deleter)
 {
   CLEAR_ALL_ERRORS;
@@ -315,11 +421,27 @@ void ht_remove_act(smb_ht *pTable, DATA dKey, DATA_ACTION deleter)
   }
 }
 
+/**
+   @brief Remove the key, value pair stored in the hash table.
+
+   This function does not call a deleter on the stored data.
+
+   @param pTable A pointer to the hash table.
+   @param dKey The key to delete.
+ */
 void ht_remove(smb_ht *pTable, DATA dKey)
 {
   ht_remove_act(pTable, dKey, NULL);
 }
 
+/**
+   @brief Return the value associated with the key provided.
+
+   @param pTable A pointer to the hash table.
+   @param dKey The key whose value to retrieve.
+   @returns The value associated the key.
+   @exception NOT_FOUND_ERROR
+ */
 DATA ht_get(smb_ht const *pTable, DATA dKey)
 {
   CLEAR_ALL_ERRORS;
@@ -339,6 +461,12 @@ DATA ht_get(smb_ht const *pTable, DATA dKey)
   return d;
 }
 
+/**
+   @brief Return the hash of the data, interpreting it as a string.
+
+   @param data The string to hash, assuming that the value contained is a char*.
+   @returns The hash value of the string.
+ */
 unsigned int ht_string_hash(DATA data)
 {
   char *theString = (char *)data.data_ptr;
@@ -353,9 +481,15 @@ unsigned int ht_string_hash(DATA data)
   return hash;
 }
 
-/*
-  Print the hash table.  If full_mode is nonzero, it will print every cell of
-  the hash table, regardless of whether or not it contains anything.
+/**
+   @brief Print the entire hash table.
+
+   This function is useful for diagnostics.  It can show every row in the table
+   (with full_mode) so you can see how well entries are distributed in the
+   table.  Or, it can be compact and show just the rows with data.
+
+   @param pTable The table to print.
+   @param full_mode Whether to print every row in the hash table.
  */
 void ht_print(smb_ht const *pTable, int full_mode)
 {
