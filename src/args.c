@@ -107,11 +107,11 @@ void process_bare_string(ARG_DATA *pData, char *sStr, char *previous_long_flag,
 /**
    Find the string in the list and return its index, or -1.
  */
-int find_string(LINKED_LIST *toSearch, char *toFind)
+int find_string(struct smb_ll *toSearch, char *toFind)
 {
   DATA d;
   char *sCurr;
-  LL_ITERATOR iterator = ll_get_iter(toSearch);
+  struct smb_ll_iter iterator = ll_get_iter(toSearch);
   while (ll_iter_valid(&iterator)) {
     d = ll_iter_curr(&iterator);
     sCurr = (char *)d.data_ptr;

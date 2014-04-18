@@ -395,36 +395,36 @@ typedef void (*DATA_ACTION)(DATA toDelete);
    Node structure for linked list.  This must be exposed in order for other data
    types to be public.  This should not be used by users of the library.
  */
-typedef struct ll_node 
+struct smb_ll_node 
 {
-  struct ll_node *prev;
-  struct ll_node *next;
+  struct smb_ll_node *prev;
+  struct smb_ll_node *next;
   DATA data;
 
-} NODE;
+};
 
 /**
    The actual linked list data type.  "Bare" functions return a pointer to this
    structure.
  */
-typedef struct ll_obj
+struct smb_ll
 {
-  NODE *head;
-  NODE *tail;
+  struct smb_ll_node *head;
+  struct smb_ll_node *tail;
   int length;
 
-} LINKED_LIST;
+};
 
 /**
    A linked list iterator.  Do not modify the structure yourself.
  */
-typedef struct ll_iter
+struct smb_ll_iter
 {
-  LINKED_LIST *list;
-  NODE *current;
+  struct smb_ll *list;
+  struct smb_ll_node *current;
   int index;
 
-} LL_ITERATOR;
+};
 
 ///////////////////////////////////////////////////////////////////////////////
 // ARRAY LIST
@@ -485,9 +485,9 @@ ARG_DATA
 {
   uint64_t flags; // bit field for all 52 alphabetical characters
   char *flag_strings[MAX_FLAGS];
-  LINKED_LIST *long_flags;
-  LINKED_LIST *long_flag_strings;
-  LINKED_LIST *bare_strings;
+  struct smb_ll *long_flags;
+  struct smb_ll *long_flag_strings;
+  struct smb_ll *bare_strings;
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -765,7 +765,7 @@ typedef struct smb_list
 /**
    Initializes a new list which has already been allocated.
  */
-void ll_init(LINKED_LIST *newList);
+void ll_init(struct smb_ll *newList);
 
 /**
    Creates a new, empty linked list.
@@ -779,7 +779,7 @@ void ll_init(LINKED_LIST *newList);
    Clears all errors.  Can raise ALLOCATION_ERROR.  In this case, returns NULL,
    and no memory is leaked.
  */
-LINKED_LIST *ll_create();
+struct smb_ll *ll_create();
 
 /**
    Creates a new list with initial data.  Returns an instance of the interface.
@@ -812,11 +812,11 @@ LIST ll_create_list();
 LIST ll_create_empty_list();
 
 /**
-   Cast a LINKED_LIST pointer to an instance of the list interface.
+   Cast a struct smb_ll pointer to an instance of the list interface.
 
    # Parameters #
 
-   - LINKED_LIST *list: the linked list to cast to an generic list.
+   - struct smb_ll *list: the linked list to cast to an generic list.
 
    # Returns #
 
@@ -826,14 +826,14 @@ LIST ll_create_empty_list();
 
    No effect on flags.
  */
-LIST ll_cast_to_list(LINKED_LIST *list);
+LIST ll_cast_to_list(struct smb_ll *list);
 
 /**
    Append the given data to the end of the list.
 
    # Parameters #
 
-   - LINKED_LIST *list: a pointer to the list
+   - struct smb_ll *list: a pointer to the list
 
    - DATA newData: the data to append
 
@@ -841,14 +841,14 @@ LIST ll_cast_to_list(LINKED_LIST *list);
 
    Clears all errors.  Can raise an ALLOCATION_ERROR.
  */
-void ll_append(LINKED_LIST *list, DATA newData);
+void ll_append(struct smb_ll *list, DATA newData);
 
 /**
    Prepend the given data to the beginning of the list.
 
    # Parameters #
 
-   - LINKED_LIST *list: a pointer to the list
+   - struct smb_ll *list: a pointer to the list
    
    - DATA newData: the data to prepend
 
@@ -856,14 +856,14 @@ void ll_append(LINKED_LIST *list, DATA newData);
 
    Clears all errors.  Can raise ALLOCATION_ERROR.
  */
-void ll_prepend(LINKED_LIST *list, DATA newData);
+void ll_prepend(struct smb_ll *list, DATA newData);
 
 /**
    Push the data to the back of the list.  An alias for ll_append.
 
    # Parameters #
 
-   - LINKED_LIST *list: a pointer to the list
+   - struct smb_ll *list: a pointer to the list
 
    - DATA newData: the data to push
 
@@ -871,14 +871,14 @@ void ll_prepend(LINKED_LIST *list, DATA newData);
 
    Clears all errors.  Can raise ALLOCATION_ERROR.
  */
-void ll_push_back(LINKED_LIST *list, DATA newData);
+void ll_push_back(struct smb_ll *list, DATA newData);
 
 /**
    Pop data from the back of the list.
 
    # Parameters #
 
-   - LINKED_LIST *list: a pointer to the list
+   - struct smb_ll *list: a pointer to the list
 
    # Returns #
 
@@ -888,14 +888,14 @@ void ll_push_back(LINKED_LIST *list, DATA newData);
 
    Clears all errors.  Can raise INDEX_ERROR.
  */
-DATA ll_pop_back(LINKED_LIST *list);
+DATA ll_pop_back(struct smb_ll *list);
 
 /**
    Peek at the back of the list.
 
    # Parameters #
 
-   - LINKED_LIST *list: a pointer to the list
+   - struct smb_ll *list: a pointer to the list
 
    # Returns #
 
@@ -905,14 +905,14 @@ DATA ll_pop_back(LINKED_LIST *list);
 
    Clears all errors.  Can raise INDEX_ERROR.
  */
-DATA ll_peek_back(LINKED_LIST *list);
+DATA ll_peek_back(struct smb_ll *list);
 
 /**
    Push the data to the front of the list.  An alias for ll_prepend.
 
    # Parameters #
    
-   - LINKED_LIST *list: a pointer to the list
+   - struct smb_ll *list: a pointer to the list
 
    - DATA newData: the data to push
 
@@ -920,14 +920,14 @@ DATA ll_peek_back(LINKED_LIST *list);
 
    Clears all errors.  Can raise ALLOCATION_ERROR.
  */
-void ll_push_front(LINKED_LIST *list, DATA newData);
+void ll_push_front(struct smb_ll *list, DATA newData);
 
 /**
    Pop the data from the front of the list.
 
    # Parameters #
 
-   - LINKED_LIST *list: a pointer to the list
+   - struct smb_ll *list: a pointer to the list
 
    # Returns #
    
@@ -937,14 +937,14 @@ void ll_push_front(LINKED_LIST *list, DATA newData);
 
    Clears all errors.  Can raise INDEX_ERROR.
  */
-DATA ll_pop_front(LINKED_LIST *list);
+DATA ll_pop_front(struct smb_ll *list);
 
 /**
    Peek at the front of the list.
 
    # Parameters #
 
-   - LINKED_LIST *list: a pointer to the list.
+   - struct smb_ll *list: a pointer to the list.
 
    # Returns #
 
@@ -954,7 +954,7 @@ DATA ll_pop_front(LINKED_LIST *list);
 
    Clears all errors.  Can raise INDEX_ERROR.
  */
-DATA ll_peek_front(LINKED_LIST *list);
+DATA ll_peek_front(struct smb_ll *list);
 
 /**
    Gets the data from the given index.  However, there is no guarantee that the
@@ -963,7 +963,7 @@ DATA ll_peek_front(LINKED_LIST *list);
 
    # Parameters #
 
-   - LINKED_LIST *list: a pointer to the list
+   - struct smb_ll *list: a pointer to the list
 
    - int index: the index to get
 
@@ -975,14 +975,14 @@ DATA ll_peek_front(LINKED_LIST *list);
 
    Clears all errors.  Can raise INDEX_ERROR.
  */
-DATA ll_get(LINKED_LIST *list, int index);
+DATA ll_get(struct smb_ll *list, int index);
 
 /**
    Removes the node at the given index.
 
    # Parameters #
 
-   - LINKED_LIST *list: a pointer to the list.
+   - struct smb_ll *list: a pointer to the list.
 
    - int index: the index to remove
 
@@ -990,7 +990,7 @@ DATA ll_get(LINKED_LIST *list, int index);
 
    Clears all errors.  Can raise INDEX_ERROR.
  */
-void ll_remove(LINKED_LIST *list, int index);
+void ll_remove(struct smb_ll *list, int index);
 
 /**
    Inserts the item at the specified location in the list, pushing back
@@ -998,7 +998,7 @@ void ll_remove(LINKED_LIST *list, int index);
 
    # Parameters #
 
-   - LINKED_LIST *list: a pointer to the list
+   - struct smb_ll *list: a pointer to the list
 
    - int index: the index to insert at
 
@@ -1008,27 +1008,27 @@ void ll_remove(LINKED_LIST *list, int index);
 
    Clears all errors.  Can raise ALLOCATION_ERROR.
  */
-void ll_insert(LINKED_LIST *list, int index, DATA newData);
+void ll_insert(struct smb_ll *list, int index, DATA newData);
 
 /**
    Removes the linked list.
 
    # Parameters #
 
-   - LINKED_LIST *list: a pointer to the list.
+   - struct smb_ll *list: a pointer to the list.
 
    # Error Handling #
 
    No effect.
  */
-void ll_delete(LINKED_LIST *list);
+void ll_delete(struct smb_ll *list);
 
 /**
    Sets an existing element to a new value.
 
    # Parameters #
 
-   - LINKED_LIST *list: a pointer to the list
+   - struct smb_ll *list: a pointer to the list
 
    - int index: the index to set at
 
@@ -1038,14 +1038,14 @@ void ll_delete(LINKED_LIST *list);
 
    Clears all errors. Can raise INDEX_ERROR.
  */
-void ll_set(LINKED_LIST *list, int index, DATA newData);
+void ll_set(struct smb_ll *list, int index, DATA newData);
 
 /**
    Returns the length of the given list.
 
    # Parameters #
 
-   - LINKED_LIST *list: a pointer to the list
+   - struct smb_ll *list: a pointer to the list
 
    # Returns #
 
@@ -1055,14 +1055,14 @@ void ll_set(LINKED_LIST *list, int index, DATA newData);
 
    No effect.
  */
-int ll_length(LINKED_LIST *list);
+int ll_length(struct smb_ll *list);
 
 /**
    Get an iterator for the linked list.
 
    # Parameters #
 
-   - LINKED_LIST *list: a pointer to the list
+   - struct smb_ll *list: a pointer to the list
 
    # Returns #
    
@@ -1072,85 +1072,85 @@ int ll_length(LINKED_LIST *list);
 
    No effect (not yet defined)
  */
-LL_ITERATOR ll_get_iter(LINKED_LIST *list);
+struct smb_ll_iter ll_get_iter(struct smb_ll *list);
 
 /**
    Advance the iterator and return the data at it.
 
    # Parameters #
 
-   - LL_ITERATOR *iterator: the iterator
+   - struct smb_ll_iter *iterator: the iterator
 
    # Return #
 
    The data at the new location of the iterator.
  */
-DATA ll_iter_next(LL_ITERATOR *iterator);
+DATA ll_iter_next(struct smb_ll_iter *iterator);
 
 /**
    Move the iterator back and return the data at it.
 
    # Parameters #
 
-   - LL_ITERATOR *iterator: the iterator
+   - struct smb_ll_iter *iterator: the iterator
 
    # Return #
 
    The data at the new location of the iterator
  */
-DATA ll_iter_prev(LL_ITERATOR *iterator);
+DATA ll_iter_prev(struct smb_ll_iter *iterator);
 
 /**
    Get the current data.
 
    # Parameters #
 
-   - LL_ITERATOR *iterator: the iterator
+   - struct smb_ll_iter *iterator: the iterator
 
    # Return #
 
    The data at the current location of the iterator.
  */
-DATA ll_iter_curr(LL_ITERATOR *iterator);
+DATA ll_iter_curr(struct smb_ll_iter *iterator);
 
 /**
    Check if the iterator can be advanced.
 
    # Parameters #
 
-   - LL_ITERATOR *iterator: the iterator
+   - struct smb_ll_iter *iterator: the iterator
 
    # Return #
 
    Whether the iterator can be advanced.
  */
-int ll_iter_has_next(LL_ITERATOR *iterator);
+int ll_iter_has_next(struct smb_ll_iter *iterator);
 
 /**
   Check if the iterator can be moved back.
 
   # Parameters #
 
-  - LL_ITERATOR *iterator: the iterator
+  - struct smb_ll_iter *iterator: the iterator
 
   # Return #
   
   Whether the iterator can be moved back
  */
-int ll_iter_has_prev(LL_ITERATOR *iterator);
+int ll_iter_has_prev(struct smb_ll_iter *iterator);
 
 /**
    Check if the iterator is valid.
 
    # Parameters #
 
-   - LL_ITERATOR *iterator: the iterator
+   - struct smb_ll_iter *iterator: the iterator
 
    # Return #
 
    Whether the iterator is valid.
  */
-int ll_iter_valid(LL_ITERATOR *iterator);
+int ll_iter_valid(struct smb_ll_iter *iterator);
 
 ////////////////////////////////////////////////////////////////////////////////
 // ARRAY LIST

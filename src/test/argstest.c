@@ -32,7 +32,7 @@ void iterate_flags(ARG_DATA *pArgData, char start, char end)
 
 void iterate_long_flags(ARG_DATA *pArgData)
 {
-  LL_ITERATOR iter = ll_get_iter(pArgData->long_flags);
+  struct smb_ll_iter iter = ll_get_iter(pArgData->long_flags);
 
   while (ll_iter_valid(&iter)) {
     DATA d = ll_iter_curr(&iter);
@@ -48,7 +48,7 @@ void iterate_long_flags(ARG_DATA *pArgData)
 
 void iterate_bare_strings(ARG_DATA *pArgData)
 {
-  LL_ITERATOR iter = ll_get_iter(pArgData->bare_strings);
+  struct smb_ll_iter iter = ll_get_iter(pArgData->bare_strings);
 
   while (ll_iter_valid(&iter)) {
     DATA d = ll_iter_curr(&iter);

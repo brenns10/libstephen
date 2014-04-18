@@ -20,10 +20,10 @@
 /**
    Removes the given node, reassigning the links to and from it.
  */
-void ll_remove_node(LINKED_LIST *list, NODE *theNode)
+void ll_remove_node(struct smb_ll *list, struct smb_ll_node *theNode)
 {
-  NODE *previous = theNode->prev;
-  NODE *next = theNode->next;
+  struct smb_ll_node *previous = theNode->prev;
+  struct smb_ll_node *next = theNode->next;
   if (previous) {
     previous->next = next;
   } else {
@@ -35,7 +35,7 @@ void ll_remove_node(LINKED_LIST *list, NODE *theNode)
     list->tail = previous;
   }
   free(theNode);
-  SMB_DECREMENT_MALLOC_COUNTER(sizeof(NODE));
+  SMB_DECREMENT_MALLOC_COUNTER(sizeof(struct smb_ll_node));
 }
 
 /**
@@ -45,7 +45,7 @@ void ll_remove_node(LINKED_LIST *list, NODE *theNode)
 
   # Parameters #
 
-  - LINKED_LIST *list: the list
+  - struct smb_ll *list: the list
 
   - int index: the index to find in the list
 
@@ -58,9 +58,9 @@ void ll_remove_node(LINKED_LIST *list, NODE *theNode)
   Does not clear errors.  Raises INDEX_ERROR if the given index was out of
   range.
  */
-NODE * ll_navigate(LINKED_LIST *list, int index)
+struct smb_ll_node * ll_navigate(struct smb_ll *list, int index)
 {
-  NODE *node = list->head;
+  struct smb_ll_node *node = list->head;
   if (index < 0 || index >= list->length) {
     RAISE(INDEX_ERROR);
     return NULL;
@@ -93,9 +93,9 @@ NODE * ll_navigate(LINKED_LIST *list, int index)
    Does not clear errors.  Raises ALLOCATION_ERROR if malloc() fails.  In that
    case, return value is NULL.
  */
-NODE *ll_create_node(DATA data)
+struct smb_ll_node *ll_create_node(DATA data)
 {
-  NODE *newNode = (NODE*) malloc(sizeof(NODE));
+  struct smb_ll_node *newNode = (struct smb_ll_node*) malloc(sizeof(struct smb_ll_node));
   
   if (!newNode) {
     RAISE(ALLOCATION_ERROR);
@@ -105,43 +105,43 @@ NODE *ll_create_node(DATA data)
   newNode->data = data;
   newNode->next = NULL;
   newNode->prev = NULL;
-  SMB_INCREMENT_MALLOC_COUNTER(sizeof(NODE));
+  SMB_INCREMENT_MALLOC_COUNTER(sizeof(struct smb_ll_node));
   return newNode;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC METHODS
 
-void ll_init(LINKED_LIST *newList)
+void ll_init(struct smb_ll *newList)
 {
   newList->length = 0;
   newList->head = NULL;
   newList->tail = NULL;
 }
 
-LINKED_LIST *ll_create()
+struct smb_ll *ll_create()
 {
   CLEAR_ALL_ERRORS;
 
-  LINKED_LIST *newList = (LINKED_LIST *) malloc(sizeof(LINKED_LIST));
+  struct smb_ll *newList = (struct smb_ll *) malloc(sizeof(struct smb_ll));
 
   if (!newList) {
     RAISE(ALLOCATION_ERROR);
     return NULL;
   }
-  SMB_INCREMENT_MALLOC_COUNTER(sizeof(LINKED_LIST));
+  SMB_INCREMENT_MALLOC_COUNTER(sizeof(struct smb_ll));
 
   ll_init(newList);
 
   return newList;
 }
 
-void ll_append(LINKED_LIST *list, DATA newData)
+void ll_append(struct smb_ll *list, DATA newData)
 {
   CLEAR_ALL_ERRORS;
   
   // Create the new node
-  NODE *newNode = ll_create_node(newData);
+  struct smb_ll_node *newNode = ll_create_node(newData);
 
   if (!newNode) {
     // ALLOCATION_ERROR has been raised by ll_create_node.  Pass it on to the
@@ -150,7 +150,7 @@ void ll_append(LINKED_LIST *list, DATA newData)
   }
 
   // Get the last node in the list
-  NODE *lastNode = list->tail;
+  struct smb_ll_node *lastNode = list->tail;
 
   // Link them together
   if (lastNode)
@@ -162,19 +162,19 @@ void ll_append(LINKED_LIST *list, DATA newData)
   list->length++;
 }
 
-void ll_prepend(LINKED_LIST *list, DATA newData)
+void ll_prepend(struct smb_ll *list, DATA newData)
 {
   CLEAR_ALL_ERRORS;
 
-  // Create the new NODE
-  NODE *newNode = ll_create_node(newData);
+  // Create the new struct smb_ll_node
+  struct smb_ll_node *newNode = ll_create_node(newData);
   if (!newNode) {
     // ALLOCATION_ERROR has been raised by ll_create_node.  Pass it on to the
     // user.
     return;
   }
 
-  NODE *firstNode = list->head;
+  struct smb_ll_node *firstNode = list->head;
   newNode->next = firstNode;
   if (firstNode)
     firstNode->prev = newNode;
@@ -184,16 +184,16 @@ void ll_prepend(LINKED_LIST *list, DATA newData)
   list->length++;
 }
 
-void ll_push_back(LINKED_LIST *list, DATA newData)
+void ll_push_back(struct smb_ll *list, DATA newData)
 {
   ll_append(list, newData);
 }
 
-DATA ll_pop_back(LINKED_LIST *list)
+DATA ll_pop_back(struct smb_ll *list)
 {
   CLEAR_ALL_ERRORS;
 
-  NODE *lastNode = list->tail;
+  struct smb_ll_node *lastNode = list->tail;
   if (lastNode) {
     DATA toReturn = lastNode->data;
     ll_remove_node(list, lastNode);
@@ -206,11 +206,11 @@ DATA ll_pop_back(LINKED_LIST *list)
   }
 }
 
-DATA ll_peek_back(LINKED_LIST *list)
+DATA ll_peek_back(struct smb_ll *list)
 {
   CLEAR_ALL_ERRORS;
 
-  NODE *lastNode = list->tail;
+  struct smb_ll_node *lastNode = list->tail;
   if (lastNode) {
     return lastNode->data;
   } else {
@@ -220,16 +220,16 @@ DATA ll_peek_back(LINKED_LIST *list)
   }
 }
 
-void ll_push_front(LINKED_LIST *list, DATA newData)
+void ll_push_front(struct smb_ll *list, DATA newData)
 {
   ll_prepend(list, newData);
 }
 
-DATA ll_pop_front(LINKED_LIST *list)
+DATA ll_pop_front(struct smb_ll *list)
 {
   CLEAR_ALL_ERRORS;
 
-  NODE *firstNode = list->head;
+  struct smb_ll_node *firstNode = list->head;
   if (firstNode) {
     DATA toReturn = firstNode->data;
     ll_remove_node(list, firstNode);
@@ -242,11 +242,11 @@ DATA ll_pop_front(LINKED_LIST *list)
   }
 }
 
-DATA ll_peek_front(LINKED_LIST *list)
+DATA ll_peek_front(struct smb_ll *list)
 {
   CLEAR_ALL_ERRORS;
 
-  NODE *firstNode = list->head;
+  struct smb_ll_node *firstNode = list->head;
   if (firstNode) {
     return firstNode->data;
   } else {
@@ -256,12 +256,12 @@ DATA ll_peek_front(LINKED_LIST *list)
   }
 }
 
-DATA ll_get(LINKED_LIST *list, int index)
+DATA ll_get(struct smb_ll *list, int index)
 {
   CLEAR_ALL_ERRORS;
 
   // Navigate to that position in the node.
-  NODE * theNode = ll_navigate(list, index);
+  struct smb_ll_node * theNode = ll_navigate(list, index);
   if (theNode)
     return theNode->data;
 
@@ -272,10 +272,10 @@ DATA ll_get(LINKED_LIST *list, int index)
   return mockData;
 }
 
-void ll_remove(LINKED_LIST *list, int index)
+void ll_remove(struct smb_ll *list, int index)
 {
   // Fond the node
-  NODE *theNode = ll_navigate(list, index);
+  struct smb_ll_node *theNode = ll_navigate(list, index);
   if (!theNode) {
     return; // Return the INDEX_ERROR
   }
@@ -284,7 +284,7 @@ void ll_remove(LINKED_LIST *list, int index)
   list->length--;
 }
 
-void ll_insert(LINKED_LIST *list, int index, DATA newData)
+void ll_insert(struct smb_ll *list, int index, DATA newData)
 {
   CLEAR_ALL_ERRORS;
 
@@ -294,11 +294,11 @@ void ll_insert(LINKED_LIST *list, int index, DATA newData)
     ll_append(list, newData);
   } else {
     // Valid territory
-    NODE *newNode = ll_create_node(newData);
+    struct smb_ll_node *newNode = ll_create_node(newData);
     if (!newNode) {
       return; // Return the allocation error.
     }
-    NODE *current = ll_navigate(list, index);
+    struct smb_ll_node *current = ll_navigate(list, index);
     current->prev->next = newNode;
     newNode->prev = current->prev;
     newNode->next = current;
@@ -307,11 +307,11 @@ void ll_insert(LINKED_LIST *list, int index, DATA newData)
   }
 }
 
-void ll_destroy(LINKED_LIST *list)
+void ll_destroy(struct smb_ll *list)
 {
   // Iterate through each node, deleting them as we go
-  NODE *iter = list->head;
-  NODE *temp;
+  struct smb_ll_node *iter = list->head;
+  struct smb_ll_node *temp;
   while (iter) {
     temp = iter->next;
     ll_remove_node(list, iter);
@@ -319,17 +319,17 @@ void ll_destroy(LINKED_LIST *list)
   }
 }
 
-void ll_delete(LINKED_LIST *list)
+void ll_delete(struct smb_ll *list)
 {
   ll_destroy(list);
   // Free the list header
   free(list);
-  SMB_DECREMENT_MALLOC_COUNTER(sizeof(LINKED_LIST));
+  SMB_DECREMENT_MALLOC_COUNTER(sizeof(struct smb_ll));
 }
 
-void ll_set(LINKED_LIST *list, int index, DATA newData)
+void ll_set(struct smb_ll *list, int index, DATA newData)
 {
-  NODE *current = ll_navigate(list, index);
+  struct smb_ll_node *current = ll_navigate(list, index);
   if (current) {
     current->data = newData;
   } else {
@@ -337,35 +337,35 @@ void ll_set(LINKED_LIST *list, int index, DATA newData)
   }
 }
 
-int ll_length(LINKED_LIST *list)
+int ll_length(struct smb_ll *list)
 {
   return list->length;
 }
 
-LL_ITERATOR ll_get_iter(LINKED_LIST *list)
+struct smb_ll_iter ll_get_iter(struct smb_ll *list)
 {
-  LL_ITERATOR iter;
+  struct smb_ll_iter iter;
   iter.list = list;
   iter.current = list->head;
   iter.index = 0;
   return iter;
 }
 
-DATA ll_iter_next(LL_ITERATOR *iter)
+DATA ll_iter_next(struct smb_ll_iter *iter)
 {
   iter->current = iter->current->next;
   iter->index++;
   return ll_iter_curr(iter);
 }
 
-DATA ll_iter_prev(LL_ITERATOR *iter)
+DATA ll_iter_prev(struct smb_ll_iter *iter)
 {
   iter->current = iter->current->prev;
   iter->index--;
   return ll_iter_curr(iter);
 }
 
-DATA ll_iter_curr(LL_ITERATOR *iter)
+DATA ll_iter_curr(struct smb_ll_iter *iter)
 {
   if (iter && iter->current)
     return iter->current->data;
@@ -374,7 +374,7 @@ DATA ll_iter_curr(LL_ITERATOR *iter)
   return mockData;
 }
 
-int ll_iter_has_next(LL_ITERATOR *iter)
+int ll_iter_has_next(struct smb_ll_iter *iter)
 {
   if (iter && iter->current && iter->current->next)
     return 1;
@@ -382,7 +382,7 @@ int ll_iter_has_next(LL_ITERATOR *iter)
   return 0;
 }
 
-int ll_iter_has_prev(LL_ITERATOR *iter)
+int ll_iter_has_prev(struct smb_ll_iter *iter)
 {
   if (iter && iter->current && iter->current->prev)
     return 1;
@@ -390,7 +390,7 @@ int ll_iter_has_prev(LL_ITERATOR *iter)
   return 0;
 }
 
-int ll_iter_valid(LL_ITERATOR *iter)
+int ll_iter_valid(struct smb_ll_iter *iter)
 {
   if (iter && iter->current)
     return 1;
@@ -403,37 +403,37 @@ int ll_iter_valid(LL_ITERATOR *iter)
 
 void ll_append_adapter(LIST *l, DATA newData)
 {
-  LINKED_LIST *list = (LINKED_LIST*) (l->data);
+  struct smb_ll *list = (struct smb_ll*) (l->data);
   return ll_append(list, newData);
 }
 
 void ll_prepend_adapter(LIST *l, DATA newData)
 {
-  LINKED_LIST *list = (LINKED_LIST*) (l->data);
+  struct smb_ll *list = (struct smb_ll*) (l->data);
   return ll_prepend(list, newData);
 }
 
 DATA ll_get_adapter(LIST *l, int index)
 {
-  LINKED_LIST *list = (LINKED_LIST*) (l->data);
+  struct smb_ll *list = (struct smb_ll*) (l->data);
   return ll_get(list, index);
 }
 
 void ll_remove_adapter(LIST *l, int index)
 {
-  LINKED_LIST *list = (LINKED_LIST*) (l->data);
+  struct smb_ll *list = (struct smb_ll*) (l->data);
   return ll_remove(list, index);
 }
 
 void ll_insert_adapter(LIST *l, int index, DATA newData)
 {
-  LINKED_LIST *list = (LINKED_LIST*) (l->data);
+  struct smb_ll *list = (struct smb_ll*) (l->data);
   return ll_insert(list, index, newData);
 }
 
 void ll_delete_adapter(LIST *l)
 {
-  LINKED_LIST *list = (LINKED_LIST*) (l->data);
+  struct smb_ll *list = (struct smb_ll*) (l->data);
   ll_delete(list);
   l->data = NULL;
   return;
@@ -441,49 +441,49 @@ void ll_delete_adapter(LIST *l)
 
 void ll_set_adapter(LIST *l, int index, DATA newData)
 {
-  LINKED_LIST *list = (LINKED_LIST*) (l->data);
+  struct smb_ll *list = (struct smb_ll*) (l->data);
   return ll_set(list, index, newData);
 }
 
 void ll_push_back_adapter(LIST *l, DATA newData)
 {
-  LINKED_LIST *list = (LINKED_LIST*) (l->data);
+  struct smb_ll *list = (struct smb_ll*) (l->data);
   return ll_push_back(list, newData);
 }
 
 DATA ll_pop_back_adapter(LIST *l)
 {
-  LINKED_LIST *list = (LINKED_LIST*) (l->data);
+  struct smb_ll *list = (struct smb_ll*) (l->data);
   return ll_pop_back(list);
 }
 
 DATA ll_peek_back_adapter(LIST *l)
 {
-  LINKED_LIST *list = (LINKED_LIST*) (l->data);
+  struct smb_ll *list = (struct smb_ll*) (l->data);
   return ll_peek_back(list);
 }
 
 void ll_push_front_adapter(LIST *l, DATA newData)
 {
-  LINKED_LIST *list = (LINKED_LIST*) (l->data);
+  struct smb_ll *list = (struct smb_ll*) (l->data);
   return  ll_push_front(list, newData);
 }
 
 DATA ll_pop_front_adapter(LIST *l)
 {
-  LINKED_LIST *list = (LINKED_LIST*) (l->data);
+  struct smb_ll *list = (struct smb_ll*) (l->data);
   return ll_pop_front(list);
 }
 
 DATA ll_peek_front_adapter(LIST *l)
 {
-  LINKED_LIST *list = (LINKED_LIST*) (l->data);
+  struct smb_ll *list = (struct smb_ll*) (l->data);
   return ll_peek_front(list);
 }
 
 int ll_length_adapter(LIST *l)
 {
-  LINKED_LIST *list = (LINKED_LIST*) (l->data);
+  struct smb_ll *list = (struct smb_ll*) (l->data);
   return ll_length(list);
 }
 
@@ -508,7 +508,7 @@ void ll_fill_functions(LIST *genericList)
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC GENERIC LIST FUNCTIONS
 
-LIST ll_cast_to_list(LINKED_LIST *list)
+LIST ll_cast_to_list(struct smb_ll *list)
 {
   LIST genericList;
   genericList.data = list;
@@ -520,7 +520,7 @@ LIST ll_cast_to_list(LINKED_LIST *list)
 
 LIST ll_create_list()
 {
-  LINKED_LIST *list = ll_create();
+  struct smb_ll *list = ll_create();
 
   return ll_cast_to_list(list);
 }
