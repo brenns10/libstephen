@@ -1,13 +1,12 @@
-/*******************************************************************************
+/**
 
-  File:         ~/repos/libstephen/smbunit.c
+  @file    ~/repos/libstephen/smbunit.c
 
-  Author:       Stephen Brennan
+  @author  Stephen Brennan
 
-  Date Created: Saturday, 28 September 2013
+  @date    Created Saturday, 28 September 2013
 
-  Description: A simple, lightweight unit test runner based on function
-  pointers.
+  @brief   A simple, lightweight unit test runner based on function pointers.
 
 *******************************************************************************/
 
