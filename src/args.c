@@ -40,19 +40,6 @@
 // AUXILIARY FUNCTIONS
 ////////////////////////////////////////////////////////////////////////////////
 
-ARG_DATA *arg_data_new()
-{
-  ARG_DATA *data = (ARG_DATA*) malloc(sizeof(ARG_DATA));
-  SMB_INCREMENT_MALLOC_COUNTER(sizeof(ARG_DATA));
-  data->flags = 0;
-  for (int i = 0; i < MAX_FLAGS; i++) data->flag_strings[i] = NULL;
-  data->long_flags = ll_create();
-  data->long_flag_strings = ll_create();
-  data->bare_strings = ll_create();
-
-  return data;
-}
-
 int flag_index(char c)
 {
   int idx;
@@ -140,14 +127,32 @@ int find_string(LINKED_LIST *toSearch, char *toFind)
 // Public Functions
 ////////////////////////////////////////////////////////////////////////////////
 
+void arg_data_init(ARG_DATA *data)
+{
+  data->flags = 0;
+  for (int i = 0; i < MAX_FLAGS; i++) data->flag_strings[i] = NULL;
+  data->long_flags = ll_create();
+  data->long_flag_strings = ll_create();
+  data->bare_strings = ll_create();
+}
+
+ARG_DATA *arg_data_create()
+{
+  ARG_DATA *data = (ARG_DATA*) malloc(sizeof(ARG_DATA));
+  SMB_INCREMENT_MALLOC_COUNTER(sizeof(ARG_DATA));
+
+  arg_data_init(data);
+
+  return data;
+}
+
 /**
    Process args.  ASSUMES THAT THE PROGRAM IS REMOVED FROM THE LIST OF ARGS.
  */
-ARG_DATA *process_args(int argc, char **argv)
+void process_args(ARG_DATA *data, int argc, char **argv)
 {
   char *previous_long_flag = NULL;
   char previous_flag = EOF;
-  ARG_DATA *data = arg_data_new();
 
   while (argc--) {
     // At the beginning of the loop, argc refers to number of remaining args,
@@ -186,18 +191,22 @@ ARG_DATA *process_args(int argc, char **argv)
 
     argv++;
   }
-
-  return data;
 }
 
 /**
-   Delete an argument data object.
+   Free the resources of an arg_data object.
  */
-void arg_data_delete(ARG_DATA * data)
+void arg_data_destroy(ARG_DATA * data)
 {
   ll_delete(data->long_flags);
   ll_delete(data->bare_strings);
   ll_delete(data->long_flag_strings);
+}
+
+void arg_data_delete(ARG_DATA *data)
+{
+  arg_data_destroy(data);
+
   free(data);
   SMB_DECREMENT_MALLOC_COUNTER(sizeof(ARG_DATA));
 }

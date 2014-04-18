@@ -1365,6 +1365,11 @@ void ht_print(HASH_TABLE const *pTable, int full_mode);
 // ARGUMENT DATA
 ////////////////////////////////////////////////////////////////////////////////
 
+void arg_data_init(ARG_DATA *data);
+ARG_DATA *arg_data_create();
+void arg_data_destroy(ARG_DATA *data);
+void arg_data_delete(ARG_DATA *data);
+
 /**
    Analyze the argument data passed to the program.  Pass in the argc and argv,
    but make sure to decrement and increment each respective variable so they do
@@ -1381,16 +1386,7 @@ void ht_print(HASH_TABLE const *pTable, int full_mode);
    A pointer to an ARG_DATA object.  Use provided functions to query the object
    about every desired flag.
  */
-ARG_DATA *process_args(int argc, char **argv);
-
-/**
-   Delete an ARG_DATA object returned by process_args().
-
-   # Parameters #
-
-   - ARG_DATA *data: The object returned by process_args().
- */
-void arg_data_delete(ARG_DATA *data);
+void process_args(ARG_DATA *data, int argc, char **argv);
 
 /**
    Check whether a flag is raised.
