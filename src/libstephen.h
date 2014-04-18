@@ -186,7 +186,7 @@ extern unsigned int ERROR_VAR;
      the test.  The test will fail if at least one of the errors in the flag are
      not raised.
  */
-typedef struct
+typedef struct smb_ut_test
 {
   char description[SMB_UNIT_DESCRIPTION_SIZE];
   int (*run)();
@@ -209,11 +209,12 @@ typedef struct
    - struct smb_ut_test *tests[]: pointers to the tests contained.  Max tests defined by
      SMB_UNIT_TESTS_PER_GROUP.
  */
-typedef struct
+typedef struct smb_ut_group
 {
   char description[SMB_UNIT_DESCRIPTION_SIZE];
   int num_tests;
   smb_ut_test *tests[SMB_UNIT_TESTS_PER_GROUP];
+
 } smb_ut_group;
 
 /**
@@ -373,7 +374,7 @@ void su_delete_group(smb_ut_group *group);
    Generic data type for storage in the data structures.  Each data type takes
    up 8 bytes of memory.
  */
-typedef union long_data {
+typedef union DATA {
   long long int data_llint;
   double data_dbl;
   void * data_ptr;
@@ -397,33 +398,33 @@ typedef void (*DATA_ACTION)(DATA toDelete);
    Node structure for linked list.  This must be exposed in order for other data
    types to be public.  This should not be used by users of the library.
  */
-struct smb_ll_node 
+typedef struct smb_ll_node
 {
   struct smb_ll_node *prev;
   struct smb_ll_node *next;
   DATA data;
-};
+} smb_ll_node;
 
 /**
    The actual linked list data type.  "Bare" functions return a pointer to this
    structure.
  */
-struct smb_ll
+typedef struct smb_ll
 {
   struct smb_ll_node *head;
   struct smb_ll_node *tail;
   int length;
-};
+} smb_ll;
 
 /**
    A linked list iterator.  Do not modify the structure yourself.
  */
-struct smb_ll_iter
+typedef struct smb_ll_iter
 {
   struct smb_ll *list;
   struct smb_ll_node *current;
   int index;
-};
+} smb_ll_iter;
 
 ///////////////////////////////////////////////////////////////////////////////
 // ARRAY LIST
@@ -434,12 +435,12 @@ struct smb_ll_iter
    structure.  You should not use any of the members, as they are implementation
    specific and subject to change.
  */
-struct smb_al
+typedef struct smb_al
 {
   DATA *data;
   int length;
   int allocated;
-};
+} smb_al;
 
 ////////////////////////////////////////////////////////////////////////////////
 // HASH TABLE
@@ -450,20 +451,22 @@ struct smb_al
  */
 typedef unsigned int (*HASH_FUNCTION)(DATA toHash);
 
-struct smb_ht_bckt
+typedef struct smb_ht_bckt
 {
   DATA key;
   DATA value;
   struct smb_ht_bckt *next;
-};
 
-struct smb_ht
+} smb_ht_bckt;
+
+typedef struct smb_ht
 {
   int length;
   int allocated;
   HASH_FUNCTION hash;
   struct smb_ht_bckt **table;
-};
+
+} smb_ht;
 
 #define HASH_TABLE_INITIAL_SIZE 257 // prime number close to 256
 #define HASH_TABLE_MAX_LOAD_FACTOR 0.7
@@ -476,14 +479,15 @@ struct smb_ht
    Data structure to store information on arguments passed to the program.
  */
 #define MAX_FLAGS 52
-struct smb_ad
+typedef struct smb_ad
 {
   uint64_t flags; // bit field for all 52 alphabetical characters
   char *flag_strings[MAX_FLAGS];
   struct smb_ll *long_flags;
   struct smb_ll *long_flag_strings;
   struct smb_ll *bare_strings;
-};
+
+} smb_ad;
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -494,7 +498,7 @@ struct smb_ad
 /**
    Generic list data structure.
  */
-struct smb_list 
+typedef struct smb_list 
 {
   // Pointer to the actual structure in memory.  Could be any type.
   void *data;
@@ -745,7 +749,7 @@ struct smb_list
 
   // Iterator functions may reside here in the near future.
 
-};
+} smb_list;
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -760,7 +764,7 @@ struct smb_list
 /**
    Initializes a new list which has already been allocated.
  */
-void ll_init(struct smb_ll *newList);
+void ll_init(smb_ll *newList);
 
 /**
    Creates a new, empty linked list.
@@ -774,7 +778,7 @@ void ll_init(struct smb_ll *newList);
    Clears all errors.  Can raise ALLOCATION_ERROR.  In this case, returns NULL,
    and no memory is leaked.
  */
-struct smb_ll *ll_create();
+smb_ll *ll_create();
 
 /**
    Creates a new list with initial data.  Returns an instance of the interface.
@@ -791,7 +795,7 @@ struct smb_ll *ll_create();
 
    Clears all errors.  Can raise ALLOCATION_ERROR.
  */
-struct smb_list ll_create_list();
+smb_list ll_create_list();
 
 /**
    Create a new list empty.  Returns an instance of the list interface.
@@ -804,14 +808,14 @@ struct smb_list ll_create_list();
 
    Clears all errors. Can raise ALLOCATION_ERROR.
  */
-struct smb_list ll_create_empty_list();
+smb_list ll_create_empty_list();
 
 /**
-   Cast a struct smb_ll pointer to an instance of the list interface.
+   Cast a smb_ll pointer to an instance of the list interface.
 
    # Parameters #
 
-   - struct smb_ll *list: the linked list to cast to an generic list.
+   - smb_ll *list: the linked list to cast to an generic list.
 
    # Returns #
 
@@ -821,14 +825,14 @@ struct smb_list ll_create_empty_list();
 
    No effect on flags.
  */
-struct smb_list ll_cast_to_list(struct smb_ll *list);
+smb_list ll_cast_to_list(smb_ll *list);
 
 /**
    Append the given data to the end of the list.
 
    # Parameters #
 
-   - struct smb_ll *list: a pointer to the list
+   - smb_ll *list: a pointer to the list
 
    - DATA newData: the data to append
 
@@ -836,14 +840,14 @@ struct smb_list ll_cast_to_list(struct smb_ll *list);
 
    Clears all errors.  Can raise an ALLOCATION_ERROR.
  */
-void ll_append(struct smb_ll *list, DATA newData);
+void ll_append(smb_ll *list, DATA newData);
 
 /**
    Prepend the given data to the beginning of the list.
 
    # Parameters #
 
-   - struct smb_ll *list: a pointer to the list
+   - smb_ll *list: a pointer to the list
    
    - DATA newData: the data to prepend
 
@@ -851,14 +855,14 @@ void ll_append(struct smb_ll *list, DATA newData);
 
    Clears all errors.  Can raise ALLOCATION_ERROR.
  */
-void ll_prepend(struct smb_ll *list, DATA newData);
+void ll_prepend(smb_ll *list, DATA newData);
 
 /**
    Push the data to the back of the list.  An alias for ll_append.
 
    # Parameters #
 
-   - struct smb_ll *list: a pointer to the list
+   - smb_ll *list: a pointer to the list
 
    - DATA newData: the data to push
 
@@ -866,14 +870,14 @@ void ll_prepend(struct smb_ll *list, DATA newData);
 
    Clears all errors.  Can raise ALLOCATION_ERROR.
  */
-void ll_push_back(struct smb_ll *list, DATA newData);
+void ll_push_back(smb_ll *list, DATA newData);
 
 /**
    Pop data from the back of the list.
 
    # Parameters #
 
-   - struct smb_ll *list: a pointer to the list
+   - smb_ll *list: a pointer to the list
 
    # Returns #
 
@@ -883,14 +887,14 @@ void ll_push_back(struct smb_ll *list, DATA newData);
 
    Clears all errors.  Can raise INDEX_ERROR.
  */
-DATA ll_pop_back(struct smb_ll *list);
+DATA ll_pop_back(smb_ll *list);
 
 /**
    Peek at the back of the list.
 
    # Parameters #
 
-   - struct smb_ll *list: a pointer to the list
+   - smb_ll *list: a pointer to the list
 
    # Returns #
 
@@ -900,14 +904,14 @@ DATA ll_pop_back(struct smb_ll *list);
 
    Clears all errors.  Can raise INDEX_ERROR.
  */
-DATA ll_peek_back(struct smb_ll *list);
+DATA ll_peek_back(smb_ll *list);
 
 /**
    Push the data to the front of the list.  An alias for ll_prepend.
 
    # Parameters #
    
-   - struct smb_ll *list: a pointer to the list
+   - smb_ll *list: a pointer to the list
 
    - DATA newData: the data to push
 
@@ -915,14 +919,14 @@ DATA ll_peek_back(struct smb_ll *list);
 
    Clears all errors.  Can raise ALLOCATION_ERROR.
  */
-void ll_push_front(struct smb_ll *list, DATA newData);
+void ll_push_front(smb_ll *list, DATA newData);
 
 /**
    Pop the data from the front of the list.
 
    # Parameters #
 
-   - struct smb_ll *list: a pointer to the list
+   - smb_ll *list: a pointer to the list
 
    # Returns #
    
@@ -932,14 +936,14 @@ void ll_push_front(struct smb_ll *list, DATA newData);
 
    Clears all errors.  Can raise INDEX_ERROR.
  */
-DATA ll_pop_front(struct smb_ll *list);
+DATA ll_pop_front(smb_ll *list);
 
 /**
    Peek at the front of the list.
 
    # Parameters #
 
-   - struct smb_ll *list: a pointer to the list.
+   - smb_ll *list: a pointer to the list.
 
    # Returns #
 
@@ -949,7 +953,7 @@ DATA ll_pop_front(struct smb_ll *list);
 
    Clears all errors.  Can raise INDEX_ERROR.
  */
-DATA ll_peek_front(struct smb_ll *list);
+DATA ll_peek_front(smb_ll *list);
 
 /**
    Gets the data from the given index.  However, there is no guarantee that the
@@ -958,7 +962,7 @@ DATA ll_peek_front(struct smb_ll *list);
 
    # Parameters #
 
-   - struct smb_ll *list: a pointer to the list
+   - smb_ll *list: a pointer to the list
 
    - int index: the index to get
 
@@ -970,14 +974,14 @@ DATA ll_peek_front(struct smb_ll *list);
 
    Clears all errors.  Can raise INDEX_ERROR.
  */
-DATA ll_get(struct smb_ll *list, int index);
+DATA ll_get(smb_ll *list, int index);
 
 /**
    Removes the node at the given index.
 
    # Parameters #
 
-   - struct smb_ll *list: a pointer to the list.
+   - smb_ll *list: a pointer to the list.
 
    - int index: the index to remove
 
@@ -985,7 +989,7 @@ DATA ll_get(struct smb_ll *list, int index);
 
    Clears all errors.  Can raise INDEX_ERROR.
  */
-void ll_remove(struct smb_ll *list, int index);
+void ll_remove(smb_ll *list, int index);
 
 /**
    Inserts the item at the specified location in the list, pushing back
@@ -993,7 +997,7 @@ void ll_remove(struct smb_ll *list, int index);
 
    # Parameters #
 
-   - struct smb_ll *list: a pointer to the list
+   - smb_ll *list: a pointer to the list
 
    - int index: the index to insert at
 
@@ -1003,27 +1007,27 @@ void ll_remove(struct smb_ll *list, int index);
 
    Clears all errors.  Can raise ALLOCATION_ERROR.
  */
-void ll_insert(struct smb_ll *list, int index, DATA newData);
+void ll_insert(smb_ll *list, int index, DATA newData);
 
 /**
    Removes the linked list.
 
    # Parameters #
 
-   - struct smb_ll *list: a pointer to the list.
+   - smb_ll *list: a pointer to the list.
 
    # Error Handling #
 
    No effect.
  */
-void ll_delete(struct smb_ll *list);
+void ll_delete(smb_ll *list);
 
 /**
    Sets an existing element to a new value.
 
    # Parameters #
 
-   - struct smb_ll *list: a pointer to the list
+   - smb_ll *list: a pointer to the list
 
    - int index: the index to set at
 
@@ -1033,14 +1037,14 @@ void ll_delete(struct smb_ll *list);
 
    Clears all errors. Can raise INDEX_ERROR.
  */
-void ll_set(struct smb_ll *list, int index, DATA newData);
+void ll_set(smb_ll *list, int index, DATA newData);
 
 /**
    Returns the length of the given list.
 
    # Parameters #
 
-   - struct smb_ll *list: a pointer to the list
+   - smb_ll *list: a pointer to the list
 
    # Returns #
 
@@ -1050,14 +1054,14 @@ void ll_set(struct smb_ll *list, int index, DATA newData);
 
    No effect.
  */
-int ll_length(struct smb_ll *list);
+int ll_length(smb_ll *list);
 
 /**
    Get an iterator for the linked list.
 
    # Parameters #
 
-   - struct smb_ll *list: a pointer to the list
+   - smb_ll *list: a pointer to the list
 
    # Returns #
    
@@ -1067,107 +1071,107 @@ int ll_length(struct smb_ll *list);
 
    No effect (not yet defined)
  */
-struct smb_ll_iter ll_get_iter(struct smb_ll *list);
+smb_ll_iter ll_get_iter(smb_ll *list);
 
 /**
    Advance the iterator and return the data at it.
 
    # Parameters #
 
-   - struct smb_ll_iter *iterator: the iterator
+   - smb_ll_iter *iterator: the iterator
 
    # Return #
 
    The data at the new location of the iterator.
  */
-DATA ll_iter_next(struct smb_ll_iter *iterator);
+DATA ll_iter_next(smb_ll_iter *iterator);
 
 /**
    Move the iterator back and return the data at it.
 
    # Parameters #
 
-   - struct smb_ll_iter *iterator: the iterator
+   - smb_ll_iter *iterator: the iterator
 
    # Return #
 
    The data at the new location of the iterator
  */
-DATA ll_iter_prev(struct smb_ll_iter *iterator);
+DATA ll_iter_prev(smb_ll_iter *iterator);
 
 /**
    Get the current data.
 
    # Parameters #
 
-   - struct smb_ll_iter *iterator: the iterator
+   - smb_ll_iter *iterator: the iterator
 
    # Return #
 
    The data at the current location of the iterator.
  */
-DATA ll_iter_curr(struct smb_ll_iter *iterator);
+DATA ll_iter_curr(smb_ll_iter *iterator);
 
 /**
    Check if the iterator can be advanced.
 
    # Parameters #
 
-   - struct smb_ll_iter *iterator: the iterator
+   - smb_ll_iter *iterator: the iterator
 
    # Return #
 
    Whether the iterator can be advanced.
  */
-int ll_iter_has_next(struct smb_ll_iter *iterator);
+int ll_iter_has_next(smb_ll_iter *iterator);
 
 /**
   Check if the iterator can be moved back.
 
   # Parameters #
 
-  - struct smb_ll_iter *iterator: the iterator
+  - smb_ll_iter *iterator: the iterator
 
   # Return #
   
   Whether the iterator can be moved back
  */
-int ll_iter_has_prev(struct smb_ll_iter *iterator);
+int ll_iter_has_prev(smb_ll_iter *iterator);
 
 /**
    Check if the iterator is valid.
 
    # Parameters #
 
-   - struct smb_ll_iter *iterator: the iterator
+   - smb_ll_iter *iterator: the iterator
 
    # Return #
 
    Whether the iterator is valid.
  */
-int ll_iter_valid(struct smb_ll_iter *iterator);
+int ll_iter_valid(smb_ll_iter *iterator);
 
 ////////////////////////////////////////////////////////////////////////////////
 // ARRAY LIST
 ////////////////////////////////////////////////////////////////////////////////
 
-void al_init(struct smb_al *list);
-struct smb_al *al_create();
-void al_append(struct smb_al *list, DATA newData);
-void al_prepend(struct smb_al *list, DATA newData);
-DATA al_get(struct smb_al *list, int index);
-void al_set(struct smb_al *list, int index, DATA newData);
-void al_remove(struct smb_al *list, int index);
-void al_insert(struct smb_al *list, int index, DATA newData);
-void al_destroy(struct smb_al *list);
-void al_delete(struct smb_al *list);
-int al_length(struct smb_al *list);
-void al_push_back(struct smb_al *list, DATA newData);
-DATA al_pop_back(struct smb_al *list);
-DATA al_peek_back(struct smb_al *list);
-void al_push_front(struct smb_al *list, DATA newData);
-DATA al_pop_back(struct smb_al *list);
-DATA al_peek_back(struct smb_al *list);
+void al_init(smb_al *list);
+smb_al *al_create();
+void al_append(smb_al *list, DATA newData);
+void al_prepend(smb_al *list, DATA newData);
+DATA al_get(smb_al *list, int index);
+void al_set(smb_al *list, int index, DATA newData);
+void al_remove(smb_al *list, int index);
+void al_insert(smb_al *list, int index, DATA newData);
+void al_destroy(smb_al *list);
+void al_delete(smb_al *list);
+int al_length(smb_al *list);
+void al_push_back(smb_al *list, DATA newData);
+DATA al_pop_back(smb_al *list);
+DATA al_peek_back(smb_al *list);
+void al_push_front(smb_al *list, DATA newData);
+DATA al_pop_back(smb_al *list);
+DATA al_peek_back(smb_al *list);
 
 ////////////////////////////////////////////////////////////////////////////////
 // HASH TABLE
@@ -1178,11 +1182,11 @@ DATA al_peek_back(struct smb_al *list);
 
    # Parameters #
 
-   - struct smb_ht *pTable: pointer to the table to initialize.
+   - smb_ht *pTable: pointer to the table to initialize.
 
    - HASH_FUNCTION *hash_func: hash function for the table.
  */
-void ht_init(struct smb_ht *pTable, HASH_FUNCTION hash_func);
+void ht_init(smb_ht *pTable, HASH_FUNCTION hash_func);
 
 /**
    Create a hash table.
@@ -1201,7 +1205,7 @@ void ht_init(struct smb_ht *pTable, HASH_FUNCTION hash_func);
   Clears all errors on function call.  If malloc fails, then no hash table is
   created, NULL is returned, and the ALLOCATION_ERROR flag is raised.
  */
-struct smb_ht *ht_create(HASH_FUNCTION hash_func);
+smb_ht *ht_create(HASH_FUNCTION hash_func);
 
 /**
    Insert data into the hash table.  Expands the hash table if the load factor
@@ -1210,7 +1214,7 @@ struct smb_ht *ht_create(HASH_FUNCTION hash_func);
 
    # Parameters #
 
-   - struct smb_ht *pTable: Pointer to the hash table.
+   - smb_ht *pTable: Pointer to the hash table.
 
    - DATA dKey: The key to insert.
 
@@ -1221,14 +1225,14 @@ struct smb_ht *ht_create(HASH_FUNCTION hash_func);
    Clears all errors on function call.  Function call fails with
    ALLOCATION_ERROR if resize fails, or if bucket creation fails.
  */
-void ht_insert(struct smb_ht *pTable, DATA dKey, DATA dValue);
+void ht_insert(smb_ht *pTable, DATA dKey, DATA dValue);
 
 /**
    Remove the key, value pair stored in the hash table.
 
    # Parameters #
 
-   - struct smb_ht *pTable: Pointer to the hash table.
+   - smb_ht *pTable: Pointer to the hash table.
 
    - DATA dKey: key to delete.
 
@@ -1236,14 +1240,14 @@ void ht_insert(struct smb_ht *pTable, DATA dKey, DATA dValue);
 
    Clears all errors on function call.
  */
-void ht_remove(struct smb_ht *pTable, DATA dKey);
+void ht_remove(smb_ht *pTable, DATA dKey);
 
 /**
    Remove the key, value pair stored in the hash table.
 
    # Parameters #
 
-   - struct smb_ht *pTable: Pointer to the hash table.
+   - smb_ht *pTable: Pointer to the hash table.
 
    - DATA dKey: key to delete.
 
@@ -1253,14 +1257,14 @@ void ht_remove(struct smb_ht *pTable, DATA dKey);
 
    Clears all errors on function call.
  */
-void ht_remove_act(struct smb_ht *pTable, DATA dKey, DATA_ACTION deleter);
+void ht_remove_act(smb_ht *pTable, DATA dKey, DATA_ACTION deleter);
 
 /**
    Return the value associated with the key provided.
 
    # Parameters #
 
-   - struct smb_ht const *pTable: Pointer to the hash table.
+   - smb_ht const *pTable: Pointer to the hash table.
 
    - DATA dKey: key whose value to retrieve.
 
@@ -1273,7 +1277,7 @@ void ht_remove_act(struct smb_ht *pTable, DATA dKey, DATA_ACTION deleter);
    Clears all errors on function call.  If the key is not found in the table,
    then raises NOT_FOUND_ERROR.
  */
-DATA ht_get(struct smb_ht const *pTable, DATA dKey);
+DATA ht_get(smb_ht const *pTable, DATA dKey);
 
 /**
    Return the hash of the data, interpreting it as a string.
@@ -1300,14 +1304,14 @@ unsigned int ht_string_hash(DATA data);
    If pointers are contained within the hash table, they are not freed.  Use
    ht_destroy_act to specify a deletion action on the hash table.
  */
-void ht_destroy(struct smb_ht *pTable);
+void ht_destroy(smb_ht *pTable);
 
 /**
    Free resources used by the hash table, but does not free the pointer itself.
    Useful for stack valued hash tables.  A deleter must be specified in this
    function call.
  */
-void ht_destroy_act(struct smb_ht *pTable, DATA_ACTION deleter);
+void ht_destroy_act(smb_ht *pTable, DATA_ACTION deleter);
 
 /**
    Free the hash table and its resources.  No pointers contained in the table
@@ -1315,13 +1319,13 @@ void ht_destroy_act(struct smb_ht *pTable, DATA_ACTION deleter);
 
    # Parameters #
 
-   - struct smb_ht *pTable: The table to free.
+   - smb_ht *pTable: The table to free.
 
    # Error Handling #
 
    No effect.
  */
-void ht_delete(struct smb_ht *pTable);
+void ht_delete(smb_ht *pTable);
 
 /**
    Free the hash table and its resources.  Perform an action on each data before
@@ -1329,7 +1333,7 @@ void ht_delete(struct smb_ht *pTable);
 
    # Parameters #
 
-   - struct smb_ht *pTable: The table to free.
+   - smb_ht *pTable: The table to free.
 
    - DATA_ACTION deleter: The action to perform on each value in the hash table
      before deletion.
@@ -1338,7 +1342,7 @@ void ht_delete(struct smb_ht *pTable);
 
    No effect.
  */
-void ht_delete_act(struct smb_ht *pTable, DATA_ACTION deleter);
+void ht_delete_act(smb_ht *pTable, DATA_ACTION deleter);
 
 /**
    Print the entire hash table.
@@ -1353,16 +1357,16 @@ void ht_delete_act(struct smb_ht *pTable, DATA_ACTION deleter);
    
    No effect.
  */
-void ht_print(struct smb_ht const *pTable, int full_mode);
+void ht_print(smb_ht const *pTable, int full_mode);
 
 ////////////////////////////////////////////////////////////////////////////////
 // ARGUMENT DATA
 ////////////////////////////////////////////////////////////////////////////////
 
-void arg_data_init(struct smb_ad *data);
-struct smb_ad *arg_data_create();
-void arg_data_destroy(struct smb_ad *data);
-void arg_data_delete(struct smb_ad *data);
+void arg_data_init(smb_ad *data);
+smb_ad *arg_data_create();
+void arg_data_destroy(smb_ad *data);
+void arg_data_delete(smb_ad *data);
 
 /**
    Analyze the argument data passed to the program.  Pass in the argc and argv,
@@ -1377,17 +1381,17 @@ void arg_data_delete(struct smb_ad *data);
 
    # Return #
 
-   A pointer to an struct smb_ad object.  Use provided functions to query the object
+   A pointer to an smb_ad object.  Use provided functions to query the object
    about every desired flag.
  */
-void process_args(struct smb_ad *data, int argc, char **argv);
+void process_args(smb_ad *data, int argc, char **argv);
 
 /**
    Check whether a flag is raised.
 
    # Parameters #
 
-   - struct smb_ad *data: The struct smb_ad returned by process_args().
+   - smb_ad *data: The smb_ad returned by process_args().
 
    - char flag: The character flag to check.  Alphabetical only.
 
@@ -1395,14 +1399,14 @@ void process_args(struct smb_ad *data, int argc, char **argv);
 
    An integer, 0 iff the flag was not set.
  */
-int check_flag(struct smb_ad *data, char flag);
+int check_flag(smb_ad *data, char flag);
 
 /**
    Check whether a long flag appeared.  It must occur verbatim.
 
    # Parameters #
 
-   - struct smb_ad *data: The struct smb_ad returned by process_args().
+   - smb_ad *data: The smb_ad returned by process_args().
 
    - char *flag: The string flag to check for.
 
@@ -1410,25 +1414,25 @@ int check_flag(struct smb_ad *data, char flag);
 
    An integer, 0 iff the flag was not set.
  */
-int check_long_flag(struct smb_ad *data, char *flag);
+int check_long_flag(smb_ad *data, char *flag);
 
 /**
    Check whether a bare string appeared.  It must occur verbatim.
 
    # Parameters #
 
-   - struct smb_ad *data: The struct smb_ad returned by process_args().
+   - smb_ad *data: The smb_ad returned by process_args().
 
    - char *string: The string to search for.
  */
-int check_bare_string(struct smb_ad *data, char *string);
+int check_bare_string(smb_ad *data, char *string);
 
 /**
    Return the string parameter associated with the flag.
 
    # Parameters #
 
-   - struct smb_ad *data: The struct smb_ad returned by process_args().
+   - smb_ad *data: The smb_ad returned by process_args().
 
    - char flag: The flag to find parameters of.
 
@@ -1436,14 +1440,14 @@ int check_bare_string(struct smb_ad *data, char *string);
 
    The parameter of the flag.
  */
-char *get_flag_parameter(struct smb_ad *data, char flag);
+char *get_flag_parameter(smb_ad *data, char flag);
 
 /**
    Return the string parameter associated with the long string.
 
    # Parameters #
 
-   - struct smb_ad *data: The struct smb_ad returned by process_args().
+   - smb_ad *data: The smb_ad returned by process_args().
 
    - char *string: The long flag to find parameters of.
 
@@ -1451,7 +1455,7 @@ char *get_flag_parameter(struct smb_ad *data, char flag);
 
    The parameter of the long flag.  NULL if no parameter or if flag not found.
  */
-char *get_long_flag_parameter(struct smb_ad *data, char *string);
+char *get_long_flag_parameter(smb_ad *data, char *string);
 
 ////////////////////////////////////////////////////////////////////////////////
 // Bit Field

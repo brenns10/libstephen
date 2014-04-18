@@ -21,7 +21,7 @@ int ll_test_create()
   DATA d;
   d.data_llint = 13;
   
-  struct smb_ll *list = ll_create();
+  smb_ll *list = ll_create();
   ll_append(list, d);
 
   // Assert that it was allocated correctly
@@ -37,7 +37,7 @@ int ll_test_create()
 
 int ll_test_create_empty()
 {
-  struct smb_ll *list = ll_create();
+  smb_ll *list = ll_create();
   
   // Assert that allocation went OK
   //TEST_ASSERT(!CHECK(ALLOCATION_ERROR), 1);
@@ -55,7 +55,7 @@ int ll_test_append()
 
   int current_assertion = 1;
 
-  struct smb_ll *list = ll_create();
+  smb_ll *list = ll_create();
 
   for ( ; d.data_llint < 200; d.data_llint++) {
     // Put a small, 200 item load on it.  This tests appending on
@@ -81,7 +81,7 @@ int ll_test_prepend()
   DATA d;
   d.data_llint = 0;
   int current_assertion = 1;
-  struct smb_ll *list = ll_create();
+  smb_ll *list = ll_create();
 
   // Test prepend about 200 times...
   for ( ; d.data_llint < 200; d.data_llint++) {
@@ -103,7 +103,7 @@ int ll_test_prepend()
 int ll_test_set()
 {
   DATA d;
-  struct smb_ll *list = ll_create();
+  smb_ll *list = ll_create();
   const int length = 30;
   int current_assertion = 1;
   
@@ -142,7 +142,7 @@ int ll_test_remove()
 {
   DATA d;
   d.data_llint = 0;
-  struct smb_ll *list = ll_create();
+  smb_ll *list = ll_create();
   int current_assertion = 1;
   const int length = 20;
 
@@ -193,7 +193,7 @@ int ll_test_insert()
 {
   DATA d;
   d.data_llint = 0;
-  struct smb_ll *list = ll_create();
+  smb_ll *list = ll_create();
   int current_assertion = 1;
   const int length = 20;
 

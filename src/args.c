@@ -56,7 +56,7 @@ int flag_index(char c)
 /**
    Add the regular to the flag to the data structure.
  */
-char process_flag(struct smb_ad *pData, char *cFlags)
+char process_flag(smb_ad *pData, char *cFlags)
 {
   char last;
   int idx;
@@ -74,7 +74,7 @@ char process_flag(struct smb_ad *pData, char *cFlags)
 /**
    Add the long flag to the data structure.
  */
-char *process_long_flag(struct smb_ad *pData, char *sTitle)
+char *process_long_flag(smb_ad *pData, char *sTitle)
 {
   DATA d, e;
   d.data_ptr = sTitle + 2;
@@ -84,7 +84,7 @@ char *process_long_flag(struct smb_ad *pData, char *sTitle)
   return sTitle + 2;
 }
 
-void process_bare_string(struct smb_ad *pData, char *sStr, char *previous_long_flag, 
+void process_bare_string(smb_ad *pData, char *sStr, char *previous_long_flag, 
                          char previous_flag)
 {
   if (previous_long_flag) {
@@ -107,11 +107,11 @@ void process_bare_string(struct smb_ad *pData, char *sStr, char *previous_long_f
 /**
    Find the string in the list and return its index, or -1.
  */
-int find_string(struct smb_ll *toSearch, char *toFind)
+int find_string(smb_ll *toSearch, char *toFind)
 {
   DATA d;
   char *sCurr;
-  struct smb_ll_iter iterator = ll_get_iter(toSearch);
+  smb_ll_iter iterator = ll_get_iter(toSearch);
   while (ll_iter_valid(&iterator)) {
     d = ll_iter_curr(&iterator);
     sCurr = (char *)d.data_ptr;
@@ -127,7 +127,7 @@ int find_string(struct smb_ll *toSearch, char *toFind)
 // Public Functions
 ////////////////////////////////////////////////////////////////////////////////
 
-void arg_data_init(struct smb_ad *data)
+void arg_data_init(smb_ad *data)
 {
   data->flags = 0;
   for (int i = 0; i < MAX_FLAGS; i++) data->flag_strings[i] = NULL;
@@ -136,10 +136,10 @@ void arg_data_init(struct smb_ad *data)
   data->bare_strings = ll_create();
 }
 
-struct smb_ad *arg_data_create()
+smb_ad *arg_data_create()
 {
-  struct smb_ad *data = (struct smb_ad*) malloc(sizeof(struct smb_ad));
-  SMB_INCREMENT_MALLOC_COUNTER(sizeof(struct smb_ad));
+  smb_ad *data = (smb_ad*) malloc(sizeof(smb_ad));
+  SMB_INCREMENT_MALLOC_COUNTER(sizeof(smb_ad));
 
   arg_data_init(data);
 
@@ -149,7 +149,7 @@ struct smb_ad *arg_data_create()
 /**
    Process args.  ASSUMES THAT THE PROGRAM IS REMOVED FROM THE LIST OF ARGS.
  */
-void process_args(struct smb_ad *data, int argc, char **argv)
+void process_args(smb_ad *data, int argc, char **argv)
 {
   char *previous_long_flag = NULL;
   char previous_flag = EOF;
@@ -196,25 +196,25 @@ void process_args(struct smb_ad *data, int argc, char **argv)
 /**
    Free the resources of an arg_data object.
  */
-void arg_data_destroy(struct smb_ad * data)
+void arg_data_destroy(smb_ad * data)
 {
   ll_delete(data->long_flags);
   ll_delete(data->bare_strings);
   ll_delete(data->long_flag_strings);
 }
 
-void arg_data_delete(struct smb_ad *data)
+void arg_data_delete(smb_ad *data)
 {
   arg_data_destroy(data);
 
   free(data);
-  SMB_DECREMENT_MALLOC_COUNTER(sizeof(struct smb_ad));
+  SMB_DECREMENT_MALLOC_COUNTER(sizeof(smb_ad));
 }
 
 /**
    Checks whether a short flag was set.
  */
-int check_flag(struct smb_ad *pData, char flag)
+int check_flag(smb_ad *pData, char flag)
 {
   uint64_t idx;
   idx = flag_index(flag);
@@ -228,7 +228,7 @@ int check_flag(struct smb_ad *pData, char flag)
 /**
    Check whether a long flag was set.  Return the index + 1 of the flag.
  */
-int check_long_flag(struct smb_ad *data, char *flag)
+int check_long_flag(smb_ad *data, char *flag)
 {
   return find_string(data->long_flags, flag) + 1;
 }
@@ -236,7 +236,7 @@ int check_long_flag(struct smb_ad *data, char *flag)
 /**
    Check whether a bare string appeared.
  */
-int check_bare_string(struct smb_ad *data, char *string)
+int check_bare_string(smb_ad *data, char *string)
 {
   return find_string(data->bare_strings, string) + 1;
 }
@@ -244,7 +244,7 @@ int check_bare_string(struct smb_ad *data, char *string)
 /**
    Get the parameter associated with a flag.
  */
-char *get_flag_parameter(struct smb_ad *data, char flag)
+char *get_flag_parameter(smb_ad *data, char flag)
 {
   int index = flag_index(flag);
   if (index == -1)
@@ -256,7 +256,7 @@ char *get_flag_parameter(struct smb_ad *data, char flag)
 /**
    Get the parameter associated with a long flag.
  */
-char *get_long_flag_parameter(struct smb_ad *data, char *string)
+char *get_long_flag_parameter(smb_ad *data, char *string)
 {
   int index = find_string(data->long_flags, string);
   if (index == -1)

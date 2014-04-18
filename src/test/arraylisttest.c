@@ -21,7 +21,7 @@ int al_test_create()
   DATA d;
   d.data_llint = 13;
 
-  struct smb_al *list = al_create();
+  smb_al *list = al_create();
   al_append(list, d);
   
   // Assert that it was allocated correctly.
@@ -40,7 +40,7 @@ int al_test_create_empty()
   DATA d;
   d.data_llint = 13;
 
-  struct smb_al *list = al_create();
+  smb_al *list = al_create();
 
   // Assert that it was allocated correctly.
   TEST_ASSERT(!CHECK(ALLOCATION_ERROR), 1);
@@ -56,7 +56,7 @@ int al_test_append()
   DATA d;
   d.data_llint = 0;
 
-  struct smb_al *list = al_create();
+  smb_al *list = al_create();
   
   // Test append about 21 times to check that reallocation works successfully
   for ( ; d.data_llint < 22; d.data_llint++) {
@@ -80,7 +80,7 @@ int al_test_prepend()
   DATA d;
   d.data_llint = 0;
 
-  struct smb_al *list = al_create();
+  smb_al *list = al_create();
   
   // Test prepend about 21 times to check that reallocation works successfully
   for ( ; d.data_llint < 22; d.data_llint++) {
@@ -102,7 +102,7 @@ int al_test_prepend()
 int al_test_set()
 {
   DATA d;
-  struct smb_al *list = al_create();
+  smb_al *list = al_create();
   const int length = 30;
 
   // Create data
@@ -142,7 +142,7 @@ int al_test_set()
 int al_test_remove()
 {
   DATA d;
-  struct smb_al *list = al_create();
+  smb_al *list = al_create();
   const int length = 23;
 
   // Create data
@@ -201,7 +201,7 @@ int al_test_remove()
 int al_test_insert()
 {
   DATA d;
-  struct smb_al *list = al_create();
+  smb_al *list = al_create();
   const int length = 20;
 
   // Create data
@@ -280,7 +280,7 @@ void array_list_test()
   smb_ut_test *insert = su_create_test("insert", al_test_remove, 0, 1);
   su_add_test(group, insert);
 
-  // The other elementary operations on the struct smb_al, i.e. the push, pop and
+  // The other elementary operations on the smb_al, i.e. the push, pop and
   // peek functions, are all merely wrappers over the functions already tested.
   // Additionally, the delete and length functions are adequately tested by the
   // tests as they are.  So this is a fairly complete set of tests.
