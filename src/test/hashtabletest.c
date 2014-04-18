@@ -59,7 +59,7 @@ int ht_test_insert()
   DATA key, value;
   int i;
 
-  HASH_TABLE *table = ht_create(&ht_string_hash);
+  struct smb_ht *table = ht_create(&ht_string_hash);
 
   for (i = 0; i < TEST_PAIRS; i++) {
     key.data_ptr = test_keys[i];
@@ -83,7 +83,7 @@ int ht_test_remove()
   DATA key, value;
   int a = 1;
   int i;
-  HASH_TABLE *table = ht_create(&ht_string_hash);
+  struct smb_ht *table = ht_create(&ht_string_hash);
   ht_test_deletions = 0;
 
   for (i = 0; i < TEST_PAIRS; i++) {
@@ -120,7 +120,7 @@ int ht_test_remove_invalid()
   int i;
   int a = 1;
 
-  HASH_TABLE *table = ht_create(&ht_string_hash);
+  struct smb_ht *table = ht_create(&ht_string_hash);
 
   key.data_ptr = "invalid key";
   value = ht_get(table, key);
@@ -139,7 +139,7 @@ int ht_test_buckets()
   DATA key, value;
   int i;
   int a = 1;
-  HASH_TABLE *table = ht_create(&ht_test_constant_hash);
+  struct smb_ht *table = ht_create(&ht_test_constant_hash);
   ht_test_deletions = 0;
   
   for (i = 0; i < 20; i++) {
@@ -208,7 +208,7 @@ int ht_test_resize()
   int a = 1;
   // Truncating addition will trim this to the number just before expanding.
   int last_stable = 1 + (int) (HASH_TABLE_INITIAL_SIZE * HASH_TABLE_MAX_LOAD_FACTOR);
-  HASH_TABLE *table = ht_create(ht_test_linear_hash);
+  struct smb_ht *table = ht_create(ht_test_linear_hash);
   ht_test_deletions = 0;
 
   for (i = 0; i < last_stable; i++) {
@@ -252,7 +252,7 @@ int ht_test_duplicate()
   int i;
   int a = 1;
   char *newKey = "not the first value";
-  HASH_TABLE *table = ht_create(ht_string_hash);
+  struct smb_ht *table = ht_create(ht_string_hash);
   ht_test_deletions = 0;
 
   for (i = 0; i < TEST_PAIRS; i++) {

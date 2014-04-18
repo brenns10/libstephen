@@ -448,21 +448,19 @@ struct smb_al
  */
 typedef unsigned int (*HASH_FUNCTION)(DATA toHash);
 
-#define HT_BUCKET struct ht_bucket
-HT_BUCKET
+struct smb_ht_bckt
 {
   DATA key;
   DATA value;
-  HT_BUCKET *next;
+  struct smb_ht_bckt *next;
 };
 
-#define HASH_TABLE struct hash_table
-HASH_TABLE
+struct smb_ht
 {
   int length;
   int allocated;
   HASH_FUNCTION hash;
-  HT_BUCKET **table;
+  struct smb_ht_bckt **table;
 };
 
 #define HASH_TABLE_INITIAL_SIZE 257 // prime number close to 256
@@ -476,8 +474,7 @@ HASH_TABLE
    Data structure to store information on arguments passed to the program.
  */
 #define MAX_FLAGS 52
-#define ARG_DATA struct arg_data
-ARG_DATA
+struct smb_ad
 {
   uint64_t flags; // bit field for all 52 alphabetical characters
   char *flag_strings[MAX_FLAGS];
@@ -1179,11 +1176,11 @@ DATA al_peek_back(struct smb_al *list);
 
    # Parameters #
 
-   - HASH_TABLE *pTable: pointer to the table to initialize.
+   - struct smb_ht *pTable: pointer to the table to initialize.
 
    - HASH_FUNCTION *hash_func: hash function for the table.
  */
-void ht_init(HASH_TABLE *pTable, HASH_FUNCTION hash_func);
+void ht_init(struct smb_ht *pTable, HASH_FUNCTION hash_func);
 
 /**
    Create a hash table.
@@ -1202,7 +1199,7 @@ void ht_init(HASH_TABLE *pTable, HASH_FUNCTION hash_func);
   Clears all errors on function call.  If malloc fails, then no hash table is
   created, NULL is returned, and the ALLOCATION_ERROR flag is raised.
  */
-HASH_TABLE *ht_create(HASH_FUNCTION hash_func);
+struct smb_ht *ht_create(HASH_FUNCTION hash_func);
 
 /**
    Insert data into the hash table.  Expands the hash table if the load factor
@@ -1211,7 +1208,7 @@ HASH_TABLE *ht_create(HASH_FUNCTION hash_func);
 
    # Parameters #
 
-   - HASH_TABLE *pTable: Pointer to the hash table.
+   - struct smb_ht *pTable: Pointer to the hash table.
 
    - DATA dKey: The key to insert.
 
@@ -1222,14 +1219,14 @@ HASH_TABLE *ht_create(HASH_FUNCTION hash_func);
    Clears all errors on function call.  Function call fails with
    ALLOCATION_ERROR if resize fails, or if bucket creation fails.
  */
-void ht_insert(HASH_TABLE *pTable, DATA dKey, DATA dValue);
+void ht_insert(struct smb_ht *pTable, DATA dKey, DATA dValue);
 
 /**
    Remove the key, value pair stored in the hash table.
 
    # Parameters #
 
-   - HASH_TABLE *pTable: Pointer to the hash table.
+   - struct smb_ht *pTable: Pointer to the hash table.
 
    - DATA dKey: key to delete.
 
@@ -1237,14 +1234,14 @@ void ht_insert(HASH_TABLE *pTable, DATA dKey, DATA dValue);
 
    Clears all errors on function call.
  */
-void ht_remove(HASH_TABLE *pTable, DATA dKey);
+void ht_remove(struct smb_ht *pTable, DATA dKey);
 
 /**
    Remove the key, value pair stored in the hash table.
 
    # Parameters #
 
-   - HASH_TABLE *pTable: Pointer to the hash table.
+   - struct smb_ht *pTable: Pointer to the hash table.
 
    - DATA dKey: key to delete.
 
@@ -1254,14 +1251,14 @@ void ht_remove(HASH_TABLE *pTable, DATA dKey);
 
    Clears all errors on function call.
  */
-void ht_remove_act(HASH_TABLE *pTable, DATA dKey, DATA_ACTION deleter);
+void ht_remove_act(struct smb_ht *pTable, DATA dKey, DATA_ACTION deleter);
 
 /**
    Return the value associated with the key provided.
 
    # Parameters #
 
-   - HASH_TABLE const *pTable: Pointer to the hash table.
+   - struct smb_ht const *pTable: Pointer to the hash table.
 
    - DATA dKey: key whose value to retrieve.
 
@@ -1274,7 +1271,7 @@ void ht_remove_act(HASH_TABLE *pTable, DATA dKey, DATA_ACTION deleter);
    Clears all errors on function call.  If the key is not found in the table,
    then raises NOT_FOUND_ERROR.
  */
-DATA ht_get(HASH_TABLE const *pTable, DATA dKey);
+DATA ht_get(struct smb_ht const *pTable, DATA dKey);
 
 /**
    Return the hash of the data, interpreting it as a string.
@@ -1301,14 +1298,14 @@ unsigned int ht_string_hash(DATA data);
    If pointers are contained within the hash table, they are not freed.  Use
    ht_destroy_act to specify a deletion action on the hash table.
  */
-void ht_destroy(HASH_TABLE *pTable);
+void ht_destroy(struct smb_ht *pTable);
 
 /**
    Free resources used by the hash table, but does not free the pointer itself.
    Useful for stack valued hash tables.  A deleter must be specified in this
    function call.
  */
-void ht_destroy_act(HASH_TABLE *pTable, DATA_ACTION deleter);
+void ht_destroy_act(struct smb_ht *pTable, DATA_ACTION deleter);
 
 /**
    Free the hash table and its resources.  No pointers contained in the table
@@ -1316,13 +1313,13 @@ void ht_destroy_act(HASH_TABLE *pTable, DATA_ACTION deleter);
 
    # Parameters #
 
-   - HASH_TABLE *pTable: The table to free.
+   - struct smb_ht *pTable: The table to free.
 
    # Error Handling #
 
    No effect.
  */
-void ht_delete(HASH_TABLE *pTable);
+void ht_delete(struct smb_ht *pTable);
 
 /**
    Free the hash table and its resources.  Perform an action on each data before
@@ -1330,7 +1327,7 @@ void ht_delete(HASH_TABLE *pTable);
 
    # Parameters #
 
-   - HASH_TABLE *pTable: The table to free.
+   - struct smb_ht *pTable: The table to free.
 
    - DATA_ACTION deleter: The action to perform on each value in the hash table
      before deletion.
@@ -1339,7 +1336,7 @@ void ht_delete(HASH_TABLE *pTable);
 
    No effect.
  */
-void ht_delete_act(HASH_TABLE *pTable, DATA_ACTION deleter);
+void ht_delete_act(struct smb_ht *pTable, DATA_ACTION deleter);
 
 /**
    Print the entire hash table.
@@ -1354,16 +1351,16 @@ void ht_delete_act(HASH_TABLE *pTable, DATA_ACTION deleter);
    
    No effect.
  */
-void ht_print(HASH_TABLE const *pTable, int full_mode);
+void ht_print(struct smb_ht const *pTable, int full_mode);
 
 ////////////////////////////////////////////////////////////////////////////////
 // ARGUMENT DATA
 ////////////////////////////////////////////////////////////////////////////////
 
-void arg_data_init(ARG_DATA *data);
-ARG_DATA *arg_data_create();
-void arg_data_destroy(ARG_DATA *data);
-void arg_data_delete(ARG_DATA *data);
+void arg_data_init(struct smb_ad *data);
+struct smb_ad *arg_data_create();
+void arg_data_destroy(struct smb_ad *data);
+void arg_data_delete(struct smb_ad *data);
 
 /**
    Analyze the argument data passed to the program.  Pass in the argc and argv,
@@ -1378,17 +1375,17 @@ void arg_data_delete(ARG_DATA *data);
 
    # Return #
 
-   A pointer to an ARG_DATA object.  Use provided functions to query the object
+   A pointer to an struct smb_ad object.  Use provided functions to query the object
    about every desired flag.
  */
-void process_args(ARG_DATA *data, int argc, char **argv);
+void process_args(struct smb_ad *data, int argc, char **argv);
 
 /**
    Check whether a flag is raised.
 
    # Parameters #
 
-   - ARG_DATA *data: The ARG_DATA returned by process_args().
+   - struct smb_ad *data: The struct smb_ad returned by process_args().
 
    - char flag: The character flag to check.  Alphabetical only.
 
@@ -1396,14 +1393,14 @@ void process_args(ARG_DATA *data, int argc, char **argv);
 
    An integer, 0 iff the flag was not set.
  */
-int check_flag(ARG_DATA *data, char flag);
+int check_flag(struct smb_ad *data, char flag);
 
 /**
    Check whether a long flag appeared.  It must occur verbatim.
 
    # Parameters #
 
-   - ARG_DATA *data: The ARG_DATA returned by process_args().
+   - struct smb_ad *data: The struct smb_ad returned by process_args().
 
    - char *flag: The string flag to check for.
 
@@ -1411,25 +1408,25 @@ int check_flag(ARG_DATA *data, char flag);
 
    An integer, 0 iff the flag was not set.
  */
-int check_long_flag(ARG_DATA *data, char *flag);
+int check_long_flag(struct smb_ad *data, char *flag);
 
 /**
    Check whether a bare string appeared.  It must occur verbatim.
 
    # Parameters #
 
-   - ARG_DATA *data: The ARG_DATA returned by process_args().
+   - struct smb_ad *data: The struct smb_ad returned by process_args().
 
    - char *string: The string to search for.
  */
-int check_bare_string(ARG_DATA *data, char *string);
+int check_bare_string(struct smb_ad *data, char *string);
 
 /**
    Return the string parameter associated with the flag.
 
    # Parameters #
 
-   - ARG_DATA *data: The ARG_DATA returned by process_args().
+   - struct smb_ad *data: The struct smb_ad returned by process_args().
 
    - char flag: The flag to find parameters of.
 
@@ -1437,14 +1434,14 @@ int check_bare_string(ARG_DATA *data, char *string);
 
    The parameter of the flag.
  */
-char *get_flag_parameter(ARG_DATA *data, char flag);
+char *get_flag_parameter(struct smb_ad *data, char flag);
 
 /**
    Return the string parameter associated with the long string.
 
    # Parameters #
 
-   - ARG_DATA *data: The ARG_DATA returned by process_args().
+   - struct smb_ad *data: The struct smb_ad returned by process_args().
 
    - char *string: The long flag to find parameters of.
 
@@ -1452,7 +1449,7 @@ char *get_flag_parameter(ARG_DATA *data, char flag);
 
    The parameter of the long flag.  NULL if no parameter or if flag not found.
  */
-char *get_long_flag_parameter(ARG_DATA *data, char *string);
+char *get_long_flag_parameter(struct smb_ad *data, char *string);
 
 ////////////////////////////////////////////////////////////////////////////////
 // Bit Field

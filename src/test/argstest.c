@@ -18,7 +18,7 @@
 // Example main function that will process and print results of args analysis.
 ////////////////////////////////////////////////////////////////////////////////
 
-void iterate_flags(ARG_DATA *pArgData, char start, char end)
+void iterate_flags(struct smb_ad *pArgData, char start, char end)
 {
   for (char c = start; c <= end; c++) {
     if (check_flag(pArgData, c)) {
@@ -30,7 +30,7 @@ void iterate_flags(ARG_DATA *pArgData, char start, char end)
   }
 }
 
-void iterate_long_flags(ARG_DATA *pArgData)
+void iterate_long_flags(struct smb_ad *pArgData)
 {
   struct smb_ll_iter iter = ll_get_iter(pArgData->long_flags);
 
@@ -46,7 +46,7 @@ void iterate_long_flags(ARG_DATA *pArgData)
   }
 }
 
-void iterate_bare_strings(ARG_DATA *pArgData)
+void iterate_bare_strings(struct smb_ad *pArgData)
 {
   struct smb_ll_iter iter = ll_get_iter(pArgData->bare_strings);
 
@@ -61,7 +61,7 @@ void iterate_bare_strings(ARG_DATA *pArgData)
 int args_test_main(int argc, char **argv)
 {
   printf("Mallocs: %d\n", SMB_GET_MALLOC_COUNTER);
-  ARG_DATA ArgData;
+  struct smb_ad ArgData;
   arg_data_init(&ArgData);
   process_args(&ArgData, argc - 1, argv + 1);
 

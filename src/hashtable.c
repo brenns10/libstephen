@@ -42,15 +42,15 @@ int ht_next_size(int current)
 /*
   Create a hash table bucket.
  */
-HT_BUCKET *ht_bucket_create(DATA dKey, DATA dValue, HT_BUCKET *pNext)
+struct smb_ht_bckt *ht_bucket_create(DATA dKey, DATA dValue, struct smb_ht_bckt *pNext)
 {
-  HT_BUCKET *pBucket;
-  pBucket = (HT_BUCKET*) malloc(sizeof(HT_BUCKET));
+  struct smb_ht_bckt *pBucket;
+  pBucket = (struct smb_ht_bckt*) malloc(sizeof(struct smb_ht_bckt));
   if (!pBucket) {
     RAISE(ALLOCATION_ERROR);
     return NULL;
   }
-  SMB_INCREMENT_MALLOC_COUNTER(sizeof(HT_BUCKET));
+  SMB_INCREMENT_MALLOC_COUNTER(sizeof(struct smb_ht_bckt));
   pBucket->key = dKey;
   pBucket->value = dValue;
   pBucket->next = pNext;
@@ -60,17 +60,17 @@ HT_BUCKET *ht_bucket_create(DATA dKey, DATA dValue, HT_BUCKET *pNext)
 /*
   Delete a hash table bucket.
  */
-void ht_bucket_delete(HT_BUCKET *pToDelete)
+void ht_bucket_delete(struct smb_ht_bckt *pToDelete)
 {
   free(pToDelete);
-  SMB_DECREMENT_MALLOC_COUNTER(sizeof(HT_BUCKET));
+  SMB_DECREMENT_MALLOC_COUNTER(sizeof(struct smb_ht_bckt));
 }
 
 /*
   Find a pointer to the first hash entry with key==dKey.  If it doesn't exist,
   return a pointer to the tail of the list.  If the bucket is null, return NULL.
  */
-HT_BUCKET *ht_find_in_bucket(HT_BUCKET *pBucket, DATA dKey)
+struct smb_ht_bckt *ht_find_in_bucket(struct smb_ht_bckt *pBucket, DATA dKey)
 {
   if (pBucket == NULL) return NULL;
 
@@ -83,9 +83,9 @@ HT_BUCKET *ht_find_in_bucket(HT_BUCKET *pBucket, DATA dKey)
   Insert data into the hash table.  If the key already exists in the table,
   overwrites with a new value.
  */
-void ht_insert_bucket(HASH_TABLE *pTable, HT_BUCKET *pBucket)
+void ht_insert_bucket(struct smb_ht *pTable, struct smb_ht_bckt *pBucket)
 {
-  HT_BUCKET *curr;
+  struct smb_ht_bckt *curr;
   unsigned int index = pTable->hash(pBucket->key) % pTable->allocated;
   
   if (pTable->table[index]) {
@@ -111,10 +111,10 @@ void ht_insert_bucket(HASH_TABLE *pTable, HT_BUCKET *pBucket)
 /*
   Resize the hash table, adding increment to the capacity of the table.
  */
-void ht_resize(HASH_TABLE *pTable)
+void ht_resize(struct smb_ht *pTable)
 {
-  HT_BUCKET **pOldBuffer;
-  HT_BUCKET *curr, *temp;
+  struct smb_ht_bckt **pOldBuffer;
+  struct smb_ht_bckt *curr, *temp;
   int index, oldLength, oldAllocated;
 
   // Step one: allocate new space for the table
@@ -123,7 +123,7 @@ void ht_resize(HASH_TABLE *pTable)
   oldAllocated = pTable->allocated;
   pTable->length = 0;
   pTable->allocated = ht_next_size(oldAllocated);
-  pTable->table = (HT_BUCKET**) malloc(pTable->allocated * sizeof(HT_BUCKET*));
+  pTable->table = (struct smb_ht_bckt**) malloc(pTable->allocated * sizeof(struct smb_ht_bckt*));
   if (!pTable->table) {
     // We want to preserve the data already contained in the table.
     RAISE(ALLOCATION_ERROR);
@@ -133,8 +133,8 @@ void ht_resize(HASH_TABLE *pTable)
     return;
   }
   // Zero out the new block too.
-  memset((void*)pTable->table, 0, pTable->allocated * sizeof(HT_BUCKET*));
-  SMB_INCREMENT_MALLOC_COUNTER(pTable->allocated * sizeof(HT_BUCKET*));
+  memset((void*)pTable->table, 0, pTable->allocated * sizeof(struct smb_ht_bckt*));
+  SMB_INCREMENT_MALLOC_COUNTER(pTable->allocated * sizeof(struct smb_ht_bckt*));
   
   // Step two, add the old items to the new table (no freeing, please)
   for (index = 0; index < oldAllocated; index++) {
@@ -153,13 +153,13 @@ void ht_resize(HASH_TABLE *pTable)
 
   // Step three: free old data.
   free(pOldBuffer);
-  SMB_DECREMENT_MALLOC_COUNTER(oldAllocated * sizeof(HT_BUCKET*));
+  SMB_DECREMENT_MALLOC_COUNTER(oldAllocated * sizeof(struct smb_ht_bckt*));
 }
 
 /*
   Return the load factor of a hash table.
  */
-double ht_load_factor(HASH_TABLE *pTable)
+double ht_load_factor(struct smb_ht *pTable)
 {
   return ((double) pTable->length) / ((double) pTable->allocated);
 }
@@ -168,7 +168,7 @@ double ht_load_factor(HASH_TABLE *pTable)
 // Public Interface Functions
 ////////////////////////////////////////////////////////////////////////////////
 
-void ht_init(HASH_TABLE *pTable, HASH_FUNCTION hash_func)
+void ht_init(struct smb_ht *pTable, HASH_FUNCTION hash_func)
 {
   CLEAR_ALL_ERRORS;
 
@@ -178,31 +178,31 @@ void ht_init(HASH_TABLE *pTable, HASH_FUNCTION hash_func)
   pTable->hash = hash_func;
 
   // Create the bucket list
-  pTable->table = (HT_BUCKET**) malloc(HASH_TABLE_INITIAL_SIZE * sizeof(HT_BUCKET*));
+  pTable->table = (struct smb_ht_bckt**) malloc(HASH_TABLE_INITIAL_SIZE * sizeof(struct smb_ht_bckt*));
   if (!pTable->table) {
-    SMB_DECREMENT_MALLOC_COUNTER(sizeof(HASH_TABLE));
+    SMB_DECREMENT_MALLOC_COUNTER(sizeof(struct smb_ht));
     free(pTable);
     RAISE(ALLOCATION_ERROR);
     return;
   }
-  SMB_INCREMENT_MALLOC_COUNTER(HASH_TABLE_INITIAL_SIZE * sizeof(HT_BUCKET*));
+  SMB_INCREMENT_MALLOC_COUNTER(HASH_TABLE_INITIAL_SIZE * sizeof(struct smb_ht_bckt*));
 
   // Zero out the entries in the table so we don't get segmentation faults.
-  memset((void*)pTable->table, 0, HASH_TABLE_INITIAL_SIZE * sizeof(HT_BUCKET*));  
+  memset((void*)pTable->table, 0, HASH_TABLE_INITIAL_SIZE * sizeof(struct smb_ht_bckt*));  
 }
 
-HASH_TABLE *ht_create(HASH_FUNCTION hash_func)
+struct smb_ht *ht_create(HASH_FUNCTION hash_func)
 {
   CLEAR_ALL_ERRORS;
 
   // Allocate and create the table.
-  HASH_TABLE *pTable;
-  pTable = (HASH_TABLE*) malloc(sizeof(HASH_TABLE));
+  struct smb_ht *pTable;
+  pTable = (struct smb_ht*) malloc(sizeof(struct smb_ht));
   if (!pTable) {
     RAISE(ALLOCATION_ERROR);
     return NULL;
   }
-  SMB_INCREMENT_MALLOC_COUNTER(sizeof(HASH_TABLE));
+  SMB_INCREMENT_MALLOC_COUNTER(sizeof(struct smb_ht));
 
   ht_init(pTable, hash_func);
   if (CHECK(ALLOCATION_ERROR)) {
@@ -212,14 +212,14 @@ HASH_TABLE *ht_create(HASH_FUNCTION hash_func)
   return pTable;
 }
 
-void ht_destroy_act(HASH_TABLE *pTable, DATA_ACTION deleter)
+void ht_destroy_act(struct smb_ht *pTable, DATA_ACTION deleter)
 {
   int i;
-  HT_BUCKET *curr, *temp;
+  struct smb_ht_bckt *curr, *temp;
 
   if (!pTable) return;
 
-  // Free all HT_BUCKET's in the table
+  // Free all struct smb_ht_bckt's in the table
   for (i = 0; i < pTable->allocated; i++) {
     curr = pTable->table[i];
     while (curr) {
@@ -233,24 +233,24 @@ void ht_destroy_act(HASH_TABLE *pTable, DATA_ACTION deleter)
   }
 }
 
-void ht_destroy(HASH_TABLE *pTable)
+void ht_destroy(struct smb_ht *pTable)
 {
   ht_destroy_act(pTable, NULL);
 }
 
-void ht_delete_act(HASH_TABLE *pTable, DATA_ACTION deleter)
+void ht_delete_act(struct smb_ht *pTable, DATA_ACTION deleter)
 {
   if (!pTable) return;
 
   ht_destroy_act(pTable, deleter);
 
-  SMB_DECREMENT_MALLOC_COUNTER(pTable->allocated * sizeof(HT_BUCKET*));
+  SMB_DECREMENT_MALLOC_COUNTER(pTable->allocated * sizeof(struct smb_ht_bckt*));
   free(pTable->table);
-  SMB_DECREMENT_MALLOC_COUNTER(sizeof(HASH_TABLE));
+  SMB_DECREMENT_MALLOC_COUNTER(sizeof(struct smb_ht));
   free(pTable);
 }
 
-void ht_delete(HASH_TABLE *pTable)
+void ht_delete(struct smb_ht *pTable)
 {
   ht_delete_act(pTable, NULL);
 }
@@ -259,7 +259,7 @@ void ht_delete(HASH_TABLE *pTable)
   Insert data into the hash table.  If the key already exists in the table,
   overwrites with a new value.
  */
-void ht_insert(HASH_TABLE *pTable, DATA dKey, DATA dValue)
+void ht_insert(struct smb_ht *pTable, DATA dKey, DATA dValue)
 {
   CLEAR_ALL_ERRORS;
 
@@ -268,17 +268,17 @@ void ht_insert(HASH_TABLE *pTable, DATA dKey, DATA dValue)
     if (CHECK(ALLOCATION_ERROR)) return;
   }
 
-  HT_BUCKET *pBucket = ht_bucket_create(dKey, dValue, NULL);
+  struct smb_ht_bckt *pBucket = ht_bucket_create(dKey, dValue, NULL);
   if (!pBucket) return;
   
   ht_insert_bucket(pTable, pBucket);
 }
 
-void ht_remove_act(HASH_TABLE *pTable, DATA dKey, DATA_ACTION deleter)
+void ht_remove_act(struct smb_ht *pTable, DATA dKey, DATA_ACTION deleter)
 {
   CLEAR_ALL_ERRORS;
 
-  HT_BUCKET *curr, *prev;
+  struct smb_ht_bckt *curr, *prev;
   int index = pTable->hash(dKey) % pTable->allocated;
 
   // Stop if the key doesn't exist in the table.
@@ -315,16 +315,16 @@ void ht_remove_act(HASH_TABLE *pTable, DATA dKey, DATA_ACTION deleter)
   }
 }
 
-void ht_remove(HASH_TABLE *pTable, DATA dKey)
+void ht_remove(struct smb_ht *pTable, DATA dKey)
 {
   ht_remove_act(pTable, dKey, NULL);
 }
 
-DATA ht_get(HASH_TABLE const *pTable, DATA dKey)
+DATA ht_get(struct smb_ht const *pTable, DATA dKey)
 {
   CLEAR_ALL_ERRORS;
 
-  HT_BUCKET *pBucket;
+  struct smb_ht_bckt *pBucket;
   DATA d;
   int index = pTable->hash(dKey) % pTable->allocated;
 
@@ -357,9 +357,9 @@ unsigned int ht_string_hash(DATA data)
   Print the hash table.  If full_mode is nonzero, it will print every cell of
   the hash table, regardless of whether or not it contains anything.
  */
-void ht_print(HASH_TABLE const *pTable, int full_mode)
+void ht_print(struct smb_ht const *pTable, int full_mode)
 {
-  HT_BUCKET *curr = NULL;
+  struct smb_ht_bckt *curr = NULL;
   int i;
   int printed = 0;
 
