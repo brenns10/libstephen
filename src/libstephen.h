@@ -311,6 +311,103 @@ void su_delete_group(smb_ut_group *group);
 
 /*******************************************************************************
 
+                          Generic List Data Structure
+
+*******************************************************************************/
+
+/**
+   @brief A generic list data structure.
+
+   Can represent an array list or a linked list.  Uses function pointers to hide
+   the implementation.  Has heavyweight memory requirements (many pointers).
+   Function calls must be made like this:
+
+       list->functionName(list, <params...>)
+ */
+typedef struct smb_list 
+{
+  /**
+     @brief A pointer to implementation-specific data.
+
+     This data is used by the rest of the functions in the struct to perform all
+     required actions.
+   */
+  void *data;
+
+  /**
+     @see ll_append @see al_append
+   */
+  void (*append)(struct smb_list *l, DATA newData);
+
+  /**
+     @see ll_prepend @see al_prepend
+   */
+  void (*prepend)(struct smb_list *l, DATA newData);
+
+  /**
+     @see ll_get @see al_get
+   */
+  DATA (*get)(struct smb_list *l, int index);
+
+  /**
+     @see ll_set @see al_set
+   */
+  void (*set)(struct smb_list *l, int index, DATA newData);
+  
+  /**
+     @see ll_remove @see al_remove
+   */
+  void (*remove)(struct smb_list *l, int index);
+
+  /**
+     @see ll_insert @see al_insert
+   */
+  void (*insert)(struct smb_list *l, int index, DATA newData);
+
+  /**
+     @see ll_delete @see al_delete
+   */
+  void (*delete)(struct smb_list *l);
+
+  /**
+     @see ll_length @see al_length
+   */
+  int (*length)(struct smb_list *l);
+
+  /**
+     @see ll_push_back @see al_push_back
+   */
+  void (*push_back)(struct smb_list *l, DATA newData);
+
+  /**
+     @see ll_pop_back @see al_pop_back
+   */
+  DATA (*pop_back)(struct smb_list *l);
+
+  /**
+     @see ll_peek_back @see al_peek_back
+   */
+  DATA (*peek_back)(struct smb_list *l);
+  
+  /**
+     @see ll_push_front @see al_push_front
+   */
+  void (*push_front)(struct smb_list *l, DATA newData);
+
+  /**
+     @see ll_pop_front @see al_pop_front
+   */
+  DATA (*pop_front)(struct smb_list *l);
+
+  /**
+     @see ll_pop_front @see al_pop_front
+   */
+  DATA (*peek_front)(struct smb_list *l);
+
+} smb_list;
+
+/*******************************************************************************
+
                               Linked List (smb_ll)
 
 *******************************************************************************/
@@ -640,102 +737,5 @@ int bf_check(unsigned char *data, int index);
 void bf_set(unsigned char *data, int index);
 void bf_clear(unsigned char *data, int index);
 void bf_flip(unsigned char *data, int index);
-
-/*******************************************************************************
-
-                          Generic List Data Structure
-
-*******************************************************************************/
-
-/**
-   @brief A generic list data structure.
-
-   Can represent an array list or a linked list.  Uses function pointers to hide
-   the implementation.  Has heavyweight memory requirements (many pointers).
-   Function calls must be made like this:
-
-       list->functionName(list, <params...>)
- */
-typedef struct smb_list 
-{
-  /**
-     @brief A pointer to implementation-specific data.
-
-     This data is used by the rest of the functions in the struct to perform all
-     required actions.
-   */
-  void *data;
-
-  /**
-     @see ll_append @see al_append
-   */
-  void (*append)(struct smb_list *l, DATA newData);
-
-  /**
-     @see ll_prepend @see al_prepend
-   */
-  void (*prepend)(struct smb_list *l, DATA newData);
-
-  /**
-     @see ll_get @see al_get
-   */
-  DATA (*get)(struct smb_list *l, int index);
-
-  /**
-     @see ll_set @see al_set
-   */
-  void (*set)(struct smb_list *l, int index, DATA newData);
-  
-  /**
-     @see ll_remove @see al_remove
-   */
-  void (*remove)(struct smb_list *l, int index);
-
-  /**
-     @see ll_insert @see al_insert
-   */
-  void (*insert)(struct smb_list *l, int index, DATA newData);
-
-  /**
-     @see ll_delete @see al_delete
-   */
-  void (*delete)(struct smb_list *l);
-
-  /**
-     @see ll_length @see al_length
-   */
-  int (*length)(struct smb_list *l);
-
-  /**
-     @see ll_push_back @see al_push_back
-   */
-  void (*push_back)(struct smb_list *l, DATA newData);
-
-  /**
-     @see ll_pop_back @see al_pop_back
-   */
-  DATA (*pop_back)(struct smb_list *l);
-
-  /**
-     @see ll_peek_back @see al_peek_back
-   */
-  DATA (*peek_back)(struct smb_list *l);
-  
-  /**
-     @see ll_push_front @see al_push_front
-   */
-  void (*push_front)(struct smb_list *l, DATA newData);
-
-  /**
-     @see ll_pop_front @see al_pop_front
-   */
-  DATA (*pop_front)(struct smb_list *l);
-
-  /**
-     @see ll_pop_front @see al_pop_front
-   */
-  DATA (*peek_front)(struct smb_list *l);
-
-} smb_list;
 
 #endif // SMB___LIBSTEPHEN_H_
