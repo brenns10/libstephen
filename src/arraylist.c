@@ -116,11 +116,14 @@ void al_shift_down(ARRAY_LIST *list, int to_index)
  */
 void al_init(ARRAY_LIST *list)
 {
+  CLEAR_ALL_ERRORS;
+
   list->data = (DATA*) malloc(SMB_AL_BLOCK_SIZE * sizeof(DATA));
   if (!list->data) {
     free(list);
     SMB_DECREMENT_MALLOC_COUNTER(sizeof(ARRAY_LIST));
     RAISE(ALLOCATION_ERROR);
+    return;
   }
   list->length = 0;
   list->allocated = SMB_AL_BLOCK_SIZE;
@@ -142,6 +145,9 @@ ARRAY_LIST *al_create()
   SMB_INCREMENT_MALLOC_COUNTER(sizeof(ARRAY_LIST));
 
   al_init(list);
+  if (CHECK(ALLOCATION_ERROR)) {
+    return NULL;
+  }
 
   return list;
 }
