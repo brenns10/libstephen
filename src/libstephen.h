@@ -400,7 +400,6 @@ struct smb_ll_node
   struct smb_ll_node *prev;
   struct smb_ll_node *next;
   DATA data;
-
 };
 
 /**
@@ -412,7 +411,6 @@ struct smb_ll
   struct smb_ll_node *head;
   struct smb_ll_node *tail;
   int length;
-
 };
 
 /**
@@ -423,7 +421,6 @@ struct smb_ll_iter
   struct smb_ll *list;
   struct smb_ll_node *current;
   int index;
-
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -435,13 +432,12 @@ struct smb_ll_iter
    structure.  You should not use any of the members, as they are implementation
    specific and subject to change.
  */
-typedef struct al_obj
+struct smb_al
 {
   DATA *data;
   int length;
   int allocated;
-
-} ARRAY_LIST;
+};
 
 ////////////////////////////////////////////////////////////////////////////////
 // HASH TABLE
@@ -1156,23 +1152,23 @@ int ll_iter_valid(struct smb_ll_iter *iterator);
 // ARRAY LIST
 ////////////////////////////////////////////////////////////////////////////////
 
-void al_init(ARRAY_LIST *list);
-ARRAY_LIST *al_create();
-void al_append(ARRAY_LIST *list, DATA newData);
-void al_prepend(ARRAY_LIST *list, DATA newData);
-DATA al_get(ARRAY_LIST *list, int index);
-void al_set(ARRAY_LIST *list, int index, DATA newData);
-void al_remove(ARRAY_LIST *list, int index);
-void al_insert(ARRAY_LIST *list, int index, DATA newData);
-void al_destroy(ARRAY_LIST *list);
-void al_delete(ARRAY_LIST *list);
-int al_length(ARRAY_LIST *list);
-void al_push_back(ARRAY_LIST *list, DATA newData);
-DATA al_pop_back(ARRAY_LIST *list);
-DATA al_peek_back(ARRAY_LIST *list);
-void al_push_front(ARRAY_LIST *list, DATA newData);
-DATA al_pop_back(ARRAY_LIST *list);
-DATA al_peek_back(ARRAY_LIST *list);
+void al_init(struct smb_al *list);
+struct smb_al *al_create();
+void al_append(struct smb_al *list, DATA newData);
+void al_prepend(struct smb_al *list, DATA newData);
+DATA al_get(struct smb_al *list, int index);
+void al_set(struct smb_al *list, int index, DATA newData);
+void al_remove(struct smb_al *list, int index);
+void al_insert(struct smb_al *list, int index, DATA newData);
+void al_destroy(struct smb_al *list);
+void al_delete(struct smb_al *list);
+int al_length(struct smb_al *list);
+void al_push_back(struct smb_al *list, DATA newData);
+DATA al_pop_back(struct smb_al *list);
+DATA al_peek_back(struct smb_al *list);
+void al_push_front(struct smb_al *list, DATA newData);
+DATA al_pop_back(struct smb_al *list);
+DATA al_peek_back(struct smb_al *list);
 
 ////////////////////////////////////////////////////////////////////////////////
 // HASH TABLE

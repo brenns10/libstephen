@@ -23,18 +23,18 @@
 /**
    al_expand:
 
-   Expands the ARRAY_LIST by adding another default chunk size.  Uses realloc().
+   Expands the struct smb_al by adding another default chunk size.  Uses realloc().
 
    # Parameters #
 
-   - ARRAY_LIST *list: the list to expand.
+   - struct smb_al *list: the list to expand.
 
    # Raises #
 
    - ALLOCATION_ERROR: if realloc fails.  Unexpanded block of data remains
      valid, and no changes are made to the list.
  */
-void al_expand(ARRAY_LIST *list)
+void al_expand(struct smb_al *list)
 {
   int newAllocation = list->allocated + SMB_AL_BLOCK_SIZE;
 
@@ -58,7 +58,7 @@ void al_expand(ARRAY_LIST *list)
 
    # Parameters #
 
-   - ARRAY_LIST *list: the list to operate on.
+   - struct smb_al *list: the list to operate on.
 
    - int from_index: the index to start shifting up from.
 
@@ -68,7 +68,7 @@ void al_expand(ARRAY_LIST *list)
      shift is performed.  All data remains valid, but no changes are made to the
      array.
  */
-void al_shift_up(ARRAY_LIST *list, int from_index)
+void al_shift_up(struct smb_al *list, int from_index)
 {
   // Check if there's space and allocate more if necessary
   if (list->length >= list->allocated) {
@@ -94,12 +94,12 @@ void al_shift_up(ARRAY_LIST *list, int from_index)
 
    # Parameters #
 
-   - ARRAY_LIST *list: the list to operate on.
+   - struct smb_al *list: the list to operate on.
 
    - int to_index: the index to shift down to.  The element at this index is
      eventually overwritten.
  */
-void al_shift_down(ARRAY_LIST *list, int to_index)
+void al_shift_down(struct smb_al *list, int to_index)
 {
   for (int i = to_index + 1; i < list->length; i++) {
     list->data[i - 1] = list->data[i];
@@ -114,14 +114,14 @@ void al_shift_down(ARRAY_LIST *list, int to_index)
 /*
   Initialize fields of a newly allocated array list.
  */
-void al_init(ARRAY_LIST *list)
+void al_init(struct smb_al *list)
 {
   CLEAR_ALL_ERRORS;
 
   list->data = (DATA*) malloc(SMB_AL_BLOCK_SIZE * sizeof(DATA));
   if (!list->data) {
     free(list);
-    SMB_DECREMENT_MALLOC_COUNTER(sizeof(ARRAY_LIST));
+    SMB_DECREMENT_MALLOC_COUNTER(sizeof(struct smb_al));
     RAISE(ALLOCATION_ERROR);
     return;
   }
@@ -133,16 +133,16 @@ void al_init(ARRAY_LIST *list)
 /*
   Allocate and initialize an empty array list on the heap.
  */
-ARRAY_LIST *al_create()
+struct smb_al *al_create()
 {
   CLEAR_ALL_ERRORS;
 
-  ARRAY_LIST *list = (ARRAY_LIST*) malloc(sizeof(ARRAY_LIST));
+  struct smb_al *list = (struct smb_al*) malloc(sizeof(struct smb_al));
   if (!list) {
     RAISE(ALLOCATION_ERROR);
     return NULL;
   }
-  SMB_INCREMENT_MALLOC_COUNTER(sizeof(ARRAY_LIST));
+  SMB_INCREMENT_MALLOC_COUNTER(sizeof(struct smb_al));
 
   al_init(list);
   if (CHECK(ALLOCATION_ERROR)) {
@@ -152,7 +152,7 @@ ARRAY_LIST *al_create()
   return list;
 }
 
-void al_append(ARRAY_LIST *list, DATA newData)
+void al_append(struct smb_al *list, DATA newData)
 {
   CLEAR_ALL_ERRORS;
 
@@ -167,7 +167,7 @@ void al_append(ARRAY_LIST *list, DATA newData)
   }
 }
 
-void al_prepend(ARRAY_LIST *list, DATA newData)
+void al_prepend(struct smb_al *list, DATA newData)
 {
   CLEAR_ALL_ERRORS;
 
@@ -178,7 +178,7 @@ void al_prepend(ARRAY_LIST *list, DATA newData)
   list->data[0] = newData;
 }
 
-DATA al_get(ARRAY_LIST *list, int index)
+DATA al_get(struct smb_al *list, int index)
 {
   CLEAR_ALL_ERRORS;
 
@@ -191,7 +191,7 @@ DATA al_get(ARRAY_LIST *list, int index)
   return list->data[index];
 }
 
-void al_set(ARRAY_LIST *list, int index, DATA newData)
+void al_set(struct smb_al *list, int index, DATA newData)
 {
   CLEAR_ALL_ERRORS;
   
@@ -203,7 +203,7 @@ void al_set(ARRAY_LIST *list, int index, DATA newData)
   list->data[index] = newData;
 }
 
-void al_remove(ARRAY_LIST *list, int index)
+void al_remove(struct smb_al *list, int index)
 {
   CLEAR_ALL_ERRORS;
 
@@ -215,7 +215,7 @@ void al_remove(ARRAY_LIST *list, int index)
   al_shift_down(list, index);
 }
 
-void al_insert(ARRAY_LIST *list, int index, DATA newData)
+void al_insert(struct smb_al *list, int index, DATA newData)
 {
   CLEAR_ALL_ERRORS;
   
@@ -234,7 +234,7 @@ void al_insert(ARRAY_LIST *list, int index, DATA newData)
   list->data[index] = newData;
 }
 
-void al_destroy(ARRAY_LIST *list)
+void al_destroy(struct smb_al *list)
 {
   CLEAR_ALL_ERRORS;
 
@@ -242,52 +242,52 @@ void al_destroy(ARRAY_LIST *list)
   SMB_DECREMENT_MALLOC_COUNTER(list->allocated * sizeof(DATA));
 }
 
-void al_delete(ARRAY_LIST *list)
+void al_delete(struct smb_al *list)
 {
   CLEAR_ALL_ERRORS;
 
   al_destroy(list);
   free(list);
-  SMB_DECREMENT_MALLOC_COUNTER(sizeof(ARRAY_LIST));
+  SMB_DECREMENT_MALLOC_COUNTER(sizeof(struct smb_al));
 }
 
-int al_length(ARRAY_LIST *list)
+int al_length(struct smb_al *list)
 {
   CLEAR_ALL_ERRORS;
 
   return list->length;
 }
 
-void al_push_back(ARRAY_LIST *list, DATA newData)
+void al_push_back(struct smb_al *list, DATA newData)
 {
   return al_append(list, newData);
 }
 
-DATA al_pop_back(ARRAY_LIST *list)
+DATA al_pop_back(struct smb_al *list)
 {
   DATA toReturn = al_get(list, list->length - 1);
   al_remove(list, list->length - 1);
   return toReturn;
 }
 
-DATA al_peek_back(ARRAY_LIST *list)
+DATA al_peek_back(struct smb_al *list)
 {
   return al_get(list, list->length - 1);
 }
 
-void al_push_front(ARRAY_LIST *list, DATA newData)
+void al_push_front(struct smb_al *list, DATA newData)
 {
   return al_prepend(list, newData);
 }
 
-DATA al_pop_front(ARRAY_LIST *list)
+DATA al_pop_front(struct smb_al *list)
 {
   DATA toReturn = al_get(list, 0);
   al_remove(list, 0);
   return toReturn;
 }
 
-DATA al_peek_front(ARRAY_LIST *list)
+DATA al_peek_front(struct smb_al *list)
 {
   return al_get(list, 0);
 }
@@ -297,43 +297,43 @@ DATA al_peek_front(ARRAY_LIST *list)
 
 void al_append_adapter(LIST *l, DATA newData)
 {
-  ARRAY_LIST *list = (ARRAY_LIST*) (l->data);
+  struct smb_al *list = (struct smb_al*) (l->data);
   return al_append(list, newData);
 }
 
 void al_prepend_adapter(LIST *l, DATA newData)
 {
-  ARRAY_LIST *list = (ARRAY_LIST*) (l->data);
+  struct smb_al *list = (struct smb_al*) (l->data);
   return al_prepend(list, newData);
 }
 
 DATA al_get_adapter(LIST *l, int index)
 {
-  ARRAY_LIST *list = (ARRAY_LIST*) (l->data);
+  struct smb_al *list = (struct smb_al*) (l->data);
   return al_get(list, index);
 }
 
 void al_set_adapter(LIST *l, int index, DATA newData)
 {
-  ARRAY_LIST *list = (ARRAY_LIST*) (l->data);
+  struct smb_al *list = (struct smb_al*) (l->data);
   return al_set(list, index, newData);
 }
 
 void al_remove_adapter(LIST *l, int index)
 {
-  ARRAY_LIST *list = (ARRAY_LIST*) (l->data);
+  struct smb_al *list = (struct smb_al*) (l->data);
   return al_remove(list, index);
 }
 
 void al_insert_adapter(LIST *l, int index, DATA newData)
 {
-  ARRAY_LIST *list = (ARRAY_LIST*) (l->data);
+  struct smb_al *list = (struct smb_al*) (l->data);
   return al_insert(list, index, newData);
 }
 
 void al_delete_adapter(LIST *l)
 {
-  ARRAY_LIST *list = (ARRAY_LIST*) (l->data);
+  struct smb_al *list = (struct smb_al*) (l->data);
   al_delete(list);
   l->data = NULL;
   return;
@@ -341,43 +341,43 @@ void al_delete_adapter(LIST *l)
 
 int al_length_adapter(LIST *l)
 {
-  ARRAY_LIST *list = (ARRAY_LIST*) (l->data);
+  struct smb_al *list = (struct smb_al*) (l->data);
   return al_length(list);
 }
 
 void al_push_back_adapter(LIST *l, DATA newData)
 {
-  ARRAY_LIST *list = (ARRAY_LIST*) (l->data);
+  struct smb_al *list = (struct smb_al*) (l->data);
   return al_push_back(list, newData);
 }
 
 DATA al_pop_back_adapter(LIST *l)
 {
-  ARRAY_LIST *list = (ARRAY_LIST*) (l->data);
+  struct smb_al *list = (struct smb_al*) (l->data);
   return al_pop_back(list);
 }
 
 DATA al_peek_back_adapter(LIST *l)
 {
-  ARRAY_LIST *list = (ARRAY_LIST*) (l->data);
+  struct smb_al *list = (struct smb_al*) (l->data);
   return al_peek_back(list);
 }
 
 void al_push_front_adapter(LIST *l, DATA newData)
 {
-  ARRAY_LIST *list = (ARRAY_LIST*) (l->data);
+  struct smb_al *list = (struct smb_al*) (l->data);
   return al_push_front(list, newData);
 }
 
 DATA al_pop_front_adapter(LIST *l)
 {
-  ARRAY_LIST *list = (ARRAY_LIST*) (l->data);
+  struct smb_al *list = (struct smb_al*) (l->data);
   return al_pop_front(list);
 }
 
 DATA al_peek_front_adapter(LIST *l)
 {
-  ARRAY_LIST *list = (ARRAY_LIST*) (l->data);
+  struct smb_al *list = (struct smb_al*) (l->data);
   return al_peek_front(list);
 }
 
@@ -402,7 +402,7 @@ void al_fill_functions(LIST *l)
 ////////////////////////////////////////////////////////////////////////////////
 // Interface Public Functions
 
-LIST al_cast_to_list(ARRAY_LIST *list)
+LIST al_cast_to_list(struct smb_al *list)
 {
   LIST genericList;
   genericList.data = list;
@@ -414,7 +414,7 @@ LIST al_cast_to_list(ARRAY_LIST *list)
 
 LIST al_create_list()
 {
-  ARRAY_LIST *list = al_create();
+  struct smb_al *list = al_create();
 
   return al_cast_to_list(list);
 }
