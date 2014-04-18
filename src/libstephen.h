@@ -764,11 +764,12 @@ typedef struct smb_list
 ////////////////////////////////////////////////////////////////////////////////
 
 /**
-   Creates a new list with the given data.
+   Initializes a new list which has already been allocated.
+ */
+void ll_init(LINKED_LIST *newList);
 
-   # Parameters #
-
-   - DATA newData: the data to store.
+/**
+   Creates a new, empty linked list.
 
    # Returns #
 
@@ -779,20 +780,7 @@ typedef struct smb_list
    Clears all errors.  Can raise ALLOCATION_ERROR.  In this case, returns NULL,
    and no memory is leaked.
  */
-LINKED_LIST *ll_create(DATA newData);
-
-/**
-   Creates a new list empty.
-
-   # Returns #
-
-   A pointer to the new list.
-
-   # Error Handling #
-
-   Clears all errors.  Can raise ALLOCATION_ERROR.
- */
-LINKED_LIST *ll_create_empty();
+LINKED_LIST *ll_create();
 
 /**
    Creates a new list with initial data.  Returns an instance of the interface.
@@ -809,7 +797,7 @@ LINKED_LIST *ll_create_empty();
 
    Clears all errors.  Can raise ALLOCATION_ERROR.
  */
-LIST ll_create_list(DATA newData);
+LIST ll_create_list();
 
 /**
    Create a new list empty.  Returns an instance of the list interface.

@@ -46,9 +46,9 @@ ARG_DATA *arg_data_new()
   SMB_INCREMENT_MALLOC_COUNTER(sizeof(ARG_DATA));
   data->flags = 0;
   for (int i = 0; i < MAX_FLAGS; i++) data->flag_strings[i] = NULL;
-  data->long_flags = ll_create_empty();
-  data->long_flag_strings = ll_create_empty();
-  data->bare_strings = ll_create_empty();
+  data->long_flags = ll_create();
+  data->long_flag_strings = ll_create();
+  data->bare_strings = ll_create();
 
   return data;
 }

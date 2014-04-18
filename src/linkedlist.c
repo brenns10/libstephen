@@ -112,52 +112,27 @@ NODE *ll_create_node(DATA data)
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC METHODS
 
-LINKED_LIST *ll_create(DATA newData)
+void ll_init(LINKED_LIST *newList)
 {
-  CLEAR_ALL_ERRORS;
-
-  // Allocate space for the struct that represents the list.
-  LINKED_LIST *newList = (LINKED_LIST *) malloc(sizeof(LINKED_LIST));
-  if (!newList) {
-    RAISE(ALLOCATION_ERROR);
-    return NULL;
-  }
-  SMB_INCREMENT_MALLOC_COUNTER(sizeof(LINKED_LIST));
-
-  // Create the first node
-  NODE *newNode = ll_create_node(newData);
-
-  if (CHECK(ALLOCATION_ERROR)) {
-    // If we can't allocate the first node, destroy the list, leave the error
-    // flag, and return.
-    free(newList);
-    SMB_DECREMENT_MALLOC_COUNTER(sizeof(LINKED_LIST));
-    return NULL;
-  }
-
-  // Link things together and setup variables
-  newList->head = newNode;
-  newList->tail = newNode;
-  newList->length = 1;
-
-  return newList;
-}
-
-LINKED_LIST *ll_create_empty()
-{
-  CLEAR_ALL_ERRORS;
-
-  LINKED_LIST *newList = (LINKED_LIST *) malloc(sizeof(LINKED_LIST));
-
-  if (!newList) {
-    RAISE(ALLOCATION_ERROR);
-    return NULL;
-  }
-
-  SMB_INCREMENT_MALLOC_COUNTER(sizeof(LINKED_LIST));
   newList->length = 0;
   newList->head = NULL;
   newList->tail = NULL;
+}
+
+LINKED_LIST *ll_create()
+{
+  CLEAR_ALL_ERRORS;
+
+  LINKED_LIST *newList = (LINKED_LIST *) malloc(sizeof(LINKED_LIST));
+
+  if (!newList) {
+    RAISE(ALLOCATION_ERROR);
+    return NULL;
+  }
+  SMB_INCREMENT_MALLOC_COUNTER(sizeof(LINKED_LIST));
+
+  ll_init(newList);
+
   return newList;
 }
 
@@ -332,7 +307,7 @@ void ll_insert(LINKED_LIST *list, int index, DATA newData)
   }
 }
 
-void ll_delete(LINKED_LIST *list)
+void ll_destroy(LINKED_LIST *list)
 {
   // Iterate through each node, deleting them as we go
   NODE *iter = list->head;
@@ -342,6 +317,11 @@ void ll_delete(LINKED_LIST *list)
     ll_remove_node(list, iter);
     iter = temp;
   }
+}
+
+void ll_delete(LINKED_LIST *list)
+{
+  ll_destroy(list);
   // Free the list header
   free(list);
   SMB_DECREMENT_MALLOC_COUNTER(sizeof(LINKED_LIST));
@@ -538,16 +518,9 @@ LIST ll_cast_to_list(LINKED_LIST *list)
   return genericList;
 }
 
-LIST ll_create_list(DATA newData)
+LIST ll_create_list()
 {
-  LINKED_LIST *list = ll_create(newData);
-
-  return ll_cast_to_list(list);
-}
-
-LIST ll_create_empty_list()
-{
-  LINKED_LIST *list = ll_create_empty();
+  LINKED_LIST *list = ll_create();
 
   return ll_cast_to_list(list);
 }
