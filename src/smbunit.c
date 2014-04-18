@@ -15,10 +15,10 @@
 #include <string.h>
 #include "libstephen.h"
 
-struct smb_ut_test *su_create_test(char * description, int (*run)(), int expected_errors, int check_mem_leaks)
+smb_ut_test *su_create_test(char * description, int (*run)(), int expected_errors, int check_mem_leaks)
 {
-  struct smb_ut_test *test = (struct smb_ut_test*) malloc(sizeof(struct smb_ut_test));
-  SMB_INCREMENT_MALLOC_COUNTER(sizeof(struct smb_ut_test));
+  smb_ut_test *test = (smb_ut_test*) malloc(sizeof(smb_ut_test));
+  SMB_INCREMENT_MALLOC_COUNTER(sizeof(smb_ut_test));
   strncpy(test->description, description, SMB_UNIT_DESCRIPTION_SIZE - 1);
   test->description[SMB_UNIT_DESCRIPTION_SIZE - 1] = 0;
   
@@ -29,10 +29,10 @@ struct smb_ut_test *su_create_test(char * description, int (*run)(), int expecte
   return test;
 }
 
-struct smb_ut_group *su_create_test_group(char * description)
+smb_ut_group *su_create_test_group(char * description)
 {
-  struct smb_ut_group *group = (struct smb_ut_group*) malloc(sizeof(struct smb_ut_group));
-  SMB_INCREMENT_MALLOC_COUNTER(sizeof(struct smb_ut_group));
+  smb_ut_group *group = (smb_ut_group*) malloc(sizeof(smb_ut_group));
+  SMB_INCREMENT_MALLOC_COUNTER(sizeof(smb_ut_group));
   strncpy(group->description, description, SMB_UNIT_DESCRIPTION_SIZE - 1);
   group->description[SMB_UNIT_DESCRIPTION_SIZE - 1] = 0;
 
@@ -40,14 +40,14 @@ struct smb_ut_group *su_create_test_group(char * description)
   return group;
 }
 
-void su_add_test(struct smb_ut_group *group, struct smb_ut_test *test)
+void su_add_test(smb_ut_group *group, smb_ut_test *test)
 {
   if (group->num_tests < SMB_UNIT_TESTS_PER_GROUP) {
     group->tests[group->num_tests++] = test;
   }
 }
 
-int su_run_test(struct smb_ut_test *test)
+int su_run_test(smb_ut_test *test)
 {
   CLEAR_ALL_ERRORS; // just in case
   int mallocs = SMB_GET_MALLOC_COUNTER;
@@ -73,7 +73,7 @@ int su_run_test(struct smb_ut_test *test)
   return 0;
 }
 
-int su_run_group(struct smb_ut_group *group)
+int su_run_group(smb_ut_group *group)
 {
   int result = 0;
   printf ("## GROUP \"%s\" running...\n",group->description);
@@ -88,18 +88,18 @@ int su_run_group(struct smb_ut_group *group)
   return 0;
 }
 
-void su_delete_test(struct smb_ut_test *test)
+void su_delete_test(smb_ut_test *test)
 {
   free(test);
-  SMB_DECREMENT_MALLOC_COUNTER(sizeof(struct smb_ut_test));
+  SMB_DECREMENT_MALLOC_COUNTER(sizeof(smb_ut_test));
 }
 
-void su_delete_group(struct smb_ut_group *group)
+void su_delete_group(smb_ut_group *group)
 {
   for (int i = 0; i < group->num_tests; i++) {
     if (group->tests[i]) // don't delete if already deleted
       su_delete_test(group->tests[i]);
   }
   free(group);
-  SMB_DECREMENT_MALLOC_COUNTER(sizeof(struct smb_ut_group));
+  SMB_DECREMENT_MALLOC_COUNTER(sizeof(smb_ut_group));
 }

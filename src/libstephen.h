@@ -1,10 +1,12 @@
 /*******************************************************************************
 
-  File:         libstephen.h
+  @file         libstephen.h
   
   Author:       Stephen Brennan
 
   Date Created: Friday, 27 September 2013
+
+  @brief
 
   Description: The public interface of libstephen.  Libstephen is a C library
   designed to provide basic data structures and operations to supplement the
@@ -184,13 +186,13 @@ extern unsigned int ERROR_VAR;
      the test.  The test will fail if at least one of the errors in the flag are
      not raised.
  */
-struct smb_ut_test
+typedef struct
 {
   char description[SMB_UNIT_DESCRIPTION_SIZE];
   int (*run)();
   int expected_errors;
   int check_mem_leaks;
-};
+} smb_ut_test;
 
 /**
    A structure holding a group of unit tests that are all related.  Members
@@ -207,12 +209,12 @@ struct smb_ut_test
    - struct smb_ut_test *tests[]: pointers to the tests contained.  Max tests defined by
      SMB_UNIT_TESTS_PER_GROUP.
  */
-struct smb_ut_group
+typedef struct
 {
   char description[SMB_UNIT_DESCRIPTION_SIZE];
   int num_tests;
-  struct smb_ut_test *tests[SMB_UNIT_TESTS_PER_GROUP];
-};
+  smb_ut_test *tests[SMB_UNIT_TESTS_PER_GROUP];
+} smb_ut_group;
 
 /**
    Create and return a new unit test.
@@ -233,7 +235,7 @@ struct smb_ut_group
 
    A pointer to the new test.
  */
-struct smb_ut_test *su_create_test(char *description, int (*run)(), 
+smb_ut_test *su_create_test(char *description, int (*run)(), 
                                    int expected_errors, int check_mem_leaks);
 
 /**
@@ -247,7 +249,7 @@ struct smb_ut_test *su_create_test(char *description, int (*run)(),
 
    A pointer to the test group.
  */
-struct smb_ut_group *su_create_test_group(char *description);
+smb_ut_group *su_create_test_group(char *description);
 
 /**
    Add a test to the given test group.  A maximum of SMB_UNIT_TESTS_PER_GROUP
@@ -256,11 +258,11 @@ struct smb_ut_group *su_create_test_group(char *description);
 
    # Parameters #
 
-   - struct smb_ut_group *group: a pointer to the group to add the test to.
+   - smb_ut_group *group: a pointer to the group to add the test to.
 
-   - struct smb_ut_test *test: a pointer to the test.
+   - smb_ut_test *test: a pointer to the test.
  */
-void su_add_test(struct smb_ut_group *group, struct smb_ut_test *test);
+void su_add_test(smb_ut_group *group, smb_ut_test *test);
 
 /**
    Run the given test.  Tracks memory allocations and thrown errors.  In order
@@ -268,7 +270,7 @@ void su_add_test(struct smb_ut_group *group, struct smb_ut_test *test);
 
    # Parameters #
    
-   - struct smb_ut_test *test: the test to run
+   - smb_ut_test *test: the test to run
 
    # Returns # 
    
@@ -288,7 +290,7 @@ void su_add_test(struct smb_ut_group *group, struct smb_ut_test *test);
    - Code 3: Memory was leaked.  The test returned 0 and all expected errors
      were found (or no errors were expected or found), but memory leaked.
  */
-int su_run_test(struct smb_ut_test *test);
+int su_run_test(smb_ut_test *test);
 
 /**
    Run a group of tests.  The tests are run sequentially (in the order they were
@@ -296,7 +298,7 @@ int su_run_test(struct smb_ut_test *test);
 
    # Parameters #
 
-   - struct smb_ut_group *group: a pointer to the struct smb_ut_group to run.
+   - smb_ut_group *group: a pointer to the smb_ut_group to run.
 
    # Returns #
 
@@ -304,7 +306,7 @@ int su_run_test(struct smb_ut_test *test);
    su_run_test() function, it returns 0 if all tests succeeded, or else the
    return code of the failed test from su_run_test().
  */
-int su_run_group(struct smb_ut_group *group);
+int su_run_group(smb_ut_group *group);
 
 /**
    Frees the memory associated with the test, and performs cleanup.  
@@ -319,15 +321,15 @@ int su_run_group(struct smb_ut_group *group);
 
    # Parameters #
 
-   - struct smb_ut_test *test: the test to free
+   - smb_ut_test *test: the test to free
  */
-void su_delete_test(struct smb_ut_test *test);
+void su_delete_test(smb_ut_test *test);
 
 /**
    Free the memory associated with the group AND ALL TESTS WITHIN IT.  You MUST
    use this to delete test groups.  
 
-   Note that if a pointer to a struct smb_ut_test within the struct smb_ut_group
+   Note that if a pointer to a smb_ut_test within the smb_ut_group
    is already invalid (freed), then su_delete_group() assumes that it has been
    freed and moves on.  So you may include a single test in more than one group
    and safely delete them both (but after deleting the first group, the test
@@ -336,9 +338,9 @@ void su_delete_test(struct smb_ut_test *test);
 
    # Parameters #
 
-   struct smb_ut_group *group: a pointer to the group to free
+   smb_ut_group *group: a pointer to the group to free
  */
-void su_delete_group(struct smb_ut_group *group);
+void su_delete_group(smb_ut_group *group);
 
 /**
    Asserts that an expression is true.  If false, returns a given value.
@@ -492,7 +494,7 @@ struct smb_ad
 /**
    Generic list data structure.
  */
-typedef struct smb_list 
+struct smb_list 
 {
   // Pointer to the actual structure in memory.  Could be any type.
   void *data;
@@ -743,7 +745,7 @@ typedef struct smb_list
 
   // Iterator functions may reside here in the near future.
 
-} LIST;
+};
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -789,7 +791,7 @@ struct smb_ll *ll_create();
 
    Clears all errors.  Can raise ALLOCATION_ERROR.
  */
-LIST ll_create_list();
+struct smb_list ll_create_list();
 
 /**
    Create a new list empty.  Returns an instance of the list interface.
@@ -802,7 +804,7 @@ LIST ll_create_list();
 
    Clears all errors. Can raise ALLOCATION_ERROR.
  */
-LIST ll_create_empty_list();
+struct smb_list ll_create_empty_list();
 
 /**
    Cast a struct smb_ll pointer to an instance of the list interface.
@@ -819,7 +821,7 @@ LIST ll_create_empty_list();
 
    No effect on flags.
  */
-LIST ll_cast_to_list(struct smb_ll *list);
+struct smb_list ll_cast_to_list(struct smb_ll *list);
 
 /**
    Append the given data to the end of the list.

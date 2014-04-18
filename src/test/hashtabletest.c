@@ -298,25 +298,25 @@ int ht_test_duplicate()
 
 void hash_table_test() 
 {
-  struct smb_ut_group *group = su_create_test_group("hash table");
+  smb_ut_group *group = su_create_test_group("hash table");
 
-  struct smb_ut_test *insert = su_create_test("insert", ht_test_insert, 0, 1);
+  smb_ut_test *insert = su_create_test("insert", ht_test_insert, 0, 1);
   su_add_test(group, insert);
 
-  struct smb_ut_test *remove = su_create_test("remove", ht_test_remove, 0, 1);
+  smb_ut_test *remove = su_create_test("remove", ht_test_remove, 0, 1);
   su_add_test(group, remove);
 
-  struct smb_ut_test *remove_invalid = su_create_test("remove_invalid", ht_test_remove_invalid, 
+  smb_ut_test *remove_invalid = su_create_test("remove_invalid", ht_test_remove_invalid, 
                                         NOT_FOUND_ERROR, 1);
   su_add_test(group, remove_invalid);
 
-  struct smb_ut_test *buckets = su_create_test("buckets", ht_test_buckets, 0, 1);
+  smb_ut_test *buckets = su_create_test("buckets", ht_test_buckets, 0, 1);
   su_add_test(group, buckets);
 
-  struct smb_ut_test *resize = su_create_test("resize", ht_test_resize, 0, 1);
+  smb_ut_test *resize = su_create_test("resize", ht_test_resize, 0, 1);
   su_add_test(group, resize);
 
-  struct smb_ut_test *duplicate = su_create_test("duplicate", ht_test_duplicate, 0, 1);
+  smb_ut_test *duplicate = su_create_test("duplicate", ht_test_duplicate, 0, 1);
   su_add_test(group, duplicate);
 
   su_run_group(group);

@@ -295,43 +295,43 @@ DATA al_peek_front(struct smb_al *list)
 ////////////////////////////////////////////////////////////////////////////////
 // Interface Adapters
 
-void al_append_adapter(LIST *l, DATA newData)
+void al_append_adapter(struct smb_list *l, DATA newData)
 {
   struct smb_al *list = (struct smb_al*) (l->data);
   return al_append(list, newData);
 }
 
-void al_prepend_adapter(LIST *l, DATA newData)
+void al_prepend_adapter(struct smb_list *l, DATA newData)
 {
   struct smb_al *list = (struct smb_al*) (l->data);
   return al_prepend(list, newData);
 }
 
-DATA al_get_adapter(LIST *l, int index)
+DATA al_get_adapter(struct smb_list *l, int index)
 {
   struct smb_al *list = (struct smb_al*) (l->data);
   return al_get(list, index);
 }
 
-void al_set_adapter(LIST *l, int index, DATA newData)
+void al_set_adapter(struct smb_list *l, int index, DATA newData)
 {
   struct smb_al *list = (struct smb_al*) (l->data);
   return al_set(list, index, newData);
 }
 
-void al_remove_adapter(LIST *l, int index)
+void al_remove_adapter(struct smb_list *l, int index)
 {
   struct smb_al *list = (struct smb_al*) (l->data);
   return al_remove(list, index);
 }
 
-void al_insert_adapter(LIST *l, int index, DATA newData)
+void al_insert_adapter(struct smb_list *l, int index, DATA newData)
 {
   struct smb_al *list = (struct smb_al*) (l->data);
   return al_insert(list, index, newData);
 }
 
-void al_delete_adapter(LIST *l)
+void al_delete_adapter(struct smb_list *l)
 {
   struct smb_al *list = (struct smb_al*) (l->data);
   al_delete(list);
@@ -339,49 +339,49 @@ void al_delete_adapter(LIST *l)
   return;
 }
 
-int al_length_adapter(LIST *l)
+int al_length_adapter(struct smb_list *l)
 {
   struct smb_al *list = (struct smb_al*) (l->data);
   return al_length(list);
 }
 
-void al_push_back_adapter(LIST *l, DATA newData)
+void al_push_back_adapter(struct smb_list *l, DATA newData)
 {
   struct smb_al *list = (struct smb_al*) (l->data);
   return al_push_back(list, newData);
 }
 
-DATA al_pop_back_adapter(LIST *l)
+DATA al_pop_back_adapter(struct smb_list *l)
 {
   struct smb_al *list = (struct smb_al*) (l->data);
   return al_pop_back(list);
 }
 
-DATA al_peek_back_adapter(LIST *l)
+DATA al_peek_back_adapter(struct smb_list *l)
 {
   struct smb_al *list = (struct smb_al*) (l->data);
   return al_peek_back(list);
 }
 
-void al_push_front_adapter(LIST *l, DATA newData)
+void al_push_front_adapter(struct smb_list *l, DATA newData)
 {
   struct smb_al *list = (struct smb_al*) (l->data);
   return al_push_front(list, newData);
 }
 
-DATA al_pop_front_adapter(LIST *l)
+DATA al_pop_front_adapter(struct smb_list *l)
 {
   struct smb_al *list = (struct smb_al*) (l->data);
   return al_pop_front(list);
 }
 
-DATA al_peek_front_adapter(LIST *l)
+DATA al_peek_front_adapter(struct smb_list *l)
 {
   struct smb_al *list = (struct smb_al*) (l->data);
   return al_peek_front(list);
 }
 
-void al_fill_functions(LIST *l)
+void al_fill_functions(struct smb_list *l)
 {
   l->append = al_append_adapter;
   l->prepend = al_prepend_adapter;
@@ -402,9 +402,9 @@ void al_fill_functions(LIST *l)
 ////////////////////////////////////////////////////////////////////////////////
 // Interface Public Functions
 
-LIST al_cast_to_list(struct smb_al *list)
+struct smb_list al_cast_to_list(struct smb_al *list)
 {
-  LIST genericList;
+  struct smb_list genericList;
   genericList.data = list;
 
   al_fill_functions(&genericList);
@@ -412,7 +412,7 @@ LIST al_cast_to_list(struct smb_al *list)
   return genericList;
 }
 
-LIST al_create_list()
+struct smb_list al_create_list()
 {
   struct smb_al *list = al_create();
 

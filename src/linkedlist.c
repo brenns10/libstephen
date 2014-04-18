@@ -401,37 +401,37 @@ int ll_iter_valid(struct smb_ll_iter *iter)
 ////////////////////////////////////////////////////////////////////////////////
 // Adapter functions for generic list structure
 
-void ll_append_adapter(LIST *l, DATA newData)
+void ll_append_adapter(struct smb_list *l, DATA newData)
 {
   struct smb_ll *list = (struct smb_ll*) (l->data);
   return ll_append(list, newData);
 }
 
-void ll_prepend_adapter(LIST *l, DATA newData)
+void ll_prepend_adapter(struct smb_list *l, DATA newData)
 {
   struct smb_ll *list = (struct smb_ll*) (l->data);
   return ll_prepend(list, newData);
 }
 
-DATA ll_get_adapter(LIST *l, int index)
+DATA ll_get_adapter(struct smb_list *l, int index)
 {
   struct smb_ll *list = (struct smb_ll*) (l->data);
   return ll_get(list, index);
 }
 
-void ll_remove_adapter(LIST *l, int index)
+void ll_remove_adapter(struct smb_list *l, int index)
 {
   struct smb_ll *list = (struct smb_ll*) (l->data);
   return ll_remove(list, index);
 }
 
-void ll_insert_adapter(LIST *l, int index, DATA newData)
+void ll_insert_adapter(struct smb_list *l, int index, DATA newData)
 {
   struct smb_ll *list = (struct smb_ll*) (l->data);
   return ll_insert(list, index, newData);
 }
 
-void ll_delete_adapter(LIST *l)
+void ll_delete_adapter(struct smb_list *l)
 {
   struct smb_ll *list = (struct smb_ll*) (l->data);
   ll_delete(list);
@@ -439,55 +439,55 @@ void ll_delete_adapter(LIST *l)
   return;
 }
 
-void ll_set_adapter(LIST *l, int index, DATA newData)
+void ll_set_adapter(struct smb_list *l, int index, DATA newData)
 {
   struct smb_ll *list = (struct smb_ll*) (l->data);
   return ll_set(list, index, newData);
 }
 
-void ll_push_back_adapter(LIST *l, DATA newData)
+void ll_push_back_adapter(struct smb_list *l, DATA newData)
 {
   struct smb_ll *list = (struct smb_ll*) (l->data);
   return ll_push_back(list, newData);
 }
 
-DATA ll_pop_back_adapter(LIST *l)
+DATA ll_pop_back_adapter(struct smb_list *l)
 {
   struct smb_ll *list = (struct smb_ll*) (l->data);
   return ll_pop_back(list);
 }
 
-DATA ll_peek_back_adapter(LIST *l)
+DATA ll_peek_back_adapter(struct smb_list *l)
 {
   struct smb_ll *list = (struct smb_ll*) (l->data);
   return ll_peek_back(list);
 }
 
-void ll_push_front_adapter(LIST *l, DATA newData)
+void ll_push_front_adapter(struct smb_list *l, DATA newData)
 {
   struct smb_ll *list = (struct smb_ll*) (l->data);
   return  ll_push_front(list, newData);
 }
 
-DATA ll_pop_front_adapter(LIST *l)
+DATA ll_pop_front_adapter(struct smb_list *l)
 {
   struct smb_ll *list = (struct smb_ll*) (l->data);
   return ll_pop_front(list);
 }
 
-DATA ll_peek_front_adapter(LIST *l)
+DATA ll_peek_front_adapter(struct smb_list *l)
 {
   struct smb_ll *list = (struct smb_ll*) (l->data);
   return ll_peek_front(list);
 }
 
-int ll_length_adapter(LIST *l)
+int ll_length_adapter(struct smb_list *l)
 {
   struct smb_ll *list = (struct smb_ll*) (l->data);
   return ll_length(list);
 }
 
-void ll_fill_functions(LIST *genericList)
+void ll_fill_functions(struct smb_list *genericList)
 {
   genericList->append = ll_append_adapter;
   genericList->prepend = ll_prepend_adapter;
@@ -508,9 +508,9 @@ void ll_fill_functions(LIST *genericList)
 ////////////////////////////////////////////////////////////////////////////////
 // PUBLIC GENERIC LIST FUNCTIONS
 
-LIST ll_cast_to_list(struct smb_ll *list)
+struct smb_list ll_cast_to_list(struct smb_ll *list)
 {
-  LIST genericList;
+  struct smb_list genericList;
   genericList.data = list;
   
   ll_fill_functions(&genericList);
@@ -518,7 +518,7 @@ LIST ll_cast_to_list(struct smb_ll *list)
   return genericList;
 }
 
-LIST ll_create_list()
+struct smb_list ll_create_list()
 {
   struct smb_ll *list = ll_create();
 

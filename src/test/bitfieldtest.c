@@ -150,24 +150,24 @@ int bf_test_flip() {
 // TEST LOADER AND RUNNER
 
 void bit_field_test() {
-  struct smb_ut_group *group = su_create_test_group("bit field");
+  smb_ut_group *group = su_create_test_group("bit field");
 
-  struct smb_ut_test *init = su_create_test("init", bf_test_init, 0, 1);
+  smb_ut_test *init = su_create_test("init", bf_test_init, 0, 1);
   su_add_test(group, init);
 
-  struct smb_ut_test *memory = su_create_test("memory", bf_test_memory, 0, 1);
+  smb_ut_test *memory = su_create_test("memory", bf_test_memory, 0, 1);
   su_add_test(group, memory);
 
-  struct smb_ut_test *check = su_create_test("check", bf_test_check, 0, 1);
+  smb_ut_test *check = su_create_test("check", bf_test_check, 0, 1);
   su_add_test(group, check);
 
-  struct smb_ut_test *set = su_create_test("set", bf_test_set, 0, 1);
+  smb_ut_test *set = su_create_test("set", bf_test_set, 0, 1);
   su_add_test(group, set);
 
-  struct smb_ut_test *clear = su_create_test("clear", bf_test_set, 0, 1);
+  smb_ut_test *clear = su_create_test("clear", bf_test_set, 0, 1);
   su_add_test(group, clear);
 
-  struct smb_ut_test *flip = su_create_test("flip", bf_test_set, 0, 1);
+  smb_ut_test *flip = su_create_test("flip", bf_test_set, 0, 1);
   su_add_test(group, flip);
 
   su_run_group(group);
