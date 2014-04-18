@@ -492,258 +492,93 @@ typedef struct smb_ad
 ////////////////////////////////////////////////////////////////////////////////
 
 /**
-   Generic list data structure.
+   @brief A generic list data structure.
+
+   Can represent an array list or a linked list.  Uses function pointers to hide
+   the implementation.  Has heavyweight memory requirements (many pointers).
+   Function calls must be made like this:
+
+       list->functionName(list, <params...>)
  */
 typedef struct smb_list 
 {
-  // Pointer to the actual structure in memory.  Could be any type.
+  /**
+     @brief A pointer to implementation-specific data.
+
+     This data is used by the rest of the functions in the struct to perform all
+     required actions.
+   */
   void *data;
 
-  // Traditional List functions
-
   /**
-     Append the given data to the given list.
-
-     # Parameters #
-
-     - struct smb_list *l: a pointer to the list to append to
-
-     - DATA newData: the data to add to it.
-
-     # Error Handling #
-
-     Like all main library functions, clears all errors upon entering the
-     function.  Can raise an ALLOCATION_ERROR.  On an ALLOCATION_ERROR, the list
-     remains valid, but the data is not added to the list.
+     @see ll_append @see al_append
    */
   void (*append)(struct smb_list *l, DATA newData);
 
   /**
-     Prepend the given data to the beginning of the given list.
-
-     # Parameters #
-
-     - struct smb_list *l: a pointer to the list to append to
-
-     - DATA newData: the data to add to the list
-
-     # Error Handling #
-
-     Clears all errors upon entering the function.  Can raise ALLOCATION_ERROR.
-     On an ALLOCATION_ERROR, the list should remain valid, but the data is not
-     added to the list.
+     @see ll_prepend @see al_prepend
    */
   void (*prepend)(struct smb_list *l, DATA newData);
-  
 
   /**
-     Get the data at the specified index.
-
-     # Parameters #
-
-     - struct smb_list *l: a pointer to the list
-
-     - int index: the index to get
-
-     # Return #
-
-     int: the data at the specified index
-
-     # Error Handling #
-     
-     Clears all errors on function call.  Can raise an index error.
+     @see ll_get @see al_get
    */
   DATA (*get)(struct smb_list *l, int index);
 
   /**
-     Set the data at the specified index
-
-     # Parameters # 
-     
-     - struct smb_list *l: a pointer to the list
-
-     - int index: the index to modify
-
-     - DATA newData: the new data to place at that index
-
-     # Error Handling #
-
-     Clears all errors on function call.  Can raise an index error.
+     @see ll_set @see al_set
    */
   void (*set)(struct smb_list *l, int index, DATA newData);
   
   /**
-     Remove the data at the given index, shifting other entries down.
-
-     # Parameters #
-
-     - struct smb_list *l: a pointer to the list
-
-     - int index: the index to delete
-
-     # Error Handling #
-
-     Clears all errors on function call.  Can raise an index error.
+     @see ll_remove @see al_remove
    */
   void (*remove)(struct smb_list *l, int index);
 
   /**
-     Insert data at a specifiend index, moving up all the data at and above that
-     index.
-
-     # Parameters #
-
-     - struct smb_list *l: a pointer to the list
-
-     - int index: the index at which to insert
-
-     - DATA newData: the data to insert
-
-     # Error Handling #
-
-     If the index is less than zero, the function prepends.  If the index is
-     greater than the size, the function appends.  So no index errors are
-     raised.  However, an ALLOCATION_ERROR may be raised.  Clears all errors on
-     function call.
+     @see ll_insert @see al_insert
    */
   void (*insert)(struct smb_list *l, int index, DATA newData);
 
   /**
-     Delete the entire list.
-
-     # Parameters #
-
-     - struct smb_list *l: a pointer to the list
-
-     # Error Handling #
-
-     No effect on any flags.
+     @see ll_delete @see al_delete
    */
   void (*delete)(struct smb_list *l);
 
   /**
-     Return the length of the list.
-
-     # Parameters #
-
-     - struct smb_list *l: a pointer to the list
-
-     # Returns #
-     
-     An integer, the number of entries in the list.
-
-     # Error Handling #
-
-     No effect on any flags.
+     @see ll_length @see al_length
    */
   int (*length)(struct smb_list *l);
 
-  // Stack/Queue/Deque Functions
-
   /**
-     "Push" (as in a stack) to the back of the list.  Same as append.
-
-     # Parameters #
-
-     - struct smb_list *l: a pointer to the list
-
-     - DATA newData: data to push
-
-     # Error Handling #
-
-     Clears all errors on a function call. Can raise an allocation error.
+     @see ll_push_back @see al_push_back
    */
   void (*push_back)(struct smb_list *l, DATA newData);
 
   /**
-     "Pop" (as in a stack) from the back of the list.  This returns the value at
-     the end of the list and deletes it from the list.
-
-     # Parameters #
-
-     - struct smb_list *l: a pointer to the list
-
-     # Returns #
-
-     The data at the end of the list.
-
-     # Error Handling #
-
-     Clears all errors.  Can raise an INDEX_ERROR.
+     @see ll_pop_back @see al_pop_back
    */
   DATA (*pop_back)(struct smb_list *l);
 
   /**
-     "Peek" (as in a stack) from the back of the list.  This returns the value
-     at the end of the list without deleting it.
-
-     # Parameters #
-
-     - struct smb_list *l: a pointer to the list
-
-     # Returns #
-
-     The data at the end of the list.
-
-     # Error Handling #
-
-     Clears all errors.  Can raise an INDEX_ERROR.
+     @see ll_peek_back @see al_peek_back
    */
   DATA (*peek_back)(struct smb_list *l);
   
-
   /**
-     "Push" (as in a stack) to the front of the list.  Same as prepend.
-
-     # Parameters #
-
-     - struct smb_list *l: a pointer to the list
-
-     - DATA newData: data to push
-
-     # Error Handling #
-
-     Clears all errors on a function call. Can raise an allocation error.
+     @see ll_push_front @see al_push_front
    */
   void (*push_front)(struct smb_list *l, DATA newData);
 
   /**
-     "Pop" (as in a stack) from the front of the list.  This returns the value
-     at the beginning of the list and deletes it from the list.
-
-     # Parameters #
-
-     - struct smb_list *l: a pointer to the list
-
-     # Returns #
-
-     The data at the end of the list.
-
-     # Error Handling #
-
-     Clears all errors.  Can raise an INDEX_ERROR.
+     @see ll_pop_front @see al_pop_front
    */
   DATA (*pop_front)(struct smb_list *l);
 
   /**
-     "Peek" (as in a stack) from the front of the list.  This returns the value
-     at the end of the list without deleting it.
-
-     # Parameters #
-
-     - struct smb_list *l: a pointer to the list
-
-     # Returns #
-
-     The data at the end of the list.
-
-     # Error Handling #
-
-     Clears all errors.  Can raise an INDEX_ERROR.
+     @see ll_pop_front @see al_pop_front
    */
   DATA (*peek_front)(struct smb_list *l);
-
-  // Iterator functions may reside here in the near future.
 
 } smb_list;
 
