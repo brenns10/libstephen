@@ -168,7 +168,30 @@ double ht_load_factor(HASH_TABLE *pTable)
 // Public Interface Functions
 ////////////////////////////////////////////////////////////////////////////////
 
-HASH_TABLE *ht_create(unsigned int (*hash_function)(DATA dData))
+void ht_init(HASH_TABLE *pTable, HASH_FUNCTION hash_func)
+{
+  CLEAR_ALL_ERRORS;
+
+  // Initialize values
+  pTable->length = 0;
+  pTable->allocated = HASH_TABLE_INITIAL_SIZE;
+  pTable->hash = hash_func;
+
+  // Create the bucket list
+  pTable->table = (HT_BUCKET**) malloc(HASH_TABLE_INITIAL_SIZE * sizeof(HT_BUCKET*));
+  if (!pTable->table) {
+    SMB_DECREMENT_MALLOC_COUNTER(sizeof(HASH_TABLE));
+    free(pTable);
+    RAISE(ALLOCATION_ERROR);
+    return;
+  }
+  SMB_INCREMENT_MALLOC_COUNTER(HASH_TABLE_INITIAL_SIZE * sizeof(HT_BUCKET*));
+
+  // Zero out the entries in the table so we don't get segmentation faults.
+  memset((void*)pTable->table, 0, HASH_TABLE_INITIAL_SIZE * sizeof(HT_BUCKET*));  
+}
+
+HASH_TABLE *ht_create(HASH_FUNCTION hash_func)
 {
   CLEAR_ALL_ERRORS;
 
@@ -179,30 +202,17 @@ HASH_TABLE *ht_create(unsigned int (*hash_function)(DATA dData))
     RAISE(ALLOCATION_ERROR);
     return NULL;
   }
-
   SMB_INCREMENT_MALLOC_COUNTER(sizeof(HASH_TABLE));
 
-  // Initialize values
-  pTable->length = 0;
-  pTable->allocated = HASH_TABLE_INITIAL_SIZE;
-  pTable->hash = hash_function;
-  pTable->table = (HT_BUCKET**) malloc(HASH_TABLE_INITIAL_SIZE * sizeof(HT_BUCKET*));
-  if (!pTable->table) {
-    SMB_DECREMENT_MALLOC_COUNTER(sizeof(HASH_TABLE));
-    free(pTable);
-    RAISE(ALLOCATION_ERROR);
+  ht_init(pTable, hash_func);
+  if (CHECK(ALLOCATION_ERROR)) {
     return NULL;
   }
-
-  SMB_INCREMENT_MALLOC_COUNTER(HASH_TABLE_INITIAL_SIZE * sizeof(HT_BUCKET*));
-
-  // Zero out the entries in the table so we don't get segmentation faults.
-  memset((void*)pTable->table, 0, HASH_TABLE_INITIAL_SIZE * sizeof(HT_BUCKET*));
 
   return pTable;
 }
 
-void ht_delete_act(HASH_TABLE *pTable, DATA_ACTION deleter)
+void ht_destroy_act(HASH_TABLE *pTable, DATA_ACTION deleter)
 {
   int i;
   HT_BUCKET *curr, *temp;
@@ -221,6 +231,18 @@ void ht_delete_act(HASH_TABLE *pTable, DATA_ACTION deleter)
     }
     pTable->table[i] = NULL;
   }
+}
+
+void ht_destroy(HASH_TABLE *pTable)
+{
+  ht_destroy_act(pTable, NULL);
+}
+
+void ht_delete_act(HASH_TABLE *pTable, DATA_ACTION deleter)
+{
+  if (!pTable) return;
+
+  ht_destroy_act(pTable, deleter);
 
   SMB_DECREMENT_MALLOC_COUNTER(pTable->allocated * sizeof(HT_BUCKET*));
   free(pTable->table);

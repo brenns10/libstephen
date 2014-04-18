@@ -1180,12 +1180,23 @@ DATA al_peek_back(ARRAY_LIST *list);
 ////////////////////////////////////////////////////////////////////////////////
 
 /**
+   Initialize a hash table in memory already allocated.
+
+   # Parameters #
+
+   - HASH_TABLE *pTable: pointer to the table to initialize.
+
+   - HASH_FUNCTION *hash_func: hash function for the table.
+ */
+void ht_init(HASH_TABLE *pTable, HASH_FUNCTION hash_func);
+
+/**
    Create a hash table.
 
    # Parameters #
 
-   - int (*hash_function*)(DATA dData): A function that takes one DATA and
-     returns a hash value generated from it.  It should be a good hash function.
+   - HASH_FUNCTION: A function that takes one DATA and returns a hash value
+     generated from it.  It should be a good hash function.
 
   # Return #
 
@@ -1196,7 +1207,7 @@ DATA al_peek_back(ARRAY_LIST *list);
   Clears all errors on function call.  If malloc fails, then no hash table is
   created, NULL is returned, and the ALLOCATION_ERROR flag is raised.
  */
-HASH_TABLE *ht_create(unsigned int (*hash_function)(DATA dData));
+HASH_TABLE *ht_create(HASH_FUNCTION hash_func);
 
 /**
    Insert data into the hash table.  Expands the hash table if the load factor
@@ -1289,7 +1300,24 @@ DATA ht_get(HASH_TABLE const *pTable, DATA dKey);
 unsigned int ht_string_hash(DATA data);
 
 /**
-   Free the hash table.  No pointers contained in the table will be freed.
+   Free any resources used by the hash table, but does not call free on the
+   pointer itself (useful for tables created on the stack).
+
+   If pointers are contained within the hash table, they are not freed.  Use
+   ht_destroy_act to specify a deletion action on the hash table.
+ */
+void ht_destroy(HASH_TABLE *pTable);
+
+/**
+   Free resources used by the hash table, but does not free the pointer itself.
+   Useful for stack valued hash tables.  A deleter must be specified in this
+   function call.
+ */
+void ht_destroy_act(HASH_TABLE *pTable, DATA_ACTION deleter);
+
+/**
+   Free the hash table and its resources.  No pointers contained in the table
+   will be freed.
 
    # Parameters #
 
@@ -1302,7 +1330,8 @@ unsigned int ht_string_hash(DATA data);
 void ht_delete(HASH_TABLE *pTable);
 
 /**
-   Free the hash table.  No pointers contained in the table will be freed.
+   Free the hash table and its resources.  Perform an action on each data before
+   freeing the table.  Useful for freeing pointers stored in the table.
 
    # Parameters #
 
