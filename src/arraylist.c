@@ -442,7 +442,7 @@ int al_index_of(smb_al *list, DATA d)
 {
   int i;
   for (i = 0; i < list->length; i++) {
-    if (list->data[i] == d)
+    if (list->data[i].data_llint == d.data_llint)
       return i;
   }
   return -1;
