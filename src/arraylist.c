@@ -16,7 +16,7 @@
   @bug Currently, the array list does not implement the iterator interface.
 */
 
-#include <stdlib.h>      /* memcpy */
+#include <stdlib.h>      /* memcpy    */
 #include "libstephen.h"
 
 /**
@@ -430,6 +430,22 @@ int al_length(smb_al *list)
   CLEAR_ALL_ERRORS;
 
   return list->length;
+}
+
+/**
+   @brief Returns whether or not the array list contains the item.
+
+   @param list A pointer to the list
+   @param d The item to search for
+ */
+int al_index_of(smb_al *list, DATA d)
+{
+  int i;
+  for (i = 0; i < list->length; i++) {
+    if (list->data[i] == d)
+      return i;
+  }
+  return -1;
 }
 
 /*******************************************************************************

@@ -562,6 +562,7 @@ void al_push_front(smb_al *list, DATA newData);
 DATA al_pop_back(smb_al *list);
 DATA al_peek_back(smb_al *list);
 int al_length(smb_al *list);
+int al_index_of(smb_al *list, DATA d);
 
 /*******************************************************************************
 
