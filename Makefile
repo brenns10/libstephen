@@ -2,7 +2,7 @@
 
 CC=gcc
 FLAGS=-g
-CFLAGS=$(FLAGS) -c -std=c99 -fPIC
+CFLAGS=$(FLAGS) -c -std=c99 -fPIC $(shell if [ -f src/libstephen_conf.h ] ; then echo "-DSMB_CONF" ; fi)
 LFLAGS=$(FLAGS)
 LIBOBJECTS=obj/linkedlist.o obj/common_include.o obj/arraylist.o obj/smbunit.o obj/args.o obj/hashtable.o obj/bitfield.o
 TESTOBJECTS=obj/main.o obj/linkedlisttest.o obj/arraylisttest.o obj/argstest.o obj/hashtabletest.o obj/bitfieldtest.o

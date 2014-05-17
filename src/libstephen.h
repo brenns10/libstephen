@@ -26,9 +26,15 @@
 
 *******************************************************************************/
 
+#ifdef SMB_CONF
+#include "libstephen_conf.h"
+#endif
+
+#ifdef SMB_DEBUG
 #define SMB_ENABLE_MEMORY_DIAGNOSTICS
 #define SMB_ENABLE_DIAGNOSTIC_CODE
 #define SMB_ENABLE_DIAGNOSTIC_PRINTING
+#endif
 
 /**
    @brief Increments the memory allocation counter.  Don't use this.
@@ -118,9 +124,9 @@ size_t smb___helper_get_malloc_counter();
    @brief Print this (printf) only if SMB_ENABLE_DIAGNOSTIC_PRINTING is defined.
 */
 #ifdef SMB_ENABLE_DIAGNOSTIC_PRINTING
-#define SMB_DIAG_PRINT(x...) printf(x)
+#define SMB_DP(x...) printf(x)
 #else
-#define SMB_DIAG_PRINT(x...)
+#define SMB_DP(x...)
 #endif // SMB_ENABLE_DIAGNOSTIC_PRINTING
 
 /**
