@@ -69,7 +69,7 @@ void ll_remove_node(smb_ll *list, smb_ll_node *theNode)
    @retval NULL if the index was out of range.
    @exception INDEX_ERROR if the given index was out of range.
  */
-smb_ll_node * ll_navigate(smb_ll *list, int index)
+smb_ll_node * ll_navigate(const smb_ll *list, int index)
 {
   smb_ll_node *node = list->head;
   if (index < 0 || index >= list->length) {
@@ -394,7 +394,7 @@ DATA ll_peek_front(smb_ll *list)
    @return The data at the specified index, if it exists.
    @exception INDEX_ERROR
  */
-DATA ll_get(smb_ll *list, int index)
+DATA ll_get(const smb_ll *list, int index)
 {
   CLEAR_ALL_ERRORS;
 
@@ -496,7 +496,7 @@ void ll_set(smb_ll *list, int index, DATA newData)
    @param list A pointer to the list
    @returns The length of the list.
  */
-int ll_length(smb_ll *list)
+int ll_length(const smb_ll *list)
 {
   return list->length;
 }
@@ -620,9 +620,9 @@ void ll_prepend_adapter(smb_list *l, DATA newData)
   return ll_prepend(list, newData);
 }
 
-DATA ll_get_adapter(smb_list *l, int index)
+DATA ll_get_adapter(const smb_list *l, int index)
 {
-  smb_ll *list = (smb_ll*) (l->data);
+  const smb_ll *list = (const smb_ll*) (l->data);
   return ll_get(list, index);
 }
 
@@ -688,9 +688,9 @@ DATA ll_peek_front_adapter(smb_list *l)
   return ll_peek_front(list);
 }
 
-int ll_length_adapter(smb_list *l)
+int ll_length_adapter(const smb_list *l)
 {
-  smb_ll *list = (smb_ll*) (l->data);
+  const smb_ll *list = (const smb_ll*) (l->data);
   return ll_length(list);
 }
 

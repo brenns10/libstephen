@@ -353,7 +353,7 @@ typedef struct smb_list
   /**
      @see ll_get @see al_get
    */
-  DATA (*get)(struct smb_list *l, int index);
+  DATA (*get)(const struct smb_list *l, int index);
 
   /**
      @see ll_set @see al_set
@@ -378,7 +378,7 @@ typedef struct smb_list
   /**
      @see ll_length @see al_length
    */
-  int (*length)(struct smb_list *l);
+  int (*length)(const struct smb_list *l);
 
   /**
      @see ll_push_back @see al_push_back
@@ -505,11 +505,11 @@ DATA ll_peek_back(smb_ll *list);
 void ll_push_front(smb_ll *list, DATA newData);
 DATA ll_pop_front(smb_ll *list);
 DATA ll_peek_front(smb_ll *list);
-DATA ll_get(smb_ll *list, int index);
+DATA ll_get(const smb_ll *list, int index);
 void ll_remove(smb_ll *list, int index);
 void ll_insert(smb_ll *list, int index, DATA newData);
 void ll_set(smb_ll *list, int index, DATA newData);
-int ll_length(smb_ll *list);
+int ll_length(const smb_ll *list);
 
 smb_ll_iter ll_get_iter(smb_ll *list);
 DATA ll_iter_next(smb_ll_iter *iterator);
@@ -557,7 +557,7 @@ void al_delete(smb_al *list);
 
 void al_append(smb_al *list, DATA newData);
 void al_prepend(smb_al *list, DATA newData);
-DATA al_get(smb_al *list, int index);
+DATA al_get(const smb_al *list, int index);
 void al_remove(smb_al *list, int index);
 void al_insert(smb_al *list, int index, DATA newData);
 void al_set(smb_al *list, int index, DATA newData);
@@ -567,8 +567,8 @@ DATA al_peek_back(smb_al *list);
 void al_push_front(smb_al *list, DATA newData);
 DATA al_pop_front(smb_al *list);
 DATA al_peek_front(smb_al *list);
-int al_length(smb_al *list);
-int al_index_of(smb_al *list, DATA d);
+int al_length(const smb_al *list);
+int al_index_of(const smb_al *list, DATA d);
 
 /*******************************************************************************
 

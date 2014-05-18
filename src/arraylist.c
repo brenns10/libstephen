@@ -249,7 +249,7 @@ void al_prepend(smb_al *list, DATA newData)
    @returns The data at the specified index.
    @exception INDEX_ERROR
  */
-DATA al_get(smb_al *list, int index)
+DATA al_get(const smb_al *list, int index)
 {
   CLEAR_ALL_ERRORS;
 
@@ -425,7 +425,7 @@ DATA al_peek_front(smb_al *list)
    @param list A pointer to the list.
    @returns The length of the list.
  */
-int al_length(smb_al *list)
+int al_length(const smb_al *list)
 {
   CLEAR_ALL_ERRORS;
 
@@ -438,7 +438,7 @@ int al_length(smb_al *list)
    @param list A pointer to the list
    @param d The item to search for
  */
-int al_index_of(smb_al *list, DATA d)
+int al_index_of(const smb_al *list, DATA d)
 {
   int i;
   for (i = 0; i < list->length; i++) {
@@ -469,9 +469,9 @@ void al_prepend_adapter(smb_list *l, DATA newData)
   return al_prepend(list, newData);
 }
 
-DATA al_get_adapter(smb_list *l, int index)
+DATA al_get_adapter(const smb_list *l, int index)
 {
-  smb_al *list = (smb_al*) (l->data);
+  const smb_al *list = (const smb_al*) (l->data);
   return al_get(list, index);
 }
 
@@ -501,9 +501,9 @@ void al_delete_adapter(smb_list *l)
   return;
 }
 
-int al_length_adapter(smb_list *l)
+int al_length_adapter(const smb_list *l)
 {
-  smb_al *list = (smb_al*) (l->data);
+  const smb_al *list = (const smb_al*) (l->data);
   return al_length(list);
 }
 
