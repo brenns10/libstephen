@@ -4,7 +4,7 @@ CC=gcc
 FLAGS=-g
 CFLAGS=$(FLAGS) -c -std=c99 -fPIC $(shell if [ -f src/libstephen_conf.h ] ; then echo "-DSMB_CONF" ; fi)
 LFLAGS=$(FLAGS)
-LIBOBJECTS=obj/linkedlist.o obj/common_include.o obj/arraylist.o obj/smbunit.o obj/args.o obj/hashtable.o obj/bitfield.o
+LIBOBJECTS=obj/linkedlist.o obj/util.o obj/arraylist.o obj/smbunit.o obj/args.o obj/hashtable.o obj/bitfield.o
 TESTOBJECTS=obj/main.o obj/linkedlisttest.o obj/arraylisttest.o obj/argstest.o obj/hashtabletest.o obj/bitfieldtest.o
 
 .PHONY: all test lib clean testlib documentation
@@ -52,8 +52,8 @@ obj/arraylist.o: src/arraylist.c src/libstephen.h
 obj/smbunit.o: src/smbunit.c src/libstephen.h
 	$(CC) $(CFLAGS) src/smbunit.c -o obj/smbunit.o
 
-obj/common_include.o: src/common_include.c src/libstephen.h
-	$(CC) $(CFLAGS) src/common_include.c -o obj/common_include.o
+obj/util.o: src/util.c src/libstephen.h
+	$(CC) $(CFLAGS) src/util.c -o obj/util.o
 
 obj/args.o: src/args.c src/libstephen.h
 	$(CC) $(CFLAGS) src/args.c -o obj/args.o
