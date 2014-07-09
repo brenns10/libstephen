@@ -47,6 +47,7 @@
 
 #include <stdlib.h>       /* size_t */
 #include <stdint.h>       /* uint64_t */
+#include <stdio.h>        /* FILE * */
 
 
 /*******************************************************************************
@@ -131,7 +132,7 @@ size_t smb___helper_get_malloc_counter();
    Call this function to get the number of bytes currently allocated by my code.
    Only does anything if SMB_MEMORY_DIAGNOSTICS is defined.  If it's not
    defined, evaluates to 0.
-   
+
    @returns The number of bytes allocated right now.
 */
 #ifdef SMB_ENABLE_MEMORY_DIAGNOSTICS
@@ -172,7 +173,7 @@ typedef union DATA {
 } DATA;
 
 /**
-   @brief A function pointer that takes a DATA and performs an action on it 
+   @brief A function pointer that takes a DATA and performs an action on it
 
    The function could count it, call free on it, print it, etc.  Useful for
    stuff like deleting data structures full of items (if they're pointers to
@@ -182,6 +183,60 @@ typedef union DATA {
 typedef void (*DATA_ACTION)(DATA toDelete);
 
 int utf8tucs4(wchar_t *dest, const char *src);
+
+/*******************************************************************************
+
+                                   Utilities
+
+*******************************************************************************/
+
+void *smb___new(size_t amt);
+void *smb___renew(void *ptr, size_t newsize, size_t oldsize);
+void *smb___free(void *ptr, size_t oldsize);
+
+wchar_t *smb_read_line(FILE *, int *);
+void smb_set_memory_log_location(char *);
+
+/**
+   @brief A nicer allocation function.
+
+   This macro/function wraps malloc().  It's inspired by the g_new function in
+   glib.  It allows you to allocate memory and adjust the allocation counter in
+   one call.  Instead of specifying the size of the memory, you specify type and
+   number of instances.
+
+   @param type The type of the memory to allocate.
+   @param n The number of instances to allocate.
+   @returns A pointer to the allocated memory, casted to the correct type.
+ */
+#define smb_new(type, n) ((type*) smb___new((n) * sizeof(type)))
+
+/**
+   @brief A nicer reallocation function.
+
+   This macro/function wraps realloc().  It allows you reallocate memory and
+   adjust the allocation counter accordingly.  Exits on failure.
+
+   @param type The type of the memory to reallocate.
+   @param ptr The memory to reallocate.
+   @param newamt The amount of items to allocate.
+   @param oldamt The previous amount of items that were allocated.
+   @returns A pointer to the reallocated memory.
+ */
+#define smb_renew(type, ptr, newamt, oldamt) \
+  ((type*) smb___renew(ptr, (newamt) * sizeof(type), (oldamt) * sizeof(type)))
+
+/**
+   @brief A nicer free function.
+
+   This macro/function wraps free().  It exits on failure and adjusts the malloc
+   counter.
+
+   @param type The type of memory you're freeing.
+   @param ptr The memory you're freeing.
+   @param amt The number of items you're freeing.
+ */
+#define smb_free(type, ptr, amt) smb___free(ptr, (amt) * sizeof(type))
 
 /*******************************************************************************
 

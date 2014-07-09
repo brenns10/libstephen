@@ -4,7 +4,7 @@ CC=gcc
 FLAGS=-g
 CFLAGS=$(FLAGS) -c -std=c99 -fPIC $(shell if [ -f src/libstephen_conf.h ] ; then echo "-DSMB_CONF" ; fi)
 LFLAGS=$(FLAGS)
-LIBOBJECTS=obj/linkedlist.o obj/common_include.o obj/arraylist.o obj/smbunit.o obj/args.o obj/hashtable.o obj/bitfield.o obj/utf8.o
+LIBOBJECTS=obj/linkedlist.o obj/util.o obj/arraylist.o obj/smbunit.o obj/args.o obj/hashtable.o obj/bitfield.o obj/utf8.o
 TESTOBJECTS=obj/main.o obj/linkedlisttest.o obj/arraylisttest.o obj/argstest.o obj/hashtabletest.o obj/bitfieldtest.o obj/utf8test.o
 
 .PHONY: all test lib clean testlib documentation
@@ -64,9 +64,6 @@ obj/hashtable.o: src/hashtable.c src/libstephen.h
 obj/bitfield.o: src/bitfield.c src/libstephen.h
 	$(CC) $(CFLAGS) src/bitfield.c -o obj/bitfield.o
 
-obj/utf8.o: src/utf8.c src/libstephen.h
-	$(CC) $(CFLAGS) src/utf8.c -o obj/utf8.o
-
 # Test objects
 
 obj/main.o: src/test/main.c src/test/tests.h
@@ -86,6 +83,3 @@ obj/hashtabletest.o: src/test/hashtabletest.c src/libstephen.h src/test/tests.h
 
 obj/bitfieldtest.o: src/test/bitfieldtest.c src/libstephen.h src/test/tests.h
 	$(CC) $(CFLAGS) src/test/bitfieldtest.c -o obj/bitfieldtest.o
-
-obj/utf8test.o: src/test/utf8test.c src/libstephen.h src/test/tests.h
-	$(CC) $(CFLAGS) src/test/utf8test.c -o obj/utf8test.o
