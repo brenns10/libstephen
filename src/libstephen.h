@@ -182,8 +182,6 @@ typedef union DATA {
  */
 typedef void (*DATA_ACTION)(DATA toDelete);
 
-int utf8tucs4(wchar_t *dest, const char *src);
-
 /*******************************************************************************
 
                                    Utilities
@@ -196,6 +194,8 @@ void *smb___free(void *ptr, size_t oldsize);
 
 wchar_t *smb_read_line(FILE *, int *);
 void smb_set_memory_log_location(char *);
+int utf8toucs4(wchar_t *dest, const char *src, int n);
+
 
 /**
    @brief A nicer allocation function.
