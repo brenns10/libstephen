@@ -52,8 +52,8 @@ obj/arraylist.o: src/arraylist.c src/libstephen.h
 obj/smbunit.o: src/smbunit.c src/libstephen.h
 	$(CC) $(CFLAGS) src/smbunit.c -o obj/smbunit.o
 
-obj/common_include.o: src/common_include.c src/libstephen.h
-	$(CC) $(CFLAGS) src/common_include.c -o obj/common_include.o
+obj/util.o: src/util.c src/libstephen.h
+	$(CC) $(CFLAGS) src/util.c -o obj/util.o
 
 obj/args.o: src/args.c src/libstephen.h
 	$(CC) $(CFLAGS) src/args.c -o obj/args.o
@@ -63,6 +63,9 @@ obj/hashtable.o: src/hashtable.c src/libstephen.h
 
 obj/bitfield.o: src/bitfield.c src/libstephen.h
 	$(CC) $(CFLAGS) src/bitfield.c -o obj/bitfield.o
+
+obj/utf8.o: src/utf8.c src/libstephen.h
+	$(CC) $(CFLAGS) src/utf8.c -o obj/utf8.o
 
 # Test objects
 
@@ -83,3 +86,6 @@ obj/hashtabletest.o: src/test/hashtabletest.c src/libstephen.h src/test/tests.h
 
 obj/bitfieldtest.o: src/test/bitfieldtest.c src/libstephen.h src/test/tests.h
 	$(CC) $(CFLAGS) src/test/bitfieldtest.c -o obj/bitfieldtest.o
+
+obj/utf8test.o: src/test/utf8test.c src/libstephen.h src/test/tests.h
+	$(CC) $(CFLAGS) src/test/utf8test.c -o obj/utf8test.o
