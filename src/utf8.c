@@ -75,6 +75,13 @@
 #define CONT_MASK    0x3Fu // 0011 1111
 #define CONT_VALUE   0x80  // 10xx xxxx
 
+/**
+   @brief Convert a UTF-8 char string to a UCS-4 wchar_t string.
+   @param dest Destination buffer.
+   @param _src Source buffer.
+   @param n Number of characters allocated in destination buffer.
+   @returns 0 if converted OK, <0 otherwise.
+ */
 int utf8toucs4(wchar_t *dest, const char *_src, int n)
 {
   // Initially assume that dest can hold src.
