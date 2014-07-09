@@ -58,6 +58,11 @@ void hash_table_test();
 void bit_field_test();
 
 /**
+   Run the utf8 tests
+ */
+void utf8_test(void);
+
+/**
    Output statistics of main function args.
  */
 int args_test_main(int argc, char **argv);

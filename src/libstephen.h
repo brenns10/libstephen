@@ -181,6 +181,8 @@ typedef union DATA {
  */
 typedef void (*DATA_ACTION)(DATA toDelete);
 
+int utf8tucs4(wchar_t *dest, const char *src);
+
 /*******************************************************************************
 
                                  Error Handling
@@ -239,6 +241,10 @@ extern unsigned int ERROR_VAR;
  */
 #define CLEAR_ALL_ERRORS ERROR_VAR = 0
 
+#define PRINT_ERROR_LOC fprintf(stderr, "An error occurred at line %d in file "\
+                                "%s (function %s).\n", __LINE__, __FILE__,\
+                                __func__)
+
 /*******************************************************************************
 
                              Unit Testing (smb_ut)
@@ -275,6 +281,8 @@ extern unsigned int ERROR_VAR;
      exactly at what point the code fails.
  */
 #define TEST_ASSERT(expr, retval) if(!(expr)) return retval
+
+#define TEST_ASLINE(expr) if(!(expr)) return __LINE__
 
 /**
    @brief Defines a single unit test.  

@@ -53,6 +53,7 @@ int main(int argc, char ** argv)
   array_list_test();
   hash_table_test();
   bit_field_test();
+  utf8_test();
 
   if (mallocs = SMB_GET_MALLOC_COUNTER) {
     printf("#### MEMORY LEAK DETECTED!!  MALLOCS: %d. ####\n", mallocs);
