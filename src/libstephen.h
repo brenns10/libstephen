@@ -48,7 +48,7 @@
 #include <stdlib.h>       /* size_t */
 #include <stdint.h>       /* uint64_t */
 #include <stdio.h>        /* FILE * */
-
+#include <wchar.h>        /* wint_t */
 
 /*******************************************************************************
 
@@ -195,6 +195,8 @@ void *smb___free(void *ptr, size_t oldsize);
 wchar_t *smb_read_line(FILE *, int *);
 void smb_set_memory_log_location(char *);
 int utf8toucs4(wchar_t *dest, const char *src, int n);
+wint_t utf8char(const char *src, int s);
+wint_t utf8iter(const char *_src, int *_s);
 
 
 /**

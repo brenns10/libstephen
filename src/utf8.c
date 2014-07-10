@@ -38,6 +38,7 @@
 *******************************************************************************/
 
 #include <stdio.h>
+#include <wchar.h>
 
 #include "libstephen.h"
 
@@ -76,57 +77,102 @@
 #define CONT_VALUE   0x80  // 10xx xxxx
 
 /**
+   @brief A function supporting iteration through a UTF-8 string.
+
+   Use this function to iterate through a UTF-8 string on a per-codepoint basis,
+   rather than on a per-byte basis.  This is useful only if you're going to *do
+   something* with the code points.  Otherwise, it is wise to act in an
+   encoding-agnostic way (as UTF-8 allows) and act in a bytewise manner.
+
+   This function uses a pointer to an iteration variable.  Initially, the
+   variable is set to the index of the next code point in the string.  The
+   funtion reads this character from the string, updates the iteration variable
+   to hold the index of the next code point, and returns the character.
+
+   @param _src The UTF-8 string to iterate through.
+   @param _s A pointer to the iteration variable.
+   @returns The character at `_src[*_s]`, with *_s updated.
+   @retval WEOF on error
+ */
+wint_t utf8iter(const char *_src, int *_s)
+{
+  const unsigned char *src = (const char *) _src;
+  int cont, s = *_s;
+  wint_t dest;
+
+  // Read the first byte in a sequence
+  if ((src[s] & SINGLE_MASK) == SINGLE_VALUE) {
+    dest = src[s++];
+    *_s = s;
+    return dest;
+  } else if ((src[s] & DOUBLE_MASK) == DOUBLE_VALUE) {
+    dest = (~DOUBLE_MASK) & src[s++];
+    cont = 1;
+  } else if ((src[s] & TRIPLE_MASK) == TRIPLE_VALUE) {
+    dest = (~TRIPLE_MASK) & src[s++];
+    cont = 2;
+  } else if ((src[s] & QUAD_MASK) == QUAD_VALUE) {
+    dest = (~QUAD_MASK) & src[s++];
+    cont = 3;
+  } else {
+    PRINT_ERROR_LOC;
+    fprintf(stderr, "error: bad initial byte(0x%2.2x)\n", src[s]);
+    return WEOF;
+  }
+
+  // Read continuation bits:
+  for ( ; cont > 0 && src[s] != '\0'; s++, cont--) {
+    if ((src[s] & ~CONT_MASK) != CONT_VALUE) {
+      PRINT_ERROR_LOC;
+      fprintf(stderr, "error: bad continuation byte(0x%2.2x)\n", src[s]);
+      *_s = s;
+      return WEOF;
+    }
+    dest <<= CONT_BITS;
+    dest |= src[s] & CONT_MASK;
+  }
+  *_s = s;
+
+  if (cont != 0) {
+    PRINT_ERROR_LOC;
+    fprintf(stderr, "error: unexpected string termination while reading "
+            "continuation bytes.\n");
+    return WEOF;
+  }
+  return dest;
+}
+
+/**
+   @brief Return the wide character represented at the given index in a string.
+   @param src UTF-8 formatted string
+   @param s Index of the *first byte* of a character
+   @returns WEOF on any error, else the wide character at the given index.
+ */
+wint_t utf8char(const char *src, int s)
+{
+  return utf8iter(src, &s);
+}
+
+
+/**
    @brief Convert a UTF-8 char string to a UCS-4 wchar_t string.
    @param dest Destination buffer.
    @param _src Source buffer.
    @param n Number of characters allocated in destination buffer.
    @returns 0 if converted OK, <0 otherwise.
  */
-int utf8toucs4(wchar_t *dest, const char *_src, int n)
+int utf8toucs4(wchar_t *dest, const char *src, int n)
 {
-  // Initially assume that dest can hold src.
-  const unsigned char *src = (const unsigned char *) _src;
-  int d = 0, s = 0, cont;
-
-  for ( ; src[s] && d < n-1; d++) {
-    // Read the first byte in a sequence
-    if ((src[s] & SINGLE_MASK) == SINGLE_VALUE) {
-      dest[d] = src[s++];
-      continue;
-    } else if ((src[s] & DOUBLE_MASK) == DOUBLE_VALUE) {
-      dest[d] = (~DOUBLE_MASK) & src[s++];
-      cont = 1;
-    } else if ((src[s] & TRIPLE_MASK) == TRIPLE_VALUE) {
-      dest[d] = (~TRIPLE_MASK) & src[s++];
-      cont = 2;
-    } else if ((src[s] & QUAD_MASK) == QUAD_VALUE) {
-      dest[d] = (~QUAD_MASK) & src[s++];
-      cont = 3;
-    } else {
+  int d = 0, s = 0;
+  wint_t wc;
+  for ( ; src[s] != '\0' && d < n-1; d++) {
+    wc = utf8iter(src, &s);
+    if (wc == WEOF) {
       PRINT_ERROR_LOC;
-      fprintf(stderr, "error: bad initial byte(0x%2.2x): byte %d of \"%s\"\n",
-              src[s], s, _src);
+      fprintf(stderr, "error: UTF-8 character could not be converted\n");
       return -1;
     }
-
-    // Read continuation bits:
-    for ( ; cont > 0 && src[s] != '\0'; s++, cont--) {
-      if ((src[s] & ~CONT_MASK) != CONT_VALUE) {
-        PRINT_ERROR_LOC;
-        fprintf(stderr, "error: bad continuation byte(0x%2.2x): byte %d of"
-                " \"%s\"\n", src[s], s, _src);
-        return -2;
-      }
-      dest[d] <<= CONT_BITS;
-      dest[d] |= src[s] & CONT_MASK;
-    }
-
-    if (cont != 0) {
-      PRINT_ERROR_LOC;
-      fprintf(stderr, "error: unexpected string termination while reading "
-              "continuation bytes.\n");
-      return -3;
-    }
+    dest[d] = (wchar_t) wc;
   }
   dest[d] = L'\0';
   return 0;
