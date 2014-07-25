@@ -192,7 +192,8 @@ void *smb___new(size_t amt);
 void *smb___renew(void *ptr, size_t newsize, size_t oldsize);
 void *smb___free(void *ptr, size_t oldsize);
 
-wchar_t *smb_read_line(FILE *, int *);
+wchar_t *smb_read_linew(FILE *, int *);
+char *smb_read_line(FILE *, int *);
 void smb_set_memory_log_location(char *);
 int utf8toucs4(wchar_t *dest, const char *src, int n);
 wint_t utf8char(const char *src, int s);

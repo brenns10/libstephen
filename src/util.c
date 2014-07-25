@@ -162,7 +162,7 @@ void *smb___free(void *ptr, size_t oldsize)
    @param[out] alloc The number of characters allocated to the buffer.
    @returns A buffer containing the line.
  */
-wchar_t *smb_read_line(FILE *file, int *alloc)
+wchar_t *smb_read_linew(FILE *file, int *alloc)
 {
   #define SMBRL_BUFSIZE 256
   int bufsize = SMBRL_BUFSIZE;
@@ -188,6 +188,37 @@ wchar_t *smb_read_line(FILE *file, int *alloc)
     // If we have exceeded the buffer, reallocate.
     if (position >= bufsize) {
       buffer = smb_renew(wchar_t, buffer, bufsize+SMBRL_BUFSIZE, bufsize);
+      bufsize += SMBRL_BUFSIZE;
+    }
+  }
+}
+
+
+char *smb_read_line(FILE *file, int *alloc)
+{
+  int bufsize = SMBRL_BUFSIZE;
+  int position = 0;
+  char *buffer = smb_new(char, bufsize);
+  int c;
+
+  while (true) {
+    // Read a character
+    c = fgetc(file);
+
+    // If we hit EOF, replace it with a null character and return.
+    if (c == EOF || c == '\n') {
+      buffer[position++] = '\0';
+      // Set the out parameter to the number of characters allocated.
+      if (alloc)
+        *alloc = bufsize;
+      return buffer;
+    } else {
+      buffer[position++] = c;
+    }
+
+    // If we have exceeded the buffer, reallocate.
+    if (position >= bufsize) {
+      buffer = smb_renew(char, buffer, bufsize+SMBRL_BUFSIZE, bufsize);
       bufsize += SMBRL_BUFSIZE;
     }
   }
