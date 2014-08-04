@@ -133,4 +133,77 @@ typedef struct smb_list
 
 } smb_list;
 
+/**
+   @brief A generic iterator type.
+
+   This is a generic iterator type.  It should be implemented for any data
+   structure that has some semblance of sequential access.  It can also be used
+   to implement a (lazy) generator.  It only provides one directional, read-only
+   access, which makes it apply to a more general set of data structures and
+   generators.
+
+   The semantics of the iterator are as follows: An iterator points *between*
+   any two elements in the sequential list.  Its current index is the index of
+   the element it will return next.
+ */
+typedef struct smb_iter {
+
+  /**
+     @brief The data structure this iterator refers to.
+
+     This field is implementation-specific to any iterator.  Behavior is
+     undefined when it is modified.  It is intended (but not required) to be
+     used by the iterator to store a reference to the data structure.
+   */
+  DATA ds;
+
+  /**
+     @brief The state of the iterator.
+
+     This field is implementation-specific to any iterator.  Behavior is
+     undefined when it is modified.  It is intended (but not required) to store
+     a state variable of the iterator.
+   */
+  DATA state;
+
+  /**
+     @brief The zero-based index of the iterator.
+
+     This field should be automatically updated by the iterator implementation
+     as it operates, requiring no programmer intervention.  It should not be
+     modified, but may be accessed.  It stores the index of the element that
+     will be returned next.
+   */
+  int index;
+
+  /**
+     @brief Returns the next element of the iteration.
+     @param iter The iterator being used.
+     @return The next element of the iteration.
+   */
+  DATA (*next)(smb_iter *iter);
+
+  /**
+     @brief Returns whether the iteration has a next element.
+     @param iter The iterator being used.
+     @return Whether the iteration has a next element.
+   */
+  bool (*has_next)(smb_iter *iter);
+
+  /**
+     @brief Frees any resources held by the iterator (but not the iterator).
+     @param iter The iterator being used.
+     @param free_src Whether to free the data structure used as the source.
+   */
+  void (*destroy)(smb_iter *iter, bool free_src);
+
+  /**
+     @brief Frees any resources held by the iterator, and the iterator.
+     @param iter The iterator being used.
+     @param free_src Whether to free the data structure used as the source.
+   */
+  void (*delete)(smb_iter *iter, bool free_src);
+
+} smb_iter;
+
 #endif // LIBSTEPHEN_LIST_H

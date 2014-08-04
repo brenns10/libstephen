@@ -9,46 +9,6 @@ improvement.  Most definitely, my library is far from perfect, and I want to
 bring it as close as possible to perfection.  As such, here are some of my plans
 for the future.
 
-## Iterators
-
-I already have some sort of iterator support in `libstephen`.  However, it only
-exists for linked lists (since the other data structures support constant time
-iteration).  However, I have found that programming languages like Python take
-iterators to nearly an art form.  If you can write code that exclusively uses
-iterators for iterating, you can swap out data structures easily.  In fact, you
-can even create generators that act as iterators!
-
-This flexibility seems uncommon in C.  But, I aim to integrate it as best as I
-can with iterators.  I plan to create a new, better iterator data structure that
-is generic.  It will be a struct similar to the following:
-
-```
-#!c
-typedef struct {
-  DATA ds;
-  DATA state;
-  DATA (*next)(smb_iter *);
-  bool (*has_next)(smb_iter *);
-  void (*destroy)(smb_iter *, bool free_src);
-  void (*delete)(smb_iter *, bool free_src);
-  /* possibly more functions */
-} smb_iter;
-```
-
-This way, each data structure may populate its own functions.  The iterator
-struct will have space for a pointer to the data structure, as well as a pointer
-or value for its state.  It will have your average forward iteration functions,
-along with memory management functions for freeing resources held by the
-iterator, and optionally the data structure it points to.
-
-Array list, linked list, and hash table iterators could be easily implemented
-like this, as well as generators.
-
-Note that function invocation on an iterator would be a bit awkward.  For
-instance: `iter->next(&iter)`.  I could make a macro to 'simplify' it, like so:
-`CALL(iter, next, args)`, but that seems like it's obfuscating the meaning of
-the code a bit much, just to save a few characters.
-
 ## Better Error Handling
 
 This is a big one.  I currently have a rather half-assed attempt at error
