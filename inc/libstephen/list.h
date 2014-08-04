@@ -157,7 +157,7 @@ typedef struct smb_iter {
      undefined when it is modified.  It is intended (but not required) to be
      used by the iterator to store a reference to the data structure.
    */
-  DATA ds;
+  const void *ds;
 
   /**
      @brief The state of the iterator.
@@ -197,14 +197,14 @@ typedef struct smb_iter {
      @param iter The iterator being used.
      @param free_src Whether to free the data structure used as the source.
    */
-  void (*destroy)(struct smb_iter *iter, bool free_src);
+  void (*destroy)(struct smb_iter *iter);
 
   /**
      @brief Frees any resources held by the iterator, and the iterator.
      @param iter The iterator being used.
      @param free_src Whether to free the data structure used as the source.
    */
-  void (*delete)(struct smb_iter *iter, bool free_src);
+  void (*delete)(struct smb_iter *iter);
 
 } smb_iter;
 

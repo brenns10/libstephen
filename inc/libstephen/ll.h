@@ -116,10 +116,10 @@ void ll_insert(smb_ll *list, int index, DATA newData);
 void ll_set(smb_ll *list, int index, DATA newData);
 int  ll_length(const smb_ll *list);
 
-smb_iter ll_get_iter(smb_ll *list);
+smb_iter ll_get_iter(const smb_ll *list);
 DATA ll_iter_next(smb_iter *iter);
 bool ll_iter_has_next(smb_iter *iter);
-void ll_iter_destroy(smb_iter *iter, bool free_src);
-void ll_iter_delete(smb_iter *iter, bool free_src);
+void ll_iter_destroy(smb_iter *iter);
+void ll_iter_delete(smb_iter *iter);
 
 #endif // LIBSTEPHEN_LL_H

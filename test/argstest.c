@@ -73,7 +73,7 @@ void iterate_long_flags(smb_ad *pArgData)
     if (param)
       printf("-->Flag parameter: %s\n", param);
   }
-  iter.destroy(&iter, false);
+  iter.destroy(&iter);
 }
 
 void iterate_bare_strings(smb_ad *pArgData)
@@ -86,7 +86,7 @@ void iterate_bare_strings(smb_ad *pArgData)
     char *string = d.data_ptr;
     printf("String: \"%s\"\n", string);
   }
-  iter.destroy(&iter, false);
+  iter.destroy(&iter);
 }
 
 int args_test_main(int argc, char **argv)

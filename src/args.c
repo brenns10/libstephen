@@ -174,7 +174,7 @@ int find_string(smb_ll *toSearch, char *toFind)
       return iter.index;
     }
   }
-  iter.destroy(&iter, false);
+  iter.destroy(&iter);
   return -1;
 }
 

@@ -559,7 +559,7 @@ bool ll_iter_has_next(smb_iter *iter)
 {
   bool node_clean, index_clean;
   smb_ll_node *node = iter->state.data_ptr;
-  smb_ll *ds = iter->ds.data_ptr;
+  const smb_ll *ds = iter->ds;
 
   // Is there a node to return?
   node_clean = node != NULL;
@@ -578,13 +578,9 @@ bool ll_iter_has_next(smb_iter *iter)
    @param iter A pointer to the iterator.
    @param free_src Whether to free the source list.
  */
-void ll_iter_destroy(smb_iter *iter, bool free_src)
+void ll_iter_destroy(smb_iter *iter)
 {
-  // Linked list iterators hold no other resources than what is included in the
-  // smb_iter struct.
-  if (free_src) {
-    ll_delete(iter->ds.data_ptr);
-  }
+  // Nothing to destroy
 }
 
 /**
@@ -592,9 +588,9 @@ void ll_iter_destroy(smb_iter *iter, bool free_src)
    @param iter A pointer to the iterator
    @param free_src Whether to free the source list.
  */
-void ll_iter_delete(smb_iter *iter, bool free_src)
+void ll_iter_delete(smb_iter *iter)
 {
-  iter->destroy(iter, free_src);
+  iter->destroy(iter);
   smb_free(smb_iter, iter, 1);
 }
 
@@ -604,20 +600,20 @@ void ll_iter_delete(smb_iter *iter, bool free_src)
    @param list A pointer to the list.
    @returns an iterator
  */
-smb_iter ll_get_iter(smb_ll *list)
+smb_iter ll_get_iter(const smb_ll *list)
 {
-  smb_iter iter;
+  smb_iter iter = {
+    // Data in the iterator
+    .ds = list,
+    .state = (DATA) { .data_ptr = list->head },
+    .index = 0,
 
-  // Data in the iterator
-  iter.ds.data_ptr = list;
-  iter.state.data_ptr = list->head;
-  iter.index = 0;
-
-  // Functions
-  iter.next = &ll_iter_next;
-  iter.has_next = &ll_iter_has_next;
-  iter.destroy = &ll_iter_destroy;
-  iter.delete = &ll_iter_delete;
+    // Functions
+    .next = &ll_iter_next,
+    .has_next = &ll_iter_has_next,
+    .destroy = &ll_iter_destroy,
+    .delete = &ll_iter_delete
+  };
 
   return iter;
 }
