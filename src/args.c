@@ -166,16 +166,18 @@ int find_string(smb_ll *toSearch, char *toFind)
 {
   DATA d;
   char *sCurr;
-  smb_iter iter;
-  for (iter = ll_get_iter(toSearch); iter.has_next(&iter);
-       d = iter.next(&iter)) {
+  smb_iter iter = ll_get_iter(toSearch);
+  int retVal = -1;
+  while (iter.has_next(&iter)) {
+    d = iter.next(&iter);
     sCurr = (char *)d.data_ptr;
     if (strcmp(toFind, sCurr) == 0) {
-      return iter.index;
+      retVal = iter.index;
+      break;
     }
   }
   iter.destroy(&iter);
-  return -1;
+  return retVal;
 }
 
 /*******************************************************************************
