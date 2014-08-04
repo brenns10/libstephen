@@ -1,91 +1,74 @@
-# libstephen makefile
+#-------------------------------------------------------------------------------
+# 
+# File:         Makefile
+#
+# Author:       Stephen Brennan
+#
+# Date Created: Wednesday, 30 July 2014
+#
+# Description:  libstephen Makefile
+#
+#-------------------------------------------------------------------------------
 
+# Configuration Variables
 CC=gcc
-FLAGS=-g
-CFLAGS=$(FLAGS) -c -std=c99 -fPIC $(shell if [ -f src/libstephen_conf.h ] ; then echo "-DSMB_CONF" ; fi)
+FLAGS=
+SMB_CONF=$(shell if [ -f inc/libstephen_conf.h ] ; then echo "-DSMB_CONF" ; fi)
+INC=-Iinc/
+CFLAGS=$(FLAGS) -c -std=c99 -fPIC $(SMB_CONF) $(INC)
 LFLAGS=$(FLAGS)
-LIBOBJECTS=obj/linkedlist.o obj/util.o obj/arraylist.o obj/smbunit.o obj/args.o obj/hashtable.o obj/bitfield.o obj/utf8.o
-TESTOBJECTS=obj/main.o obj/linkedlisttest.o obj/arraylisttest.o obj/argstest.o obj/hashtabletest.o obj/bitfieldtest.o obj/utf8test.o
 
-.PHONY: all test lib clean testlib documentation
+# Source Files and Directories
+LIBSOURCES=$(shell find src/ -type f -name "*.c")
+LIBOBJECTS=$(patsubst src/%.c,obj/%.o,$(LIBSOURCES))
 
-# Main targets
+TESTSOURCES=$(shell find test/ -type f -name "*.c")
+TESTOBJECTS=$(patsubst test/%.c,obj/test/%.o,$(TESTSOURCES))
 
-all: lib so test testlib
-
-test: bin/test
-
-testlib: bin/testlib
-
+# Top Level Targets
+.PHONY: all test lib clean docs
+all: lib test
+debug: CFLAGS += -g
+debug: all
 lib: bin/libstephen.a
-
-so: bin/libstephen.so
-
-docs: src/* src/test/*
+test: lib bin/test
+docs: src/* test/*
 	doxygen
-
 clean:
 	rm -rf obj/* bin/* doc/*
 
 # Main Binaries
-
-bin/test: $(LIBOBJECTS) $(TESTOBJECTS)
-	$(CC) $(LFLAGS) $(LIBOBJECTS) $(TESTOBJECTS) -o bin/test
-
 bin/libstephen.a: $(LIBOBJECTS)
+	@mkdir -p $(@D)
 	ar rcs bin/libstephen.a $(LIBOBJECTS)
 
-bin/testlib: bin/libstephen.a $(TESTOBJECTS)
-	$(CC) $(LFLAGS) $(TESTOBJECTS) --static -L bin -lstephen -o bin/testlib
-
-bin/libstephen.so: $(LIBOBJECTS)
-	$(CC) $(LFLAGS) -shared -Wl,-soname,libstephen.so -o bin/libstephen.so $(LIBOBJECTS)
+bin/test: $(LIBOBJECTS) $(TESTOBJECTS)
+	@mkdir -p $(@D)
+	$(CC) $(LFLAGS) $(LIBOBJECTS) $(TESTOBJECTS) -o bin/test
 
 # Library objects
+obj/test/%.o: test/%.c
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) $< -o $@
 
-obj/linkedlist.o: src/linkedlist.c src/libstephen.h
-	$(CC) $(CFLAGS) src/linkedlist.c -o obj/linkedlist.o
+obj/%.o: src/%.c
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) $< -o $@
 
-obj/arraylist.o: src/arraylist.c src/libstephen.h
-	$(CC) $(CFLAGS) src/arraylist.c -o obj/arraylist.o
+# Explicit dependencies
+src/linkedlist.c: inc/libstephen.h
+src/arraylist.c: inc/libstephen.h
+src/smbunit.c: inc/libstephen.h
+src/util.c: inc/libstephen.h
+src/args.c: inc/libstephen.h
+src/hashtable.c: inc/libstephen.h
+src/bitfield.c: inc/libstephen.h
+src/utf8.c: inc/libstephen.h
 
-obj/smbunit.o: src/smbunit.c src/libstephen.h
-	$(CC) $(CFLAGS) src/smbunit.c -o obj/smbunit.o
-
-obj/util.o: src/util.c src/libstephen.h
-	$(CC) $(CFLAGS) src/util.c -o obj/util.o
-
-obj/args.o: src/args.c src/libstephen.h
-	$(CC) $(CFLAGS) src/args.c -o obj/args.o
-
-obj/hashtable.o: src/hashtable.c src/libstephen.h
-	$(CC) $(CFLAGS) src/hashtable.c -o obj/hashtable.o
-
-obj/bitfield.o: src/bitfield.c src/libstephen.h
-	$(CC) $(CFLAGS) src/bitfield.c -o obj/bitfield.o
-
-obj/utf8.o: src/utf8.c src/libstephen.h
-	$(CC) $(CFLAGS) src/utf8.c -o obj/utf8.o
-
-# Test objects
-
-obj/main.o: src/test/main.c src/test/tests.h
-	$(CC) $(CFLAGS) src/test/main.c -o obj/main.o
-
-obj/linkedlisttest.o: src/test/linkedlisttest.c src/test/tests.h src/libstephen.h
-	$(CC) $(CFLAGS) src/test/linkedlisttest.c -o obj/linkedlisttest.o
-
-obj/arraylisttest.o: src/test/arraylisttest.c src/test/tests.h src/libstephen.h
-	$(CC) $(CFLAGS) src/test/arraylisttest.c -o obj/arraylisttest.o
-
-obj/argstest.o: src/test/argstest.c src/libstephen.h
-	$(CC) $(CFLAGS) src/test/argstest.c -o obj/argstest.o
-
-obj/hashtabletest.o: src/test/hashtabletest.c src/libstephen.h src/test/tests.h
-	$(CC) $(CFLAGS) src/test/hashtabletest.c -o obj/hashtabletest.o
-
-obj/bitfieldtest.o: src/test/bitfieldtest.c src/libstephen.h src/test/tests.h
-	$(CC) $(CFLAGS) src/test/bitfieldtest.c -o obj/bitfieldtest.o
-
-obj/utf8test.o: src/test/utf8test.c src/libstephen.h src/test/tests.h
-	$(CC) $(CFLAGS) src/test/utf8test.c -o obj/utf8test.o
+src/test/main.c: src/test/tests.h
+src/test/linkedlisttest.c: src/test/tests.h inc/libstephen.h
+src/test/arraylisttest.c: src/test/tests.h inc/libstephen.h
+src/test/argstest.c: inc/libstephen.h
+src/test/hashtabletest.c: inc/libstephen.h src/test/tests.h
+src/test/bitfieldtest.c: inc/libstephen.h src/test/tests.h
+src/test/utf8test.c: inc/libstephen.h src/test/tests.h

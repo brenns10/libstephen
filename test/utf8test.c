@@ -40,7 +40,7 @@
 #include <stdio.h>
 #include <wchar.h>
 
-#include "../libstephen.h"
+#include "libstephen.h"
 #include "tests.h"
 
 int utf8_test_predetermined(void)

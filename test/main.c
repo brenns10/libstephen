@@ -38,7 +38,7 @@
 *******************************************************************************/
 
 #include <stdio.h>
-#include "../libstephen.h"
+#include "libstephen.h"
 #include "tests.h"
 
 /**
