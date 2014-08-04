@@ -618,6 +618,30 @@ smb_iter ll_get_iter(const smb_ll *list)
   return iter;
 }
 
+/**
+   @brief Print a list to a file.
+
+   This function prints the contents of a list to any file.  You must specify
+   how to print the elements by passing a DATA_PRINTER.
+
+   @param list The list to print.
+   @param f The file to print to.
+   @param printer The function which prints the DATA.
+ */
+void ll_print(const smb_ll *list, FILE *f, DATA_PRINTER printer)
+{
+  smb_iter it = ll_get_iter(list);
+  DATA d;
+  fprintf(f, "smb_ll {\n");
+  while (it.has_next(&it)) {
+    d = it.next(&it);
+    printer(f, d);
+    fprintf(f, ",\n");
+  }
+  it.destroy(&it);
+  fprintf(f, "}\n");
+}
+
 /*******************************************************************************
 
                          Linked List Adapter Functions

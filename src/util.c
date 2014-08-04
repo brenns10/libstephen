@@ -224,3 +224,43 @@ char *smb_read_line(FILE *file, int *alloc)
     }
   }
 }
+
+/**
+   @brief Print a DATA, treating it as a `char *`.
+   @param f File to print to.
+   @param d DATA to print.
+ */
+void data_printer_string(FILE *f, DATA d)
+{
+  fprintf(f, "\"%s\"", (char *)d.data_ptr);
+}
+
+/**
+   @brief Print a DATA, treating it as an int.
+   @param f File to print to.
+   @param d DATA to print.
+ */
+void data_printer_int(FILE *f, DATA d)
+{
+  fprintf(f, "%Ld", d.data_llint);
+}
+
+/**
+   @brief Print a DATA, treating it as a float.
+   @param f File to print to.
+   @param d DATA to print.
+ */
+void data_printer_float(FILE *f, DATA d)
+{
+  fprintf(f, "%Lf", d.data_dbl);
+}
+
+/**
+   @brief Print a DATA, treating it as a pointer.
+   @param f File to print to.
+   @param d DATA to print.
+ */
+void data_printer_pointer(FILE *f, DATA d)
+{
+  fprintf(f, "%p", d.data_ptr);
+}

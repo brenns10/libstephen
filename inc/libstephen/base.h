@@ -181,6 +181,19 @@ typedef union DATA {
  */
 typedef void (*DATA_ACTION)(DATA);
 
+/**
+   @brief A function pointer that takes a DATA and prints it.
+
+   This function should not print a trailing newline!  There are higher level
+   functions that will deal with that.
+ */
+typedef void (*DATA_PRINTER)(FILE*, DATA);
+
+void data_printer_string(FILE *f, DATA d);
+void data_printer_int(FILE *f, DATA d);
+void data_printer_float(FILE *f, DATA d);
+void data_printer_pointer(FILE *f, DATA d);
+
 
 /*******************************************************************************
 
