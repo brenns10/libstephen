@@ -9,6 +9,11 @@ improvement.  Most definitely, my library is far from perfect, and I want to
 bring it as close as possible to perfection.  As such, here are some of my plans
 for the future.
 
+## Unit Test Setup and Tear Down
+
+Most unit testing libraries have setup and tear down methods.  I can make
+group-level and test-level setup and tear down methods.
+
 ## Better Error Handling
 
 This is a big one.  I currently have a rather half-assed attempt at error
