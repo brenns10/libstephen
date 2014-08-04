@@ -61,30 +61,32 @@ void iterate_flags(smb_ad *pArgData, char start, char end)
 
 void iterate_long_flags(smb_ad *pArgData)
 {
-  smb_ll_iter iter = ll_get_iter(pArgData->long_flags);
+  DATA d;
+  smb_iter iter;
 
-  while (ll_iter_valid(&iter)) {
-    DATA d = ll_iter_curr(&iter);
+  for (iter = ll_get_iter(pArgData->long_flags); iter.has_next(&iter);
+       d = iter.next(&iter)) {
     char *string = d.data_ptr;
     printf("Flag \"%s\" set.\n", string);
 
     char *param = get_long_flag_parameter(pArgData, string);
     if (param)
       printf("-->Flag parameter: %s\n", param);
-    ll_iter_next(&iter);
   }
+  iter.destroy(&iter, false);
 }
 
 void iterate_bare_strings(smb_ad *pArgData)
 {
-  smb_ll_iter iter = ll_get_iter(pArgData->bare_strings);
+  DATA d;
+  smb_iter iter;
 
-  while (ll_iter_valid(&iter)) {
-    DATA d = ll_iter_curr(&iter);
+  for (iter = ll_get_iter(pArgData->bare_strings); iter.has_next(&iter);
+       d = iter.next(&iter)) {
     char *string = d.data_ptr;
     printf("String: \"%s\"\n", string);
-    ll_iter_next(&iter);
   }
+  iter.destroy(&iter, false);
 }
 
 int args_test_main(int argc, char **argv)

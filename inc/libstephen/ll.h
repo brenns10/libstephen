@@ -40,6 +40,8 @@
 #ifndef LIBSTEPHEN_LL_H
 #define LIBSTEPHEN_LL_H
 
+#include <stdbool.h> /* bool */
+
 #include "base.h"  /* DATA     */
 #include "list.h"  /* smb_list */
 
@@ -92,28 +94,6 @@ typedef struct smb_ll
 
 } smb_ll;
 
-/**
-   @brief A linked list iterator.  Do not modify the structure yourself.
- */
-typedef struct smb_ll_iter
-{
-  /**
-     @brief A pointer to the list being used.
-   */
-  struct smb_ll *list;
-
-  /**
-     @brief A pointer to the current node in the list.
-   */
-  struct smb_ll_node *current;
-
-  /**
-     @brief The index associated with this item.
-   */
-  int index;
-
-} smb_ll_iter;
-
 void ll_init(smb_ll *newList);
 smb_ll *ll_create();
 void ll_destroy(smb_ll *list);
@@ -134,14 +114,12 @@ DATA ll_get(const smb_ll *list, int index);
 void ll_remove(smb_ll *list, int index);
 void ll_insert(smb_ll *list, int index, DATA newData);
 void ll_set(smb_ll *list, int index, DATA newData);
-int ll_length(const smb_ll *list);
+int  ll_length(const smb_ll *list);
 
-smb_ll_iter ll_get_iter(smb_ll *list);
-DATA ll_iter_next(smb_ll_iter *iterator);
-DATA ll_iter_prev(smb_ll_iter *iterator);
-DATA ll_iter_curr(smb_ll_iter *iterator);
-int ll_iter_has_next(smb_ll_iter *iterator);
-int ll_iter_has_prev(smb_ll_iter *iterator);
-int ll_iter_valid(smb_ll_iter *iterator);
+smb_iter ll_get_iter(smb_ll *list);
+DATA ll_iter_next(smb_iter *iter);
+bool ll_iter_has_next(smb_iter *iter);
+void ll_iter_destroy(smb_iter *iter, bool free_src);
+void ll_iter_delete(smb_iter *iter, bool free_src);
 
 #endif // LIBSTEPHEN_LL_H

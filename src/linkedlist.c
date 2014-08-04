@@ -44,6 +44,8 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
+#include <assert.h>
 
 #include "libstephen/ll.h"
 
@@ -530,101 +532,94 @@ int ll_length(const smb_ll *list)
 }
 
 /**
-   @brief Get an iterator for the linked list.
-
-   @param list A pointer to the list.
-   @returns an iterator
- */
-smb_ll_iter ll_get_iter(smb_ll *list)
-{
-  smb_ll_iter iter;
-  iter.list = list;
-  iter.current = list->head;
-  iter.index = 0;
-  return iter;
-}
-
-/**
-   @brief Advance the iterator and return the data at it.
+   @brief Get the next item in the linked list.
 
    @param iterator A pointer to the iterator.
    @returns The data at the new location of the iterator.
  */
-DATA ll_iter_next(smb_ll_iter *iter)
+DATA ll_iter_next(smb_iter *iter)
 {
-  iter->current = iter->current->next;
+  smb_ll_node *node = iter->state.data_ptr;
+  if (node == NULL) {
+    return iter->state; // a DATA containing NULL
+  }
+  iter->state.data_ptr = node->next;
   iter->index++;
-  return ll_iter_curr(iter);
-}
-
-/**
-   @brief Move the iterator back and return the data at it.
-
-   @param iterator A pointer to the iterator.
-   @param The data at the new location of the iterator.
- */
-DATA ll_iter_prev(smb_ll_iter *iter)
-{
-  iter->current = iter->current->prev;
-  iter->index--;
-  return ll_iter_curr(iter);
-}
-
-/**
-   @brief Get the current data for this iterator.
-
-   @param iterator A pointer to the iterator.
-   @returns The data at the current location of the iterator.
- */
-DATA ll_iter_curr(smb_ll_iter *iter)
-{
-  if (iter && iter->current)
-    return iter->current->data;
-
-  DATA mockData;
-  return mockData;
+  return node->data;
+  // TODO: Throw some sort of error when calling next() on finished iterator.
 }
 
 /**
    @brief Check if the iterator can be advanced.
 
-   @param iterator A pointer to the iterator.
+   @param iter A pointer to the iterator.
    @returns Whether the iterator can be advanced.
  */
-int ll_iter_has_next(smb_ll_iter *iter)
+bool ll_iter_has_next(smb_iter *iter)
 {
-  if (iter && iter->current && iter->current->next)
-    return 1;
+  bool node_clean, index_clean;
+  smb_ll_node *node = iter->state.data_ptr;
+  smb_ll *ds = iter->ds.data_ptr;
 
-  return 0;
+  // Is there a node to return?
+  node_clean = node != NULL;
+  // Is the index valid?
+  index_clean = iter->index < ll_length(ds);
+
+  // Both should have the same value.  It is impossible for the node to be null
+  // when the index is in bounds.  So, assert it.
+  assert(node_clean == index_clean);
+
+  return node_clean;
 }
 
 /**
-   @brief Check if the iterator can be moved back.
-
-   @param iterator A pointer to the iterator.
-   @returns Whether the iterator can be moved back
+   @brief Free the resources held by the iterator.
+   @param iter A pointer to the iterator.
+   @param free_src Whether to free the source list.
  */
-int ll_iter_has_prev(smb_ll_iter *iter)
+void ll_iter_destroy(smb_iter *iter, bool free_src)
 {
-  if (iter && iter->current && iter->current->prev)
-    return 1;
-
-  return 0;
+  // Linked list iterators hold no other resources than what is included in the
+  // smb_iter struct.
+  if (free_src) {
+    ll_delete(iter->ds.data_ptr);
+  }
 }
 
 /**
-   @brief Check if the iterator is valid.
-
-   @param iterator A pointer to the iterator.
-   @return Whether the iterator is valid.
+   @brief Free the iterator and its resources.
+   @param iter A pointer to the iterator
+   @param free_src Whether to free the source list.
  */
-int ll_iter_valid(smb_ll_iter *iter)
+void ll_iter_delete(smb_iter *iter, bool free_src)
 {
-  if (iter && iter->current)
-    return 1;
+  iter->destroy(iter, free_src);
+  smb_free(smb_iter, iter, 1);
+}
 
-  return 0;
+/**
+   @brief Get an iterator for the linked list.
+
+   @param list A pointer to the list.
+   @returns an iterator
+ */
+smb_iter ll_get_iter(smb_ll *list)
+{
+  smb_iter iter;
+
+  // Data in the iterator
+  iter.ds.data_ptr = list;
+  iter.state.data_ptr = list->head;
+  iter.index = 0;
+
+  // Functions
+  iter.next = &ll_iter_next;
+  iter.has_next = &ll_iter_has_next;
+  iter.destroy = &ll_iter_destroy;
+  iter.delete = &ll_iter_delete;
+
+  return iter;
 }
 
 /*******************************************************************************

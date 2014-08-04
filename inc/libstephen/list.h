@@ -40,6 +40,8 @@
 #ifndef LIBSTEPHEN_LIST_H
 #define LIBSTEPHEN_LIST_H
 
+#include <stdbool.h>
+
 #include "base.h"  /* DATA */
 
 /**
@@ -181,28 +183,28 @@ typedef struct smb_iter {
      @param iter The iterator being used.
      @return The next element of the iteration.
    */
-  DATA (*next)(smb_iter *iter);
+  DATA (*next)(struct smb_iter *iter);
 
   /**
      @brief Returns whether the iteration has a next element.
      @param iter The iterator being used.
      @return Whether the iteration has a next element.
    */
-  bool (*has_next)(smb_iter *iter);
+  bool (*has_next)(struct smb_iter *iter);
 
   /**
      @brief Frees any resources held by the iterator (but not the iterator).
      @param iter The iterator being used.
      @param free_src Whether to free the data structure used as the source.
    */
-  void (*destroy)(smb_iter *iter, bool free_src);
+  void (*destroy)(struct smb_iter *iter, bool free_src);
 
   /**
      @brief Frees any resources held by the iterator, and the iterator.
      @param iter The iterator being used.
      @param free_src Whether to free the data structure used as the source.
    */
-  void (*delete)(smb_iter *iter, bool free_src);
+  void (*delete)(struct smb_iter *iter, bool free_src);
 
 } smb_iter;
 
