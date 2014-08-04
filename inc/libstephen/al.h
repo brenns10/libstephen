@@ -87,5 +87,6 @@ DATA al_pop_front(smb_al *list);
 DATA al_peek_front(smb_al *list);
 int al_length(const smb_al *list);
 int al_index_of(const smb_al *list, DATA d);
+smb_iter al_get_iter(const smb_al *list);
 
 #endif // LIBSTEPHEN_AL_H
