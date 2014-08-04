@@ -49,14 +49,6 @@ instance: `iter->next(&iter)`.  I could make a macro to 'simplify' it, like so:
 `CALL(iter, next, args)`, but that seems like it's obfuscating the meaning of
 the code a bit much, just to save a few characters.
 
-## Separate Headers
-
-I may turn `libstephen`'s header file into a directory of specific headers.
-That way, one would `#include "libstephen/ll.h"` for linked lists.  It would
-certainly make the headers a bit more manageable.  It would also increase
-understanding of what exactly a piece of code requires out of `libstephen`.
-However, it could be a pointless change.
-
 ## Better Error Handling
 
 This is a big one.  I currently have a rather half-assed attempt at error
