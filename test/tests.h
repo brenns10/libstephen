@@ -68,6 +68,11 @@ void utf8_test(void);
 void iter_test(void);
 
 /**
+   Run the args tests
+ */
+void args_test(void);
+
+/**
    Output statistics of main function args.
  */
 int args_test_main(int argc, char **argv);
