@@ -208,4 +208,6 @@ typedef struct smb_iter {
 
 } smb_iter;
 
+void iter_print(smb_iter it, FILE *f, DATA_PRINTER printer);
+
 #endif // LIBSTEPHEN_LIST_H

@@ -52,6 +52,7 @@
 #include <string.h>
 
 #include "libstephen/base.h"
+#include "libstephen/list.h"
 #include "libstephen/ad.h"
 #include "libstephen/ll.h"
 
@@ -396,11 +397,11 @@ void ad_print(smb_ad *data, FILE *f)
     }
   }
   fprintf(f, "Long Flags: ");
-  ll_print(data->long_flags, f, &data_printer_string);
+  iter_print(ll_get_iter(data->long_flags), f, &data_printer_string);
 
   fprintf(f, "Long Flag Strings: ");
-  ll_print(data->long_flag_strings, f, &data_printer_string);
+  iter_print(ll_get_iter(data->long_flag_strings), f, &data_printer_string);
 
   fprintf(f, "Bare Strings: ");
-  ll_print(data->bare_strings, f, &data_printer_string);
+  iter_print(ll_get_iter(data->bare_strings), f, &data_printer_string);
 }

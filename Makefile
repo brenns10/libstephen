@@ -60,10 +60,12 @@ src/linkedlist.c: inc/libstephen/ll.h
 src/arraylist.c: inc/libstephen/al.h
 src/smbunit.c: inc/libstephen/ut.h inc/libstephen/base.h
 src/util.c: inc/libstephen/base.h
-src/args.c: inc/libstephen/ad.h inc/libstephen/base.h inc/libstephen/ll.h
+src/args.c: inc/libstephen/ad.h inc/libstephen/base.h inc/libstephen/ll.h \
+            inc/libstephen/list.h
 src/hashtable.c: inc/libstephen/ht.h
 src/bitfield.c: inc/libstephen/bf.h inc/libstephen/base.h
 src/utf8.c: inc/libstephen/util.h inc/libstephen/base.h
+src/iter.c: inc/libstephen/base.h inc/libstephen/list.h
 
 test/main.c: test/tests.h inc/libstephen/base.h
 test/linkedlisttest.c: test/tests.h inc/libstephen/ll.h inc/libstephen/ut.h
@@ -72,3 +74,5 @@ test/argstest.c: inc/libstephen/ad.h inc/libstephen/ll.h inc/libstephen/ut.h
 test/hashtabletest.c: inc/libstephen/ht.h test/tests.h inc/libstephen/ut.h
 test/bitfieldtest.c: inc/libstephen/bf.h test/tests.h inc/libstephen/ut.h
 test/utf8test.c: inc/libstephen/util.h test/tests.h inc/libstephen/ut.h
+test/itertest.c: test/tests.h inc/libstephen/list.h inc/libstephen/ll.h \
+                 inc/libstephen/al.h inc/libstephen/ut.h
