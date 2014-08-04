@@ -526,7 +526,7 @@ smb_iter al_get_iter(const smb_al *list)
   smb_iter iter = {
     // Data values
     .ds = list,
-    .state = (DATA) { NULL },
+    .state = (DATA) { .data_ptr = NULL },
     .index = 0,
 
     // Functions
