@@ -90,5 +90,6 @@ int check_long_flag(smb_ad *data, char *flag);
 int check_bare_string(smb_ad *data, char *string);
 char *get_flag_parameter(smb_ad *data, char flag);
 char *get_long_flag_parameter(smb_ad *data, char *string);
+void ad_print(smb_ad *data, FILE *f);
 
 #endif // LIBSTEPHEN_AD_H

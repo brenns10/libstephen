@@ -172,7 +172,7 @@ int find_string(smb_ll *toSearch, char *toFind)
     d = iter.next(&iter);
     sCurr = (char *)d.data_ptr;
     if (strcmp(toFind, sCurr) == 0) {
-      retVal = iter.index;
+      retVal = iter.index-1; // previous index
       break;
     }
   }
@@ -272,6 +272,7 @@ void process_args(smb_ad *data, int argc, char **argv)
       case '-':
         // Long flag
         previous_long_flag = process_long_flag(data, *argv);
+        previous_flag = EOF;
         break;
       case '\0':
         // A single '-'...counts as a bare string in my book
@@ -282,6 +283,7 @@ void process_args(smb_ad *data, int argc, char **argv)
       default:
         // The input is a short flag
         previous_flag = process_flag(data, *argv);
+        previous_long_flag = NULL;
         break;
       }
       break;
@@ -377,4 +379,28 @@ char *get_long_flag_parameter(smb_ad *data, char *string)
     d = ll_get(data->long_flag_strings, index);
     return (char*)d.data_ptr;
   }
+}
+
+/**
+   @brief Print the contents of the arg data struct to a file for debugging.
+   @param data The struct to print.
+   @param f The file to print to.
+ */
+void ad_print(smb_ad *data, FILE *f)
+{
+  fprintf(f, "Arg Data:\n");
+  fprintf(f, "Flags: 0x%lX\n", data->flags);
+  for (int i = 0; i < MAX_FLAGS; i++) {
+    if (data->flag_strings[i] != NULL) {
+      fprintf(f, "%d: \"%s\"\n", i, data->flag_strings[i]);
+    }
+  }
+  fprintf(f, "Long Flags: ");
+  ll_print(data->long_flags, f, &data_printer_string);
+
+  fprintf(f, "Long Flag Strings: ");
+  ll_print(data->long_flag_strings, f, &data_printer_string);
+
+  fprintf(f, "Bare Strings: ");
+  ll_print(data->bare_strings, f, &data_printer_string);
 }
