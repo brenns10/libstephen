@@ -63,6 +63,11 @@ void bit_field_test();
 void utf8_test(void);
 
 /**
+   Run the iter tests
+ */
+void iter_test(void);
+
+/**
    Output statistics of main function args.
  */
 int args_test_main(int argc, char **argv);
