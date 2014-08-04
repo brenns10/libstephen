@@ -50,14 +50,6 @@
 *******************************************************************************/
 
 /*
-  When SMB_CONF is defined, searches for "libstephen_conf.h" to include into the
-  file.  This can be used to enable diagnostics.
- */
-#ifdef SMB_CONF
-#include "libstephen_conf.h"
-#endif
-
-/*
   The debug option enables all diagnostics.
  */
 #ifdef SMB_DEBUG
