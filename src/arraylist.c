@@ -477,6 +477,67 @@ int al_index_of(const smb_al *list, DATA d)
   return -1;
 }
 
+/**
+   @brief Return the next item in the array list.
+   @param iter The iterator being used.
+   @return The next item in the array list.
+ */
+DATA al_iter_next(smb_iter *iter)
+{
+  return al_get((const smb_al *)iter->ds, iter->index++);
+}
+
+/**
+   @brief Return whether or not the iterator has another item.
+   @param iter The iterator being used.
+   @return Whether or not the iterator has another item.
+ */
+bool al_iter_has_next(smb_iter *iter)
+{
+  return iter->index < al_length((const smb_al *)iter->ds);
+}
+
+/**
+   @brief Free whatever resources are held by the iterator.
+   @param iter The iterator to clean up.
+ */
+void al_iter_destroy(smb_iter *iter)
+{
+  // Nothing to destroy ...
+}
+
+/**
+   @brief Free the iterator and its resources.
+   @param iter The iterator to free.
+ */
+void al_iter_delete(smb_iter *iter)
+{
+  iter->destroy(iter);
+  smb_free(smb_iter, iter, 1);
+}
+
+/**
+   @brief Return an iterator on the array list.
+   @param list A pointer to the list.
+   @return The smb_iter to the list.
+ */
+smb_iter al_get_iter(const smb_al *list)
+{
+  smb_iter iter = {
+    // Data values
+    .ds = list,
+    .state = (DATA) { NULL },
+    .index = 0,
+
+    // Functions
+    .next = &al_iter_next,
+    .has_next = &al_iter_has_next,
+    .destroy = &al_iter_destroy,
+    .delete = &al_iter_delete
+  };
+  return iter;
+}
+
 /*******************************************************************************
 
                              List Adapter Functions
