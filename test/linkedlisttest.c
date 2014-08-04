@@ -38,22 +38,22 @@
 *******************************************************************************/
 
 #include <stdio.h>
-#include "tests.h"
-#include "libstephen.h"
 
-// These tests use the smbunit framework!
+#include "tests.h"
+#include "libstephen/ll.h"
+#include "libstephen/ut.h"
 
 int ll_test_create()
 {
   DATA d;
   d.data_llint = 13;
-  
+
   smb_ll *list = ll_create();
   ll_append(list, d);
 
   // Assert that it was allocated correctly
   //TEST_ASSERT(!CHECK(ALLOCATION_ERROR), 1);
-  
+
   TEST_ASSERT(ll_length(list) == 1, 2);
 
   TEST_ASSERT(ll_get(list, 0).data_llint == 13, 3);
@@ -65,7 +65,7 @@ int ll_test_create()
 int ll_test_create_empty()
 {
   smb_ll *list = ll_create();
-  
+
   // Assert that allocation went OK
   //TEST_ASSERT(!CHECK(ALLOCATION_ERROR), 1);
 
@@ -113,7 +113,7 @@ int ll_test_prepend()
   // Test prepend about 200 times...
   for ( ; d.data_llint < 200; d.data_llint++) {
     ll_prepend(list, d);
-    
+
     TEST_ASSERT(ll_length(list) == d.data_llint + 1, current_assertion);
     current_assertion++;
 
@@ -122,7 +122,7 @@ int ll_test_prepend()
       current_assertion++;
     }
   }
-  
+
   ll_delete(list);
   return 0;
 }
@@ -133,7 +133,7 @@ int ll_test_set()
   smb_ll *list = ll_create();
   const int length = 30;
   int current_assertion = 1;
-  
+
   // Create the data
   for (d.data_llint = 0 ; d.data_llint < length; d.data_llint++) {
     ll_append(list, d);
@@ -148,7 +148,7 @@ int ll_test_set()
   // Test that the length is correct
   TEST_ASSERT(ll_length(list) == length, current_assertion);
   current_assertion++;
-  
+
   // Test set
   for (int i = 0; i < ll_length(list); i++) {
     d.data_llint = length - i;
@@ -197,7 +197,7 @@ int ll_test_remove()
   current_assertion++;
   TEST_ASSERT(ll_get(list, 10).data_llint == 12, current_assertion);
   current_assertion++;
-  
+
   // Remove last element
   ll_remove(list, ll_length(list) - 1);
   TEST_ASSERT(ll_length(list) == length - 3, current_assertion);
@@ -245,14 +245,14 @@ int ll_test_insert()
   ll_insert(list, 10, d);
   TEST_ASSERT(ll_length(list) == length + 2, current_assertion);
   current_assertion++;
-  
+
   d.data_llint = 102;
   ll_insert(list, ll_length(list), d);
   TEST_ASSERT(ll_length(list) == length + 3, current_assertion);
   current_assertion++;
-  
+
   int value = 0;
-  
+
   for (int i = 0; i < ll_length(list); i++) {
     if (i == 0) {
       TEST_ASSERT(ll_get(list, i).data_llint == 100, current_assertion);
@@ -293,7 +293,7 @@ void linked_list_test()
 
   smb_ut_test *remove = su_create_test("remove", ll_test_remove, 0, 1);
   su_add_test(group, remove);
-  
+
   smb_ut_test *insert = su_create_test("insert", ll_test_insert, 0, 1);
   su_add_test(group, insert);
 

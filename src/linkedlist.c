@@ -5,7 +5,7 @@
   @author       Stephen Brennan
 
   @date         Created Thursday, 12 September 2013
-  
+
   @brief        A linked list data structure.
 
   This linked list data structure provides most basic features necessary in a
@@ -44,7 +44,8 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include "libstephen.h"
+
+#include "libstephen/ll.h"
 
 /*******************************************************************************
 
@@ -92,7 +93,7 @@ void ll_remove_node(smb_ll *list, smb_ll_node *theNode)
 
    @param list The list to navigate within.
    @param index The index to find in the list.
-   @returns A pointer to the node navigated to. 
+   @returns A pointer to the node navigated to.
    @retval NULL if the index was out of range.
    @exception INDEX_ERROR if the given index was out of range.
  */
@@ -124,7 +125,7 @@ smb_ll_node * ll_navigate(const smb_ll *list, int index)
 smb_ll_node *ll_create_node(DATA data)
 {
   smb_ll_node *newNode = (smb_ll_node*) malloc(sizeof(smb_ll_node));
-  
+
   if (!newNode) {
     RAISE(ALLOCATION_ERROR);
     return NULL;
@@ -228,7 +229,7 @@ void ll_delete(smb_ll *list);void ll_delete(smb_ll *list)
 void ll_append(smb_ll *list, DATA newData)
 {
   CLEAR_ALL_ERRORS;
-  
+
   // Create the new node
   smb_ll_node *newNode = ll_create_node(newData);
 
@@ -411,7 +412,7 @@ DATA ll_peek_front(smb_ll *list)
 }
 
 /**
-   @brief Gets the data from the given index.  
+   @brief Gets the data from the given index.
 
    However, there is no guarantee that the index was valid.  An empty DATA
    object is returned in that case, and an INDEX_ERROR is raised.
@@ -579,7 +580,7 @@ DATA ll_iter_curr(smb_ll_iter *iter)
 {
   if (iter && iter->current)
     return iter->current->data;
-  
+
   DATA mockData;
   return mockData;
 }
@@ -608,7 +609,7 @@ int ll_iter_has_prev(smb_ll_iter *iter)
 {
   if (iter && iter->current && iter->current->prev)
     return 1;
-  
+
   return 0;
 }
 
@@ -632,7 +633,7 @@ int ll_iter_valid(smb_ll_iter *iter)
 
   These guys are used as the function pointers for the smb_list.  They really
   don't need any documentation.
-  
+
 *******************************************************************************/
 
 void ll_append_adapter(smb_list *l, DATA newData)
@@ -776,7 +777,7 @@ smb_list ll_cast_to_list(smb_ll *list)
 {
   smb_list genericList;
   genericList.data = list;
-  
+
   ll_fill_functions(&genericList);
 
   return genericList;

@@ -6,7 +6,7 @@
 
   @date         Created Saturday, 28 September 2013
 
-  @brief        A simple, lightweight unit test runner based on function 
+  @brief        A simple, lightweight unit test runner based on function
                 pointers.
 
   @copyright    Copyright (c) 2013-2014, Stephen Brennan.
@@ -38,9 +38,12 @@
 
 *******************************************************************************/
 
-#include <stdio.h>
-#include <string.h>
-#include "libstephen.h"
+#include <stdlib.h>           /* malloc */
+#include <stdio.h>            /* printf */
+#include <string.h>           /* strncpy */
+
+#include "libstephen/base.h"  /* SMB_INCREMENT_MALLOC_COUNTER */
+#include "libstephen/ut.h"    /* functions we're defining */
 
 /**
    @brief Create and return a new unit test.
@@ -59,11 +62,11 @@ smb_ut_test *su_create_test(char * description, int (*run)(), int expected_error
   SMB_INCREMENT_MALLOC_COUNTER(sizeof(smb_ut_test));
   strncpy(test->description, description, SMB_UNIT_DESCRIPTION_SIZE - 1);
   test->description[SMB_UNIT_DESCRIPTION_SIZE - 1] = 0;
-  
+
   test->run = run;
   test->expected_errors = expected_errors;
   test->check_mem_leaks = check_mem_leaks;
-  
+
   return test;
 }
 
@@ -85,7 +88,7 @@ smb_ut_group *su_create_test_group(char * description)
 }
 
 /**
-   @brief Add a test to the given test group.  
+   @brief Add a test to the given test group.
 
    A maximum of SMB_UNIT_TESTS_PER_GROUP may be added to the group.  After the
    limit is reached, this function fails *silently*, so as to prevent
@@ -174,7 +177,7 @@ int su_run_group(smb_ut_group *group)
 }
 
 /**
-   @brief Frees the memory associated with the test, and performs cleanup.  
+   @brief Frees the memory associated with the test, and performs cleanup.
 
    Note that no actual cleanup is required by the test, so the only benefit to
    using this function is that it is future-safe (updates to smbunit may require

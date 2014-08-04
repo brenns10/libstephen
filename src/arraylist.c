@@ -45,7 +45,8 @@
 *******************************************************************************/
 
 #include <stdlib.h>      /* memcpy    */
-#include "libstephen.h"
+
+#include "libstephen/al.h"
 
 /**
    @brief The default size that an array list is allocated with, and is added to
@@ -65,7 +66,7 @@
    Note that this is a *private* function, not defined in libstephen.h for a
    reason.
 
-   @param list The list to expand.  
+   @param list The list to expand.
    @exception ALLOCATION_ERROR: if realloc fails.  Unexpanded block of data
    remains valid, and no changes are made to the list.
  */
@@ -95,7 +96,7 @@ void al_expand(smb_al *list)
    reason.
 
    @param list The list to operate on.
-   @param from_index The index to start shifting up from.  
+   @param from_index The index to start shifting up from.
    @exception ALLOCATION_ERROR if an expansion was required and realloc()
    failed, no shift is performed.  All data remains valid, but no changes are
    made to the array.
@@ -105,7 +106,7 @@ void al_shift_up(smb_al *list, int from_index)
   // Check if there's space and allocate more if necessary
   if (list->length >= list->allocated) {
     al_expand(list);
-    if (CHECK(ALLOCATION_ERROR)) 
+    if (CHECK(ALLOCATION_ERROR))
       return;
   }
 
@@ -325,7 +326,7 @@ void al_remove(smb_al *list, int index)
 void al_insert(smb_al *list, int index, DATA newData)
 {
   CLEAR_ALL_ERRORS;
-  
+
   if (index < 0) {
     index = 0;
   } else if (index > list->length) {
@@ -356,7 +357,7 @@ void al_insert(smb_al *list, int index, DATA newData)
 void al_set(smb_al *list, int index, DATA newData)
 {
   CLEAR_ALL_ERRORS;
-  
+
   if (index < 0 || index >= list->length) {
     RAISE(INDEX_ERROR);
     return;

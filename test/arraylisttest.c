@@ -37,7 +37,8 @@
 
 *******************************************************************************/
 
-#include "libstephen.h"
+#include "libstephen/al.h"
+#include "libstephen/ut.h"
 #include "tests.h"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -50,14 +51,14 @@ int al_test_create()
 
   smb_al *list = al_create();
   al_append(list, d);
-  
+
   // Assert that it was allocated correctly.
   TEST_ASSERT(!CHECK(ALLOCATION_ERROR), 1);
 
   TEST_ASSERT(al_length(list) == 1, 2);
 
   TEST_ASSERT(al_get(list, 0).data_llint == 13, 3);
-  
+
   al_delete(list);
   return 0;
 }
@@ -71,7 +72,7 @@ int al_test_create_empty()
 
   // Assert that it was allocated correctly.
   TEST_ASSERT(!CHECK(ALLOCATION_ERROR), 1);
-  
+
   TEST_ASSERT(al_length(list) == 0, 2);
 
   al_delete(list);
@@ -84,14 +85,14 @@ int al_test_append()
   d.data_llint = 0;
 
   smb_al *list = al_create();
-  
+
   // Test append about 21 times to check that reallocation works successfully
   for ( ; d.data_llint < 22; d.data_llint++) {
     al_append(list, d);
 
     // Assert that the length of the list is correct
     TEST_ASSERT(al_length(list) == d.data_llint + 1, d.data_llint + 1);
-    
+
     // Assert that each element in the list is correct
     for (int i = 0; i < al_length(list); i++) {
       TEST_ASSERT(al_get(list, i).data_llint == i, d.data_llint + 1);
@@ -108,14 +109,14 @@ int al_test_prepend()
   d.data_llint = 0;
 
   smb_al *list = al_create();
-  
+
   // Test prepend about 21 times to check that reallocation works successfully
   for ( ; d.data_llint < 22; d.data_llint++) {
     al_prepend(list, d);
 
     // Assert that the length of the list is correct
     TEST_ASSERT(al_length(list) == d.data_llint + 1, d.data_llint + 1);
-    
+
     // Assert that each element in the list is correct
     for (int i = 0; i < al_length(list); i++) {
       TEST_ASSERT(al_get(list, i).data_llint == d.data_llint - i, d.data_llint + 1);
@@ -197,10 +198,10 @@ int al_test_remove()
   al_remove(list, al_length(list) - 1);
   TEST_ASSERT(al_get(list, al_length(list) - 1).data_llint == length - 2, assertionNum);
   assertionNum++;
-  TEST_ASSERT(al_length(list) == length - 2, assertionNum);  
+  TEST_ASSERT(al_length(list) == length - 2, assertionNum);
   assertionNum++;
-  // Current list: 1 2 3 4 5 6 7 8 ... 
-  
+  // Current list: 1 2 3 4 5 6 7 8 ...
+
   // Remove from middle
   al_remove(list, 2);
   // Current list: 1 2 4 5 6 7 8 ...
@@ -248,7 +249,7 @@ int al_test_insert()
   // Test insert when a realloc needs to occur
   d.data_llint = 100;
   al_insert(list, 10, d);
-  int values_one[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 100, 10, 11, 12, 13, 14, 
+  int values_one[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 100, 10, 11, 12, 13, 14,
 		      15, 16, 17, 18, 19};
   for (int i = 0; i < al_length(list); i++) {
     TEST_ASSERT(al_get(list, i).data_llint == values_one[i], assertionNum);
@@ -258,7 +259,7 @@ int al_test_insert()
   // Test insert at end
   d.data_llint++;
   al_insert(list, al_length(list), d);
-  int values_two[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 100, 10, 11, 12, 13, 14, 
+  int values_two[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 100, 10, 11, 12, 13, 14,
 		      15, 16, 17, 18, 19, 101};
   for (int i = 0; i < al_length(list); i++) {
     TEST_ASSERT(al_get(list, i).data_llint == values_two[i], assertionNum);
@@ -268,7 +269,7 @@ int al_test_insert()
   // Test insert at beginning
   d.data_llint++;
   al_insert(list, al_length(list), d);
-  int values_three[] = {102, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 100, 10, 11, 12, 
+  int values_three[] = {102, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 100, 10, 11, 12,
 			13, 14, 15, 16, 17, 18, 19, 101};
   for (int i = 0; i < al_length(list); i++) {
     TEST_ASSERT(al_get(list, i).data_llint == values_three[i], assertionNum);
@@ -288,7 +289,7 @@ void array_list_test()
 
   smb_ut_test *create = su_create_test("create", al_test_create, 0, 1);
   su_add_test(group, create);
-  
+
   smb_ut_test *create_empty = su_create_test("create_empty", al_test_create_empty, 0, 1);
   su_add_test(group, create_empty);
 
@@ -297,10 +298,10 @@ void array_list_test()
 
   smb_ut_test *prepend = su_create_test("prepend", al_test_prepend, 0, 1);
   su_add_test(group, prepend);
-  
+
   smb_ut_test *set = su_create_test("set", al_test_set, 0, 1);
   su_add_test(group, set);
-  
+
   smb_ut_test *remove = su_create_test("remove", al_test_remove, 0, 1);
   su_add_test(group, remove);
 

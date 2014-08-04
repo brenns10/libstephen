@@ -1,14 +1,14 @@
 /***************************************************************************//**
 
-  @file         main.c
+  @file         util.h
 
   @author       Stephen Brennan
 
-  @date         Created Thursday, 12 September 2013
+  @date         Created Sunday,  3 August 2014
 
-  @brief        Run tests on the libstephen library.
+  @brief        Libstephen: Utilities
 
-  @copyright    Copyright (c) 2013-2014, Stephen Brennan.
+  @copyright    Copyright (c) 2014, Stephen Brennan.
   All rights reserved.
 
   @copyright
@@ -37,31 +37,17 @@
 
 *******************************************************************************/
 
-#include <stdio.h>
+#ifndef LIBSTEPHEN_UTIL_H
+#define LIBSTEPHEN_UTIL_H
 
-#include "libstephen/base.h"
-#include "tests.h"
+#include <stdio.h>    /* FILE    */
+#include <wchar.h>    /* wchar_t */
 
-/**
-   Main test function
- */
-int main(int argc, char ** argv)
-{
+wchar_t *smb_read_linew(FILE *, int *);
+char *smb_read_line(FILE *, int *);
+void smb_set_memory_log_location(char *);
+int utf8toucs4(wchar_t *dest, const char *src, int n);
+wint_t utf8char(const char *src, int s);
+wint_t utf8iter(const char *_src, int *_s);
 
-  int mallocs;
-
-  linked_list_test();
-  array_list_test();
-  hash_table_test();
-  bit_field_test();
-  utf8_test();
-
-  if (mallocs = SMB_GET_MALLOC_COUNTER) {
-    printf("#### MEMORY LEAK DETECTED!!  MALLOCS: %d. ####\n", mallocs);
-    return 1;
-  } else {
-    return 0;
-  }
-
-  // return args_test_main(argc, argv);
-}
+#endif // LIBSTEPHEN_UTIL_H

@@ -37,12 +37,13 @@
 
 *******************************************************************************/
 
-#include <sys/time.h>
-#include <stdio.h>
-#include <wchar.h>
-#include <stdbool.h>
+#include <sys/time.h>         /* gettimeofday */
+#include <stdio.h>            /* fprintf, fopen */
+#include <stdlib.h>           /* malloc, exit */
+#include <wchar.h>            /* wchar_t */
+#include <stdbool.h>          /* bool */
 
-#include "libstephen.h"
+#include "libstephen/base.h"  /* SMB_* */
 
 static size_t mallocs;
 unsigned int ERROR_VAR;

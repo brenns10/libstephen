@@ -38,11 +38,13 @@
 
 *******************************************************************************/
 
-#include "libstephen.h"
 #include <string.h>
 
+#include "libstephen/base.h"
+#include "libstephen/bf.h"
+
 /**
-   @brief Initialize the memory where a bitfield is contained to all 0's.  
+   @brief Initialize the memory where a bitfield is contained to all 0's.
 
    This is public so people can use the function to allocate their own bitfields
    on function stacks instead of via the heap.
@@ -70,10 +72,10 @@ void bf_init(unsigned char *data, int num_bools) {
 unsigned char *bf_create(int num_bools) {
   unsigned char *data;
   int size = SMB_BITFIELD_SIZE(num_bools);
-  
+
   CLEAR_ALL_ERRORS;
   data = (unsigned char*) malloc(size * sizeof(unsigned char));
-  
+
   if (!data) {
     RAISE(ALLOCATION_ERROR);
     return NULL;

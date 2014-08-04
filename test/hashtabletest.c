@@ -38,8 +38,10 @@
 *******************************************************************************/
 
 #include <stdio.h>
+
 #include "tests.h"
-#include "libstephen.h"
+#include "libstephen/ut.h"
+#include "libstephen/ht.h"
 
 #define TEST_PAIRS 5
 
@@ -168,7 +170,7 @@ int ht_test_buckets()
   int a = 1;
   smb_ht *table = ht_create(&ht_test_constant_hash);
   ht_test_deletions = 0;
-  
+
   for (i = 0; i < 20; i++) {
     key.data_llint = i;
     value.data_llint = -i;
@@ -226,7 +228,7 @@ int ht_test_buckets()
 
 /**
    This test adds to the hash table until it is forced to reallocate.  Then it
-   checks that every value is still accessible.  
+   checks that every value is still accessible.
  */
 int ht_test_resize()
 {
@@ -323,7 +325,7 @@ int ht_test_duplicate()
   return 0;
 }
 
-void hash_table_test() 
+void hash_table_test()
 {
   smb_ut_group *group = su_create_test_group("hash table");
 
@@ -333,7 +335,7 @@ void hash_table_test()
   smb_ut_test *remove = su_create_test("remove", ht_test_remove, 0, 1);
   su_add_test(group, remove);
 
-  smb_ut_test *remove_invalid = su_create_test("remove_invalid", ht_test_remove_invalid, 
+  smb_ut_test *remove_invalid = su_create_test("remove_invalid", ht_test_remove_invalid,
                                         NOT_FOUND_ERROR, 1);
   su_add_test(group, remove_invalid);
 

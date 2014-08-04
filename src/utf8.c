@@ -40,8 +40,8 @@
 #include <stdio.h>
 #include <wchar.h>
 
-#include "libstephen.h"
-
+#include "libstephen/base.h"
+#include "libstephen/util.h"
 
 /*******************************************************************************
 

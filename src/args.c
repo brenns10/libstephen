@@ -48,9 +48,12 @@
 
 *******************************************************************************/
 
-#include "libstephen.h"
 #include <stdio.h>
 #include <string.h>
+
+#include "libstephen/base.h"
+#include "libstephen/ad.h"
+#include "libstephen/ll.h"
 
 /*******************************************************************************
 
@@ -131,7 +134,7 @@ char *process_long_flag(smb_ad *pData, char *sTitle)
    @param previous_long_flag The last long flag encountered.
    @param previous_flag The last regular (character) flag encountered.
  */
-void process_bare_string(smb_ad *pData, char *sStr, char *previous_long_flag, 
+void process_bare_string(smb_ad *pData, char *sStr, char *previous_long_flag,
                          char previous_flag)
 {
   if (previous_long_flag) {
@@ -147,7 +150,7 @@ void process_bare_string(smb_ad *pData, char *sStr, char *previous_long_flag,
   } else {
     DATA d;
     d.data_ptr = sStr;
-    ll_append(pData->bare_strings, d);        
+    ll_append(pData->bare_strings, d);
   }
 }
 
@@ -237,7 +240,7 @@ void arg_data_delete(smb_ad *data)
 }
 
 /**
-   @brief Analyze the argument data passed to the program.  
+   @brief Analyze the argument data passed to the program.
 
    Pass in the argc and argv, but make sure to decrement and increment each
    respective variable so they do not include the name of the program.
@@ -280,7 +283,7 @@ void process_args(smb_ad *data, int argc, char **argv)
         break;
       }
       break;
-      
+
     default:
       // This is a raw string.  We first need to check if it belongs to a flag.
       process_bare_string(data, *argv, previous_long_flag, previous_flag);
@@ -350,7 +353,7 @@ char *get_flag_parameter(smb_ad *data, char flag)
   int index = flag_index(flag);
   if (index == -1)
     return NULL;
-  else 
+  else
     return data->flag_strings[index];
 }
 
@@ -359,7 +362,7 @@ char *get_flag_parameter(smb_ad *data, char flag)
 
    @param data The smb_ad returned by process_args().
    @param string The long flag to find parameters of.
-   @returns The parameter of the long flag.  
+   @returns The parameter of the long flag.
    @retval NULL if no parameter or if flag not found.
  */
 char *get_long_flag_parameter(smb_ad *data, char *string)

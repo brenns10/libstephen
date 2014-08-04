@@ -39,7 +39,8 @@
 
 #include <string.h>
 #include <stdio.h>
-#include "libstephen.h"
+
+#include "libstephen/ht.h"
 
 /*******************************************************************************
 
@@ -150,7 +151,7 @@ void ht_insert_bucket(smb_ht *pTable, smb_ht_bckt *pBucket)
 {
   smb_ht_bckt *curr;
   unsigned int index = pTable->hash(pBucket->key) % pTable->allocated;
-  
+
   if (pTable->table[index]) {
     // A linked list already exists here.
     curr = ht_find_in_bucket(pTable->table[index], pBucket->key);
@@ -168,13 +169,13 @@ void ht_insert_bucket(smb_ht *pTable, smb_ht_bckt *pBucket)
     pTable->table[index] = pBucket;
     pTable->length++;
   }
- 
+
 }
 
 /**
    @brief Expand the hash table, adding increment to the capacity of the table.
 
-   @param pTable The table to expand.  
+   @param pTable The table to expand.
    @exception ALLOCATION_ERROR If the new table couldn't be allocated, no change
    is made.
  */
@@ -202,7 +203,7 @@ void ht_resize(smb_ht *pTable)
   // Zero out the new block too.
   memset((void*)pTable->table, 0, pTable->allocated * sizeof(smb_ht_bckt*));
   SMB_INCREMENT_MALLOC_COUNTER(pTable->allocated * sizeof(smb_ht_bckt*));
-  
+
   // Step two, add the old items to the new table (no freeing, please)
   for (index = 0; index < oldAllocated; index++) {
     if (pOldBuffer[index]) {
@@ -265,7 +266,7 @@ void ht_init(smb_ht *pTable, HASH_FUNCTION hash_func)
   SMB_INCREMENT_MALLOC_COUNTER(HASH_TABLE_INITIAL_SIZE * sizeof(smb_ht_bckt*));
 
   // Zero out the entries in the table so we don't get segmentation faults.
-  memset((void*)pTable->table, 0, HASH_TABLE_INITIAL_SIZE * sizeof(smb_ht_bckt*));  
+  memset((void*)pTable->table, 0, HASH_TABLE_INITIAL_SIZE * sizeof(smb_ht_bckt*));
 }
 
 /**
@@ -374,7 +375,7 @@ void ht_delete(smb_ht *pTable)
 }
 
 /**
-   @brief Insert data into the hash table.  
+   @brief Insert data into the hash table.
 
    Expands the hash table if the load factor is below a threshold.  If the key
    already exists in the table, then the function will overwrite it with the new
@@ -396,7 +397,7 @@ void ht_insert(smb_ht *pTable, DATA dKey, DATA dValue)
 
   smb_ht_bckt *pBucket = ht_bucket_create(dKey, dValue, NULL);
   if (!pBucket) return;
-  
+
   ht_insert_bucket(pTable, pBucket);
 }
 
@@ -422,7 +423,7 @@ void ht_remove_act(smb_ht *pTable, DATA dKey, DATA_ACTION deleter)
 
   curr = pTable->table[index];
   prev = NULL;
-  
+
   while (curr && !data_equal(curr->key, dKey)) {
     prev = curr;
     curr = curr->next;
@@ -538,6 +539,6 @@ void ht_print(smb_ht const *pTable, int full_mode)
   }
 
   if (printed != pTable->length)
-    printf("Error: %d items printed, but %d items are recorded by hash table.\n", 
+    printf("Error: %d items printed, but %d items are recorded by hash table.\n",
            printed, pTable->length);
 }

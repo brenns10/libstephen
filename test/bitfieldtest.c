@@ -37,7 +37,8 @@
 
 *******************************************************************************/
 
-#include "libstephen.h"
+#include "libstephen/bf.h"
+#include "libstephen/ut.h"
 #include "tests.h"
 
 #define test_bools 80

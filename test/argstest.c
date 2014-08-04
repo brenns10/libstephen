@@ -37,8 +37,11 @@
 
 *******************************************************************************/
 
-#include "libstephen.h"
 #include <stdio.h>
+
+#include "libstephen/ad.h"
+#include "libstephen/ll.h"
+#include "libstephen/ut.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Example main function that will process and print results of args analysis.

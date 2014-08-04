@@ -1,14 +1,14 @@
 /***************************************************************************//**
 
-  @file         main.c
+  @file         al.h
 
   @author       Stephen Brennan
 
-  @date         Created Thursday, 12 September 2013
+  @date         Created Sunday,  3 August 2014
 
-  @brief        Run tests on the libstephen library.
+  @brief        Libstephen: Array List
 
-  @copyright    Copyright (c) 2013-2014, Stephen Brennan.
+  @copyright    Copyright (c) 2014, Stephen Brennan.
   All rights reserved.
 
   @copyright
@@ -37,31 +37,55 @@
 
 *******************************************************************************/
 
-#include <stdio.h>
+#ifndef LIBSTEPHEN_AL_H
+#define LIBSTEPHEN_AL_H
 
-#include "libstephen/base.h"
-#include "tests.h"
+#include "base.h"  /* DATA     */
+#include "list.h"  /* smb_list */
 
 /**
-   Main test function
+   @brief The actual array list data type.
+
+   "Bare" functions return a pointer to this structure.  You should not use any
+   of the members, as they are implementation specific and subject to change.
  */
-int main(int argc, char ** argv)
+typedef struct smb_al
 {
+  /**
+     @brief The area of memory containing the data.
+   */
+  DATA *data;
 
-  int mallocs;
+  /**
+     @brief The number of items in the list.
+   */
+  int length;
 
-  linked_list_test();
-  array_list_test();
-  hash_table_test();
-  bit_field_test();
-  utf8_test();
+  /**
+     @brief The space allocated for the list.
+   */
+  int allocated;
 
-  if (mallocs = SMB_GET_MALLOC_COUNTER) {
-    printf("#### MEMORY LEAK DETECTED!!  MALLOCS: %d. ####\n", mallocs);
-    return 1;
-  } else {
-    return 0;
-  }
+} smb_al;
 
-  // return args_test_main(argc, argv);
-}
+void al_init(smb_al *list);
+smb_al *al_create();
+void al_destroy(smb_al *list);
+void al_delete(smb_al *list);
+
+void al_append(smb_al *list, DATA newData);
+void al_prepend(smb_al *list, DATA newData);
+DATA al_get(const smb_al *list, int index);
+void al_remove(smb_al *list, int index);
+void al_insert(smb_al *list, int index, DATA newData);
+void al_set(smb_al *list, int index, DATA newData);
+void al_push_back(smb_al *list, DATA newData);
+DATA al_pop_back(smb_al *list);
+DATA al_peek_back(smb_al *list);
+void al_push_front(smb_al *list, DATA newData);
+DATA al_pop_front(smb_al *list);
+DATA al_peek_front(smb_al *list);
+int al_length(const smb_al *list);
+int al_index_of(const smb_al *list, DATA d);
+
+#endif // LIBSTEPHEN_AL_H

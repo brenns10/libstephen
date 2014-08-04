@@ -1,14 +1,14 @@
 /***************************************************************************//**
 
-  @file         main.c
+  @file         bf.h
 
   @author       Stephen Brennan
 
-  @date         Created Thursday, 12 September 2013
+  @date         Created Sunday,  3 August 2014
 
-  @brief        Run tests on the libstephen library.
+  @brief        Libstephen: Bitfield
 
-  @copyright    Copyright (c) 2013-2014, Stephen Brennan.
+  @copyright    Copyright (c) 2014, Stephen Brennan.
   All rights reserved.
 
   @copyright
@@ -37,31 +37,32 @@
 
 *******************************************************************************/
 
-#include <stdio.h>
-
-#include "libstephen/base.h"
-#include "tests.h"
+#ifndef LIBSTEPHEN_BF_H
+#define LIBSTEPHEN_BF_H
 
 /**
-   Main test function
+   @brief Number of bits in a char type.  Shouldn't really change...
  */
-int main(int argc, char ** argv)
-{
+#define BIT_PER_CHAR 8
 
-  int mallocs;
+/**
+   @brief Get the number amount of space eneded for a bitfield of the specified
+   amount of booleans.
 
-  linked_list_test();
-  array_list_test();
-  hash_table_test();
-  bit_field_test();
-  utf8_test();
+   If you want to allocate a buffer on the stack, you need this macro.
 
-  if (mallocs = SMB_GET_MALLOC_COUNTER) {
-    printf("#### MEMORY LEAK DETECTED!!  MALLOCS: %d. ####\n", mallocs);
-    return 1;
-  } else {
-    return 0;
-  }
+   @param num_bools The number of booleans.
+   @returns The number of bytes
+ */
+#define SMB_BITFIELD_SIZE(num_bools) ((int)((num_bools) / BIT_PER_CHAR) + \
+                                      ((num_bools) % BIT_PER_CHAR == 0 ? 0 : 1))
 
-  // return args_test_main(argc, argv);
-}
+void bf_init(unsigned char *data, int num_bools);
+unsigned char *bf_create(int num_bools);
+void bf_delete(unsigned char *data, int num_bools);
+int bf_check(unsigned char *data, int index);
+void bf_set(unsigned char *data, int index);
+void bf_clear(unsigned char *data, int index);
+void bf_flip(unsigned char *data, int index);
+
+#endif // LIBSTEPHEN_BF_H
