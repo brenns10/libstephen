@@ -53,11 +53,11 @@ int al_test_create()
   al_append(list, d);
 
   // Assert that it was allocated correctly.
-  TEST_ASSERT(!CHECK(ALLOCATION_ERROR), 1);
+  TEST_ASLINE(!CHECK(ALLOCATION_ERROR));
 
-  TEST_ASSERT(al_length(list) == 1, 2);
+  TEST_ASLINE(al_length(list) == 1);
 
-  TEST_ASSERT(al_get(list, 0).data_llint == 13, 3);
+  TEST_ASLINE(al_get(list, 0).data_llint == 13);
 
   al_delete(list);
   return 0;
@@ -71,9 +71,9 @@ int al_test_create_empty()
   smb_al *list = al_create();
 
   // Assert that it was allocated correctly.
-  TEST_ASSERT(!CHECK(ALLOCATION_ERROR), 1);
+  TEST_ASLINE(!CHECK(ALLOCATION_ERROR));
 
-  TEST_ASSERT(al_length(list) == 0, 2);
+  TEST_ASLINE(al_length(list) == 0);
 
   al_delete(list);
   return 0;
@@ -91,11 +91,11 @@ int al_test_append()
     al_append(list, d);
 
     // Assert that the length of the list is correct
-    TEST_ASSERT(al_length(list) == d.data_llint + 1, d.data_llint + 1);
+    TEST_ASLINE(al_length(list) == d.data_llint + 1);
 
     // Assert that each element in the list is correct
     for (int i = 0; i < al_length(list); i++) {
-      TEST_ASSERT(al_get(list, i).data_llint == i, d.data_llint + 1);
+      TEST_ASLINE(al_get(list, i).data_llint == i);
     }
   }
 
@@ -115,11 +115,11 @@ int al_test_prepend()
     al_prepend(list, d);
 
     // Assert that the length of the list is correct
-    TEST_ASSERT(al_length(list) == d.data_llint + 1, d.data_llint + 1);
+    TEST_ASLINE(al_length(list) == d.data_llint + 1);
 
     // Assert that each element in the list is correct
     for (int i = 0; i < al_length(list); i++) {
-      TEST_ASSERT(al_get(list, i).data_llint == d.data_llint - i, d.data_llint + 1);
+      TEST_ASLINE(al_get(list, i).data_llint == d.data_llint - i);
     }
   }
 
@@ -140,28 +140,22 @@ int al_test_set()
   }
 
   // Verify data
-  int assertionNum = 1;
   for (int i = 0; i < al_length(list); i++) {
-    TEST_ASSERT(al_get(list, i).data_llint == i, assertionNum);
-    assertionNum++; // separate line because the macro would place it within an
-		    // if statement
+    TEST_ASLINE(al_get(list, i).data_llint == i);
   }
 
   // Test that the length is correct
-  TEST_ASSERT(al_length(list) == length, assertionNum);
-  assertionNum++;
+  TEST_ASLINE(al_length(list) == length);
 
   // Test set
   for (int i = 0; i < al_length(list); i++) {
     d.data_llint = al_length(list) - i;
     al_set(list, i , d);
-    TEST_ASSERT(al_get(list, i).data_llint == d.data_llint, assertionNum);
-    assertionNum++;
+    TEST_ASLINE(al_get(list, i).data_llint == d.data_llint);
   }
 
   // Test that the length is still correct
-  TEST_ASSERT(al_length(list) == length, assertionNum);
-  assertionNum++;
+  TEST_ASLINE(al_length(list) == length);
 
   al_delete(list);
   return 0;
@@ -180,46 +174,36 @@ int al_test_remove()
   }
 
   // Verify data
-  int assertionNum = 1;
   for (int i = 0; i < al_length(list); i++) {
-    TEST_ASSERT(al_get(list, i).data_llint == i, assertionNum);
-    assertionNum++; // separate line because the macro would place it within an
-		    // if statement
+    TEST_ASLINE(al_get(list, i).data_llint == i);
   }
 
   // Remove first
   al_remove(list, 0);
-  TEST_ASSERT(al_get(list, 0).data_llint == 1, assertionNum);
-  assertionNum++;
-  TEST_ASSERT(al_length(list) == length - 1, assertionNum);
-  assertionNum++;
+  TEST_ASLINE(al_get(list, 0).data_llint == 1);
+  TEST_ASLINE(al_length(list) == length - 1);
 
   // Remove last
   al_remove(list, al_length(list) - 1);
-  TEST_ASSERT(al_get(list, al_length(list) - 1).data_llint == length - 2, assertionNum);
-  assertionNum++;
-  TEST_ASSERT(al_length(list) == length - 2, assertionNum);
-  assertionNum++;
+  TEST_ASLINE(al_get(list, al_length(list) - 1).data_llint == length - 2);
+  TEST_ASLINE(al_length(list) == length - 2);
   // Current list: 1 2 3 4 5 6 7 8 ...
 
   // Remove from middle
   al_remove(list, 2);
   // Current list: 1 2 4 5 6 7 8 ...
-  TEST_ASSERT(al_length(list) == length - 3, assertionNum);
-  assertionNum++;
+  TEST_ASLINE(al_length(list) == length - 3);
 
   // Test all the elements to make sure the data is correct
   int values[] = {1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21};
   for (int i = 0; i < length - 3; i++) {
-    TEST_ASSERT(al_get(list, i).data_llint == values[i], assertionNum);
-    assertionNum++;
+    TEST_ASLINE(al_get(list, i).data_llint == values[i]);
   }
 
   // Remove the remaining elements, and check that nothing bad happens
   for (int i = length - 4; i >= 0; i--) {
     al_remove(list, 0);
-    TEST_ASSERT(al_length(list) == i, assertionNum);
-    assertionNum++;
+    TEST_ASLINE(al_length(list) == i);
   }
 
   al_delete(list);
@@ -239,11 +223,8 @@ int al_test_insert()
   }
 
   // Verify data
-  int assertionNum = 1;
   for (int i = 0; i < al_length(list); i++) {
-    TEST_ASSERT(al_get(list, i).data_llint == i, assertionNum);
-    assertionNum++; // separate line because the macro would place it within an
-		    // if statement
+    TEST_ASLINE(al_get(list, i).data_llint == i);
   }
 
   // Test insert when a realloc needs to occur
@@ -252,8 +233,7 @@ int al_test_insert()
   int values_one[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 100, 10, 11, 12, 13, 14,
 		      15, 16, 17, 18, 19};
   for (int i = 0; i < al_length(list); i++) {
-    TEST_ASSERT(al_get(list, i).data_llint == values_one[i], assertionNum);
-    assertionNum++;
+    TEST_ASLINE(al_get(list, i).data_llint == values_one[i]);
   }
 
   // Test insert at end
@@ -262,18 +242,16 @@ int al_test_insert()
   int values_two[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 100, 10, 11, 12, 13, 14,
 		      15, 16, 17, 18, 19, 101};
   for (int i = 0; i < al_length(list); i++) {
-    TEST_ASSERT(al_get(list, i).data_llint == values_two[i], assertionNum);
-    assertionNum++;
+    TEST_ASLINE(al_get(list, i).data_llint == values_two[i]);
   }
 
   // Test insert at beginning
   d.data_llint++;
-  al_insert(list, al_length(list), d);
+  al_insert(list, 0, d);
   int values_three[] = {102, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 100, 10, 11, 12,
 			13, 14, 15, 16, 17, 18, 19, 101};
   for (int i = 0; i < al_length(list); i++) {
-    TEST_ASSERT(al_get(list, i).data_llint == values_three[i], assertionNum);
-    assertionNum++;
+    TEST_ASLINE(al_get(list, i).data_llint == values_three[i]);
   }
 
   al_delete(list);
@@ -305,7 +283,7 @@ void array_list_test()
   smb_ut_test *remove = su_create_test("remove", al_test_remove, 0, 1);
   su_add_test(group, remove);
 
-  smb_ut_test *insert = su_create_test("insert", al_test_remove, 0, 1);
+  smb_ut_test *insert = su_create_test("insert", al_test_insert, 0, 1);
   su_add_test(group, insert);
 
   // The other elementary operations on the smb_al, i.e. the push, pop and
