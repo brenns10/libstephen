@@ -231,7 +231,7 @@ int al_test_insert()
   d.data_llint = 100;
   al_insert(list, 10, d);
   int values_one[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 100, 10, 11, 12, 13, 14,
-		      15, 16, 17, 18, 19};
+                      15, 16, 17, 18, 19};
   for (int i = 0; i < al_length(list); i++) {
     TEST_ASLINE(al_get(list, i).data_llint == values_one[i]);
   }
@@ -240,7 +240,7 @@ int al_test_insert()
   d.data_llint++;
   al_insert(list, al_length(list), d);
   int values_two[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 100, 10, 11, 12, 13, 14,
-		      15, 16, 17, 18, 19, 101};
+                      15, 16, 17, 18, 19, 101};
   for (int i = 0; i < al_length(list); i++) {
     TEST_ASLINE(al_get(list, i).data_llint == values_two[i]);
   }
@@ -249,7 +249,7 @@ int al_test_insert()
   d.data_llint++;
   al_insert(list, 0, d);
   int values_three[] = {102, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 100, 10, 11, 12,
-			13, 14, 15, 16, 17, 18, 19, 101};
+                        13, 14, 15, 16, 17, 18, 19, 101};
   for (int i = 0; i < al_length(list); i++) {
     TEST_ASLINE(al_get(list, i).data_llint == values_three[i]);
   }
