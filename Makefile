@@ -13,46 +13,62 @@
 # Configuration Variables
 CC=gcc
 FLAGS=
-SMB_CONF=$(shell if [ -f inc/libstephen_conf.h ] ; then echo "-DSMB_CONF" ; fi)
 INC=-Iinc/
 CFLAGS=$(FLAGS) -c -std=c99 -fPIC $(SMB_CONF) $(INC)
 LFLAGS=$(FLAGS)
+DIR_GUARD=@mkdir -p $(@D)
+
+# Build configurations.
+CFG=release
+ifeq ($(CFG),debug)
+FLAGS += -g -DDEBUG -DSMB_DEBUG
+endif
+ifneq ($(CFG),debug)
+ifneq ($(CFG),release)
+	@echo "Invalid configuration "$(CFG)" specified."
+	@echo "You must specify a configuration when running make, e.g."
+	@echo "  make CFG=debug"
+	@echo "Choices are 'release' and 'debug'."
+	@exit 1
+endif
+endif
 
 # Source Files and Directories
 LIBSOURCES=$(shell find src/ -type f -name "*.c")
-LIBOBJECTS=$(patsubst src/%.c,obj/%.o,$(LIBSOURCES))
+LIBOBJECTS=$(patsubst src/%.c,obj/$(CFG)/%.o,$(LIBSOURCES))
 
 TESTSOURCES=$(shell find test/ -type f -name "*.c")
-TESTOBJECTS=$(patsubst test/%.c,obj/test/%.o,$(TESTSOURCES))
+TESTOBJECTS=$(patsubst test/%.c,obj/$(CFG)/test/%.o,$(TESTSOURCES))
 
 # Top Level Targets
 .PHONY: all test lib clean docs
+
 all: lib test
-debug: CFLAGS += -g
-debug: all
-lib: bin/libstephen.a
-test: lib bin/test
+
+lib: bin/$(CFG)/libstephen.a
+
+test: lib bin/$(CFG)/test
+
+clean:
+	rm -rf obj/$(CFG)/* bin/$(CFG)/* doc/*
+
 docs: src/* test/*
 	doxygen
-clean:
-	rm -rf obj/* bin/* doc/*
 
-# Main Binaries
-bin/libstephen.a: $(LIBOBJECTS)
-	@mkdir -p $(@D)
-	ar rcs bin/libstephen.a $(LIBOBJECTS)
+bin/$(CFG)/libstephen.a: $(LIBOBJECTS)
+	$(DIR_GUARD)
+	ar rcs bin/$(CFG)/libstephen.a $(LIBOBJECTS)
 
-bin/test: $(LIBOBJECTS) $(TESTOBJECTS)
-	@mkdir -p $(@D)
-	$(CC) $(LFLAGS) $(LIBOBJECTS) $(TESTOBJECTS) -o bin/test
+bin/$(CFG)/test: $(LIBOBJECTS) $(TESTOBJECTS)
+	$(DIR_GUARD)
+	$(CC) $(LFLAGS) $(LIBOBJECTS) $(TESTOBJECTS) -o bin/$(CFG)/test
 
-# Library objects
-obj/test/%.o: test/%.c
-	@mkdir -p $(@D)
+obj/$(CFG)/test/%.o: test/%.c
+	$(DIR_GUARD)
 	$(CC) $(CFLAGS) $< -o $@
 
-obj/%.o: src/%.c
-	@mkdir -p $(@D)
+obj/$(CFG)/%.o: src/%.c
+	$(DIR_GUARD)
 	$(CC) $(CFLAGS) $< -o $@
 
 # Explicit dependencies
