@@ -23,25 +23,32 @@ CFG=release
 ifeq ($(CFG),debug)
 FLAGS += -g -DDEBUG -DSMB_DEBUG
 endif
+ifeq ($(CFG),coverage)
+CFLAGS += -fprofile-arcs -ftest-coverage
+LFLAGS += -fprofile-arcs -lgcov
+endif
 ifneq ($(CFG),debug)
 ifneq ($(CFG),release)
+ifneq ($(CFG),coverage)
 	@echo "Invalid configuration "$(CFG)" specified."
 	@echo "You must specify a configuration when running make, e.g."
 	@echo "  make CFG=debug"
-	@echo "Choices are 'release' and 'debug'."
+	@echo "Choices are 'release', 'debug', and 'coverage'."
 	@exit 1
+endif
 endif
 endif
 
 # Source Files and Directories
 LIBSOURCES=$(shell find src/ -type f -name "*.c")
 LIBOBJECTS=$(patsubst src/%.c,obj/$(CFG)/%.o,$(LIBSOURCES))
+LIBCOVERAGE=$(patsubst src/%.c,gcov/%.c.gcov,$(LIBSOURCES))
 
 TESTSOURCES=$(shell find test/ -type f -name "*.c")
 TESTOBJECTS=$(patsubst test/%.c,obj/$(CFG)/test/%.o,$(TESTSOURCES))
 
 # Top Level Targets
-.PHONY: all test lib clean docs
+.PHONY: all test lib clean clean_docs clean_cov clean_all docs gcov
 
 all: lib test
 
@@ -49,8 +56,23 @@ lib: bin/$(CFG)/libstephen.a
 
 test: lib bin/$(CFG)/test
 
+gcov:
+	lcov --capture --directory . --output-file coverage.info
+	genhtml coverage.info --output-directory cov/
+	rm coverage.info
+
+clean_all: clean clean_docs clean_cov
+	rm -rf obj/* bin/*
+
+clean_docs:
+	rm -rf doc/*
+
+clean_cov:
+	rm -rf cov/*
+
 clean:
-	rm -rf obj/$(CFG)/* bin/$(CFG)/* doc/*
+	rm -rf obj/$(CFG)/* bin/$(CFG)/*
+
 
 docs: src/* test/*
 	doxygen

@@ -13,14 +13,14 @@ is to be a meaningful programming project for the author, and to be the
 foundation for future projects.
 
 ### Data Structures
-  
+
 - Linked list (ll)
 - Array list (al)
 - Hash table (ht)
 - Bit field (bf)
 
 ### Tools
-  
+
 - Unit testing framework (su)
 - Command line argument parser
 
@@ -34,6 +34,26 @@ tools Doxygen and Graphviz are required to produce this documentation.
 
 More user-friendly documentation may be found at the project's home:
 <https://www.bitbucket.org/brenns10/libstephen>
+
+## Test Coverage
+
+This library uses its own unit testing framework to test itself.  Coverage
+information is recorded by the program `gcov`, aggregated by the program `lcov`,
+and converted into a very nice HTML filed by `genhtml`.  This is very useful for
+detecting what code needs tests.  To generate test coverage information, run the
+following commands at the project root:
+
+    $ make CFG=coverage test
+    $ bin/coverage/test
+    $ make gcov
+
+At which point you can open the file `cov/index.html` in a browser and view the
+test coverage info.
+
+Test coverage is generated in *release* mode, not debug mode.  This is because
+you don't want to test a version that is different from the one that you ship.
+And, since test coverage in both modes is a duplication of effort, I only
+support it in release mode.
 
 ## Contributing
 
