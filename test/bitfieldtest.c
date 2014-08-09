@@ -49,13 +49,11 @@
 int bf_test_init() {
   unsigned char field[SMB_BITFIELD_SIZE(test_bools)];
   int i;
-  int assert = 1;
 
   bf_init(field, test_bools);
 
   for (i = 0; i < SMB_BITFIELD_SIZE(test_bools); i++) {
-    TEST_ASSERT(field[i] == 0, assert);
-    assert++;
+    TEST_ASLINE(field[i] == 0);
   }
 
   return 0;
@@ -72,20 +70,17 @@ int bf_test_memory() {
 
 int bf_test_check() {
   unsigned char field[2] = {0x00, 0xFF};
-  int assert = 1;
   int i;
 
   // don't want to init...that ruins our test variables
   //bf_init(field, 16);
 
   for (i = 0; i < 8; i++) {
-    TEST_ASSERT(!bf_check(field, i), assert);
-    assert++;
+    TEST_ASLINE(!bf_check(field, i));
   }
 
   for (i = 8; i < 16; i++) {
-    TEST_ASSERT(bf_check(field, i), assert);
-    assert++;
+    TEST_ASLINE(bf_check(field, i));
   }
 
   return 0;
@@ -93,25 +88,21 @@ int bf_test_check() {
 
 int bf_test_set() {
   unsigned char field[SMB_BITFIELD_SIZE(test_bools)];
-  int assert = 1;
   int i;
 
   bf_init(field, test_bools);
   for (i = 0; i < test_bools; i += 2) {
-    TEST_ASSERT(!bf_check(field, i), assert);
-    //    assert++;
+    TEST_ASLINE(!bf_check(field, i));
     bf_set(field, i);
-    TEST_ASSERT(bf_check(field, i), assert);
-    assert++;
+    TEST_ASLINE(bf_check(field, i));
   }
 
   for (i = 0; i < test_bools; i++) {
     if (i % 2 == 0) {// even
-      TEST_ASSERT(bf_check(field, i), assert);
+      TEST_ASLINE(bf_check(field, i));
     } else {
-      TEST_ASSERT(!bf_check(field, i), assert);
+      TEST_ASLINE(!bf_check(field, i));
     }
-    assert++;
   }
 
   return 0;
@@ -119,7 +110,6 @@ int bf_test_set() {
 
 int bf_test_clear() {
   unsigned char field[SMB_BITFIELD_SIZE(test_bools)];
-  int assert = 1;
   int i;
 
   bf_init(field, test_bools);
@@ -128,20 +118,17 @@ int bf_test_clear() {
   }
 
   for (i = 0; i < test_bools; i += 2) {
-    TEST_ASSERT(bf_check(field, i), assert);
-    //    assert++;
+    TEST_ASLINE(bf_check(field, i));
     bf_clear(field, i);
-    TEST_ASSERT(!bf_check(field, i), assert);
-    assert++;
+    TEST_ASLINE(!bf_check(field, i));
   }
 
   for (i = 0; i < test_bools; i++) {
     if (i % 2 == 0) {// even
-      TEST_ASSERT(!bf_check(field, i), assert);
+      TEST_ASLINE(!bf_check(field, i));
     } else {
-      TEST_ASSERT(bf_check(field, i), assert);
+      TEST_ASLINE(bf_check(field, i));
     }
-    assert++;
   }
 
   return 0;
@@ -149,9 +136,9 @@ int bf_test_clear() {
 
 int bf_test_flip() {
   unsigned char field[SMB_BITFIELD_SIZE(test_bools)];
-  int assert = 1;
   int i;
 
+  bf_init(field, test_bools);
   // Set all the even numbered fields
   for (i = 0; i < test_bools; i += 2) {
     bf_set(field, i); //tested
@@ -164,11 +151,10 @@ int bf_test_flip() {
 
   for (i = 0; i < test_bools; i++) {
     if (i % 2 == 0) {// even
-      TEST_ASSERT(!bf_check(field, i), assert);
+      TEST_ASLINE(!bf_check(field, i));
     } else {
-      TEST_ASSERT(bf_check(field, i), assert);
+      TEST_ASLINE(bf_check(field, i));
     }
-    assert++;
   }
 
   return 0;
@@ -192,10 +178,10 @@ void bit_field_test() {
   smb_ut_test *set = su_create_test("set", bf_test_set, 0, 1);
   su_add_test(group, set);
 
-  smb_ut_test *clear = su_create_test("clear", bf_test_set, 0, 1);
+  smb_ut_test *clear = su_create_test("clear", bf_test_clear, 0, 1);
   su_add_test(group, clear);
 
-  smb_ut_test *flip = su_create_test("flip", bf_test_set, 0, 1);
+  smb_ut_test *flip = su_create_test("flip", bf_test_flip, 0, 1);
   su_add_test(group, flip);
 
   su_run_group(group);
