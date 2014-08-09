@@ -42,7 +42,6 @@ endif
 # Source Files and Directories
 LIBSOURCES=$(shell find src/ -type f -name "*.c")
 LIBOBJECTS=$(patsubst src/%.c,obj/$(CFG)/%.o,$(LIBSOURCES))
-LIBCOVERAGE=$(patsubst src/%.c,gcov/%.c.gcov,$(LIBSOURCES))
 
 TESTSOURCES=$(shell find test/ -type f -name "*.c")
 TESTOBJECTS=$(patsubst test/%.c,obj/$(CFG)/test/%.o,$(TESTSOURCES))
