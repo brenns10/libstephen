@@ -51,7 +51,7 @@
 
    The elements should be integers of 100 * index.
  */
-smb_iter (*get_iter)(int n);
+smb_iter (*get_iter)(int n, smb_status *status);
 /**
    @brief Clean up the iterator's underlying list.
  */
@@ -70,7 +70,9 @@ void *test_data;
  */
 int iter_test_empty()
 {
-  smb_iter it = get_iter(0);
+  smb_status status;
+  smb_iter it = get_iter(0, &status);
+  TEST_ASLINE(status == SMB_SUCCESS);
 
   TEST_ASLINE(! it.has_next(&it));
 
@@ -84,7 +86,9 @@ int iter_test_empty()
  */
 int iter_test_destroy()
 {
-  smb_iter it = get_iter(10);
+  smb_status status;
+  smb_iter it = get_iter(10, &status);
+  TEST_ASLINE(status == SMB_SUCCESS);
   it.destroy(&it);
   cleanup();
   return 0;
@@ -95,8 +99,10 @@ int iter_test_destroy()
  */
 int iter_test_delete()
 {
+  smb_status status;
   smb_iter *it = smb_new(smb_iter, 1);
-  *it = get_iter(10);
+  *it = get_iter(10, &status);
+  TEST_ASLINE(status == SMB_SUCCESS);
   it->delete(it);
   cleanup();
   return 0;
@@ -108,11 +114,15 @@ int iter_test_delete()
 int iter_test_count()
 {
   #define MAX_TEST_COUNT 1000
+  smb_status status;
   for (int i = 0; i < MAX_TEST_COUNT; i++) {
-    smb_iter it = get_iter(i);
+    smb_iter it = get_iter(i, &status);
+    TEST_ASLINE(status == SMB_SUCCESS);
+
     int n = 0;
     while (it.has_next(&it)) {
-      it.next(&it);
+      it.next(&it, &status);
+      TEST_ASLINE(status == SMB_SUCCESS);
       n++;
     }
     it.destroy(&it);
@@ -128,11 +138,14 @@ int iter_test_count()
 int iter_test_values()
 {
   #define TEST_COUNT 1000
-  smb_iter it = get_iter(TEST_COUNT);
+  smb_status status;
+  smb_iter it = get_iter(TEST_COUNT, &status);
+  TEST_ASLINE(status == SMB_SUCCESS);
   DATA d;
   int i = 0;
   while (it.has_next(&it)) {
-    d = it.next(&it);
+    d = it.next(&it, &status);
+    TEST_ASLINE(status == SMB_SUCCESS);
     TEST_ASLINE(d.data_llint == 100 * i);
     i++;
   }
@@ -153,13 +166,13 @@ int iter_test_values()
    @param size Number of elements to add.
    @return An iterator.
  */
-smb_iter get_al_iter(int size)
+smb_iter get_al_iter(int size, smb_status *status)
 {
-  test_data = al_create();
+  test_data = al_create(status);
 
   for (int i = 0; i < size; i++) {
     DATA d = { .data_llint = 100 * i };
-    al_append(test_data, d);
+    al_append(test_data, d, status);
   }
 
   return al_get_iter(test_data);
@@ -178,13 +191,13 @@ void al_cleanup(void)
    @param Number of elements in the list.
    @return An iterator.
  */
-smb_iter get_ll_iter(int size)
+smb_iter get_ll_iter(int size, smb_status *status)
 {
-  test_data = ll_create();
+  test_data = ll_create(status);
 
   for (int i = 0; i < size; i++) {
     DATA d = { .data_llint = 100 * i };
-    ll_append(test_data, d);
+    ll_append(test_data, d, status);
   }
 
   return ll_get_iter(test_data);
@@ -216,19 +229,19 @@ void run_tests(char *desc)
 {
   smb_ut_group *group = su_create_test_group(desc);
 
-  smb_ut_test *empty = su_create_test("empty", iter_test_empty, 0, 1);
+  smb_ut_test *empty = su_create_test("empty", iter_test_empty, 1);
   su_add_test(group, empty);
 
-  smb_ut_test *destroy = su_create_test("destroy", iter_test_destroy, 0, 1);
+  smb_ut_test *destroy = su_create_test("destroy", iter_test_destroy, 1);
   su_add_test(group, destroy);
 
-  smb_ut_test *delete = su_create_test("delete", iter_test_delete, 0, 1);
+  smb_ut_test *delete = su_create_test("delete", iter_test_delete, 1);
   su_add_test(group, delete);
 
-  smb_ut_test *count = su_create_test("count", iter_test_count, 0, 1);
+  smb_ut_test *count = su_create_test("count", iter_test_count, 1);
   su_add_test(group, count);
 
-  smb_ut_test *values = su_create_test("values", iter_test_values, 0, 1);
+  smb_ut_test *values = su_create_test("values", iter_test_values, 1);
   su_add_test(group, values);
 
   su_run_group(group);
