@@ -174,7 +174,7 @@ int ht_test_buckets()
   smb_status status;
   DATA key, value;
   int i;
-  smb_ht *table = ht_create(&ht_test_constant_hash, &data_compare_string, &status);
+  smb_ht *table = ht_create(&ht_test_constant_hash, &data_compare_int, &status);
   TEST_ASLINE(status == SMB_SUCCESS);
   ht_test_deletions = 0;
 
@@ -243,7 +243,7 @@ int ht_test_resize()
   int i;
   // Truncating addition will trim this to the number just before expanding.
   int last_stable = 1 + (int) (HASH_TABLE_INITIAL_SIZE * HASH_TABLE_MAX_LOAD_FACTOR);
-  smb_ht *table = ht_create(ht_test_linear_hash, &data_compare_string, &status);
+  smb_ht *table = ht_create(ht_test_linear_hash, &data_compare_int, &status);
   TEST_ASLINE(status == SMB_SUCCESS);
   ht_test_deletions = 0;
 

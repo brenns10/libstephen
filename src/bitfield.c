@@ -57,6 +57,7 @@
    @param[out] status Status variable.
  */
 void bf_init(unsigned char *data, int num_bools, smb_status *status) {
+  *status = SMB_SUCCESS;
   int size = SMB_BITFIELD_SIZE(num_bools);
   memset(data, 0, size);
 }

@@ -144,7 +144,7 @@ void ht_insert_bucket(smb_ht *table, smb_ht_bckt *pBucket)
   if (table->table[index]) {
     // A linked list already exists here.
     curr = ht_find_in_bucket(table->table[index], pBucket->key, table->equal);
-    if (table->equal(curr->key, pBucket->key)) {
+    if (table->equal(curr->key, pBucket->key) == 0) {
       // Key already exists in table
       curr->value = pBucket->value;
       ht_bucket_delete(pBucket);
