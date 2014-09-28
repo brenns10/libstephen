@@ -38,6 +38,7 @@
 *******************************************************************************/
 
 #include <stdio.h>
+#include <assert.h>
 
 #include "libstephen/base.h"
 #include "libstephen/list.h"
@@ -51,9 +52,12 @@
 void iter_print(smb_iter it, FILE *f, DATA_PRINTER printer)
 {
   DATA d;
+  smb_status status;
   fprintf(f, "smb_iter {\n");
   while (it.has_next(&it)) {
-    d = it.next(&it);
+    d = it.next(&it, &status);
+    // used has_next
+    assert(status == SMB_SUCCESS);
     printer(f, d);
     fprintf(f, ",\n");
   }

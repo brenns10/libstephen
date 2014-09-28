@@ -519,6 +519,7 @@ void ll_insert(smb_ll *list, int index, DATA new_data, smb_status *status)
  */
 void ll_set(smb_ll *list, int index, DATA new_data, smb_status *status)
 {
+  *status = SMB_SUCCESS;
   smb_ll_node *current = ll_navigate(list, index, status);
   if (current) {
     current->data = new_data;
