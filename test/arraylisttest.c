@@ -47,17 +47,18 @@
 int al_test_create()
 {
   DATA d;
+  smb_status status;
   d.data_llint = 13;
 
-  smb_al *list = al_create();
-  al_append(list, d);
-
-  // Assert that it was allocated correctly.
-  TEST_ASLINE(!CHECK(ALLOCATION_ERROR));
+  smb_al *list = al_create(&status);
+  TEST_ASLINE(status == SMB_SUCCESS);
+  al_append(list, d, &status);
+  TEST_ASLINE(status == SMB_SUCCESS);
 
   TEST_ASLINE(al_length(list) == 1);
 
-  TEST_ASLINE(al_get(list, 0).data_llint == 13);
+  TEST_ASLINE(al_get(list, 0, &status).data_llint == 13);
+  TEST_ASLINE(status == SMB_SUCCESS);
 
   al_delete(list);
   return 0;
@@ -66,12 +67,13 @@ int al_test_create()
 int al_test_create_empty()
 {
   DATA d;
+  smb_status status;
   d.data_llint = 13;
 
-  smb_al *list = al_create();
+  smb_al *list = al_create(&status);
 
   // Assert that it was allocated correctly.
-  TEST_ASLINE(!CHECK(ALLOCATION_ERROR));
+  TEST_ASLINE(status == SMB_SUCCESS);
 
   TEST_ASLINE(al_length(list) == 0);
 
@@ -82,20 +84,23 @@ int al_test_create_empty()
 int al_test_append()
 {
   DATA d;
+  smb_status status;
   d.data_llint = 0;
 
-  smb_al *list = al_create();
+  smb_al *list = al_create(&status);
 
   // Test append about 21 times to check that reallocation works successfully
   for ( ; d.data_llint < 22; d.data_llint++) {
-    al_append(list, d);
+    al_append(list, d, &status);
+    TEST_ASLINE(status == SMB_SUCCESS);
 
     // Assert that the length of the list is correct
     TEST_ASLINE(al_length(list) == d.data_llint + 1);
 
     // Assert that each element in the list is correct
     for (int i = 0; i < al_length(list); i++) {
-      TEST_ASLINE(al_get(list, i).data_llint == i);
+      TEST_ASLINE(al_get(list, i, &status).data_llint == i);
+      TEST_ASLINE(status == SMB_SUCCESS);
     }
   }
 
@@ -106,20 +111,24 @@ int al_test_append()
 int al_test_prepend()
 {
   DATA d;
+  smb_status status;
   d.data_llint = 0;
 
-  smb_al *list = al_create();
+  smb_al *list = al_create(&status);
+  TEST_ASLINE(status == SMB_SUCCESS);
 
   // Test prepend about 21 times to check that reallocation works successfully
   for ( ; d.data_llint < 22; d.data_llint++) {
-    al_prepend(list, d);
+    al_prepend(list, d, &status);
+    TEST_ASLINE(status == SMB_SUCCESS);
 
     // Assert that the length of the list is correct
     TEST_ASLINE(al_length(list) == d.data_llint + 1);
 
     // Assert that each element in the list is correct
     for (int i = 0; i < al_length(list); i++) {
-      TEST_ASLINE(al_get(list, i).data_llint == d.data_llint - i);
+      TEST_ASLINE(al_get(list, i, &status).data_llint == d.data_llint - i);
+      TEST_ASLINE(status == SMB_SUCCESS);
     }
   }
 
@@ -130,18 +139,21 @@ int al_test_prepend()
 int al_test_set()
 {
   DATA d;
-  smb_al *list = al_create();
+  smb_status status;
+  smb_al *list = al_create(&status);
   const int length = 30;
 
   // Create data
   for (int i = 0; i < length; i++) {
     d.data_llint = i;
-    al_append(list, d);
+    al_append(list, d, &status);
+    TEST_ASLINE(status == SMB_SUCCESS);
   }
 
   // Verify data
   for (int i = 0; i < al_length(list); i++) {
-    TEST_ASLINE(al_get(list, i).data_llint == i);
+    TEST_ASLINE(al_get(list, i, &status).data_llint == i);
+    TEST_ASLINE(status == SMB_SUCCESS);
   }
 
   // Test that the length is correct
@@ -150,8 +162,10 @@ int al_test_set()
   // Test set
   for (int i = 0; i < al_length(list); i++) {
     d.data_llint = al_length(list) - i;
-    al_set(list, i , d);
-    TEST_ASLINE(al_get(list, i).data_llint == d.data_llint);
+    al_set(list, i , d, &status);
+    TEST_ASLINE(status == SMB_SUCCESS);
+    TEST_ASLINE(al_get(list, i, &status).data_llint == d.data_llint);
+    TEST_ASLINE(status == SMB_SUCCESS);
   }
 
   // Test that the length is still correct
@@ -164,45 +178,57 @@ int al_test_set()
 int al_test_remove()
 {
   DATA d;
-  smb_al *list = al_create();
+  smb_status status;
+  smb_al *list = al_create(&status);
   const int length = 23;
+  TEST_ASLINE(status == SMB_SUCCESS);
 
   // Create data
   for (int i = 0; i < length; i++) {
     d.data_llint = i;
-    al_append(list, d);
+    al_append(list, d, &status);
+    TEST_ASLINE(status == SMB_SUCCESS);
   }
 
   // Verify data
   for (int i = 0; i < al_length(list); i++) {
-    TEST_ASLINE(al_get(list, i).data_llint == i);
+    TEST_ASLINE(al_get(list, i, &status).data_llint == i);
+    TEST_ASLINE(status == SMB_SUCCESS);
   }
 
   // Remove first
-  al_remove(list, 0);
-  TEST_ASLINE(al_get(list, 0).data_llint == 1);
+  al_remove(list, 0, &status);
+  TEST_ASLINE(status == SMB_SUCCESS);
+
+  TEST_ASLINE(al_get(list, 0, &status).data_llint == 1);
+  TEST_ASLINE(status == SMB_SUCCESS);
   TEST_ASLINE(al_length(list) == length - 1);
 
   // Remove last
-  al_remove(list, al_length(list) - 1);
-  TEST_ASLINE(al_get(list, al_length(list) - 1).data_llint == length - 2);
+  al_remove(list, al_length(list) - 1, &status);
+  TEST_ASLINE(status == SMB_SUCCESS);
+
+  TEST_ASLINE(al_get(list, al_length(list) - 1, &status).data_llint == length - 2);
+  TEST_ASLINE(status == SMB_SUCCESS);
   TEST_ASLINE(al_length(list) == length - 2);
   // Current list: 1 2 3 4 5 6 7 8 ...
 
   // Remove from middle
-  al_remove(list, 2);
+  al_remove(list, 2, &status);
+  TEST_ASLINE(status == SMB_SUCCESS);
   // Current list: 1 2 4 5 6 7 8 ...
   TEST_ASLINE(al_length(list) == length - 3);
 
   // Test all the elements to make sure the data is correct
   int values[] = {1, 2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21};
   for (int i = 0; i < length - 3; i++) {
-    TEST_ASLINE(al_get(list, i).data_llint == values[i]);
+    TEST_ASLINE(al_get(list, i, &status).data_llint == values[i]);
+    TEST_ASLINE(status == SMB_SUCCESS);
   }
 
   // Remove the remaining elements, and check that nothing bad happens
   for (int i = length - 4; i >= 0; i--) {
-    al_remove(list, 0);
+    al_remove(list, 0, &status);
     TEST_ASLINE(al_length(list) == i);
   }
 
@@ -213,45 +239,55 @@ int al_test_remove()
 int al_test_insert()
 {
   DATA d;
-  smb_al *list = al_create();
+  smb_status status;
+  smb_al *list = al_create(&status);
   const int length = 20;
+  TEST_ASLINE(status == SMB_SUCCESS);
 
   // Create data
   for (int i = 0; i < length; i++) {
     d.data_llint = i;
-    al_append(list, d);
+    al_append(list, d, &status);
+    TEST_ASLINE(status == SMB_SUCCESS);
   }
 
   // Verify data
   for (int i = 0; i < al_length(list); i++) {
-    TEST_ASLINE(al_get(list, i).data_llint == i);
+    TEST_ASLINE(al_get(list, i, &status).data_llint == i);
+    TEST_ASLINE(status == SMB_SUCCESS);
   }
 
   // Test insert when a realloc needs to occur
   d.data_llint = 100;
-  al_insert(list, 10, d);
+  al_insert(list, 10, d, &status);
+  TEST_ASLINE(status == SMB_SUCCESS);
   int values_one[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 100, 10, 11, 12, 13, 14,
                       15, 16, 17, 18, 19};
   for (int i = 0; i < al_length(list); i++) {
-    TEST_ASLINE(al_get(list, i).data_llint == values_one[i]);
+    TEST_ASLINE(al_get(list, i, &status).data_llint == values_one[i]);
+    TEST_ASLINE(status == SMB_SUCCESS);
   }
 
   // Test insert at end
   d.data_llint++;
-  al_insert(list, al_length(list), d);
+  al_insert(list, al_length(list), d, &status);
+  TEST_ASLINE(status == SMB_SUCCESS);
   int values_two[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 100, 10, 11, 12, 13, 14,
                       15, 16, 17, 18, 19, 101};
   for (int i = 0; i < al_length(list); i++) {
-    TEST_ASLINE(al_get(list, i).data_llint == values_two[i]);
+    TEST_ASLINE(al_get(list, i, &status).data_llint == values_two[i]);
+    TEST_ASLINE(status == SMB_SUCCESS);
   }
 
   // Test insert at beginning
   d.data_llint++;
-  al_insert(list, 0, d);
+  al_insert(list, 0, d, &status);
+  TEST_ASLINE(status == SMB_SUCCESS);
   int values_three[] = {102, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 100, 10, 11, 12,
                         13, 14, 15, 16, 17, 18, 19, 101};
   for (int i = 0; i < al_length(list); i++) {
-    TEST_ASLINE(al_get(list, i).data_llint == values_three[i]);
+    TEST_ASLINE(al_get(list, i, &status).data_llint == values_three[i]);
+    TEST_ASLINE(status == SMB_SUCCESS);
   }
 
   al_delete(list);
@@ -265,25 +301,25 @@ void array_list_test()
 {
   smb_ut_group *group = su_create_test_group("array list");
 
-  smb_ut_test *create = su_create_test("create", al_test_create, 0, 1);
+  smb_ut_test *create = su_create_test("create", al_test_create, 1);
   su_add_test(group, create);
 
-  smb_ut_test *create_empty = su_create_test("create_empty", al_test_create_empty, 0, 1);
+  smb_ut_test *create_empty = su_create_test("create_empty", al_test_create_empty, 1);
   su_add_test(group, create_empty);
 
-  smb_ut_test *append = su_create_test("append", al_test_append, 0, 1);
+  smb_ut_test *append = su_create_test("append", al_test_append, 1);
   su_add_test(group, append);
 
-  smb_ut_test *prepend = su_create_test("prepend", al_test_prepend, 0, 1);
+  smb_ut_test *prepend = su_create_test("prepend", al_test_prepend, 1);
   su_add_test(group, prepend);
 
-  smb_ut_test *set = su_create_test("set", al_test_set, 0, 1);
+  smb_ut_test *set = su_create_test("set", al_test_set, 1);
   su_add_test(group, set);
 
-  smb_ut_test *remove = su_create_test("remove", al_test_remove, 0, 1);
+  smb_ut_test *remove = su_create_test("remove", al_test_remove, 1);
   su_add_test(group, remove);
 
-  smb_ut_test *insert = su_create_test("insert", al_test_insert, 0, 1);
+  smb_ut_test *insert = su_create_test("insert", al_test_insert, 1);
   su_add_test(group, insert);
 
   // The other elementary operations on the smb_al, i.e. the push, pop and
