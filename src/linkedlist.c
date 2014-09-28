@@ -59,19 +59,19 @@
    @brief Removes the given node, reassigning the links to and from it.
 
    Frees the node, in addition no reassigning links.  Once this function is
-   called, theNode is invlidated.
+   called, the_node is invlidated.
 
    This function is a *private* function, not declared in libstephen.h for a
    reason.  It is only necessary for the implementation functions within this
    file.
 
    @param list The list that contains this node.
-   @param theNode The node to delete.
+   @param the_node The node to delete.
  */
-void ll_remove_node(smb_ll *list, smb_ll_node *theNode)
+void ll_remove_node(smb_ll *list, smb_ll_node *the_node)
 {
-  smb_ll_node *previous = theNode->prev;
-  smb_ll_node *next = theNode->next;
+  smb_ll_node *previous = the_node->prev;
+  smb_ll_node *next = the_node->next;
   if (previous) {
     previous->next = next;
   } else {
@@ -82,7 +82,7 @@ void ll_remove_node(smb_ll *list, smb_ll_node *theNode)
   } else {
     list->tail = previous;
   }
-  free(theNode);
+  free(the_node);
   SMB_DECREMENT_MALLOC_COUNTER(sizeof(smb_ll_node));
 }
 
@@ -95,15 +95,16 @@ void ll_remove_node(smb_ll *list, smb_ll_node *theNode)
 
    @param list The list to navigate within.
    @param index The index to find in the list.
+   @param[out] status Status variable.
    @returns A pointer to the node navigated to.
    @retval NULL if the index was out of range.
-   @exception INDEX_ERROR if the given index was out of range.
+   @exception SMB_INDEX_ERROR if the given index was out of range.
  */
-smb_ll_node * ll_navigate(const smb_ll *list, int index)
+smb_ll_node * ll_navigate(const smb_ll *list, int index, smb_status *status)
 {
   smb_ll_node *node = list->head;
   if (index < 0 || index >= list->length) {
-    RAISE(INDEX_ERROR);
+    *status = SMB_INDEX_ERROR;
     return NULL;
   }
   int i = 0;
@@ -118,26 +119,25 @@ smb_ll_node * ll_navigate(const smb_ll *list, int index)
    @brief Allocates and initializes a node with the given data.
 
    @param data The data to insert into the new node.
-
+   @param[out] status Status variable.
    @return A pointer to the node created.
-   @retval NULL if the node couldn't be created.
-   @exception ALLOCATION_ERROR if malloc() fails.  In that case, return value is
-   NULL.
+   @exception SMB_ALLOCATION_ERROR if malloc() fails.  In that case, return
+   value is NULL.
  */
-smb_ll_node *ll_create_node(DATA data)
+smb_ll_node *ll_create_node(DATA data, smb_status* status)
 {
-  smb_ll_node *newNode = (smb_ll_node*) malloc(sizeof(smb_ll_node));
+  smb_ll_node *new_node = (smb_ll_node*) malloc(sizeof(smb_ll_node));
 
-  if (!newNode) {
-    RAISE(ALLOCATION_ERROR);
+  if (!new_node) {
+    *status = SMB_ALLOCATION_ERROR;
     return NULL;
   }
 
-  newNode->data = data;
-  newNode->next = NULL;
-  newNode->prev = NULL;
+  new_node->data = data;
+  new_node->next = NULL;
+  new_node->prev = NULL;
   SMB_INCREMENT_MALLOC_COUNTER(sizeof(smb_ll_node));
-  return newNode;
+  return new_node;
 }
 
 /*******************************************************************************
@@ -149,37 +149,43 @@ smb_ll_node *ll_create_node(DATA data)
 /**
    @brief Initializes a new list in memory which has already been allocated.
 
-   @param newList A pointer to the memory to initialize.
+   No errors are defined for ll_init, but the parameter is used to allow for the
+   possibility of future errors.  For now, you may safely `assert(status ==
+   SMB_SUCCESS)`.
+
+   @param new_list A pointer to the memory to initialize.
  */
-void ll_init(smb_ll *newList)
+void ll_init(smb_ll *new_list, smb_status *status)
 {
-  newList->length = 0;
-  newList->head = NULL;
-  newList->tail = NULL;
+  *status == SMB_SUCCESS;
+  new_list->length = 0;
+  new_list->head = NULL;
+  new_list->tail = NULL;
 }
 
 /**
    @brief Allocates and initializes a new, empty linked list.
 
+   @param[out] status Status variable.
    @returns A pointer to the new list.
-   @exception ALLOCATION_ERROR If memory allocation fails, returns NULL and
+   @exception SMB_ALLOCATION_ERROR If memory allocation fails, returns NULL and
    raises error.
  */
-smb_ll *ll_create()
+smb_ll *ll_create(smb_status *status)
 {
-  CLEAR_ALL_ERRORS;
+  *status = SMB_SUCCESS;
+  smb_ll *new_list = (smb_ll *) malloc(sizeof(smb_ll));
 
-  smb_ll *newList = (smb_ll *) malloc(sizeof(smb_ll));
-
-  if (!newList) {
-    RAISE(ALLOCATION_ERROR);
+  if (!new_list) {
+    *status = SMB_ALLOCATION_ERROR;
     return NULL;
   }
   SMB_INCREMENT_MALLOC_COUNTER(sizeof(smb_ll));
 
-  ll_init(newList);
+  ll_init(new_list, status);
+  assert(*status == SMB_SUCCESS);
 
-  return newList;
+  return new_list;
 }
 
 /**
@@ -213,7 +219,7 @@ void ll_destroy(smb_ll *list)
 
    @param list A pointer to the list to delete.
  */
-void ll_delete(smb_ll *list);void ll_delete(smb_ll *list)
+void ll_delete(smb_ll *list)
 {
   ll_destroy(list);
   // Free the list header
@@ -225,32 +231,30 @@ void ll_delete(smb_ll *list);void ll_delete(smb_ll *list)
    @brief Append the given data to the end of the list.
 
    @param list A pointer to the list to append to.
-   @param newData The data to append.
-   @exception ALLOCATION_ERROR
+   @param new_data The data to append.
+   @param[out] status Status variable.
+   @exception SMB_ALLOCATION_ERROR If memory allocation fails.
  */
-void ll_append(smb_ll *list, DATA newData)
+void ll_append(smb_ll *list, DATA new_data, smb_status *status)
 {
-  CLEAR_ALL_ERRORS;
-
+  *status = SMB_SUCCESS;
   // Create the new node
-  smb_ll_node *newNode = ll_create_node(newData);
+  smb_ll_node *new_node = ll_create_node(new_data, status);
 
-  if (!newNode) {
-    // ALLOCATION_ERROR has been raised by ll_create_node.  Pass it on to the
-    // user.
+  if (*status == SMB_ALLOCATION_ERROR) {
     return;
   }
 
   // Get the last node in the list
-  smb_ll_node *lastNode = list->tail;
+  smb_ll_node *last_node = list->tail;
 
   // Link them together
-  if (lastNode)
-    lastNode->next = newNode;
+  if (last_node)
+    last_node->next = new_node;
   else
-    list->head = newNode;
-  newNode->prev = lastNode;
-  list->tail = newNode;
+    list->head = new_node;
+  new_node->prev = last_node;
+  list->tail = new_node;
   list->length++;
 }
 
@@ -259,28 +263,26 @@ void ll_append(smb_ll *list, DATA newData)
    is shifted forward one index.
 
    @param list A pointer to the list.
-   @param newData The data to prepend.
-   @exception ALLOCATION_ERROR
+   @param new_data The data to prepend.
+   @param[out] status Status variable.
+   @exception SMB_ALLOCATION_ERROR If memory allocation fails.
  */
-void ll_prepend(smb_ll *list, DATA newData)
+void ll_prepend(smb_ll *list, DATA new_data, smb_status *status)
 {
-  CLEAR_ALL_ERRORS;
-
+  *status = SMB_SUCCESS;
   // Create the new smb_ll_node
-  smb_ll_node *newNode = ll_create_node(newData);
-  if (!newNode) {
-    // ALLOCATION_ERROR has been raised by ll_create_node.  Pass it on to the
-    // user.
+  smb_ll_node *new_node = ll_create_node(new_data, status);
+  if (*status == SMB_ALLOCATION_ERROR) {
     return;
   }
 
-  smb_ll_node *firstNode = list->head;
-  newNode->next = firstNode;
-  if (firstNode)
-    firstNode->prev = newNode;
+  smb_ll_node *first_node = list->head;
+  new_node->next = first_node;
+  if (first_node)
+    first_node->prev = new_node;
   else
-    list->tail = newNode;
-  list->head = newNode;
+    list->tail = new_node;
+  list->head = new_node;
   list->length++;
 }
 
@@ -292,12 +294,13 @@ void ll_prepend(smb_ll *list, DATA newData)
    words, the function appends an item at the end fo the list.
 
    @param list A pointer to the list to push to.
-   @param newData The data to push.
-   @exception ALLOCATION_ERROR
+   @param new_data The data to push.
+   @param[out] status Status variable.
+   @exception SMB_ALLOCATION_ERROR If memory allocation fails.
  */
-void ll_push_back(smb_ll *list, DATA newData)
+void ll_push_back(smb_ll *list, DATA new_data, smb_status *status)
 {
-  ll_append(list, newData);
+  ll_append(list, new_data, status);
 }
 
 /**
@@ -308,23 +311,23 @@ void ll_push_back(smb_ll *list, DATA newData)
    it.
 
    @param list A pointer to the list to pop from.
+   @param[out] status Status variable.
    @returns The item from the back of the list.
-   @exception INDEX_ERROR
+   @exception INDEX_ERROR If the list is empty.
  */
-DATA ll_pop_back(smb_ll *list)
+DATA ll_pop_back(smb_ll *list, smb_status *status)
 {
-  CLEAR_ALL_ERRORS;
-
-  smb_ll_node *lastNode = list->tail;
-  if (lastNode) {
-    DATA toReturn = lastNode->data;
-    ll_remove_node(list, lastNode);
+  *status = SMB_SUCCESS;
+  smb_ll_node *last_node = list->tail;
+  if (last_node) {
+    DATA to_return = last_node->data;
+    ll_remove_node(list, last_node);
     list->length--;
-    return toReturn;
+    return to_return;
   } else {
-    RAISE(INDEX_ERROR); // The list is empty
-    DATA mockData;
-    return mockData;
+    *status = SMB_INDEX_ERROR;
+    DATA mock_data;
+    return mock_data;
   }
 }
 
@@ -335,20 +338,20 @@ DATA ll_pop_back(smb_ll *list)
    returns the item at the end/back of the list without removing it.
 
    @param list A pointer to the list to peek from.
+   @param[out] status Status variable.
    @returns The item from the back of the list.
-   @exception INDEX_ERROR
+   @exception INDEX_ERROR If the list is empty.
  */
-DATA ll_peek_back(smb_ll *list)
+DATA ll_peek_back(smb_ll *list, smb_status *status)
 {
-  CLEAR_ALL_ERRORS;
-
-  smb_ll_node *lastNode = list->tail;
-  if (lastNode) {
-    return lastNode->data;
+  *status = SMB_SUCCESS;
+  smb_ll_node *last_node = list->tail;
+  if (last_node) {
+    return last_node->data;
   } else {
-    RAISE(INDEX_ERROR); // The list is empty
-    DATA mockData;
-    return mockData;
+    *status = SMB_SUCCESS;
+    DATA mock_data;
+    return mock_data;
   }
 }
 
@@ -357,13 +360,14 @@ DATA ll_peek_back(smb_ll *list)
    @see ll_push_back If the term 'push' is unfamiliar.
 
    @param list A pointer to the list.
-   @param newData The data to push.
-   @exception ALLOCATION_ERROR
+   @param new_data The data to push.
+   @param[out] status Status variable.
+   @exception SMB_ALLOCATION_ERROR If memory allocation fails.
  */
 
-void ll_push_front(smb_ll *list, DATA newData)
+void ll_push_front(smb_ll *list, DATA new_data, smb_status *status)
 {
-  ll_prepend(list, newData);
+  ll_prepend(list, new_data, status);
 }
 
 /**
@@ -371,23 +375,23 @@ void ll_push_front(smb_ll *list, DATA newData)
    @see ll_pop_back If the term 'pop' is unfamiliar.
 
    @param list A pointer to the list to pop from
+   @param[out] status Status variable.
    @returns The data from the front of the list.
-   @exception INDEX_ERROR
+   @exception INDEX_ERROR If the list is empty.
  */
-DATA ll_pop_front(smb_ll *list)
+DATA ll_pop_front(smb_ll *list, smb_status *status)
 {
-  CLEAR_ALL_ERRORS;
-
-  smb_ll_node *firstNode = list->head;
-  if (firstNode) {
-    DATA toReturn = firstNode->data;
-    ll_remove_node(list, firstNode);
+  *status = SMB_SUCCESS;
+  smb_ll_node *first_node = list->head;
+  if (first_node) {
+    DATA to_return = first_node->data;
+    ll_remove_node(list, first_node);
     list->length--;
-    return toReturn;
+    return to_return;
   } else {
-    RAISE(INDEX_ERROR); // The list is empty
-    DATA mockData;
-    return mockData;
+    *status = SMB_INDEX_ERROR; // The list is empty
+    DATA mock_data;
+    return mock_data;
   }
 }
 
@@ -396,20 +400,20 @@ DATA ll_pop_front(smb_ll *list)
    @see ll_peek_back If the term 'peek' is unfamiliar.
 
    @param list A pointer to the list to peek from.
+   @param[out] status Status variable.
    @return The data from the front of the list.
-   @exception INDEX_ERROR
+   @exception INDEX_ERROR If the list is empty.
  */
-DATA ll_peek_front(smb_ll *list)
+DATA ll_peek_front(smb_ll *list, smb_status *status)
 {
-  CLEAR_ALL_ERRORS;
-
-  smb_ll_node *firstNode = list->head;
-  if (firstNode) {
-    return firstNode->data;
+  *status = SMB_SUCCESS;
+  smb_ll_node *first_node = list->head;
+  if (first_node) {
+    return first_node->data;
   } else {
-    RAISE(INDEX_ERROR); // The list is empty
-    DATA mockData;
-    return mockData;
+    *status = SMB_INDEX_ERROR; // The list is empty
+    DATA mock_data;
+    return mock_data;
   }
 }
 
@@ -421,23 +425,22 @@ DATA ll_peek_front(smb_ll *list)
 
    @param list A pointer to the list to get from.
    @param index The index to get from the list.
+   @param[out] status Status variable.
    @return The data at the specified index, if it exists.
-   @exception INDEX_ERROR
+   @exception INDEX_ERROR If the given index is out of range.
  */
-DATA ll_get(const smb_ll *list, int index)
+DATA ll_get(const smb_ll *list, int index, smb_status *status)
 {
-  CLEAR_ALL_ERRORS;
-
+  *status = SMB_SUCCESS;
   // Navigate to that position in the node.
-  smb_ll_node * theNode = ll_navigate(list, index);
-  if (theNode)
-    return theNode->data;
-
-  // There is no good return value to signify that the index was out of range.
-  // However, the ll_navigate function raised INDEX_ERROR, so calling code can
-  // check that.  We still need to return a "mock" set of data though.
-  DATA mockData;
-  return mockData;
+  smb_ll_node * the_node = ll_navigate(list, index, status);
+  if (*status == SMB_INDEX_ERROR) {
+    // Return a dummy value.
+    DATA mock_data;
+    return mock_data;
+  } else {
+    return the_node->data;
+  }
 }
 
 /**
@@ -448,17 +451,18 @@ DATA ll_get(const smb_ll *list, int index)
 
    @param list A pointer to the list to remove from.
    @param index The index to remove from the list.
-   @exception INDEX_ERROR
+   @param[out] status Status variable.
+   @exception INDEX_ERROR If the given index is out of range.
  */
-void ll_remove(smb_ll *list, int index)
+void ll_remove(smb_ll *list, int index, smb_status *status)
 {
   // Fond the node
-  smb_ll_node *theNode = ll_navigate(list, index);
-  if (!theNode) {
+  smb_ll_node *the_node = ll_navigate(list, index, status);
+  if (*status == SMB_INDEX_ERROR) {
     return; // Return the INDEX_ERROR
   }
   // Remove it (managing the links and the list header)
-  ll_remove_node(list, theNode);
+  ll_remove_node(list, the_node);
   list->length--;
 }
 
@@ -473,28 +477,30 @@ void ll_remove(smb_ll *list, int index)
 
    @param list A pointer to the list to insert into.
    @param index The index to insert at.
-   @param newData The data to insert.
-   @exception ALLOCATION_ERROR
+   @param new_data The data to insert.
+   @param[out] status Status variable.
+   @exception SMB_ALLOCATION_ERROR If memory allocation fails.
  */
-void ll_insert(smb_ll *list, int index, DATA newData)
+void ll_insert(smb_ll *list, int index, DATA new_data, smb_status *status)
 {
-  CLEAR_ALL_ERRORS;
-
+  *status = SMB_SUCCESS;
   if (index <= 0) {
-    ll_prepend(list, newData);
+    ll_prepend(list, new_data, status);
   } else if (index >= list->length) {
-    ll_append(list, newData);
+    ll_append(list, new_data, status);
   } else {
     // Valid territory
-    smb_ll_node *newNode = ll_create_node(newData);
-    if (!newNode) {
+    smb_ll_node *new_node = ll_create_node(new_data, status);
+    if (*status == SMB_ALLOCATION_ERROR) {
       return; // Return the allocation error.
     }
-    smb_ll_node *current = ll_navigate(list, index);
-    current->prev->next = newNode;
-    newNode->prev = current->prev;
-    newNode->next = current;
-    current->prev = newNode;
+    smb_ll_node *current = ll_navigate(list, index, status);
+    // We have filtered indices, so there should never be an error.
+    assert(*status == SMB_SUCCESS);
+    current->prev->next = new_node;
+    new_node->prev = current->prev;
+    new_node->next = current;
+    current->prev = new_node;
     list->length++;
   }
 }
@@ -507,16 +513,17 @@ void ll_insert(smb_ll *list, int index, DATA newData)
 
    @param list The list to modify.
    @param index The index of the item to set.
-   @param newData The data to set the index to.
+   @param new_data The data to set the index to.
+   @param[out] status Status variable.
    @exception INDEX_ERROR If the index is out of bounds
  */
-void ll_set(smb_ll *list, int index, DATA newData)
+void ll_set(smb_ll *list, int index, DATA new_data, smb_status *status)
 {
-  smb_ll_node *current = ll_navigate(list, index);
+  smb_ll_node *current = ll_navigate(list, index, status);
   if (current) {
-    current->data = newData;
+    current->data = new_data;
   } else {
-    RAISE(INDEX_ERROR);
+    *status = SMB_INDEX_ERROR;
   }
 }
 
@@ -535,18 +542,21 @@ int ll_length(const smb_ll *list)
    @brief Get the next item in the linked list.
 
    @param iterator A pointer to the iterator.
+   @param[out] status Status variable.
    @returns The data at the new location of the iterator.
+   @exception SMB_STOP_ITERATION If the list does not have another item.
  */
-DATA ll_iter_next(smb_iter *iter)
+DATA ll_iter_next(smb_iter *iter, smb_status *status)
 {
+  *status = SMB_SUCCESS;
   smb_ll_node *node = iter->state.data_ptr;
   if (node == NULL) {
+    *status = SMB_STOP_ITERATION;
     return iter->state; // a DATA containing NULL
   }
   iter->state.data_ptr = node->next;
   iter->index++;
   return node->data;
-  // TODO: Throw some sort of error when calling next() on finished iterator.
 }
 
 /**
@@ -627,34 +637,34 @@ smb_iter ll_get_iter(const smb_ll *list)
 
 *******************************************************************************/
 
-void ll_append_adapter(smb_list *l, DATA newData)
+void ll_append_adapter(smb_list *l, DATA new_data, smb_status *status)
 {
   smb_ll *list = (smb_ll*) (l->data);
-  return ll_append(list, newData);
+  return ll_append(list, new_data, status);
 }
 
-void ll_prepend_adapter(smb_list *l, DATA newData)
+void ll_prepend_adapter(smb_list *l, DATA new_data, smb_status *status)
 {
   smb_ll *list = (smb_ll*) (l->data);
-  return ll_prepend(list, newData);
+  return ll_prepend(list, new_data, status);
 }
 
-DATA ll_get_adapter(const smb_list *l, int index)
+DATA ll_get_adapter(const smb_list *l, int index, smb_status *status)
 {
   const smb_ll *list = (const smb_ll*) (l->data);
-  return ll_get(list, index);
+  return ll_get(list, index, status);
 }
 
-void ll_remove_adapter(smb_list *l, int index)
+void ll_remove_adapter(smb_list *l, int index, smb_status *status)
 {
   smb_ll *list = (smb_ll*) (l->data);
-  return ll_remove(list, index);
+  return ll_remove(list, index, status);
 }
 
-void ll_insert_adapter(smb_list *l, int index, DATA newData)
+void ll_insert_adapter(smb_list *l, int index, DATA new_data, smb_status *status)
 {
   smb_ll *list = (smb_ll*) (l->data);
-  return ll_insert(list, index, newData);
+  return ll_insert(list, index, new_data, status);
 }
 
 void ll_delete_adapter(smb_list *l)
@@ -665,46 +675,46 @@ void ll_delete_adapter(smb_list *l)
   return;
 }
 
-void ll_set_adapter(smb_list *l, int index, DATA newData)
+void ll_set_adapter(smb_list *l, int index, DATA new_data, smb_status *status)
 {
   smb_ll *list = (smb_ll*) (l->data);
-  return ll_set(list, index, newData);
+  return ll_set(list, index, new_data, status);
 }
 
-void ll_push_back_adapter(smb_list *l, DATA newData)
+void ll_push_back_adapter(smb_list *l, DATA new_data, smb_status *status)
 {
   smb_ll *list = (smb_ll*) (l->data);
-  return ll_push_back(list, newData);
+  return ll_push_back(list, new_data, status);
 }
 
-DATA ll_pop_back_adapter(smb_list *l)
+DATA ll_pop_back_adapter(smb_list *l, smb_status *status)
 {
   smb_ll *list = (smb_ll*) (l->data);
-  return ll_pop_back(list);
+  return ll_pop_back(list, status);
 }
 
-DATA ll_peek_back_adapter(smb_list *l)
+DATA ll_peek_back_adapter(smb_list *l, smb_status *status)
 {
   smb_ll *list = (smb_ll*) (l->data);
-  return ll_peek_back(list);
+  return ll_peek_back(list, status);
 }
 
-void ll_push_front_adapter(smb_list *l, DATA newData)
+void ll_push_front_adapter(smb_list *l, DATA new_data, smb_status *status)
 {
   smb_ll *list = (smb_ll*) (l->data);
-  return  ll_push_front(list, newData);
+  return  ll_push_front(list, new_data, status);
 }
 
-DATA ll_pop_front_adapter(smb_list *l)
+DATA ll_pop_front_adapter(smb_list *l, smb_status *status)
 {
   smb_ll *list = (smb_ll*) (l->data);
-  return ll_pop_front(list);
+  return ll_pop_front(list, status);
 }
 
-DATA ll_peek_front_adapter(smb_list *l)
+DATA ll_peek_front_adapter(smb_list *l, smb_status *status)
 {
   smb_ll *list = (smb_ll*) (l->data);
-  return ll_peek_front(list);
+  return ll_peek_front(list, status);
 }
 
 int ll_length_adapter(const smb_list *l)
@@ -721,37 +731,42 @@ int ll_length_adapter(const smb_list *l)
    reason.  You shouldn't need the function, as there is library functionality
    that provides it for you.
 
-   @param genericList The smb_list to populate with function pointers.
+   @param generic_list The smb_list to populate with function pointers.
  */
-void ll_fill_functions(smb_list *genericList)
+void ll_fill_functions(smb_list *generic_list)
 {
-  genericList->append = ll_append_adapter;
-  genericList->prepend = ll_prepend_adapter;
-  genericList->get = ll_get_adapter;
-  genericList->remove = ll_remove_adapter;
-  genericList->insert = ll_insert_adapter;
-  genericList->delete = ll_delete_adapter;
-  genericList->push_back = ll_push_back_adapter;
-  genericList->pop_back = ll_pop_back_adapter;
-  genericList->peek_back = ll_peek_back_adapter;
-  genericList->push_front = ll_push_front_adapter;
-  genericList->pop_front = ll_pop_front_adapter;
-  genericList->peek_front = ll_peek_front_adapter;
-  genericList->length = ll_length_adapter;
-  genericList->set = ll_set_adapter;
+  generic_list->append = ll_append_adapter;
+  generic_list->prepend = ll_prepend_adapter;
+  generic_list->get = ll_get_adapter;
+  generic_list->remove = ll_remove_adapter;
+  generic_list->insert = ll_insert_adapter;
+  generic_list->delete = ll_delete_adapter;
+  generic_list->push_back = ll_push_back_adapter;
+  generic_list->pop_back = ll_pop_back_adapter;
+  generic_list->peek_back = ll_peek_back_adapter;
+  generic_list->push_front = ll_push_front_adapter;
+  generic_list->pop_front = ll_pop_front_adapter;
+  generic_list->peek_front = ll_peek_front_adapter;
+  generic_list->length = ll_length_adapter;
+  generic_list->set = ll_set_adapter;
 }
 
 /**
    @brief Creates a new, empty list, and returns it as an instance of the
    generic smb_list data structure. @see smb_list
 
+   @param[out] status Status variable.
    @returns A generic list interface object.
 
-   @exception ALLOCATION_ERROR.
+   @exception SMB_ALLOCATION_ERROR If memory allocation fails.
  */
-smb_list ll_create_list()
+smb_list ll_create_list(smb_status *status)
 {
-  smb_ll *list = ll_create();
+  smb_ll *list = ll_create(status);
+  if (*status == SMB_ALLOCATION_ERROR) {
+    smb_list dummy;
+    return dummy;
+  }
 
   return ll_cast_to_list(list);
 }
@@ -766,10 +781,10 @@ smb_list ll_create_list()
  */
 smb_list ll_cast_to_list(smb_ll *list)
 {
-  smb_list genericList;
-  genericList.data = list;
+  smb_list generic_list;
+  generic_list.data = list;
 
-  ll_fill_functions(&genericList);
+  ll_fill_functions(&generic_list);
 
-  return genericList;
+  return generic_list;
 }

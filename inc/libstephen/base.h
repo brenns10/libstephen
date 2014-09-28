@@ -253,60 +253,20 @@ void *smb___free(void *ptr, size_t oldsize);
 *******************************************************************************/
 
 /**
-   @brief The name of the error variable.
-
-   It's supposed to be a bit mangled and useless to avoid naming conflicts.
+   @brief An enumeration of all possible status values for libstephen functions.
  */
-#define ERROR_VAR smb___error_var_
+typedef enum {
 
-/**
-   @brief A variable declared in some far-off C file, which contains your
-   errors.
- */
-extern unsigned int ERROR_VAR;
+  SMB_SUCCESS,
+  SMB_ALLOCATION_ERROR,
+  SMB_INDEX_ERROR,
+  SMB_NOT_FOUND_ERROR,
+  SMB_STOP_ITERATION
 
-/**
-   @brief Reserved for communicating errors with malloc().
- */
-#define ALLOCATION_ERROR 0x0001
+} smb_status;
 
-/**
-   @brief Set when an provided index is out of range.  Includes incidents when
-   you try to pop or peek at an empty list.
- */
-#define INDEX_ERROR 0x0002
+char *smb_status_string(smb_status status);
 
-/**
-   @brief Set when an item is not found, mainly in the hash table.
- */
-#define NOT_FOUND_ERROR 0x0004
-
-/**
-   @brief Set the flag corresponding to the given error code.
- */
-#define RAISE(x) (ERROR_VAR |= x)
-
-/**
-   @brief Test the flag corresponding to the given error code.
-
-   @retval 1 if flag set.
-   @retval 0 if flag cleared.
- */
-#define CHECK(x) (ERROR_VAR & x)
-
-/**
-   @brief Clear the flag corresponding to the given error code.
- */
-#define CLEAR(x) (ERROR_VAR &= (~x))
-
-/**
-   @brief Clear the flags for all errors.
- */
-#define CLEAR_ALL_ERRORS ERROR_VAR = 0
-
-/**
-   @brief Reports an error along with the line, file, and function.
- */
 #define PRINT_ERROR_LOC fprintf(stderr, "An error occurred at line %d in file "\
                                 "%s (function %s).\n", __LINE__, __FILE__,\
                                 __func__)

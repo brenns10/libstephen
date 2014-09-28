@@ -67,16 +67,17 @@
    reason.
 
    @param list The list to expand.
-   @exception ALLOCATION_ERROR: if realloc fails.  Unexpanded block of data
+   @param[out] status Status variable.
+   @exception SMB_ALLOCATION_ERROR: if realloc fails.  Unexpanded block of data
    remains valid, and no changes are made to the list.
  */
-void al_expand(smb_al *list)
+void al_expand(smb_al *list, smb_status *status)
 {
   int newAllocation = list->allocated + SMB_AL_BLOCK_SIZE;
 
   DATA *newBlock = (DATA*) realloc(list->data, newAllocation * sizeof(DATA));
   if (!newBlock) {
-    RAISE(ALLOCATION_ERROR);
+    *status = SMB_ALLOCATION_ERROR;
     return;
   }
 
@@ -97,16 +98,17 @@ void al_expand(smb_al *list)
 
    @param list The list to operate on.
    @param from_index The index to start shifting up from.
-   @exception ALLOCATION_ERROR if an expansion was required and realloc()
+   @param[out] status Status variable.
+   @exception SMB_ALLOCATION_ERROR if an expansion was required and realloc()
    failed, no shift is performed.  All data remains valid, but no changes are
    made to the array.
  */
-void al_shift_up(smb_al *list, int from_index)
+void al_shift_up(smb_al *list, int from_index, smb_status *status)
 {
   // Check if there's space and allocate more if necessary
   if (list->length >= list->allocated) {
-    al_expand(list);
-    if (CHECK(ALLOCATION_ERROR))
+    al_expand(list, status);
+    if (*status == SMB_ALLOCATION_ERROR)
       return;
   }
 
@@ -153,17 +155,17 @@ void al_shift_down(smb_al *list, int to_index)
    This function is useful if you would like to declare your array list on the
    stack and initialize it, rather than allocating space on the heap.
 
-   @exception ALLOCATION_ERROR
+   @param[out] status Status variable.
+   @exception SMB_ALLOCATION_ERROR If memory allocation fails.
  */
-void al_init(smb_al *list)
+void al_init(smb_al *list, smb_status *status)
 {
-  CLEAR_ALL_ERRORS;
-
+  *status = SMB_SUCCESS;
   list->data = (DATA*) malloc(SMB_AL_BLOCK_SIZE * sizeof(DATA));
   if (!list->data) {
     free(list);
     SMB_DECREMENT_MALLOC_COUNTER(sizeof(smb_al));
-    RAISE(ALLOCATION_ERROR);
+    *status = SMB_ALLOCATION_ERROR;
     return;
   }
   list->length = 0;
@@ -175,21 +177,23 @@ void al_init(smb_al *list)
    @brief Allocate and initialize an empty array list.
 
    @returns A pointer to the new array list.
-   @exception ALLOCATION_ERROR
+   @param[out] status Status variable.
+   @exception SMB_ALLOCATION_ERROR If memory allocation fails.
  */
-smb_al *al_create()
+smb_al *al_create(smb_status *status)
 {
-  CLEAR_ALL_ERRORS;
-
+  *status = SMB_SUCCESS;
   smb_al *list = (smb_al*) malloc(sizeof(smb_al));
   if (!list) {
-    RAISE(ALLOCATION_ERROR);
+    *status = SMB_ALLOCATION_ERROR;
     return NULL;
   }
   SMB_INCREMENT_MALLOC_COUNTER(sizeof(smb_al));
 
-  al_init(list);
-  if (CHECK(ALLOCATION_ERROR)) {
+  al_init(list, status);
+  if (*status == SMB_ALLOCATION_ERROR) {
+    free(list);
+    SMB_DECREMENT_MALLOC_COUNTER(sizeof(smb_al));
     return NULL;
   }
 
@@ -206,8 +210,6 @@ smb_al *al_create()
  */
 void al_destroy(smb_al *list)
 {
-  CLEAR_ALL_ERRORS;
-
   free(list->data);
   SMB_DECREMENT_MALLOC_COUNTER(list->allocated * sizeof(DATA));
 }
@@ -219,8 +221,6 @@ void al_destroy(smb_al *list)
  */
 void al_delete(smb_al *list)
 {
-  CLEAR_ALL_ERRORS;
-
   al_destroy(list);
   free(list);
   SMB_DECREMENT_MALLOC_COUNTER(sizeof(smb_al));
@@ -231,19 +231,19 @@ void al_delete(smb_al *list)
 
    @param list A pointer to the list to append to.
    @param newData The data to append
-   @exception ALLOCATION_ERROR If the array list had to be expanded, and
+   @param[out] status Status variable.
+   @exception SMB_ALLOCATION_ERROR If the array list had to be expanded, and
    allocation was unsuccessful.  In this case, no changes occur, but the data is
    not appended.
  */
-void al_append(smb_al *list, DATA newData)
+void al_append(smb_al *list, DATA newData, smb_status *status)
 {
-  CLEAR_ALL_ERRORS;
-
+  *status = SMB_SUCCESS;
   if (list->length < list->allocated) {
     list->data[list->length++] = newData;
   } else {
-    al_expand(list);
-    if (CHECK(ALLOCATION_ERROR)) {
+    al_expand(list, status);
+    if (*status == SMB_ALLOCATION_ERROR) {
       return; // Prevent segfault
     }
     list->data[list->length++] = newData;
@@ -255,16 +255,16 @@ void al_append(smb_al *list, DATA newData)
 
    @param list A pointer to the list to prepend to.
    @param newData The data to prepend.
-   @exception ALLOCATION_ERROR If the array list had to be expanded and
+   @param[out] status Status variable.
+   @exception SMB_ALLOCATION_ERROR If the array list had to be expanded and
    allocation was unsuccessful.  In this case, no changes occur, but the data is
    not appended.
  */
-void al_prepend(smb_al *list, DATA newData)
+void al_prepend(smb_al *list, DATA newData, smb_status *status)
 {
-  CLEAR_ALL_ERRORS;
-
-  al_shift_up(list, 0);
-  if (CHECK(ALLOCATION_ERROR))
+  *status = SMB_SUCCESS;
+  al_shift_up(list, 0, status);
+  if (*status == SMB_ALLOCATION_ERROR)
     return;
 
   list->data[0] = newData;
@@ -275,15 +275,15 @@ void al_prepend(smb_al *list, DATA newData)
 
    @param list A pointer to the list to get from.
    @param index The index to get from the list.
+   @param[out] status Status variable.
    @returns The data at the specified index.
-   @exception INDEX_ERROR
+   @exception INDEX_ERROR If the specified index was out of range.
  */
-DATA al_get(const smb_al *list, int index)
+DATA al_get(const smb_al *list, int index, smb_status *status)
 {
-  CLEAR_ALL_ERRORS;
-
+  *status = SMB_SUCCESS;
   if (index < 0 || index >= list->length) {
-    RAISE(INDEX_ERROR);
+    *status = SMB_INDEX_ERROR;
     DATA mockData;
     return mockData;
   }
@@ -296,14 +296,14 @@ DATA al_get(const smb_al *list, int index)
 
    @param list A pointer to the list to remove from.
    @param index The index to remove from the list.
-   @exception INDEX_ERROR
+   @param[out] status Status variable.
+   @exception INDEX_ERROR If the specified index was out of range.
  */
-void al_remove(smb_al *list, int index)
+void al_remove(smb_al *list, int index, smb_status *status)
 {
-  CLEAR_ALL_ERRORS;
-
+  *status = SMB_SUCCESS;
   if (index < 0 || index >= list->length) {
-    RAISE(INDEX_ERROR);
+    *status = SMB_INDEX_ERROR;
     return;
   }
 
@@ -321,21 +321,20 @@ void al_remove(smb_al *list, int index)
    @param list A pointer to the list to insert into.
    @param index The index to insert at.
    @param newData The data to insert.
-   @exception ALLOCATION_ERROR
+   @param[out] status Status variable.
+   @exception SMB_ALLOCATION_ERROR If memory allocation failed.
  */
-void al_insert(smb_al *list, int index, DATA newData)
+void al_insert(smb_al *list, int index, DATA newData, smb_status *status)
 {
-  CLEAR_ALL_ERRORS;
-
+  *status = SMB_SUCCESS;
   if (index < 0) {
     index = 0;
   } else if (index > list->length) {
     index = list->length;
   }
 
-  al_shift_up(list, index);
-
-  if (CHECK(ALLOCATION_ERROR)) {
+  al_shift_up(list, index, status);
+  if (*status == SMB_ALLOCATION_ERROR) {
     return;
   }
 
@@ -352,14 +351,14 @@ void al_insert(smb_al *list, int index, DATA newData)
    @param list A pointer to the list to modify.
    @param index The index to set.
    @param newData The new data.
-   @exception INDEX_ERROR
+   @param[out] status Status variable.
+   @exception INDEX_ERROR If the provided index was out of range.
  */
-void al_set(smb_al *list, int index, DATA newData)
+void al_set(smb_al *list, int index, DATA newData, smb_status *status)
 {
-  CLEAR_ALL_ERRORS;
-
+  *status = SMB_SUCCESS;
   if (index < 0 || index >= list->length) {
-    RAISE(INDEX_ERROR);
+    *status = SMB_INDEX_ERROR;
     return;
   }
 
@@ -372,11 +371,12 @@ void al_set(smb_al *list, int index, DATA newData)
 
    @param list A pointer to the list to push to.
    @param newData The data to push to the back.
-   @exception ALLOCATION_ERROR (just like al_append)
+   @param[out] status Status variable.
+   @exception SMB_ALLOCATION_ERROR If memory allocation failed.
  */
-void al_push_back(smb_al *list, DATA newData)
+void al_push_back(smb_al *list, DATA newData, smb_status *status)
 {
-  return al_append(list, newData);
+  return al_append(list, newData, status);
 }
 
 /**
@@ -384,13 +384,16 @@ void al_push_back(smb_al *list, DATA newData)
    know what 'pop' means.
 
    @param list A pointer to the list to pop from.
+   @param[out] status Status variable.
    @returns The data from the back of the list.
    @exception INDEX_ERROR if the list is empty.
  */
-DATA al_pop_back(smb_al *list)
+DATA al_pop_back(smb_al *list, smb_status *status)
 {
-  DATA toReturn = al_get(list, list->length - 1);
-  al_remove(list, list->length - 1);
+  // On failure, returns dummy and sets INDEX_ERROR:
+  DATA toReturn = al_get(list, list->length - 1, status);
+  // On failure, sets INDEX_ERROR and does nothing:
+  al_remove(list, list->length - 1, status);
   return toReturn;
 }
 
@@ -399,12 +402,13 @@ DATA al_pop_back(smb_al *list)
    don't know what 'peek' means.
 
    @param list A pointer to the list to peek from.
+   @param[out] status Status variable.
    @returns The data at the back of the list.
-   @exception INDEX_ERROR if the list is empty
+   @exception INDEX_ERROR if the list is empty.
  */
-DATA al_peek_back(smb_al *list)
+DATA al_peek_back(smb_al *list, smb_status *status)
 {
-  return al_get(list, list->length - 1);
+  return al_get(list, list->length - 1, status);
 }
 
 /**
@@ -413,11 +417,12 @@ DATA al_peek_back(smb_al *list)
 
    @param list A pointer to the list to push to.
    @param DATA The data to push to the front.
-   @exception ALLOCATION_ERROR
+   @param[out] status Status variable.
+   @exception SMB_ALLOCATION_ERROR If memory allocation fails.
  */
-void al_push_front(smb_al *list, DATA newData)
+void al_push_front(smb_al *list, DATA newData, smb_status *status)
 {
-  return al_prepend(list, newData);
+  return al_prepend(list, newData, status);
 }
 
 /**
@@ -425,13 +430,16 @@ void al_push_front(smb_al *list, DATA newData)
    don't know what 'pop' means.
 
    @param list A pointer to the list to pop from.
+   @param[out] status Status variable.
    @returns The data from the front of the list.
-   @exception INDEX_ERROR if the list is empty
+   @exception INDEX_ERROR If the list is empty.
  */
-DATA al_pop_front(smb_al *list)
+DATA al_pop_front(smb_al *list, smb_status *status)
 {
-  DATA toReturn = al_get(list, 0);
-  al_remove(list, 0);
+  // On failure, returns dummy and sets INDEX_ERROR.
+  DATA toReturn = al_get(list, 0, status);
+  // On failure, sets INDEX_ERROR and does nothing.
+  al_remove(list, 0, status);
   return toReturn;
 }
 
@@ -440,12 +448,13 @@ DATA al_pop_front(smb_al *list)
    don't know what 'peek' means.
 
    @param list A pointer to the list to peek from.
+   @param[out] status Status variable.
    @returns The data from the front of the list.
    @exception INDEX_ERROR if the list is empty.
  */
-DATA al_peek_front(smb_al *list)
+DATA al_peek_front(smb_al *list, smb_status *status)
 {
-  return al_get(list, 0);
+  return al_get(list, 0, status);
 }
 
 /**
@@ -456,8 +465,6 @@ DATA al_peek_front(smb_al *list)
  */
 int al_length(const smb_al *list)
 {
-  CLEAR_ALL_ERRORS;
-
   return list->length;
 }
 
@@ -480,11 +487,17 @@ int al_index_of(const smb_al *list, DATA d)
 /**
    @brief Return the next item in the array list.
    @param iter The iterator being used.
+   @param[out] status Status variable.
    @return The next item in the array list.
+   @exception SMB_STOP_ITERATION If the list has no more elements.
  */
-DATA al_iter_next(smb_iter *iter)
+DATA al_iter_next(smb_iter *iter, smb_status *status)
 {
-  return al_get((const smb_al *)iter->ds, iter->index++);
+  DATA ret_val = al_get((const smb_al *)iter->ds, iter->index++, status);
+  if (*status == SMB_INDEX_ERROR) {
+    *status = SMB_STOP_ITERATION;
+  }
+  return ret_val;
 }
 
 /**
@@ -547,40 +560,40 @@ smb_iter al_get_iter(const smb_al *list)
 
 *******************************************************************************/
 
-void al_append_adapter(smb_list *l, DATA newData)
+void al_append_adapter(smb_list *l, DATA newData, smb_status *status)
 {
   smb_al *list = (smb_al*) (l->data);
-  return al_append(list, newData);
+  return al_append(list, newData, status);
 }
 
-void al_prepend_adapter(smb_list *l, DATA newData)
+void al_prepend_adapter(smb_list *l, DATA newData, smb_status *status)
 {
   smb_al *list = (smb_al*) (l->data);
-  return al_prepend(list, newData);
+  return al_prepend(list, newData, status);
 }
 
-DATA al_get_adapter(const smb_list *l, int index)
+DATA al_get_adapter(const smb_list *l, int index, smb_status *status)
 {
   const smb_al *list = (const smb_al*) (l->data);
-  return al_get(list, index);
+  return al_get(list, index, status);
 }
 
-void al_set_adapter(smb_list *l, int index, DATA newData)
+void al_set_adapter(smb_list *l, int index, DATA newData, smb_status *status)
 {
   smb_al *list = (smb_al*) (l->data);
-  return al_set(list, index, newData);
+  return al_set(list, index, newData, status);
 }
 
-void al_remove_adapter(smb_list *l, int index)
+void al_remove_adapter(smb_list *l, int index, smb_status *status)
 {
   smb_al *list = (smb_al*) (l->data);
-  return al_remove(list, index);
+  return al_remove(list, index, status);
 }
 
-void al_insert_adapter(smb_list *l, int index, DATA newData)
+void al_insert_adapter(smb_list *l, int index, DATA newData, smb_status *status)
 {
   smb_al *list = (smb_al*) (l->data);
-  return al_insert(list, index, newData);
+  return al_insert(list, index, newData, status);
 }
 
 void al_delete_adapter(smb_list *l)
@@ -597,40 +610,40 @@ int al_length_adapter(const smb_list *l)
   return al_length(list);
 }
 
-void al_push_back_adapter(smb_list *l, DATA newData)
+void al_push_back_adapter(smb_list *l, DATA newData, smb_status *status)
 {
   smb_al *list = (smb_al*) (l->data);
-  return al_push_back(list, newData);
+  return al_push_back(list, newData, status);
 }
 
-DATA al_pop_back_adapter(smb_list *l)
+DATA al_pop_back_adapter(smb_list *l, smb_status *status)
 {
   smb_al *list = (smb_al*) (l->data);
-  return al_pop_back(list);
+  return al_pop_back(list, status);
 }
 
-DATA al_peek_back_adapter(smb_list *l)
+DATA al_peek_back_adapter(smb_list *l, smb_status *status)
 {
   smb_al *list = (smb_al*) (l->data);
-  return al_peek_back(list);
+  return al_peek_back(list, status);
 }
 
-void al_push_front_adapter(smb_list *l, DATA newData)
+void al_push_front_adapter(smb_list *l, DATA newData, smb_status *status)
 {
   smb_al *list = (smb_al*) (l->data);
-  return al_push_front(list, newData);
+  return al_push_front(list, newData, status);
 }
 
-DATA al_pop_front_adapter(smb_list *l)
+DATA al_pop_front_adapter(smb_list *l, smb_status *status)
 {
   smb_al *list = (smb_al*) (l->data);
-  return al_pop_front(list);
+  return al_pop_front(list, status);
 }
 
-DATA al_peek_front_adapter(smb_list *l)
+DATA al_peek_front_adapter(smb_list *l, smb_status *status)
 {
   smb_al *list = (smb_al*) (l->data);
-  return al_peek_front(list);
+  return al_peek_front(list, status);
 }
 
 /**
@@ -682,9 +695,12 @@ smb_list al_cast_to_list(smb_al *list)
 
    @returns A generic list pointing to a new array list.
  */
-smb_list al_create_list()
+smb_list al_create_list(smb_status *status)
 {
-  smb_al *list = al_create();
-
+  smb_al *list = al_create(status);
+  if (*status == SMB_ALLOCATION_ERROR) {
+    smb_list dummy;
+    return dummy;
+  }
   return al_cast_to_list(list);
 }
