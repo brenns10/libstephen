@@ -40,6 +40,8 @@
 #ifndef LIBSTEPHEN_BF_H
 #define LIBSTEPHEN_BF_H
 
+#include "base.h"
+
 /**
    @brief Number of bits in a char type.  Shouldn't really change...
  */

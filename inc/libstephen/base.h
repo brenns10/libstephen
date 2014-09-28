@@ -200,6 +200,11 @@ typedef void (*DATA_ACTION)(DATA);
  */
 typedef int (*DATA_COMPARE)(DATA,DATA);
 
+int data_compare_string(DATA d1, DATA d2);
+int data_compare_int(DATA d1, DATA d2);
+int data_compare_float(DATA d1, DATA d2);
+int data_compare_pointer(DATA d1, DATA d2);
+
 /**
    @brief A function pointer that takes a DATA and prints it.
 

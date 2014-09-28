@@ -46,11 +46,14 @@
 ////////////////////////////////////////////////////////////////////////////////
 // TESTS
 
-int bf_test_init() {
+int bf_test_init()
+{
+  smb_status status;
   unsigned char field[SMB_BITFIELD_SIZE(test_bools)];
   int i;
 
-  bf_init(field, test_bools);
+  bf_init(field, test_bools, &status);
+  TEST_ASLINE(status == SMB_SUCCESS);
 
   for (i = 0; i < SMB_BITFIELD_SIZE(test_bools); i++) {
     TEST_ASLINE(field[i] == 0);
@@ -59,16 +62,21 @@ int bf_test_init() {
   return 0;
 }
 
-int bf_test_memory() {
+int bf_test_memory()
+{
+  smb_status status;
   unsigned char *field;
 
-  field = bf_create(test_bools);
+  field = bf_create(test_bools, &status);
+  TEST_ASLINE(status == SMB_SUCCESS);
   bf_delete(field, test_bools);
 
   return 0; // looking for memory leaks here
 }
 
-int bf_test_check() {
+int bf_test_check()
+{
+  smb_status status;
   unsigned char field[2] = {0x00, 0xFF};
   int i;
 
@@ -86,11 +94,14 @@ int bf_test_check() {
   return 0;
 }
 
-int bf_test_set() {
+int bf_test_set()
+{
+  smb_status status;
   unsigned char field[SMB_BITFIELD_SIZE(test_bools)];
   int i;
 
-  bf_init(field, test_bools);
+  bf_init(field, test_bools, &status);
+  TEST_ASLINE(status == SMB_SUCCESS);
   for (i = 0; i < test_bools; i += 2) {
     TEST_ASLINE(!bf_check(field, i));
     bf_set(field, i);
@@ -108,11 +119,14 @@ int bf_test_set() {
   return 0;
 }
 
-int bf_test_clear() {
+int bf_test_clear()
+{
+  smb_status status;
   unsigned char field[SMB_BITFIELD_SIZE(test_bools)];
   int i;
 
-  bf_init(field, test_bools);
+  bf_init(field, test_bools, &status);
+  TEST_ASLINE(status == SMB_SUCCESS);
   for (i = 0; i < test_bools; i++) {
     bf_set(field, i); // this is already tested
   }
@@ -134,11 +148,14 @@ int bf_test_clear() {
   return 0;
 }
 
-int bf_test_flip() {
+int bf_test_flip()
+{
+  smb_status status;
   unsigned char field[SMB_BITFIELD_SIZE(test_bools)];
   int i;
 
-  bf_init(field, test_bools);
+  bf_init(field, test_bools, &status);
+  TEST_ASLINE(status == SMB_SUCCESS);
   // Set all the even numbered fields
   for (i = 0; i < test_bools; i += 2) {
     bf_set(field, i); //tested
@@ -166,22 +183,22 @@ int bf_test_flip() {
 void bit_field_test() {
   smb_ut_group *group = su_create_test_group("bit field");
 
-  smb_ut_test *init = su_create_test("init", bf_test_init, 0, 1);
+  smb_ut_test *init = su_create_test("init", bf_test_init, 1);
   su_add_test(group, init);
 
-  smb_ut_test *memory = su_create_test("memory", bf_test_memory, 0, 1);
+  smb_ut_test *memory = su_create_test("memory", bf_test_memory, 1);
   su_add_test(group, memory);
 
-  smb_ut_test *check = su_create_test("check", bf_test_check, 0, 1);
+  smb_ut_test *check = su_create_test("check", bf_test_check, 1);
   su_add_test(group, check);
 
-  smb_ut_test *set = su_create_test("set", bf_test_set, 0, 1);
+  smb_ut_test *set = su_create_test("set", bf_test_set, 1);
   su_add_test(group, set);
 
-  smb_ut_test *clear = su_create_test("clear", bf_test_clear, 0, 1);
+  smb_ut_test *clear = su_create_test("clear", bf_test_clear, 1);
   su_add_test(group, clear);
 
-  smb_ut_test *flip = su_create_test("flip", bf_test_flip, 0, 1);
+  smb_ut_test *flip = su_create_test("flip", bf_test_flip, 1);
   su_add_test(group, flip);
 
   su_run_group(group);
