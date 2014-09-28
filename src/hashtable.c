@@ -49,21 +49,6 @@
 *******************************************************************************/
 
 /**
-   @brief Detrmines whether or not two DATA unions are equal.
-
-   @param d1 The first DATA to compare.
-   @param d2 The second DATA to compare.
-   @retval 0 if not equal.
-   @retval Nonzero if equal.
- */
-int data_equal(DATA d1, DATA d2)
-{
-  return (d1.data_llint == d2.data_llint)
-    && (d1.data_dbl == d2.data_dbl)
-    && (d1.data_ptr == d2.data_ptr);
-}
-
-/**
    @brief Returns the next hashtable size.
 
    @param current The current size of the hash table.
@@ -80,24 +65,26 @@ int ht_next_size(int current)
 /**
    @brief Allocate and initialize a hash table bucket.
 
-   @param dKey The key stored
-   @param dValue The value stored
-   @param pNext The next bucket pointer
+   @param key The key stored
+   @param value The value stored
+   @param next The next bucket pointer
+   @param[out] status Status variable.
    @returns A pointer to a new hash table bucket.
-   @exception ALLOCATION_ERROR
+   @exception ALLOCATION_ERROR If memory allocation failed.
  */
-smb_ht_bckt *ht_bucket_create(DATA dKey, DATA dValue, smb_ht_bckt *pNext)
+smb_ht_bckt *ht_bucket_create(DATA key, DATA value, smb_ht_bckt *next,
+                              smb_status *status)
 {
   smb_ht_bckt *pBucket;
   pBucket = (smb_ht_bckt*) malloc(sizeof(smb_ht_bckt));
   if (!pBucket) {
-    RAISE(ALLOCATION_ERROR);
+    *status = SMB_ALLOCATION_ERROR;
     return NULL;
   }
   SMB_INCREMENT_MALLOC_COUNTER(sizeof(smb_ht_bckt));
-  pBucket->key = dKey;
-  pBucket->value = dValue;
-  pBucket->next = pNext;
+  pBucket->key = key;
+  pBucket->value = value;
+  pBucket->next = next;
   return pBucket;
 }
 
@@ -117,20 +104,22 @@ void ht_bucket_delete(smb_ht_bckt *pToDelete)
 
   This function actually performs a lot of tasks rolled into one.  First, if you
   pass NULL as the pBucket, it will return NULL.  More interestingly, it will
-  return the pointer to the bucket that equals dKey if it exists, or the last
-  bucket in the list if there is none equalling dKey.  This way, you can just
-  check the return value, and if dKey == pBucket->key, you have the pre-xisting
-  spot for dKey.  Otherwise, you can just create the next item in the list.
+  return the pointer to the bucket that equals key if it exists, or the last
+  bucket in the list if there is none equalling key.  This way, you can just
+  check the return value, and if key == pBucket->key, you have the pre-xisting
+  spot for key.  Otherwise, you can just create the next item in the list.
 
   @param pBucket The bucket to search within.
-  @param dKey The key to search for.
-  @returns The bucket containing dKey.
+  @param key The key to search for.
+  @returns The bucket containing key.
  */
-smb_ht_bckt *ht_find_in_bucket(smb_ht_bckt *pBucket, DATA dKey)
+smb_ht_bckt *ht_find_in_bucket(smb_ht_bckt *pBucket, DATA key,
+                               DATA_COMPARE equal)
 {
   if (pBucket == NULL) return NULL;
 
-  while (pBucket->next && !data_equal(pBucket->key, dKey)) pBucket = pBucket->next;
+  while (pBucket->next && equal(pBucket->key, key) != 0)
+    pBucket = pBucket->next;
 
   return pBucket;
 }
@@ -143,31 +132,31 @@ smb_ht_bckt *ht_find_in_bucket(smb_ht_bckt *pBucket, DATA dKey)
    implement a hash table, the table must expand as you add to it, which is the
    part that ht_insert takes care of.
 
-   @param pTable The table to insert into.
+   @param table The table to insert into.
    @param pBucket The bucket containing the data to insert.  Note that this
    bucket may not be the final bucket containing the data.
  */
-void ht_insert_bucket(smb_ht *pTable, smb_ht_bckt *pBucket)
+void ht_insert_bucket(smb_ht *table, smb_ht_bckt *pBucket)
 {
   smb_ht_bckt *curr;
-  unsigned int index = pTable->hash(pBucket->key) % pTable->allocated;
+  unsigned int index = table->hash(pBucket->key) % table->allocated;
 
-  if (pTable->table[index]) {
+  if (table->table[index]) {
     // A linked list already exists here.
-    curr = ht_find_in_bucket(pTable->table[index], pBucket->key);
-    if (data_equal(curr->key, pBucket->key)) {
+    curr = ht_find_in_bucket(table->table[index], pBucket->key, table->equal);
+    if (table->equal(curr->key, pBucket->key)) {
       // Key already exists in table
       curr->value = pBucket->value;
       ht_bucket_delete(pBucket);
     } else {
       // assert curr->next == NULL
       curr->next = pBucket;
-      pTable->length++;
+      table->length++;
     }
   } else {
     // No linked list exists yet
-    pTable->table[index] = pBucket;
-    pTable->length++;
+    table->table[index] = pBucket;
+    table->length++;
   }
 
 }
@@ -175,34 +164,35 @@ void ht_insert_bucket(smb_ht *pTable, smb_ht_bckt *pBucket)
 /**
    @brief Expand the hash table, adding increment to the capacity of the table.
 
-   @param pTable The table to expand.
+   @param table The table to expand.
+   @param[out] status Status variable.
    @exception ALLOCATION_ERROR If the new table couldn't be allocated, no change
    is made.
  */
-void ht_resize(smb_ht *pTable)
+void ht_resize(smb_ht *table, smb_status *status)
 {
   smb_ht_bckt **pOldBuffer;
   smb_ht_bckt *curr, *temp;
   int index, oldLength, oldAllocated;
 
   // Step one: allocate new space for the table
-  pOldBuffer = pTable->table;
-  oldLength = pTable->length;
-  oldAllocated = pTable->allocated;
-  pTable->length = 0;
-  pTable->allocated = ht_next_size(oldAllocated);
-  pTable->table = (smb_ht_bckt**) malloc(pTable->allocated * sizeof(smb_ht_bckt*));
-  if (!pTable->table) {
+  pOldBuffer = table->table;
+  oldLength = table->length;
+  oldAllocated = table->allocated;
+  table->length = 0;
+  table->allocated = ht_next_size(oldAllocated);
+  table->table = (smb_ht_bckt**) malloc(table->allocated * sizeof(smb_ht_bckt*));
+  if (!table->table) {
     // We want to preserve the data already contained in the table.
-    RAISE(ALLOCATION_ERROR);
-    pTable->table = pOldBuffer;
-    pTable->length = oldLength;
-    pTable->allocated = oldAllocated;
+    *status = SMB_ALLOCATION_ERROR;
+    table->table = pOldBuffer;
+    table->length = oldLength;
+    table->allocated = oldAllocated;
     return;
   }
   // Zero out the new block too.
-  memset((void*)pTable->table, 0, pTable->allocated * sizeof(smb_ht_bckt*));
-  SMB_INCREMENT_MALLOC_COUNTER(pTable->allocated * sizeof(smb_ht_bckt*));
+  memset((void*)table->table, 0, table->allocated * sizeof(smb_ht_bckt*));
+  SMB_INCREMENT_MALLOC_COUNTER(table->allocated * sizeof(smb_ht_bckt*));
 
   // Step two, add the old items to the new table (no freeing, please)
   for (index = 0; index < oldAllocated; index++) {
@@ -213,7 +203,7 @@ void ht_resize(smb_ht *pTable)
         temp = curr->next; // Hang on to the next pointer...it could be changed
                            // once added to the "new" hash table
         curr->next = NULL;
-        ht_insert_bucket(pTable, curr);
+        ht_insert_bucket(table, curr);
         curr = temp;
       }
     }
@@ -227,12 +217,12 @@ void ht_resize(smb_ht *pTable)
 /**
    @brief Return the load factor of a hash table.
 
-   @param pTable The table to find the load factor of.
+   @param table The table to find the load factor of.
    @returns The load factor of the hash table.
  */
-double ht_load_factor(smb_ht *pTable)
+double ht_load_factor(smb_ht *table)
 {
-  return ((double) pTable->length) / ((double) pTable->allocated);
+  return ((double) table->length) / ((double) table->allocated);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -242,31 +232,34 @@ double ht_load_factor(smb_ht *pTable)
 /**
    @brief Initialize a hash table in memory already allocated.
 
-   @param pTable A pointer to the table to initialize.
+   @param table A pointer to the table to initialize.
    @param hash_func A hash function for the table.
+   @param equal A comparison function for DATA.
+   @param[out] status Status variable.
    @exception ALLOCATION_ERROR
  */
-void ht_init(smb_ht *pTable, HASH_FUNCTION hash_func)
+void ht_init(smb_ht *table, HASH_FUNCTION hash_func, DATA_COMPARE equal,
+             smb_status *status)
 {
-  CLEAR_ALL_ERRORS;
-
+  *status = SMB_SUCCESS;
   // Initialize values
-  pTable->length = 0;
-  pTable->allocated = HASH_TABLE_INITIAL_SIZE;
-  pTable->hash = hash_func;
+  table->length = 0;
+  table->allocated = HASH_TABLE_INITIAL_SIZE;
+  table->hash = hash_func;
+  table->equal = equal;
 
   // Create the bucket list
-  pTable->table = (smb_ht_bckt**) malloc(HASH_TABLE_INITIAL_SIZE * sizeof(smb_ht_bckt*));
-  if (!pTable->table) {
+  table->table = (smb_ht_bckt**) malloc(HASH_TABLE_INITIAL_SIZE * sizeof(smb_ht_bckt*));
+  if (!table->table) {
     SMB_DECREMENT_MALLOC_COUNTER(sizeof(smb_ht));
-    free(pTable);
-    RAISE(ALLOCATION_ERROR);
+    free(table);
+    *status = SMB_ALLOCATION_ERROR;
     return;
   }
   SMB_INCREMENT_MALLOC_COUNTER(HASH_TABLE_INITIAL_SIZE * sizeof(smb_ht_bckt*));
 
   // Zero out the entries in the table so we don't get segmentation faults.
-  memset((void*)pTable->table, 0, HASH_TABLE_INITIAL_SIZE * sizeof(smb_ht_bckt*));
+  memset((void*)table->table, 0, HASH_TABLE_INITIAL_SIZE * sizeof(smb_ht_bckt*));
 }
 
 /**
@@ -274,28 +267,33 @@ void ht_init(smb_ht *pTable, HASH_FUNCTION hash_func)
 
    @param hash_func A function that takes one DATA and returns a hash value
    generated from it.  It should be a good hash function.
+   @param equal A comparison function for DATA.
+   @param[out] status Status variable.
    @returns A pointer to the new hash table.
    @exception ALLOCATION_ERROR
  */
-smb_ht *ht_create(HASH_FUNCTION hash_func)
+smb_ht *ht_create(HASH_FUNCTION hash_func, DATA_COMPARE equal,
+                  smb_status *status)
 {
-  CLEAR_ALL_ERRORS;
+  *status = SMB_SUCCESS;
 
   // Allocate and create the table.
-  smb_ht *pTable;
-  pTable = (smb_ht*) malloc(sizeof(smb_ht));
-  if (!pTable) {
-    RAISE(ALLOCATION_ERROR);
+  smb_ht *table;
+  table = (smb_ht*) malloc(sizeof(smb_ht));
+  if (!table) {
+    *status = SMB_ALLOCATION_ERROR;
     return NULL;
   }
   SMB_INCREMENT_MALLOC_COUNTER(sizeof(smb_ht));
 
-  ht_init(pTable, hash_func);
-  if (CHECK(ALLOCATION_ERROR)) {
+  ht_init(table, hash_func, equal, status);
+  if (*status == SMB_ALLOCATION_ERROR) {
+    free(table);
+    SMB_DECREMENT_MALLOC_COUNTER(sizeof(smb_ht));
     return NULL;
   }
 
-  return pTable;
+  return table;
 }
 
 /**
@@ -305,19 +303,19 @@ smb_ht *ht_create(HASH_FUNCTION hash_func)
    Useful for stack valued hash tables.  A deleter must be specified in this
    function call.
 
-   @param pTable The table to destroy.
+   @param table The table to destroy.
    @param deleter The deletion action on the data.
  */
-void ht_destroy_act(smb_ht *pTable, DATA_ACTION deleter)
+void ht_destroy_act(smb_ht *table, DATA_ACTION deleter)
 {
   int i;
   smb_ht_bckt *curr, *temp;
 
-  if (!pTable) return;
+  if (!table) return;
 
   // Free all smb_ht_bckt's in the table
-  for (i = 0; i < pTable->allocated; i++) {
-    curr = pTable->table[i];
+  for (i = 0; i < table->allocated; i++) {
+    curr = table->table[i];
     while (curr) {
       temp = curr->next;
       if (deleter)
@@ -325,7 +323,7 @@ void ht_destroy_act(smb_ht *pTable, DATA_ACTION deleter)
       ht_bucket_delete(curr);
       curr = temp;
     }
-    pTable->table[i] = NULL;
+    table->table[i] = NULL;
   }
 }
 
@@ -336,42 +334,42 @@ void ht_destroy_act(smb_ht *pTable, DATA_ACTION deleter)
    If pointers are contained within the hash table, they are not freed.  Use
    ht_destroy_act to specify a deletion action on the hash table.
 
-   @param pTable The table to destroy.
+   @param table The table to destroy.
  */
-void ht_destroy(smb_ht *pTable)
+void ht_destroy(smb_ht *table)
 {
-  ht_destroy_act(pTable, NULL);
+  ht_destroy_act(table, NULL);
 }
 
 /**
    @brief Free the hash table and its resources.  Perform an action on each data before
    freeing the table.  Useful for freeing pointers stored in the table.
 
-   @param pTable The table to free.
+   @param table The table to free.
    @param deleter The action to perform on each value in the hash table before
    deletion.
  */
-void ht_delete_act(smb_ht *pTable, DATA_ACTION deleter)
+void ht_delete_act(smb_ht *table, DATA_ACTION deleter)
 {
-  if (!pTable) return;
+  if (!table) return;
 
-  ht_destroy_act(pTable, deleter);
+  ht_destroy_act(table, deleter);
 
-  SMB_DECREMENT_MALLOC_COUNTER(pTable->allocated * sizeof(smb_ht_bckt*));
-  free(pTable->table);
+  SMB_DECREMENT_MALLOC_COUNTER(table->allocated * sizeof(smb_ht_bckt*));
+  free(table->table);
   SMB_DECREMENT_MALLOC_COUNTER(sizeof(smb_ht));
-  free(pTable);
+  free(table);
 }
 
 /**
    @brief Free the hash table and its resources.  No pointers contained in the
    table will be freed.
 
-   @param pTable The table to free.
+   @param table The table to free.
  */
-void ht_delete(smb_ht *pTable)
+void ht_delete(smb_ht *table)
 {
-  ht_delete_act(pTable, NULL);
+  ht_delete_act(table, NULL);
 }
 
 /**
@@ -381,50 +379,54 @@ void ht_delete(smb_ht *pTable)
    already exists in the table, then the function will overwrite it with the new
    data provided.
 
-   @param pTable A pointer to the hash table.
-   @param dKey The key to insert.
-   @param dValue The value to insert at the key.
+   @param table A pointer to the hash table.
+   @param key The key to insert.
+   @param value The value to insert at the key.
+   @param[out] status Status variable.
    @exception ALLOCATION_ERROR
  */
-void ht_insert(smb_ht *pTable, DATA dKey, DATA dValue)
+void ht_insert(smb_ht *table, DATA key, DATA value, smb_status *status)
 {
-  CLEAR_ALL_ERRORS;
+  *status = SMB_SUCCESS;
 
-  if (ht_load_factor(pTable) > HASH_TABLE_MAX_LOAD_FACTOR) {
-    ht_resize(pTable);
-    if (CHECK(ALLOCATION_ERROR)) return;
+  if (ht_load_factor(table) > HASH_TABLE_MAX_LOAD_FACTOR) {
+    ht_resize(table, status);
+    if (*status == SMB_ALLOCATION_ERROR) return;
   }
 
-  smb_ht_bckt *pBucket = ht_bucket_create(dKey, dValue, NULL);
-  if (!pBucket) return;
+  smb_ht_bckt *pBucket = ht_bucket_create(key, value, NULL, status);
+  if (*status == SMB_ALLOCATION_ERROR) return;
 
-  ht_insert_bucket(pTable, pBucket);
+  ht_insert_bucket(table, pBucket);
 }
 
 /**
    @brief Remove the key, value pair stored in the hash table.
 
-   @param pTable A pointer to the hash table.
-   @param dKey The key to delete.
+   @param table A pointer to the hash table.
+   @param key The key to delete.
    @param deleter The action to perform on the value before removing it.
+   @param[out] status Status variable.
+   @exception SMB_NOT_FOUND_ERROR If an item with the given key is not found.
  */
-void ht_remove_act(smb_ht *pTable, DATA dKey, DATA_ACTION deleter)
+void ht_remove_act(smb_ht *table, DATA key, DATA_ACTION deleter,
+                   smb_status *status)
 {
-  CLEAR_ALL_ERRORS;
+  *status = SMB_SUCCESS;
 
   smb_ht_bckt *curr, *prev;
-  int index = pTable->hash(dKey) % pTable->allocated;
+  int index = table->hash(key) % table->allocated;
 
   // Stop if the key doesn't exist in the table.
-  if (!pTable->table[index]) {
-    RAISE(NOT_FOUND_ERROR);
+  if (!table->table[index]) {
+    *status = SMB_NOT_FOUND_ERROR;
     return;
   }
 
-  curr = pTable->table[index];
+  curr = table->table[index];
   prev = NULL;
 
-  while (curr && !data_equal(curr->key, dKey)) {
+  while (curr && table->equal(curr->key, key) != 0) {
     prev = curr;
     curr = curr->next;
   }
@@ -435,17 +437,17 @@ void ht_remove_act(smb_ht *pTable, DATA dKey, DATA_ACTION deleter)
     if (deleter)
       deleter(curr->value); // Perform user requested action
     ht_bucket_delete(curr);
-    pTable->length--;
+    table->length--;
   } else if (curr && !prev) {
     // Found a match, and it is the first in the linked list
-    pTable->table[index] = curr->next;
+    table->table[index] = curr->next;
     if (deleter)
       deleter(curr->value); // Perform user requested action
     ht_bucket_delete(curr);
-    pTable->length--;
+    table->length--;
   } else {
     // Didn't find a match in this bucket list
-    RAISE(NOT_FOUND_ERROR);
+    *status = SMB_NOT_FOUND_ERROR;
   }
 }
 
@@ -454,38 +456,41 @@ void ht_remove_act(smb_ht *pTable, DATA dKey, DATA_ACTION deleter)
 
    This function does not call a deleter on the stored data.
 
-   @param pTable A pointer to the hash table.
-   @param dKey The key to delete.
+   @param table A pointer to the hash table.
+   @param key The key to delete.
+   @param[out] status Status variable.
+   @exception SMB_NOT_FOUND_ERROR If an item with the given key is not found.
  */
-void ht_remove(smb_ht *pTable, DATA dKey)
+void ht_remove(smb_ht *table, DATA key, smb_status *status)
 {
-  ht_remove_act(pTable, dKey, NULL);
+  ht_remove_act(table, key, NULL, status);
 }
 
 /**
    @brief Return the value associated with the key provided.
 
-   @param pTable A pointer to the hash table.
-   @param dKey The key whose value to retrieve.
+   @param table A pointer to the hash table.
+   @param key The key whose value to retrieve.
+   @param[out] status Status variable.
    @returns The value associated the key.
    @exception NOT_FOUND_ERROR
  */
-DATA ht_get(smb_ht const *pTable, DATA dKey)
+DATA ht_get(smb_ht const *table, DATA key, smb_status *status)
 {
-  CLEAR_ALL_ERRORS;
+  *status = SMB_SUCCESS;
 
   smb_ht_bckt *pBucket;
   DATA d;
-  int index = pTable->hash(dKey) % pTable->allocated;
+  int index = table->hash(key) % table->allocated;
 
-  if (pTable->table[index]) {
-    pBucket = ht_find_in_bucket(pTable->table[index], dKey);
-    if (data_equal(pBucket->key, dKey)){
+  if (table->table[index]) {
+    pBucket = ht_find_in_bucket(table->table[index], key, table->equal);
+    if (table->equal(pBucket->key, key) == 0){
       return pBucket->value;
     }
   }
   // ELSE: Not found
-  RAISE(NOT_FOUND_ERROR);
+  *status = SMB_NOT_FOUND_ERROR;
   return d;
 }
 
@@ -516,29 +521,29 @@ unsigned int ht_string_hash(DATA data)
    (with full_mode) so you can see how well entries are distributed in the
    table.  Or, it can be compact and show just the rows with data.
 
-   @param pTable The table to print.
+   @param table The table to print.
    @param full_mode Whether to print every row in the hash table.
  */
-void ht_print(smb_ht const *pTable, int full_mode)
+void ht_print(smb_ht const *table, int full_mode)
 {
   smb_ht_bckt *curr = NULL;
   int i;
   int printed = 0;
 
-  for (i = 0; i < pTable->allocated; i++) {
-    curr = pTable->table[i];
-    if (pTable->table[i] || full_mode)
+  for (i = 0; i < table->allocated; i++) {
+    curr = table->table[i];
+    if (table->table[i] || full_mode)
       printf("[%d]: ", i);
     while (curr) {
       printf("0x%Lx|0x%Lx, ", curr->key.data_llint, curr->value.data_llint);
       curr = curr->next;
       printed++;
     }
-    if (pTable->table[i] || full_mode)
+    if (table->table[i] || full_mode)
       printf("\n");
   }
 
-  if (printed != pTable->length)
+  if (printed != table->length)
     printf("Error: %d items printed, but %d items are recorded by hash table.\n",
-           printed, pTable->length);
+           printed, table->length);
 }

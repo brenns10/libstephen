@@ -42,6 +42,7 @@
 #include <stdlib.h>           /* malloc, exit */
 #include <wchar.h>            /* wchar_t */
 #include <stdbool.h>          /* bool */
+#include <string.h>           /* strcmp */
 
 #include "libstephen/base.h"  /* SMB_* */
 
@@ -263,4 +264,80 @@ void data_printer_float(FILE *f, DATA d)
 void data_printer_pointer(FILE *f, DATA d)
 {
   fprintf(f, "%p", d.data_ptr);
+}
+
+/**
+   @brief Test whether two null terminated strings are equal.
+   @param d1 First data.
+   @param d2 Second data.
+   @return An integer indicating whether the strings are equal, less than, or
+   greater than.
+ */
+int data_compare_string(DATA d1, DATA d2)
+{
+  char *s1, *s2;
+  s1 = (char *)d1.data_ptr;
+  s2 = (char *)d2.data_ptr;
+  return strcmp(s1, s2);
+}
+
+/**
+   @brief Test whether two ints are equal.
+   @param d1 First int.
+   @param d2 Second int.
+   @return An integer indicating whether the ints are equal, less than, or
+   greater than.
+ */
+int data_compare_int(DATA d1, DATA d2)
+{
+  // Since the difference between two long long ints could be more than an int,
+  // we need to store the difference and conditionally return.
+  long long int diff = d1.data_llint - d2.data_llint;
+  if (diff < 0) {
+    return -1;
+  } else if (diff > 0) {
+    return 1;
+  } else {
+    return 0;
+  }
+}
+
+/**
+   @brief Test whether two doubles are equal.
+
+   This function compares two doubles stored in DATA.  However, it's NOT a smart
+   comparison.  It really just tests whether the binary representations
+   themselves are equal.  If you want a smart method for comparing floating
+   point numbers, look elsewhere!
+
+   @param d1 First double.
+   @param d2 Second double.
+   @return An integer indicating whether the doubles are equal, less than, or
+   greater than.
+ */
+int data_compare_float(DATA d1, DATA d2)
+{
+  double diff = d1.data_llint - d2.data_llint;
+  if (diff < 0) {
+    return -1;
+  } else if (diff > 0) {
+    return 1;
+  } else {
+    return 0;
+  }
+}
+
+/**
+   @brief Test whether two pointers are equal.  Does not order them.
+   @param d1 First pointer.
+   @param d2 Second pointer.
+   @return 0 if equal, 1 if not.
+ */
+int data_compare_pointer(DATA d1, DATA d2)
+{
+  if (d1.data_ptr == d2.data_ptr) {
+    return 0;
+  } else {
+    return 1;
+  }
 }

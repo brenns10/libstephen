@@ -42,6 +42,7 @@
 
 #include <stdlib.h>  /* size_t  */
 #include <stdio.h>   /* fprintf */
+#include <stdbool.h> /* bool */
 
 /*******************************************************************************
 
@@ -180,6 +181,24 @@ typedef union DATA {
    every item in a list (e.g. printing), and many more applications.
  */
 typedef void (*DATA_ACTION)(DATA);
+
+/**
+   @brief A function pointer that takes two DATA and compares them.
+
+   This comparator function is used for two purposes: (1) to check for equality,
+   and (2) to order data.  If a particular type of data has no ordering, then it
+   is sufficient for the purposes of equality testing to return 0 if equal, and
+   1 if not equal.  However, this will fail for any function that uses the
+   DATA_COMPARE to order DATA.  Therefore, any function that takes a
+   DATA_COMPARE should specify in its documentation whether it will use it for
+   equality testing, or for ordering.
+
+   The DATA_COMPARE function shall return 0 iff the two DATA are equal.  It
+   shall return a value less than 0 iff the first is less than the second.  It
+   shall return a value greater than zero iff the first is greater than the
+   second.
+ */
+typedef int (*DATA_COMPARE)(DATA,DATA);
 
 /**
    @brief A function pointer that takes a DATA and prints it.

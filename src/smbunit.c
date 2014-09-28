@@ -50,13 +50,11 @@
 
    @param description A description of the test.
    @param run A function pointer to the test function.
-   @param expected_errors The errors you expect from the test function.  0 if
-   none.  You can combine more than one error with &.
    @param check_mem_leaks Whether to check if the mallocs before = mallocs
    after.  0 for no, 1 for yes.
    @returns A pointer to the new test.
  */
-smb_ut_test *su_create_test(char * description, int (*run)(), int expected_errors, int check_mem_leaks)
+smb_ut_test *su_create_test(char *description, int (*run)(), int check_mem_leaks)
 {
   smb_ut_test *test = (smb_ut_test*) malloc(sizeof(smb_ut_test));
   SMB_INCREMENT_MALLOC_COUNTER(sizeof(smb_ut_test));
@@ -64,7 +62,6 @@ smb_ut_test *su_create_test(char * description, int (*run)(), int expected_error
   test->description[SMB_UNIT_DESCRIPTION_SIZE - 1] = 0;
 
   test->run = run;
-  test->expected_errors = expected_errors;
   test->check_mem_leaks = check_mem_leaks;
 
   return test;
@@ -76,7 +73,7 @@ smb_ut_test *su_create_test(char * description, int (*run)(), int expected_error
    @param description A short description for the group.
    @returns A pointer to the test group.
  */
-smb_ut_group *su_create_test_group(char * description)
+smb_ut_group *su_create_test_group(char *description)
 {
   smb_ut_group *group = (smb_ut_group*) malloc(sizeof(smb_ut_group));
   SMB_INCREMENT_MALLOC_COUNTER(sizeof(smb_ut_group));
@@ -118,14 +115,11 @@ void su_add_test(smb_ut_group *group, smb_ut_test *test)
    stdout, along with the specific return code.  The reason for a non-zero
    return code is usually a failed assertion, in which case the code corresponds
    to the assertion number.
-   @retval 2 Expected errors not encountered.  The test expected at least one
-   error, and none of the expected errors were raised by the function.
    @retval 3 Memory was leaked.  The test returned 0 and all expected errors
    were found (or no errors were expected or found), but memory leaked.
  */
 int su_run_test(smb_ut_test *test)
 {
-  CLEAR_ALL_ERRORS; // just in case
   int mallocs = SMB_GET_MALLOC_COUNTER;
   int result = test->run();
   mallocs = SMB_GET_MALLOC_COUNTER - mallocs;
@@ -133,11 +127,6 @@ int su_run_test(smb_ut_test *test)
   if (result) {
     printf ("TEST \"%s\" failed with code: %d\n",test->description, result);
     return 1;
-  }
-
-  if (test->expected_errors && !CHECK(test->expected_errors)) {
-    printf ("TEST \"%s\" did not raise: %X\n",test->description, test->expected_errors);
-    return 2;
   }
 
   if (test->check_mem_leaks && mallocs) {
