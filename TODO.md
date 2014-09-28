@@ -14,23 +14,6 @@ for the future.
 Most unit testing libraries have setup and tear down methods.  I can make
 group-level and test-level setup and tear down methods.
 
-## Better Error Handling
-
-This is a big one.  I currently have a rather half-assed attempt at error
-handling right now.  It consists of an error variable with a limited amount of
-error flags, and no more information.  It requires the user to be extremely
-proactive (`if (CHECK(ERROR_X)) { /* handle error */}`).  I need an error
-handling mechanism that is easier to use, includes more information, and can
-drop a stack trace when necessary.  Of course, I can't implement try/catch
-blocks (well, it's possible with setjmp/longjmp... but terrifying), but I can
-make things much easier.
-
-## Wrapped Standard Library Calls
-
-Along with better error handling would be wrapped stdlib calls.  They could
-convert stdlib errors into `libstephen` errors, and possible handle some of them
-(like printing a stack trace, exiting, etc.).
-
 ## Nice String Features
 
 ### String Builders
