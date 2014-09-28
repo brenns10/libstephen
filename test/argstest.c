@@ -39,6 +39,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <assert.h>
 
 #include "libstephen/ad.h"
 #include "libstephen/ll.h"
@@ -50,7 +51,9 @@
  */
 int ad_test_heap(void)
 {
-  smb_ad *arg_data = arg_data_create();
+  smb_status status;
+  smb_ad *arg_data = arg_data_create(&status);
+  TEST_ASLINE(status == SMB_SUCCESS);
   arg_data_delete(arg_data);
   return 0;
 }
@@ -61,7 +64,9 @@ int ad_test_heap(void)
 int ad_test_stack(void)
 {
   smb_ad ad;
-  arg_data_init(&ad);
+  smb_status status;
+  arg_data_init(&ad, &status);
+  TEST_ASLINE(status == SMB_SUCCESS);
   arg_data_destroy(&ad);
   return 0;
 }
@@ -83,8 +88,11 @@ char *basic_flags[] = {
 int ad_test_basic_flags(void)
 {
   smb_ad ad;
-  arg_data_init(&ad);
-  process_args(&ad, sizeof(basic_flags) / sizeof(char*), basic_flags);
+  smb_status status;
+  arg_data_init(&ad, &status);
+  TEST_ASLINE(status == SMB_SUCCESS);
+  process_args(&ad, sizeof(basic_flags) / sizeof(char*), basic_flags, &status);
+  TEST_ASLINE(status == SMB_SUCCESS);
 
   for (char c = 'a'; c <= 'z'; c++) {
     if (c <= 'd') {
@@ -120,8 +128,11 @@ char *grouped_flags[] = {
 int ad_test_grouped_flags(void)
 {
   smb_ad ad;
-  arg_data_init(&ad);
-  process_args(&ad, sizeof(grouped_flags) / sizeof(char*), grouped_flags);
+  smb_status status;
+  arg_data_init(&ad, &status);
+  TEST_ASLINE(status == SMB_SUCCESS);
+  process_args(&ad, sizeof(grouped_flags) / sizeof(char*), grouped_flags, &status);
+  TEST_ASLINE(status == SMB_SUCCESS);
 
   for (char c = 'a'; c <= 'z'; c++) {
     if (c <= 'd') {
@@ -158,8 +169,11 @@ int ad_test_flag_params(void)
 {
   smb_ad ad;
   char *str;
-  arg_data_init(&ad);
-  process_args(&ad, sizeof(flag_params) / sizeof(char*), flag_params);
+  smb_status status;
+  arg_data_init(&ad, &status);
+  TEST_ASLINE(status == SMB_SUCCESS);
+  process_args(&ad, sizeof(flag_params) / sizeof(char*), flag_params, &status);
+  TEST_ASLINE(status == SMB_SUCCESS);
 
   TEST_ASLINE(check_flag(&ad, 'a'));
   TEST_ASLINE(check_flag(&ad, 'b'));
@@ -193,8 +207,11 @@ char *long_flags[] = {
 int ad_test_long_flags(void)
 {
   smb_ad ad;
-  arg_data_init(&ad);
-  process_args(&ad, sizeof(long_flags) / sizeof(char*), long_flags);
+  smb_status status;
+  arg_data_init(&ad, &status);
+  TEST_ASLINE(status == SMB_SUCCESS);
+  process_args(&ad, sizeof(long_flags) / sizeof(char*), long_flags, &status);
+  TEST_ASLINE(status == SMB_SUCCESS);
 
   TEST_ASLINE(check_long_flag(&ad, "this-is-a-long-flag"));
   TEST_ASLINE(check_long_flag(&ad, "this-is-another-long-flag"));
@@ -219,8 +236,11 @@ int ad_test_long_params(void)
 {
   smb_ad ad;
   char *str;
-  arg_data_init(&ad);
-  process_args(&ad, sizeof(long_params) / sizeof(char*), long_params);
+  smb_status status;
+  arg_data_init(&ad, &status);
+  TEST_ASLINE(status == SMB_SUCCESS);
+  process_args(&ad, sizeof(long_params) / sizeof(char*), long_params, &status);
+  TEST_ASLINE(status == SMB_SUCCESS);
 
   TEST_ASLINE(check_long_flag(&ad, "long-flag1"));
   TEST_ASLINE(check_long_flag(&ad, "long-flag2"));
@@ -256,8 +276,11 @@ int ad_test_bare_strings(void)
 {
   smb_ad ad;
   char *str;
-  arg_data_init(&ad);
-  process_args(&ad, sizeof(bare_strings) / sizeof(char*), bare_strings);
+  smb_status status;
+  arg_data_init(&ad, &status);
+  TEST_ASLINE(status == SMB_SUCCESS);
+  process_args(&ad, sizeof(bare_strings) / sizeof(char*), bare_strings, &status);
+  TEST_ASLINE(status == SMB_SUCCESS);
 
   TEST_ASLINE(check_flag(&ad, 'a'));
   TEST_ASLINE(check_long_flag(&ad, "blah"));
@@ -280,34 +303,33 @@ void args_test(void)
 {
   smb_ut_group *group = su_create_test_group("args");
 
-  smb_ut_test *heap = su_create_test("heap", &ad_test_heap, 0, 1);
+  smb_ut_test *heap = su_create_test("heap", &ad_test_heap, 1);
   su_add_test(group, heap);
 
-  smb_ut_test *stack = su_create_test("stack", &ad_test_stack, 0, 1);
+  smb_ut_test *stack = su_create_test("stack", &ad_test_stack, 1);
   su_add_test(group, stack);
 
   smb_ut_test *basic_flags = su_create_test("basic_flags", &ad_test_basic_flags,
-                                            0, 1);
+                                            1);
   su_add_test(group, basic_flags);
 
   smb_ut_test *grouped_flags = su_create_test("grouped_flags",
-                                              &ad_test_grouped_flags, 0, 1);
+                                              &ad_test_grouped_flags, 1);
   su_add_test(group, grouped_flags);
 
   smb_ut_test *flag_params = su_create_test("flag_params", &ad_test_flag_params,
-                                            0, 1);
+                                            1);
   su_add_test(group, flag_params);
 
-  smb_ut_test *long_flags = su_create_test("long_flags", &ad_test_long_flags, 0,
-                                           1);
+  smb_ut_test *long_flags = su_create_test("long_flags", &ad_test_long_flags,1);
   su_add_test(group, long_flags);
 
   smb_ut_test *long_params = su_create_test("long_params", &ad_test_long_params,
-                                            0, 1);
+                                            1);
   su_add_test(group, long_params);
 
   smb_ut_test *bare_strings = su_create_test("bare_strings",
-                                             &ad_test_bare_strings, 0, 1);
+                                             &ad_test_bare_strings, 1);
   su_add_test(group, bare_strings);
 
   su_run_group(group);
@@ -334,9 +356,11 @@ void iterate_long_flags(smb_ad *pArgData)
 {
   DATA d;
   smb_iter iter = ll_get_iter(pArgData->long_flags);
+  smb_status status;
 
   while (iter.has_next(&iter)) {
-    d = iter.next(&iter);
+    d = iter.next(&iter, &status);
+    assert(status == SMB_SUCCESS);
     char *string = d.data_ptr;
     printf("Flag \"%s\" set.\n", string);
 
@@ -351,9 +375,11 @@ void iterate_bare_strings(smb_ad *pArgData)
 {
   DATA d;
   smb_iter iter = ll_get_iter(pArgData->bare_strings);
+  smb_status status;
 
   while (iter.has_next(&iter)) {
-    d = iter.next(&iter);
+    d = iter.next(&iter, &status);
+    assert(status == SMB_SUCCESS);
     char *string = d.data_ptr;
     printf("String: \"%s\"\n", string);
   }
@@ -364,8 +390,11 @@ int args_test_main(int argc, char **argv)
 {
   printf("Mallocs: %d\n", SMB_GET_MALLOC_COUNTER);
   smb_ad ArgData;
-  arg_data_init(&ArgData);
-  process_args(&ArgData, argc - 1, argv + 1);
+  smb_status status;
+  arg_data_init(&ArgData, &status);
+  assert(status == SMB_SUCCESS);
+  process_args(&ArgData, argc - 1, argv + 1, &status);
+  assert(status == SMB_SUCCESS);
 
   iterate_flags(&ArgData, 'A', 'Z');
   iterate_flags(&ArgData, 'a', 'z');
