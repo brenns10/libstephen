@@ -57,7 +57,7 @@ int utf8_test_predetermined(void)
   // UTF-8 hex:         F    0     9    F     9    8     8    2
   char *face = "\xF0\x9F\x98\x82";
   utf8toucs4(result, face, BFSZ);
-  TEST_ASLINE(wcscmp(result, L"\U0001F602") == 0);
+  TEST_ASSERT(wcscmp(result, L"\U0001F602") == 0);
 
   // Code point U+4EBA -- Chinese character ren ('man')
   // Code point in binary: 0100 1110 1011 1010
@@ -67,7 +67,7 @@ int utf8_test_predetermined(void)
   // UTF-8 hex:         E    4     B    A     B    A
   char *ren = "\xE4\xBA\xBA";
   utf8toucs4(result, ren, BFSZ);
-  TEST_ASLINE(wcscmp(result, L"\u4EBA") == 0);
+  TEST_ASSERT(wcscmp(result, L"\u4EBA") == 0);
 
   // Code point U+0101 -- Latin small letter a with macron
   // Code point in binary: 0000 0001  0000 0001
@@ -77,7 +77,7 @@ int utf8_test_predetermined(void)
   // UTF-8 hex:         C    4     8    1
   char *amac = "\xC4\x81";
   utf8toucs4(result, amac, BFSZ);
-  TEST_ASLINE(wcscmp(result, L"\u0101") == 0);
+  TEST_ASSERT(wcscmp(result, L"\u0101") == 0);
 
   // Code point U+0061 -- Latin small letter a
   // Code point in binary: 0110 0001
@@ -85,11 +85,11 @@ int utf8_test_predetermined(void)
   // UTF-8 hex: 61
   char *a = "\x61";
   utf8toucs4(result, a, BFSZ);
-  TEST_ASLINE(wcscmp(result, L"a") == 0);
+  TEST_ASSERT(wcscmp(result, L"a") == 0);
 
   char *alltogether = "\xF0\x9F\x98\x82\xE4\xBA\xBA\xC4\x81\x61";
   utf8toucs4(result, alltogether, BFSZ);
-  TEST_ASLINE(wcscmp(result, L"\U0001F602\u4EBA\u0101a") == 0);
+  TEST_ASSERT(wcscmp(result, L"\U0001F602\u4EBA\u0101a") == 0);
 
   return 0;
 }

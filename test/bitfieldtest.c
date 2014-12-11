@@ -53,10 +53,10 @@ int bf_test_init()
   int i;
 
   bf_init(field, test_bools, &status);
-  TEST_ASLINE(status == SMB_SUCCESS);
+  TEST_ASSERT(status == SMB_SUCCESS);
 
   for (i = 0; i < SMB_BITFIELD_SIZE(test_bools); i++) {
-    TEST_ASLINE(field[i] == 0);
+    TEST_ASSERT(field[i] == 0);
   }
 
   return 0;
@@ -68,7 +68,7 @@ int bf_test_memory()
   unsigned char *field;
 
   field = bf_create(test_bools, &status);
-  TEST_ASLINE(status == SMB_SUCCESS);
+  TEST_ASSERT(status == SMB_SUCCESS);
   bf_delete(field, test_bools);
 
   return 0; // looking for memory leaks here
@@ -84,11 +84,11 @@ int bf_test_check()
   //bf_init(field, 16);
 
   for (i = 0; i < 8; i++) {
-    TEST_ASLINE(!bf_check(field, i));
+    TEST_ASSERT(!bf_check(field, i));
   }
 
   for (i = 8; i < 16; i++) {
-    TEST_ASLINE(bf_check(field, i));
+    TEST_ASSERT(bf_check(field, i));
   }
 
   return 0;
@@ -101,18 +101,18 @@ int bf_test_set()
   int i;
 
   bf_init(field, test_bools, &status);
-  TEST_ASLINE(status == SMB_SUCCESS);
+  TEST_ASSERT(status == SMB_SUCCESS);
   for (i = 0; i < test_bools; i += 2) {
-    TEST_ASLINE(!bf_check(field, i));
+    TEST_ASSERT(!bf_check(field, i));
     bf_set(field, i);
-    TEST_ASLINE(bf_check(field, i));
+    TEST_ASSERT(bf_check(field, i));
   }
 
   for (i = 0; i < test_bools; i++) {
     if (i % 2 == 0) {// even
-      TEST_ASLINE(bf_check(field, i));
+      TEST_ASSERT(bf_check(field, i));
     } else {
-      TEST_ASLINE(!bf_check(field, i));
+      TEST_ASSERT(!bf_check(field, i));
     }
   }
 
@@ -126,22 +126,22 @@ int bf_test_clear()
   int i;
 
   bf_init(field, test_bools, &status);
-  TEST_ASLINE(status == SMB_SUCCESS);
+  TEST_ASSERT(status == SMB_SUCCESS);
   for (i = 0; i < test_bools; i++) {
     bf_set(field, i); // this is already tested
   }
 
   for (i = 0; i < test_bools; i += 2) {
-    TEST_ASLINE(bf_check(field, i));
+    TEST_ASSERT(bf_check(field, i));
     bf_clear(field, i);
-    TEST_ASLINE(!bf_check(field, i));
+    TEST_ASSERT(!bf_check(field, i));
   }
 
   for (i = 0; i < test_bools; i++) {
     if (i % 2 == 0) {// even
-      TEST_ASLINE(!bf_check(field, i));
+      TEST_ASSERT(!bf_check(field, i));
     } else {
-      TEST_ASLINE(bf_check(field, i));
+      TEST_ASSERT(bf_check(field, i));
     }
   }
 
@@ -155,7 +155,7 @@ int bf_test_flip()
   int i;
 
   bf_init(field, test_bools, &status);
-  TEST_ASLINE(status == SMB_SUCCESS);
+  TEST_ASSERT(status == SMB_SUCCESS);
   // Set all the even numbered fields
   for (i = 0; i < test_bools; i += 2) {
     bf_set(field, i); //tested
@@ -168,9 +168,9 @@ int bf_test_flip()
 
   for (i = 0; i < test_bools; i++) {
     if (i % 2 == 0) {// even
-      TEST_ASLINE(!bf_check(field, i));
+      TEST_ASSERT(!bf_check(field, i));
     } else {
-      TEST_ASLINE(bf_check(field, i));
+      TEST_ASSERT(bf_check(field, i));
     }
   }
 

@@ -50,14 +50,14 @@ int ll_test_create()
   d.data_llint = 13;
 
   smb_ll *list = ll_create(&status);
-  TEST_ASLINE(status == SMB_SUCCESS);
+  TEST_ASSERT(status == SMB_SUCCESS);
   ll_append(list, d, &status);
-  TEST_ASLINE(status == SMB_SUCCESS);
+  TEST_ASSERT(status == SMB_SUCCESS);
 
-  TEST_ASLINE(ll_length(list) == 1);
+  TEST_ASSERT(ll_length(list) == 1);
 
-  TEST_ASLINE(ll_get(list, 0, &status).data_llint == 13);
-  TEST_ASLINE(status == SMB_SUCCESS);
+  TEST_ASSERT(ll_get(list, 0, &status).data_llint == 13);
+  TEST_ASSERT(status == SMB_SUCCESS);
 
   ll_delete(list);
   return 0;
@@ -67,9 +67,9 @@ int ll_test_create_empty()
 {
   smb_status status;
   smb_ll *list = ll_create(&status);
-  TEST_ASLINE(status == SMB_SUCCESS);
+  TEST_ASSERT(status == SMB_SUCCESS);
 
-  TEST_ASLINE(ll_length(list) == 0);
+  TEST_ASSERT(ll_length(list) == 0);
 
   ll_delete(list);
   return 0;
@@ -87,14 +87,14 @@ int ll_test_append()
     // Put a small, 200 item load on it.  This tests appending on
     // empty and general appending.
     ll_append(list, d, &status);
-    TEST_ASLINE(status == SMB_SUCCESS);
+    TEST_ASSERT(status == SMB_SUCCESS);
 
-    TEST_ASLINE(ll_length(list) == d.data_llint + 1);
+    TEST_ASSERT(ll_length(list) == d.data_llint + 1);
 
     // Test that the data is correct.
     for (int i = 0; i < ll_length(list); i++) {
-      TEST_ASLINE(ll_get(list, i, &status).data_llint == i);
-      TEST_ASLINE(status == SMB_SUCCESS);
+      TEST_ASSERT(ll_get(list, i, &status).data_llint == i);
+      TEST_ASSERT(status == SMB_SUCCESS);
     }
   }
 
@@ -112,13 +112,13 @@ int ll_test_prepend()
   // Test prepend about 200 times...
   for ( ; d.data_llint < 200; d.data_llint++) {
     ll_prepend(list, d, &status);
-    TEST_ASLINE(status == SMB_SUCCESS);
+    TEST_ASSERT(status == SMB_SUCCESS);
 
-    TEST_ASLINE(ll_length(list) == d.data_llint + 1);
+    TEST_ASSERT(ll_length(list) == d.data_llint + 1);
 
     for (int i = 0; i < ll_length(list); i++) {
-      TEST_ASLINE(ll_get(list, i, &status).data_llint == d.data_llint - i);
-      TEST_ASLINE(status == SMB_SUCCESS);
+      TEST_ASSERT(ll_get(list, i, &status).data_llint == d.data_llint - i);
+      TEST_ASSERT(status == SMB_SUCCESS);
     }
   }
 
@@ -136,29 +136,29 @@ int ll_test_set()
   // Create the data
   for (d.data_llint = 0 ; d.data_llint < length; d.data_llint++) {
     ll_append(list, d, &status);
-    TEST_ASLINE(status == SMB_SUCCESS);
+    TEST_ASSERT(status == SMB_SUCCESS);
   }
 
   // Verify the data
   for (d.data_llint = 0 ; d.data_llint < length; d.data_llint++) {
-    TEST_ASLINE(ll_get(list, d.data_llint, &status).data_llint == d.data_llint);
-    TEST_ASLINE(status == SMB_SUCCESS);
+    TEST_ASSERT(ll_get(list, d.data_llint, &status).data_llint == d.data_llint);
+    TEST_ASSERT(status == SMB_SUCCESS);
   }
 
   // Test that the length is correct
-  TEST_ASLINE(ll_length(list) == length);
+  TEST_ASSERT(ll_length(list) == length);
 
   // Test set
   for (int i = 0; i < ll_length(list); i++) {
     d.data_llint = length - i;
     ll_set(list, i, d, &status);
-    TEST_ASLINE(status == SMB_SUCCESS);
-    TEST_ASLINE(ll_get(list, i, &status).data_llint == d.data_llint);
-    TEST_ASLINE(status == SMB_SUCCESS);
+    TEST_ASSERT(status == SMB_SUCCESS);
+    TEST_ASSERT(ll_get(list, i, &status).data_llint == d.data_llint);
+    TEST_ASSERT(status == SMB_SUCCESS);
   }
 
   // Test that the length is still correct
-  TEST_ASLINE(ll_length(list) == length);
+  TEST_ASSERT(ll_length(list) == length);
 
   ll_delete(list);
   return 0;
@@ -175,40 +175,40 @@ int ll_test_remove()
   // Create the data
   for (d.data_llint = 0 ; d.data_llint < length; d.data_llint++) {
     ll_append(list, d, &status);
-    TEST_ASLINE(status == SMB_SUCCESS);
+    TEST_ASSERT(status == SMB_SUCCESS);
   }
 
   // Verify the data
   for (d.data_llint = 0 ; d.data_llint < length; d.data_llint++) {
-    TEST_ASLINE(ll_get(list, d.data_llint, &status).data_llint == d.data_llint);
-    TEST_ASLINE(status == SMB_SUCCESS);
+    TEST_ASSERT(ll_get(list, d.data_llint, &status).data_llint == d.data_llint);
+    TEST_ASSERT(status == SMB_SUCCESS);
   }
 
   // Remove first element
   ll_remove(list, 0, &status);
-  TEST_ASLINE(status == SMB_SUCCESS);
-  TEST_ASLINE(ll_length(list) == length - 1);
-  TEST_ASLINE(ll_get(list, 0, &status).data_llint == 1);
-  TEST_ASLINE(status == SMB_SUCCESS);
+  TEST_ASSERT(status == SMB_SUCCESS);
+  TEST_ASSERT(ll_length(list) == length - 1);
+  TEST_ASSERT(ll_get(list, 0, &status).data_llint == 1);
+  TEST_ASSERT(status == SMB_SUCCESS);
 
   // Remove middle element
   ll_remove(list, 10, &status); // list[10] == 11 before
-  TEST_ASLINE(status == SMB_SUCCESS);
-  TEST_ASLINE(ll_length(list) == length - 2);
-  TEST_ASLINE(ll_get(list, 10, &status).data_llint == 12);
-  TEST_ASLINE(status == SMB_SUCCESS);
+  TEST_ASSERT(status == SMB_SUCCESS);
+  TEST_ASSERT(ll_length(list) == length - 2);
+  TEST_ASSERT(ll_get(list, 10, &status).data_llint == 12);
+  TEST_ASSERT(status == SMB_SUCCESS);
 
   // Remove last element
   ll_remove(list, ll_length(list) - 1, &status);
-  TEST_ASLINE(status == SMB_SUCCESS);
-  TEST_ASLINE(ll_length(list) == length - 3);
+  TEST_ASSERT(status == SMB_SUCCESS);
+  TEST_ASSERT(ll_length(list) == length - 3);
 
   // Test all elements values
   int value = 1;
   for (int i = 0; i < length - 3; i++) {
     if (i == 10) value++;
-    TEST_ASLINE(ll_get(list, i, &status).data_llint == value);
-    TEST_ASLINE(status == SMB_SUCCESS);
+    TEST_ASSERT(ll_get(list, i, &status).data_llint == value);
+    TEST_ASSERT(status == SMB_SUCCESS);
     value++;
   }
 
@@ -227,46 +227,46 @@ int ll_test_insert()
   // Create the data
   for (d.data_llint = 0 ; d.data_llint < length; d.data_llint++) {
     ll_append(list, d, &status);
-    TEST_ASLINE(status == SMB_SUCCESS);
+    TEST_ASSERT(status == SMB_SUCCESS);
   }
 
   // Verify the data
   for (d.data_llint = 0 ; d.data_llint < length; d.data_llint++) {
-    TEST_ASLINE(ll_get(list, d.data_llint, &status).data_llint == d.data_llint);
-    TEST_ASLINE(status == SMB_SUCCESS);
+    TEST_ASSERT(ll_get(list, d.data_llint, &status).data_llint == d.data_llint);
+    TEST_ASSERT(status == SMB_SUCCESS);
   }
 
   // Here are the three insertions for the test:
   d.data_llint = 100;
   ll_insert(list, 0, d, &status);
-  TEST_ASLINE(status == SMB_SUCCESS);
-  TEST_ASLINE(ll_length(list) == length + 1);
+  TEST_ASSERT(status == SMB_SUCCESS);
+  TEST_ASSERT(ll_length(list) == length + 1);
 
   d.data_llint = 101;
   ll_insert(list, 10, d, &status);
-  TEST_ASLINE(status == SMB_SUCCESS);
-  TEST_ASLINE(ll_length(list) == length + 2);
+  TEST_ASSERT(status == SMB_SUCCESS);
+  TEST_ASSERT(ll_length(list) == length + 2);
 
   d.data_llint = 102;
   ll_insert(list, ll_length(list), d, &status);
-  TEST_ASLINE(status == SMB_SUCCESS);
-  TEST_ASLINE(ll_length(list) == length + 3);
+  TEST_ASSERT(status == SMB_SUCCESS);
+  TEST_ASSERT(ll_length(list) == length + 3);
 
   int value = 0;
 
   for (int i = 0; i < ll_length(list); i++) {
     if (i == 0) {
-      TEST_ASLINE(ll_get(list, i, &status).data_llint == 100);
-      TEST_ASLINE(status == SMB_SUCCESS);
+      TEST_ASSERT(ll_get(list, i, &status).data_llint == 100);
+      TEST_ASSERT(status == SMB_SUCCESS);
     } else if (i == 10) {
-      TEST_ASLINE(ll_get(list, i, &status).data_llint == 101);
-      TEST_ASLINE(status == SMB_SUCCESS);
+      TEST_ASSERT(ll_get(list, i, &status).data_llint == 101);
+      TEST_ASSERT(status == SMB_SUCCESS);
     } else if (i == ll_length(list) - 1) {
-      TEST_ASLINE(ll_get(list, i, &status).data_llint == 102);
-      TEST_ASLINE(status == SMB_SUCCESS);
+      TEST_ASSERT(ll_get(list, i, &status).data_llint == 102);
+      TEST_ASSERT(status == SMB_SUCCESS);
     } else {
-      TEST_ASLINE(ll_get(list, i, &status).data_llint == value);
-      TEST_ASLINE(status == SMB_SUCCESS);
+      TEST_ASSERT(ll_get(list, i, &status).data_llint == value);
+      TEST_ASSERT(status == SMB_SUCCESS);
       value++;
     }
   }

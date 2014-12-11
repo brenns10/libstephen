@@ -51,13 +51,11 @@
 #define SMB_UNIT_TESTS_PER_GROUP 20
 
 /**
-   @brief Asserts that an expression is true.  If false, returns a given value.
+   @brief Asserts that an expression is true.  If false, returns line number.
 
    Note that this is a macro, so using some things (++ and -- operators
-   especially) can have unintended results.  Any code in expr will be executed
-   every time, but code within retval will only be executed when the assertion
-   fails.  As a general rule, do not put any complicated code inside the
-   TEST_ASSERT() statement at all.
+   especially) can have unintended results.  As a general rule, do not put any
+   complicated code inside the TEST_ASSERT() statement at all.
 
    # PARAMETERS #
 
@@ -65,11 +63,8 @@
      is, not 0), the assertion passes.  If the expression evaluates to false
      (that is, zero), the assertion fails.
 
-   - retval: An integer return code.  The return code will be given in the test
-     output on failure, so follow a convention that makes it easy to identify
-     exactly at what point the code fails.
  */
-#define TEST_ASSERT(expr, retval) if(!(expr)) return retval
+#define TEST_ASSERT(expr) if(!(expr)) return __LINE__
 
 #define TEST_ASLINE(expr) if(!(expr)) return __LINE__
 

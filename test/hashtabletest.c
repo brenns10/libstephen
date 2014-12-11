@@ -90,19 +90,19 @@ int ht_test_insert()
   int i;
 
   smb_ht *table = ht_create(&ht_string_hash, &data_compare_string, &status);
-  TEST_ASLINE(status == SMB_SUCCESS);
+  TEST_ASSERT(status == SMB_SUCCESS);
 
   for (i = 0; i < TEST_PAIRS; i++) {
     key.data_ptr = test_keys[i];
     value.data_ptr = test_values[i];
     ht_insert(table, key, value, &status);
-    TEST_ASLINE(status == SMB_SUCCESS);
+    TEST_ASSERT(status == SMB_SUCCESS);
   }
 
   for (i = 0; i < TEST_PAIRS; i++) {
     key.data_ptr = test_keys[i];
-    TEST_ASLINE(test_values[i] == ht_get(table, key, &status).data_ptr);
-    TEST_ASLINE(status == SMB_SUCCESS);
+    TEST_ASSERT(test_values[i] == ht_get(table, key, &status).data_ptr);
+    TEST_ASSERT(status == SMB_SUCCESS);
   }
 
   // ht_print(table, 0);
@@ -117,30 +117,30 @@ int ht_test_remove()
   DATA key, value;
   int i;
   smb_ht *table = ht_create(&ht_string_hash, &data_compare_string, &status);
-  TEST_ASLINE(status == SMB_SUCCESS);
+  TEST_ASSERT(status == SMB_SUCCESS);
   ht_test_deletions = 0;
 
   for (i = 0; i < TEST_PAIRS; i++) {
     key.data_ptr = test_keys[i];
     value.data_ptr = test_values[i];
     ht_insert(table, key, value, &status);
-    TEST_ASLINE(status == SMB_SUCCESS);
+    TEST_ASSERT(status == SMB_SUCCESS);
   }
 
-  TEST_ASLINE(table->length == TEST_PAIRS);
+  TEST_ASSERT(table->length == TEST_PAIRS);
 
   for (i = 0; i < TEST_PAIRS; i++) {
     key.data_ptr = test_keys[i];
     value = ht_get(table, key, &status);
-    TEST_ASLINE(status == SMB_SUCCESS);
-    TEST_ASLINE(test_values[i] == value.data_ptr);
+    TEST_ASSERT(status == SMB_SUCCESS);
+    TEST_ASSERT(test_values[i] == value.data_ptr);
     ht_remove_act(table, key, ht_test_deleter, &status);
-    TEST_ASLINE(status == SMB_SUCCESS);
-    TEST_ASLINE(table->length == TEST_PAIRS - i - 1);
+    TEST_ASSERT(status == SMB_SUCCESS);
+    TEST_ASSERT(table->length == TEST_PAIRS - i - 1);
   }
 
   ht_delete_act(table, ht_test_deleter);
-  TEST_ASLINE(ht_test_deletions == TEST_PAIRS);
+  TEST_ASSERT(ht_test_deletions == TEST_PAIRS);
   return 0;
 }
 
@@ -154,11 +154,11 @@ int ht_test_remove_invalid()
   int i;
 
   smb_ht *table = ht_create(&ht_string_hash, &data_compare_string, &status);
-  TEST_ASLINE(status == SMB_SUCCESS);
+  TEST_ASSERT(status == SMB_SUCCESS);
 
   key.data_ptr = "invalid key";
   value = ht_get(table, key, &status);
-  TEST_ASLINE(status == SMB_NOT_FOUND_ERROR);
+  TEST_ASSERT(status == SMB_NOT_FOUND_ERROR);
 
   ht_delete(table);
   return 0;
@@ -175,15 +175,15 @@ int ht_test_buckets()
   DATA key, value;
   int i;
   smb_ht *table = ht_create(&ht_test_constant_hash, &data_compare_int, &status);
-  TEST_ASLINE(status == SMB_SUCCESS);
+  TEST_ASSERT(status == SMB_SUCCESS);
   ht_test_deletions = 0;
 
   for (i = 0; i < 20; i++) {
     key.data_llint = i;
     value.data_llint = -i;
     ht_insert(table, key, value, &status);
-    TEST_ASLINE(status == SMB_SUCCESS);
-    TEST_ASLINE(table->length == i+1);
+    TEST_ASSERT(status == SMB_SUCCESS);
+    TEST_ASSERT(table->length == i+1);
   }
 
   //ht_print(table, 0);
@@ -191,24 +191,24 @@ int ht_test_buckets()
   // Remove one from the middle of the bucket list.
   key.data_llint = 10;
   ht_remove_act(table, key, ht_test_deleter, &status);
-  TEST_ASLINE(status == SMB_SUCCESS);
-  TEST_ASLINE(table->length == 19);
+  TEST_ASSERT(status == SMB_SUCCESS);
+  TEST_ASSERT(table->length == 19);
 
   //ht_print(table, 0);
 
   // Remove one from the beginning of the bucket list.
   key.data_llint = 0;
   ht_remove_act(table, key, ht_test_deleter, &status);
-  TEST_ASLINE(status == SMB_SUCCESS);
-  TEST_ASLINE(table->length == 18);
+  TEST_ASSERT(status == SMB_SUCCESS);
+  TEST_ASSERT(table->length == 18);
 
   //ht_print(table, 0);
 
   // Remove from the end of the list.
   key.data_llint = 19;
   ht_remove_act(table, key, ht_test_deleter, &status);
-  TEST_ASLINE(status == SMB_SUCCESS);
-  TEST_ASLINE(table->length == 17);
+  TEST_ASSERT(status == SMB_SUCCESS);
+  TEST_ASSERT(table->length == 17);
 
   //ht_print(table, 0);
 
@@ -216,19 +216,19 @@ int ht_test_buckets()
   for (i = 1; i < 10; i++) {
     key.data_llint = i;
     value = ht_get(table, key, &status);
-    TEST_ASLINE(status == SMB_SUCCESS);
-    TEST_ASLINE(value.data_llint == -i);
+    TEST_ASSERT(status == SMB_SUCCESS);
+    TEST_ASSERT(value.data_llint == -i);
   }
 
   for (i = 11; i < 19; i++) {
     key.data_llint = i;
     value = ht_get(table, key, &status);
-    TEST_ASLINE(status == SMB_SUCCESS);
-    TEST_ASLINE(value.data_llint == -i);
+    TEST_ASSERT(status == SMB_SUCCESS);
+    TEST_ASSERT(value.data_llint == -i);
   }
 
   ht_delete_act(table, ht_test_deleter);
-  TEST_ASLINE(ht_test_deletions == 20);
+  TEST_ASSERT(ht_test_deletions == 20);
   return 0;
 }
 
@@ -244,16 +244,16 @@ int ht_test_resize()
   // Truncating addition will trim this to the number just before expanding.
   int last_stable = 1 + (int) (HASH_TABLE_INITIAL_SIZE * HASH_TABLE_MAX_LOAD_FACTOR);
   smb_ht *table = ht_create(ht_test_linear_hash, &data_compare_int, &status);
-  TEST_ASLINE(status == SMB_SUCCESS);
+  TEST_ASSERT(status == SMB_SUCCESS);
   ht_test_deletions = 0;
 
   for (i = 0; i < last_stable; i++) {
     key.data_llint = i;
     value.data_llint = -i;
     ht_insert(table, key, value, &status);
-    TEST_ASLINE(status == SMB_SUCCESS);
-    TEST_ASLINE(table->allocated == HASH_TABLE_INITIAL_SIZE);
-    TEST_ASLINE(table->length == i + 1);
+    TEST_ASSERT(status == SMB_SUCCESS);
+    TEST_ASSERT(table->allocated == HASH_TABLE_INITIAL_SIZE);
+    TEST_ASSERT(table->length == i + 1);
   }
 
   //ht_print(table, 1);
@@ -261,21 +261,21 @@ int ht_test_resize()
   key.data_llint = last_stable;
   value.data_llint = -last_stable;
   ht_insert(table, key, value, &status);
-  TEST_ASLINE(status == SMB_SUCCESS);
-  TEST_ASLINE(table->allocated > HASH_TABLE_INITIAL_SIZE);
-  TEST_ASLINE(table->length == last_stable + 1);
+  TEST_ASSERT(status == SMB_SUCCESS);
+  TEST_ASSERT(table->allocated > HASH_TABLE_INITIAL_SIZE);
+  TEST_ASSERT(table->length == last_stable + 1);
 
   //ht_print(table, 1);
 
   for (i = 0; i <= last_stable; i++) {
     key.data_llint = i;
     value = ht_get(table, key, &status);
-    TEST_ASLINE(status == SMB_SUCCESS);
-    TEST_ASLINE(value.data_llint == -i);
+    TEST_ASSERT(status == SMB_SUCCESS);
+    TEST_ASSERT(value.data_llint == -i);
   }
 
   ht_delete_act(table, ht_test_deleter);
-  TEST_ASLINE(ht_test_deletions == last_stable + 1);
+  TEST_ASSERT(ht_test_deletions == last_stable + 1);
   return 0;
 }
 
@@ -286,46 +286,46 @@ int ht_test_duplicate()
   int i;
   char *newKey = "not the first value";
   smb_ht *table = ht_create(ht_string_hash, &data_compare_string, &status);
-  TEST_ASLINE(status == SMB_SUCCESS);
+  TEST_ASSERT(status == SMB_SUCCESS);
   ht_test_deletions = 0;
 
   for (i = 0; i < TEST_PAIRS; i++) {
     key.data_ptr = test_keys[i];
     value.data_ptr = test_values[i];
     ht_insert(table, key, value, &status);
-    TEST_ASLINE(status == SMB_SUCCESS);
+    TEST_ASSERT(status == SMB_SUCCESS);
   }
 
   //ht_print(table, 0);
 
   for (i = 0; i < TEST_PAIRS; i += 2) {
-    TEST_ASLINE(table->length == TEST_PAIRS);
+    TEST_ASSERT(table->length == TEST_PAIRS);
 
     key.data_ptr = test_keys[i];
     value.data_ptr = newKey;
     ht_insert(table, key, value, &status);
-    TEST_ASLINE(status == SMB_SUCCESS);
+    TEST_ASSERT(status == SMB_SUCCESS);
     value = ht_get(table, key, &status);
-    TEST_ASLINE(status == SMB_SUCCESS);
+    TEST_ASSERT(status == SMB_SUCCESS);
 
-    TEST_ASLINE(value.data_ptr == newKey);
+    TEST_ASSERT(value.data_ptr == newKey);
   }
 
   for (i = 0; i < TEST_PAIRS; i++) {
     key.data_ptr = test_keys[i];
     value = ht_get(table, key, &status);
-    TEST_ASLINE(status == SMB_SUCCESS);
+    TEST_ASSERT(status == SMB_SUCCESS);
     if (i % 2 == 1) {
-      TEST_ASLINE(value.data_ptr == test_values[i]);
+      TEST_ASSERT(value.data_ptr == test_values[i]);
     } else {
-      TEST_ASLINE(value.data_ptr == newKey);
+      TEST_ASSERT(value.data_ptr == newKey);
     }
   }
 
   //ht_print(table, 0);
 
   ht_delete_act(table, ht_test_deleter);
-  TEST_ASLINE(ht_test_deletions == TEST_PAIRS);
+  TEST_ASSERT(ht_test_deletions == TEST_PAIRS);
   return 0;
 }
 

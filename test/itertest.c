@@ -72,9 +72,9 @@ int iter_test_empty()
 {
   smb_status status;
   smb_iter it = get_iter(0, &status);
-  TEST_ASLINE(status == SMB_SUCCESS);
+  TEST_ASSERT(status == SMB_SUCCESS);
 
-  TEST_ASLINE(! it.has_next(&it));
+  TEST_ASSERT(! it.has_next(&it));
 
   it.destroy(&it);
   cleanup();
@@ -88,7 +88,7 @@ int iter_test_destroy()
 {
   smb_status status;
   smb_iter it = get_iter(10, &status);
-  TEST_ASLINE(status == SMB_SUCCESS);
+  TEST_ASSERT(status == SMB_SUCCESS);
   it.destroy(&it);
   cleanup();
   return 0;
@@ -102,7 +102,7 @@ int iter_test_delete()
   smb_status status;
   smb_iter *it = smb_new(smb_iter, 1);
   *it = get_iter(10, &status);
-  TEST_ASLINE(status == SMB_SUCCESS);
+  TEST_ASSERT(status == SMB_SUCCESS);
   it->delete(it);
   cleanup();
   return 0;
@@ -117,17 +117,17 @@ int iter_test_count()
   smb_status status;
   for (int i = 0; i < MAX_TEST_COUNT; i++) {
     smb_iter it = get_iter(i, &status);
-    TEST_ASLINE(status == SMB_SUCCESS);
+    TEST_ASSERT(status == SMB_SUCCESS);
 
     int n = 0;
     while (it.has_next(&it)) {
       it.next(&it, &status);
-      TEST_ASLINE(status == SMB_SUCCESS);
+      TEST_ASSERT(status == SMB_SUCCESS);
       n++;
     }
     it.destroy(&it);
     cleanup();
-    TEST_ASLINE(i == n);
+    TEST_ASSERT(i == n);
   }
   return 0;
 }
@@ -140,13 +140,13 @@ int iter_test_values()
   #define TEST_COUNT 1000
   smb_status status;
   smb_iter it = get_iter(TEST_COUNT, &status);
-  TEST_ASLINE(status == SMB_SUCCESS);
+  TEST_ASSERT(status == SMB_SUCCESS);
   DATA d;
   int i = 0;
   while (it.has_next(&it)) {
     d = it.next(&it, &status);
-    TEST_ASLINE(status == SMB_SUCCESS);
-    TEST_ASLINE(d.data_llint == 100 * i);
+    TEST_ASSERT(status == SMB_SUCCESS);
+    TEST_ASSERT(d.data_llint == 100 * i);
     i++;
   }
   it.destroy(&it);

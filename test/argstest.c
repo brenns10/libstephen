@@ -53,7 +53,7 @@ int ad_test_heap(void)
 {
   smb_status status;
   smb_ad *arg_data = arg_data_create(&status);
-  TEST_ASLINE(status == SMB_SUCCESS);
+  TEST_ASSERT(status == SMB_SUCCESS);
   arg_data_delete(arg_data);
   return 0;
 }
@@ -66,7 +66,7 @@ int ad_test_stack(void)
   smb_ad ad;
   smb_status status;
   arg_data_init(&ad, &status);
-  TEST_ASLINE(status == SMB_SUCCESS);
+  TEST_ASSERT(status == SMB_SUCCESS);
   arg_data_destroy(&ad);
   return 0;
 }
@@ -90,23 +90,23 @@ int ad_test_basic_flags(void)
   smb_ad ad;
   smb_status status;
   arg_data_init(&ad, &status);
-  TEST_ASLINE(status == SMB_SUCCESS);
+  TEST_ASSERT(status == SMB_SUCCESS);
   process_args(&ad, sizeof(basic_flags) / sizeof(char*), basic_flags, &status);
-  TEST_ASLINE(status == SMB_SUCCESS);
+  TEST_ASSERT(status == SMB_SUCCESS);
 
   for (char c = 'a'; c <= 'z'; c++) {
     if (c <= 'd') {
-      TEST_ASLINE(check_flag(&ad, c));
+      TEST_ASSERT(check_flag(&ad, c));
     } else {
-      TEST_ASLINE(!check_flag(&ad, c));
+      TEST_ASSERT(!check_flag(&ad, c));
     }
   }
 
   for (char c = 'A'; c <= 'Z'; c++) {
     if (c < 'W') {
-      TEST_ASLINE(!check_flag(&ad, c));
+      TEST_ASSERT(!check_flag(&ad, c));
     } else {
-      TEST_ASLINE(check_flag(&ad, c));
+      TEST_ASSERT(check_flag(&ad, c));
     }
   }
 
@@ -130,23 +130,23 @@ int ad_test_grouped_flags(void)
   smb_ad ad;
   smb_status status;
   arg_data_init(&ad, &status);
-  TEST_ASLINE(status == SMB_SUCCESS);
+  TEST_ASSERT(status == SMB_SUCCESS);
   process_args(&ad, sizeof(grouped_flags) / sizeof(char*), grouped_flags, &status);
-  TEST_ASLINE(status == SMB_SUCCESS);
+  TEST_ASSERT(status == SMB_SUCCESS);
 
   for (char c = 'a'; c <= 'z'; c++) {
     if (c <= 'd') {
-      TEST_ASLINE(check_flag(&ad, c));
+      TEST_ASSERT(check_flag(&ad, c));
     } else {
-      TEST_ASLINE(!check_flag(&ad, c));
+      TEST_ASSERT(!check_flag(&ad, c));
     }
   }
 
   for (char c = 'A'; c <= 'Z'; c++) {
     if (c < 'W') {
-      TEST_ASLINE(!check_flag(&ad, c));
+      TEST_ASSERT(!check_flag(&ad, c));
     } else {
-      TEST_ASLINE(check_flag(&ad, c));
+      TEST_ASSERT(check_flag(&ad, c));
     }
   }
 
@@ -171,26 +171,26 @@ int ad_test_flag_params(void)
   char *str;
   smb_status status;
   arg_data_init(&ad, &status);
-  TEST_ASLINE(status == SMB_SUCCESS);
+  TEST_ASSERT(status == SMB_SUCCESS);
   process_args(&ad, sizeof(flag_params) / sizeof(char*), flag_params, &status);
-  TEST_ASLINE(status == SMB_SUCCESS);
+  TEST_ASSERT(status == SMB_SUCCESS);
 
-  TEST_ASLINE(check_flag(&ad, 'a'));
-  TEST_ASLINE(check_flag(&ad, 'b'));
-  TEST_ASLINE(check_flag(&ad, 'c'));
-  TEST_ASLINE(check_flag(&ad, 'd'));
+  TEST_ASSERT(check_flag(&ad, 'a'));
+  TEST_ASSERT(check_flag(&ad, 'b'));
+  TEST_ASSERT(check_flag(&ad, 'c'));
+  TEST_ASSERT(check_flag(&ad, 'd'));
 
   str = get_flag_parameter(&ad, 'a');
-  TEST_ASLINE(str && strncmp(str, flag_params[1], strlen(flag_params[1])) == 0);
+  TEST_ASSERT(str && strncmp(str, flag_params[1], strlen(flag_params[1])) == 0);
 
   str = get_flag_parameter(&ad, 'c');
-  TEST_ASLINE(str && strncmp(str, flag_params[3], strlen(flag_params[3])) == 0);
+  TEST_ASSERT(str && strncmp(str, flag_params[3], strlen(flag_params[3])) == 0);
 
   str = get_flag_parameter(&ad, 'b');
-  TEST_ASLINE(str == NULL);
+  TEST_ASSERT(str == NULL);
 
   str = get_flag_parameter(&ad, 'd');
-  TEST_ASLINE(str == NULL);
+  TEST_ASSERT(str == NULL);
 
   arg_data_destroy(&ad);
   return 0;
@@ -209,13 +209,13 @@ int ad_test_long_flags(void)
   smb_ad ad;
   smb_status status;
   arg_data_init(&ad, &status);
-  TEST_ASLINE(status == SMB_SUCCESS);
+  TEST_ASSERT(status == SMB_SUCCESS);
   process_args(&ad, sizeof(long_flags) / sizeof(char*), long_flags, &status);
-  TEST_ASLINE(status == SMB_SUCCESS);
+  TEST_ASSERT(status == SMB_SUCCESS);
 
-  TEST_ASLINE(check_long_flag(&ad, "this-is-a-long-flag"));
-  TEST_ASLINE(check_long_flag(&ad, "this-is-another-long-flag"));
-  TEST_ASLINE(!check_long_flag(&ad, "this-was-not-a-long-flag"));
+  TEST_ASSERT(check_long_flag(&ad, "this-is-a-long-flag"));
+  TEST_ASSERT(check_long_flag(&ad, "this-is-another-long-flag"));
+  TEST_ASSERT(!check_long_flag(&ad, "this-was-not-a-long-flag"));
 
   arg_data_destroy(&ad);
   return 0;
@@ -238,22 +238,22 @@ int ad_test_long_params(void)
   char *str;
   smb_status status;
   arg_data_init(&ad, &status);
-  TEST_ASLINE(status == SMB_SUCCESS);
+  TEST_ASSERT(status == SMB_SUCCESS);
   process_args(&ad, sizeof(long_params) / sizeof(char*), long_params, &status);
-  TEST_ASLINE(status == SMB_SUCCESS);
+  TEST_ASSERT(status == SMB_SUCCESS);
 
-  TEST_ASLINE(check_long_flag(&ad, "long-flag1"));
-  TEST_ASLINE(check_long_flag(&ad, "long-flag2"));
-  TEST_ASLINE(check_long_flag(&ad, "long-flag3"));
+  TEST_ASSERT(check_long_flag(&ad, "long-flag1"));
+  TEST_ASSERT(check_long_flag(&ad, "long-flag2"));
+  TEST_ASSERT(check_long_flag(&ad, "long-flag3"));
 
   str = get_long_flag_parameter(&ad, "long-flag1");
-  TEST_ASLINE(str && strncmp(str, long_params[1], strlen(long_params[1])) == 0);
+  TEST_ASSERT(str && strncmp(str, long_params[1], strlen(long_params[1])) == 0);
 
   str = get_long_flag_parameter(&ad, "long-flag3");
-  TEST_ASLINE(str && strncmp(str, long_params[4], strlen(long_params[4])) == 0);
+  TEST_ASSERT(str && strncmp(str, long_params[4], strlen(long_params[4])) == 0);
 
   str = get_long_flag_parameter(&ad, "long-flag2");
-  TEST_ASLINE(str == NULL);
+  TEST_ASSERT(str == NULL);
 
   arg_data_destroy(&ad);
   return 0;
@@ -278,22 +278,22 @@ int ad_test_bare_strings(void)
   char *str;
   smb_status status;
   arg_data_init(&ad, &status);
-  TEST_ASLINE(status == SMB_SUCCESS);
+  TEST_ASSERT(status == SMB_SUCCESS);
   process_args(&ad, sizeof(bare_strings) / sizeof(char*), bare_strings, &status);
-  TEST_ASLINE(status == SMB_SUCCESS);
+  TEST_ASSERT(status == SMB_SUCCESS);
 
-  TEST_ASLINE(check_flag(&ad, 'a'));
-  TEST_ASLINE(check_long_flag(&ad, "blah"));
-  TEST_ASLINE(check_bare_string(&ad, "bs0"));
-  TEST_ASLINE(check_bare_string(&ad, "bs1"));
-  TEST_ASLINE(check_bare_string(&ad, "bs2"));
-  TEST_ASLINE(ll_length(ad.bare_strings) == 3);
+  TEST_ASSERT(check_flag(&ad, 'a'));
+  TEST_ASSERT(check_long_flag(&ad, "blah"));
+  TEST_ASSERT(check_bare_string(&ad, "bs0"));
+  TEST_ASSERT(check_bare_string(&ad, "bs1"));
+  TEST_ASSERT(check_bare_string(&ad, "bs2"));
+  TEST_ASSERT(ll_length(ad.bare_strings) == 3);
 
   str = get_flag_parameter(&ad, 'a');
-  TEST_ASLINE(str && strncmp(str, bare_strings[2], strlen(bare_strings[2])) == 0);
+  TEST_ASSERT(str && strncmp(str, bare_strings[2], strlen(bare_strings[2])) == 0);
 
   str = get_long_flag_parameter(&ad, "blah");
-  TEST_ASLINE(str && strncmp(str, bare_strings[5], strlen(bare_strings[5])) == 0);
+  TEST_ASSERT(str && strncmp(str, bare_strings[5], strlen(bare_strings[5])) == 0);
 
   arg_data_destroy(&ad);
   return 0;
