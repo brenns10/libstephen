@@ -66,8 +66,6 @@
  */
 #define TEST_ASSERT(expr) if(!(expr)) return __LINE__
 
-#define TEST_ASLINE(expr) if(!(expr)) return __LINE__
-
 /**
    @brief Defines a single unit test.
 
