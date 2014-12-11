@@ -51,6 +51,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
+#include <inttypes.h>
 
 #include "libstephen/base.h"
 #include "libstephen/list.h"
@@ -100,7 +101,7 @@ char process_flag(smb_ad *pData, char *cFlags)
   while (*cFlags != '\0') {
     if ((idx = flag_index(*cFlags)) != -1) {
       last = *cFlags;
-      pData->flags |= 1UL << idx;
+      pData->flags |= UINT64_C(1) << idx;
     }
     cFlags++;
   }
@@ -158,7 +159,7 @@ char *process_long_flag(smb_ad *pData, char *sTitle, smb_status *status)
    @exception SMB_ALLOCATION_ERROR If a memory allocation failed.
  */
 void process_bare_string(smb_ad *pData, char *sStr, char *previous_long_flag,
-                         char previous_flag, smb_status *status)
+                         int previous_flag, smb_status *status)
 {
   *status = SMB_SUCCESS;
   if (previous_long_flag) {
@@ -318,13 +319,12 @@ void arg_data_delete(smb_ad *data)
 void process_args(smb_ad *data, int argc, char **argv, smb_status *status)
 {
   char *previous_long_flag = NULL;
-  char previous_flag = EOF;
+  int previous_flag = EOF;
   *status = SMB_SUCCESS;
 
   while (argc--) {
     // At the beginning of the loop, argc refers to number of remaining args,
     // and argv points at the pointer to the current arg.
-
     switch (**argv) {
     case '-':
       // Processing new flag type, so set previous variables to invalid.
@@ -383,7 +383,7 @@ int check_flag(smb_ad *pData, char flag)
   uint64_t idx;
   idx = flag_index(flag);
   if (idx != -1) {
-    idx =  pData->flags & (1UL << idx);
+    idx =  pData->flags & (UINT64_C(1) << idx);
     if (idx) return 1;
   }
   return 0;
