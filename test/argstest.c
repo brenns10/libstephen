@@ -266,7 +266,8 @@ char *bare_strings[] = {
   "bs1",
   "--blah",
   "param_blah",
-  "bs2"
+  "bs2",
+  "-"
 };
 
 /**
@@ -287,7 +288,8 @@ int ad_test_bare_strings(void)
   TEST_ASSERT(check_bare_string(&ad, "bs0"));
   TEST_ASSERT(check_bare_string(&ad, "bs1"));
   TEST_ASSERT(check_bare_string(&ad, "bs2"));
-  TEST_ASSERT(ll_length(ad.bare_strings) == 3);
+  TEST_ASSERT(check_bare_string(&ad, "-"));
+  TEST_ASSERT(ll_length(ad.bare_strings) == 4);
 
   str = get_flag_parameter(&ad, 'a');
   TEST_ASSERT(str && strncmp(str, bare_strings[2], strlen(bare_strings[2])) == 0);
