@@ -115,11 +115,16 @@ set of conventions.
 
 ### Error Handling
 
+* Error handling should be a high priority, but it should not overtake the
+  entire code -- especially with code to handle rare and difficult to handle
+  memory allocation errors.  So, errors thrown by `malloc` will be dealt with by
+  `smb_new()` by printing to stderr and terminating.  Any call to `smb_new()`
+  can be assumed to be successful without error checking.  There will be no
+  memory allocation error handling.
 * Error handling should always be achieved by a `status` parameter to a
   function.  The status parameter should be the last parameter in the function,
   and it should have type `smb_status*`.
-* `smb_status` should be an enumerated type, defining status codes named like
-  constants:
+* `smb_status` should be an integer, defining status codes as constants:
   + `SMB_SUCCESS`
   + `SMB_INDEX_ERROR`
   + `SMB_NULL_ERROR`

@@ -9,6 +9,35 @@ improvement.  Most definitely, my library is far from perfect, and I want to
 bring it as close as possible to perfection.  As such, here are some of my plans
 for the future.
 
+## Test Coverage
+
+Now that I've settled on a good error handling scheme, I'd like to up my test
+coverage significantly.
+
+## Release 1.0
+
+This sounds silly, but lately I've done a lot of API breaking changes.  I want
+to ensure that this doesn't happen, so my dowstream projects don't have to drown
+in refactoring.  Therefore, I need to make any more API decisions I want
+quickly, and then commit to maintaining that API forever.
+
+## Integrate Dowstream Projects
+
+CKY has a regular expression library that is mostly complete, but needs testing.
+Once that is complete, it should be moved into Libstephen.  Possibly likewise
+with the grammar/parsing tools too.  Also, I wrote a shell called LSH, with the
+intention of integrating it with Libstephen.  If I get a solid syntax working
+with it, I can migrate that into Libstephen as well.
+
+## Get Rid of Memory Leak Detection
+
+When I added memory leak detection to Libstephen, it was a really cool idea.
+The fact that I could count the bytes I allocated myself, and detect memory
+leaks myself, was great.  But my approach involves some code tradeoffs that are
+a bit confining.  Basically, it sucks to have to know how many bytes you're
+freeing when you free them!  Plus, tools like Valgrind do more with less work.
+It stands to reason that I should get rid of memory leak detection before 1.0.
+
 ## Unit Test Setup and Tear Down
 
 Most unit testing libraries have setup and tear down methods.  I can make
@@ -27,11 +56,3 @@ for chars, and with more string-oriented functionality) would be really welcome.
 It would also be nice to have functions that work on `char *` strings, that
 provide functionality similar to some of Python's string handling capabilities.
 For instance, substrings, a split function, etc.
-
-## "Pickling" Support
-
-This is a far-off possibility.  But, it would be neat to allow data structures
-to be "pickled" to a binary file.  It would take a lot of doing, but it may be
-possible to follow all pointers via a sort of breadth-first search, and reassign
-them to locations in files, and then save all the data to a file.  This is a bit
-crazy, but it /might/ be possible.
