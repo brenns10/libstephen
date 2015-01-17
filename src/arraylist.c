@@ -68,20 +68,11 @@
 
    @param list The list to expand.
    @param[out] status Status variable.
-   @exception SMB_ALLOCATION_ERROR: if realloc fails.  Unexpanded block of data
-   remains valid, and no changes are made to the list.
  */
-void al_expand(smb_al *list, smb_status *status)
+void al_expand(smb_al *list)
 {
   int newAllocation = list->allocated + SMB_AL_BLOCK_SIZE;
-
-  DATA *newBlock = (DATA*) realloc(list->data, newAllocation * sizeof(DATA));
-  if (!newBlock) {
-    *status = SMB_ALLOCATION_ERROR;
-    return;
-  }
-
-  SMB_INCREMENT_MALLOC_COUNTER(SMB_AL_BLOCK_SIZE * sizeof(DATA));
+  DATA *newBlock = smb_renew(DATA, list->data, newAllocation, list->allocated);
   list->data = newBlock;
   list->allocated = newAllocation;
 }
@@ -99,17 +90,12 @@ void al_expand(smb_al *list, smb_status *status)
    @param list The list to operate on.
    @param from_index The index to start shifting up from.
    @param[out] status Status variable.
-   @exception SMB_ALLOCATION_ERROR if an expansion was required and realloc()
-   failed, no shift is performed.  All data remains valid, but no changes are
-   made to the array.
  */
-void al_shift_up(smb_al *list, int from_index, smb_status *status)
+void al_shift_up(smb_al *list, int from_index)
 {
   // Check if there's space and allocate more if necessary
   if (list->length >= list->allocated) {
-    al_expand(list, status);
-    if (*status == SMB_ALLOCATION_ERROR)
-      return;
+    al_expand(list);
   }
 
   // Starting at the last element in the array, shift up by one
@@ -156,21 +142,12 @@ void al_shift_down(smb_al *list, int to_index)
    stack and initialize it, rather than allocating space on the heap.
 
    @param[out] status Status variable.
-   @exception SMB_ALLOCATION_ERROR If memory allocation fails.
  */
-void al_init(smb_al *list, smb_status *status)
+void al_init(smb_al *list)
 {
-  *status = SMB_SUCCESS;
-  list->data = (DATA*) malloc(SMB_AL_BLOCK_SIZE * sizeof(DATA));
-  if (!list->data) {
-    free(list);
-    SMB_DECREMENT_MALLOC_COUNTER(sizeof(smb_al));
-    *status = SMB_ALLOCATION_ERROR;
-    return;
-  }
+  list->data = smb_new(DATA, SMB_AL_BLOCK_SIZE);
   list->length = 0;
   list->allocated = SMB_AL_BLOCK_SIZE;
-  SMB_INCREMENT_MALLOC_COUNTER(SMB_AL_BLOCK_SIZE * sizeof(DATA));
 }
 
 /**
@@ -178,25 +155,11 @@ void al_init(smb_al *list, smb_status *status)
 
    @returns A pointer to the new array list.
    @param[out] status Status variable.
-   @exception SMB_ALLOCATION_ERROR If memory allocation fails.
  */
-smb_al *al_create(smb_status *status)
+smb_al *al_create()
 {
-  *status = SMB_SUCCESS;
-  smb_al *list = (smb_al*) malloc(sizeof(smb_al));
-  if (!list) {
-    *status = SMB_ALLOCATION_ERROR;
-    return NULL;
-  }
-  SMB_INCREMENT_MALLOC_COUNTER(sizeof(smb_al));
-
-  al_init(list, status);
-  if (*status == SMB_ALLOCATION_ERROR) {
-    free(list);
-    SMB_DECREMENT_MALLOC_COUNTER(sizeof(smb_al));
-    return NULL;
-  }
-
+  smb_al *list = smb_new(smb_al, 1);
+  al_init(list);
   return list;
 }
 
@@ -232,20 +195,13 @@ void al_delete(smb_al *list)
    @param list A pointer to the list to append to.
    @param newData The data to append
    @param[out] status Status variable.
-   @exception SMB_ALLOCATION_ERROR If the array list had to be expanded, and
-   allocation was unsuccessful.  In this case, no changes occur, but the data is
-   not appended.
  */
-void al_append(smb_al *list, DATA newData, smb_status *status)
+void al_append(smb_al *list, DATA newData)
 {
-  *status = SMB_SUCCESS;
   if (list->length < list->allocated) {
     list->data[list->length++] = newData;
   } else {
-    al_expand(list, status);
-    if (*status == SMB_ALLOCATION_ERROR) {
-      return; // Prevent segfault
-    }
+    al_expand(list);
     list->data[list->length++] = newData;
   }
 }
@@ -256,17 +212,10 @@ void al_append(smb_al *list, DATA newData, smb_status *status)
    @param list A pointer to the list to prepend to.
    @param newData The data to prepend.
    @param[out] status Status variable.
-   @exception SMB_ALLOCATION_ERROR If the array list had to be expanded and
-   allocation was unsuccessful.  In this case, no changes occur, but the data is
-   not appended.
  */
-void al_prepend(smb_al *list, DATA newData, smb_status *status)
+void al_prepend(smb_al *list, DATA newData)
 {
-  *status = SMB_SUCCESS;
-  al_shift_up(list, 0, status);
-  if (*status == SMB_ALLOCATION_ERROR)
-    return;
-
+  al_shift_up(list, 0);
   list->data[0] = newData;
 }
 
@@ -322,22 +271,16 @@ void al_remove(smb_al *list, int index, smb_status *status)
    @param index The index to insert at.
    @param newData The data to insert.
    @param[out] status Status variable.
-   @exception SMB_ALLOCATION_ERROR If memory allocation failed.
  */
-void al_insert(smb_al *list, int index, DATA newData, smb_status *status)
+void al_insert(smb_al *list, int index, DATA newData)
 {
-  *status = SMB_SUCCESS;
   if (index < 0) {
     index = 0;
   } else if (index > list->length) {
     index = list->length;
   }
 
-  al_shift_up(list, index, status);
-  if (*status == SMB_ALLOCATION_ERROR) {
-    return;
-  }
-
+  al_shift_up(list, index);
   list->data[index] = newData;
 }
 
@@ -372,11 +315,10 @@ void al_set(smb_al *list, int index, DATA newData, smb_status *status)
    @param list A pointer to the list to push to.
    @param newData The data to push to the back.
    @param[out] status Status variable.
-   @exception SMB_ALLOCATION_ERROR If memory allocation failed.
  */
-void al_push_back(smb_al *list, DATA newData, smb_status *status)
+void al_push_back(smb_al *list, DATA newData)
 {
-  return al_append(list, newData, status);
+  return al_append(list, newData);
 }
 
 /**
@@ -418,11 +360,10 @@ DATA al_peek_back(smb_al *list, smb_status *status)
    @param list A pointer to the list to push to.
    @param DATA The data to push to the front.
    @param[out] status Status variable.
-   @exception SMB_ALLOCATION_ERROR If memory allocation fails.
  */
-void al_push_front(smb_al *list, DATA newData, smb_status *status)
+void al_push_front(smb_al *list, DATA newData)
 {
-  return al_prepend(list, newData, status);
+  return al_prepend(list, newData);
 }
 
 /**
@@ -560,16 +501,16 @@ smb_iter al_get_iter(const smb_al *list)
 
 *******************************************************************************/
 
-void al_append_adapter(smb_list *l, DATA newData, smb_status *status)
+void al_append_adapter(smb_list *l, DATA newData)
 {
   smb_al *list = (smb_al*) (l->data);
-  return al_append(list, newData, status);
+  return al_append(list, newData);
 }
 
-void al_prepend_adapter(smb_list *l, DATA newData, smb_status *status)
+void al_prepend_adapter(smb_list *l, DATA newData)
 {
   smb_al *list = (smb_al*) (l->data);
-  return al_prepend(list, newData, status);
+  return al_prepend(list, newData);
 }
 
 DATA al_get_adapter(const smb_list *l, int index, smb_status *status)
@@ -590,10 +531,10 @@ void al_remove_adapter(smb_list *l, int index, smb_status *status)
   return al_remove(list, index, status);
 }
 
-void al_insert_adapter(smb_list *l, int index, DATA newData, smb_status *status)
+void al_insert_adapter(smb_list *l, int index, DATA newData)
 {
   smb_al *list = (smb_al*) (l->data);
-  return al_insert(list, index, newData, status);
+  return al_insert(list, index, newData);
 }
 
 void al_delete_adapter(smb_list *l)
@@ -610,10 +551,10 @@ int al_length_adapter(const smb_list *l)
   return al_length(list);
 }
 
-void al_push_back_adapter(smb_list *l, DATA newData, smb_status *status)
+void al_push_back_adapter(smb_list *l, DATA newData)
 {
   smb_al *list = (smb_al*) (l->data);
-  return al_push_back(list, newData, status);
+  return al_push_back(list, newData);
 }
 
 DATA al_pop_back_adapter(smb_list *l, smb_status *status)
@@ -628,10 +569,10 @@ DATA al_peek_back_adapter(smb_list *l, smb_status *status)
   return al_peek_back(list, status);
 }
 
-void al_push_front_adapter(smb_list *l, DATA newData, smb_status *status)
+void al_push_front_adapter(smb_list *l, DATA newData)
 {
   smb_al *list = (smb_al*) (l->data);
-  return al_push_front(list, newData, status);
+  return al_push_front(list, newData);
 }
 
 DATA al_pop_front_adapter(smb_list *l, smb_status *status)
@@ -698,9 +639,5 @@ smb_list al_cast_to_list(smb_al *list)
 smb_list al_create_list(smb_status *status)
 {
   smb_al *list = al_create(status);
-  if (*status == SMB_ALLOCATION_ERROR) {
-    smb_list dummy;
-    return dummy;
-  }
   return al_cast_to_list(list);
 }

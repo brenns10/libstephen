@@ -59,8 +59,8 @@
 #define SMB_BITFIELD_SIZE(num_bools) ((int)((num_bools) / BIT_PER_CHAR) + \
                                       ((num_bools) % BIT_PER_CHAR == 0 ? 0 : 1))
 
-void bf_init(unsigned char *data, int num_bools, smb_status *status);
-unsigned char *bf_create(int num_bools, smb_status *status);
+void bf_init(unsigned char *data, int num_bools);
+unsigned char *bf_create(int num_bools);
 void bf_delete(unsigned char *data, int num_bools);
 int bf_check(unsigned char *data, int index);
 void bf_set(unsigned char *data, int index);

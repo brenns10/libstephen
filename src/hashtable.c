@@ -70,18 +70,11 @@ int ht_next_size(int current)
    @param next The next bucket pointer
    @param[out] status Status variable.
    @returns A pointer to a new hash table bucket.
-   @exception ALLOCATION_ERROR If memory allocation failed.
  */
-smb_ht_bckt *ht_bucket_create(DATA key, DATA value, smb_ht_bckt *next,
-                              smb_status *status)
+smb_ht_bckt *ht_bucket_create(DATA key, DATA value, smb_ht_bckt *next)
 {
   smb_ht_bckt *pBucket;
-  pBucket = (smb_ht_bckt*) malloc(sizeof(smb_ht_bckt));
-  if (!pBucket) {
-    *status = SMB_ALLOCATION_ERROR;
-    return NULL;
-  }
-  SMB_INCREMENT_MALLOC_COUNTER(sizeof(smb_ht_bckt));
+  pBucket = smb_new(smb_ht_bckt, 1);
   pBucket->key = key;
   pBucket->value = value;
   pBucket->next = next;
@@ -165,11 +158,8 @@ void ht_insert_bucket(smb_ht *table, smb_ht_bckt *pBucket)
    @brief Expand the hash table, adding increment to the capacity of the table.
 
    @param table The table to expand.
-   @param[out] status Status variable.
-   @exception ALLOCATION_ERROR If the new table couldn't be allocated, no change
-   is made.
  */
-void ht_resize(smb_ht *table, smb_status *status)
+void ht_resize(smb_ht *table)
 {
   smb_ht_bckt **pOldBuffer;
   smb_ht_bckt *curr, *temp;
@@ -181,18 +171,10 @@ void ht_resize(smb_ht *table, smb_status *status)
   oldAllocated = table->allocated;
   table->length = 0;
   table->allocated = ht_next_size(oldAllocated);
-  table->table = (smb_ht_bckt**) malloc(table->allocated * sizeof(smb_ht_bckt*));
-  if (!table->table) {
-    // We want to preserve the data already contained in the table.
-    *status = SMB_ALLOCATION_ERROR;
-    table->table = pOldBuffer;
-    table->length = oldLength;
-    table->allocated = oldAllocated;
-    return;
-  }
+  table->table = smb_new(smb_ht_bckt*, table->allocated);
+
   // Zero out the new block too.
   memset((void*)table->table, 0, table->allocated * sizeof(smb_ht_bckt*));
-  SMB_INCREMENT_MALLOC_COUNTER(table->allocated * sizeof(smb_ht_bckt*));
 
   // Step two, add the old items to the new table (no freeing, please)
   for (index = 0; index < oldAllocated; index++) {
@@ -235,13 +217,9 @@ double ht_load_factor(smb_ht *table)
    @param table A pointer to the table to initialize.
    @param hash_func A hash function for the table.
    @param equal A comparison function for DATA.
-   @param[out] status Status variable.
-   @exception ALLOCATION_ERROR
  */
-void ht_init(smb_ht *table, HASH_FUNCTION hash_func, DATA_COMPARE equal,
-             smb_status *status)
+void ht_init(smb_ht *table, HASH_FUNCTION hash_func, DATA_COMPARE equal)
 {
-  *status = SMB_SUCCESS;
   // Initialize values
   table->length = 0;
   table->allocated = HASH_TABLE_INITIAL_SIZE;
@@ -249,14 +227,7 @@ void ht_init(smb_ht *table, HASH_FUNCTION hash_func, DATA_COMPARE equal,
   table->equal = equal;
 
   // Create the bucket list
-  table->table = (smb_ht_bckt**) malloc(HASH_TABLE_INITIAL_SIZE * sizeof(smb_ht_bckt*));
-  if (!table->table) {
-    SMB_DECREMENT_MALLOC_COUNTER(sizeof(smb_ht));
-    free(table);
-    *status = SMB_ALLOCATION_ERROR;
-    return;
-  }
-  SMB_INCREMENT_MALLOC_COUNTER(HASH_TABLE_INITIAL_SIZE * sizeof(smb_ht_bckt*));
+  table->table = smb_new(smb_ht_bckt*, HASH_TABLE_INITIAL_SIZE);
 
   // Zero out the entries in the table so we don't get segmentation faults.
   memset((void*)table->table, 0, HASH_TABLE_INITIAL_SIZE * sizeof(smb_ht_bckt*));
@@ -268,31 +239,14 @@ void ht_init(smb_ht *table, HASH_FUNCTION hash_func, DATA_COMPARE equal,
    @param hash_func A function that takes one DATA and returns a hash value
    generated from it.  It should be a good hash function.
    @param equal A comparison function for DATA.
-   @param[out] status Status variable.
    @returns A pointer to the new hash table.
-   @exception ALLOCATION_ERROR
  */
-smb_ht *ht_create(HASH_FUNCTION hash_func, DATA_COMPARE equal,
-                  smb_status *status)
+smb_ht *ht_create(HASH_FUNCTION hash_func, DATA_COMPARE equal)
 {
-  *status = SMB_SUCCESS;
-
   // Allocate and create the table.
   smb_ht *table;
-  table = (smb_ht*) malloc(sizeof(smb_ht));
-  if (!table) {
-    *status = SMB_ALLOCATION_ERROR;
-    return NULL;
-  }
-  SMB_INCREMENT_MALLOC_COUNTER(sizeof(smb_ht));
-
-  ht_init(table, hash_func, equal, status);
-  if (*status == SMB_ALLOCATION_ERROR) {
-    free(table);
-    SMB_DECREMENT_MALLOC_COUNTER(sizeof(smb_ht));
-    return NULL;
-  }
-
+  table = smb_new(smb_ht, 1);
+  ht_init(table, hash_func, equal);
   return table;
 }
 
@@ -382,21 +336,14 @@ void ht_delete(smb_ht *table)
    @param table A pointer to the hash table.
    @param key The key to insert.
    @param value The value to insert at the key.
-   @param[out] status Status variable.
-   @exception ALLOCATION_ERROR
  */
-void ht_insert(smb_ht *table, DATA key, DATA value, smb_status *status)
+void ht_insert(smb_ht *table, DATA key, DATA value)
 {
-  *status = SMB_SUCCESS;
-
   if (ht_load_factor(table) > HASH_TABLE_MAX_LOAD_FACTOR) {
-    ht_resize(table, status);
-    if (*status == SMB_ALLOCATION_ERROR) return;
+    ht_resize(table);
   }
 
-  smb_ht_bckt *pBucket = ht_bucket_create(key, value, NULL, status);
-  if (*status == SMB_ALLOCATION_ERROR) return;
-
+  smb_ht_bckt *pBucket = ht_bucket_create(key, value, NULL);
   ht_insert_bucket(table, pBucket);
 }
 

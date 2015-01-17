@@ -54,10 +54,8 @@
    @param data A pointer to the bitfield.
    @param num_bools The size of the bitfield, in number of bools (aka bits, not
      bytes).
-   @param[out] status Status variable.
  */
-void bf_init(unsigned char *data, int num_bools, smb_status *status) {
-  *status = SMB_SUCCESS;
+void bf_init(unsigned char *data, int num_bools) {
   int size = SMB_BITFIELD_SIZE(num_bools);
   memset(data, 0, size);
 }
@@ -70,25 +68,15 @@ void bf_init(unsigned char *data, int num_bools, smb_status *status) {
    locations.
 
    @param num_bools The number of bools to fit in the bit field.
-   @param[out] status Status variable.
    @returns A pointer to the bitfield.
-   @exception ALLOCATION_ERROR
  */
-unsigned char *bf_create(int num_bools, smb_status *status) {
+unsigned char *bf_create(int num_bools) {
   unsigned char *data;
   int size = SMB_BITFIELD_SIZE(num_bools);
 
-  *status = SMB_SUCCESS;
-  data = (unsigned char*) malloc(size * sizeof(unsigned char));
+  data = smb_new(unsigned char, size);
 
-  if (!data) {
-    *status = SMB_ALLOCATION_ERROR;
-    return NULL;
-  }
-
-  SMB_INCREMENT_MALLOC_COUNTER(size);
-  bf_init(data, num_bools, status);
-  assert(*status == SMB_SUCCESS);
+  bf_init(data, num_bools);
   return data;
 }
 

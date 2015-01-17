@@ -279,15 +279,13 @@ void *smb___free(void *ptr, size_t oldsize);
 /**
    @brief An enumeration of all possible status values for libstephen functions.
  */
-typedef enum {
+typedef int smb_status;
 
-  SMB_SUCCESS,
-  SMB_ALLOCATION_ERROR,
-  SMB_INDEX_ERROR,
-  SMB_NOT_FOUND_ERROR,
-  SMB_STOP_ITERATION
+#define SMB_SUCCESS 0
+#define SMB_INDEX_ERROR 1
+#define SMB_NOT_FOUND_ERROR 2
+#define SMB_STOP_ITERATION 3
 
-} smb_status;
 
 char *smb_status_string(smb_status status);
 

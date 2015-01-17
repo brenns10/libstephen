@@ -85,18 +85,15 @@ unsigned int ht_test_linear_hash(DATA dKey)
  */
 int ht_test_insert()
 {
-  smb_status status;
+  smb_status status = SMB_SUCCESS;
   DATA key, value;
   int i;
-
-  smb_ht *table = ht_create(&ht_string_hash, &data_compare_string, &status);
-  TEST_ASSERT(status == SMB_SUCCESS);
+  smb_ht *table = ht_create(&ht_string_hash, &data_compare_string);
 
   for (i = 0; i < TEST_PAIRS; i++) {
     key.data_ptr = test_keys[i];
     value.data_ptr = test_values[i];
-    ht_insert(table, key, value, &status);
-    TEST_ASSERT(status == SMB_SUCCESS);
+    ht_insert(table, key, value);
   }
 
   for (i = 0; i < TEST_PAIRS; i++) {
@@ -105,26 +102,22 @@ int ht_test_insert()
     TEST_ASSERT(status == SMB_SUCCESS);
   }
 
-  // ht_print(table, 0);
-
   ht_delete(table);
   return 0;
 }
 
 int ht_test_remove()
 {
-  smb_status status;
+  smb_status status= SMB_SUCCESS;
   DATA key, value;
   int i;
-  smb_ht *table = ht_create(&ht_string_hash, &data_compare_string, &status);
-  TEST_ASSERT(status == SMB_SUCCESS);
+  smb_ht *table = ht_create(&ht_string_hash, &data_compare_string);
   ht_test_deletions = 0;
 
   for (i = 0; i < TEST_PAIRS; i++) {
     key.data_ptr = test_keys[i];
     value.data_ptr = test_values[i];
-    ht_insert(table, key, value, &status);
-    TEST_ASSERT(status == SMB_SUCCESS);
+    ht_insert(table, key, value);
   }
 
   TEST_ASSERT(table->length == TEST_PAIRS);
@@ -149,12 +142,10 @@ int ht_test_remove()
  */
 int ht_test_remove_invalid()
 {
-  smb_status status;
+  smb_status status = SMB_SUCCESS;
   DATA key, value;
   int i;
-
-  smb_ht *table = ht_create(&ht_string_hash, &data_compare_string, &status);
-  TEST_ASSERT(status == SMB_SUCCESS);
+  smb_ht *table = ht_create(&ht_string_hash, &data_compare_string);
 
   key.data_ptr = "invalid key";
   value = ht_get(table, key, &status);
@@ -171,30 +162,25 @@ int ht_test_remove_invalid()
  */
 int ht_test_buckets()
 {
-  smb_status status;
+  smb_status status = SMB_SUCCESS;
   DATA key, value;
   int i;
-  smb_ht *table = ht_create(&ht_test_constant_hash, &data_compare_int, &status);
-  TEST_ASSERT(status == SMB_SUCCESS);
+  smb_ht *table = ht_create(&ht_test_constant_hash, &data_compare_int);
   ht_test_deletions = 0;
 
   for (i = 0; i < 20; i++) {
     key.data_llint = i;
     value.data_llint = -i;
-    ht_insert(table, key, value, &status);
+    ht_insert(table, key, value);
     TEST_ASSERT(status == SMB_SUCCESS);
     TEST_ASSERT(table->length == i+1);
   }
-
-  //ht_print(table, 0);
 
   // Remove one from the middle of the bucket list.
   key.data_llint = 10;
   ht_remove_act(table, key, ht_test_deleter, &status);
   TEST_ASSERT(status == SMB_SUCCESS);
   TEST_ASSERT(table->length == 19);
-
-  //ht_print(table, 0);
 
   // Remove one from the beginning of the bucket list.
   key.data_llint = 0;
@@ -238,34 +224,27 @@ int ht_test_buckets()
  */
 int ht_test_resize()
 {
-  smb_status status;
+  smb_status status = SMB_SUCCESS;
   DATA key, value;
   int i;
   // Truncating addition will trim this to the number just before expanding.
   int last_stable = 1 + (int) (HASH_TABLE_INITIAL_SIZE * HASH_TABLE_MAX_LOAD_FACTOR);
-  smb_ht *table = ht_create(ht_test_linear_hash, &data_compare_int, &status);
-  TEST_ASSERT(status == SMB_SUCCESS);
+  smb_ht *table = ht_create(ht_test_linear_hash, &data_compare_int);
   ht_test_deletions = 0;
 
   for (i = 0; i < last_stable; i++) {
     key.data_llint = i;
     value.data_llint = -i;
-    ht_insert(table, key, value, &status);
-    TEST_ASSERT(status == SMB_SUCCESS);
+    ht_insert(table, key, value);
     TEST_ASSERT(table->allocated == HASH_TABLE_INITIAL_SIZE);
     TEST_ASSERT(table->length == i + 1);
   }
 
-  //ht_print(table, 1);
-
   key.data_llint = last_stable;
   value.data_llint = -last_stable;
-  ht_insert(table, key, value, &status);
-  TEST_ASSERT(status == SMB_SUCCESS);
+  ht_insert(table, key, value);
   TEST_ASSERT(table->allocated > HASH_TABLE_INITIAL_SIZE);
   TEST_ASSERT(table->length == last_stable + 1);
-
-  //ht_print(table, 1);
 
   for (i = 0; i <= last_stable; i++) {
     key.data_llint = i;
@@ -281,33 +260,27 @@ int ht_test_resize()
 
 int ht_test_duplicate()
 {
-  smb_status status;
+  smb_status status = SMB_SUCCESS;
   DATA key, value;
   int i;
   char *newKey = "not the first value";
-  smb_ht *table = ht_create(ht_string_hash, &data_compare_string, &status);
-  TEST_ASSERT(status == SMB_SUCCESS);
+  smb_ht *table = ht_create(ht_string_hash, &data_compare_string);
   ht_test_deletions = 0;
 
   for (i = 0; i < TEST_PAIRS; i++) {
     key.data_ptr = test_keys[i];
     value.data_ptr = test_values[i];
-    ht_insert(table, key, value, &status);
-    TEST_ASSERT(status == SMB_SUCCESS);
+    ht_insert(table, key, value);
   }
-
-  //ht_print(table, 0);
 
   for (i = 0; i < TEST_PAIRS; i += 2) {
     TEST_ASSERT(table->length == TEST_PAIRS);
 
     key.data_ptr = test_keys[i];
     value.data_ptr = newKey;
-    ht_insert(table, key, value, &status);
-    TEST_ASSERT(status == SMB_SUCCESS);
+    ht_insert(table, key, value);
     value = ht_get(table, key, &status);
     TEST_ASSERT(status == SMB_SUCCESS);
-
     TEST_ASSERT(value.data_ptr == newKey);
   }
 
@@ -321,8 +294,6 @@ int ht_test_duplicate()
       TEST_ASSERT(value.data_ptr == newKey);
     }
   }
-
-  //ht_print(table, 0);
 
   ht_delete_act(table, ht_test_deleter);
   TEST_ASSERT(ht_test_deletions == TEST_PAIRS);

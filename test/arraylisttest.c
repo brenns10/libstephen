@@ -47,13 +47,11 @@
 int al_test_create()
 {
   DATA d;
-  smb_status status;
+  smb_status status = SMB_SUCCESS;
   d.data_llint = 13;
 
-  smb_al *list = al_create(&status);
-  TEST_ASSERT(status == SMB_SUCCESS);
-  al_append(list, d, &status);
-  TEST_ASSERT(status == SMB_SUCCESS);
+  smb_al *list = al_create();
+  al_append(list, d);
 
   TEST_ASSERT(al_length(list) == 1);
 
@@ -66,17 +64,8 @@ int al_test_create()
 
 int al_test_create_empty()
 {
-  DATA d;
-  smb_status status;
-  d.data_llint = 13;
-
-  smb_al *list = al_create(&status);
-
-  // Assert that it was allocated correctly.
-  TEST_ASSERT(status == SMB_SUCCESS);
-
+  smb_al *list = al_create();
   TEST_ASSERT(al_length(list) == 0);
-
   al_delete(list);
   return 0;
 }
@@ -84,15 +73,14 @@ int al_test_create_empty()
 int al_test_append()
 {
   DATA d;
-  smb_status status;
+  smb_status status = SMB_SUCCESS;
   d.data_llint = 0;
 
   smb_al *list = al_create(&status);
 
   // Test append about 21 times to check that reallocation works successfully
   for ( ; d.data_llint < 22; d.data_llint++) {
-    al_append(list, d, &status);
-    TEST_ASSERT(status == SMB_SUCCESS);
+    al_append(list, d);
 
     // Assert that the length of the list is correct
     TEST_ASSERT(al_length(list) == d.data_llint + 1);
@@ -111,16 +99,14 @@ int al_test_append()
 int al_test_prepend()
 {
   DATA d;
-  smb_status status;
+  smb_status status = SMB_SUCCESS;
   d.data_llint = 0;
 
-  smb_al *list = al_create(&status);
-  TEST_ASSERT(status == SMB_SUCCESS);
+  smb_al *list = al_create();
 
   // Test prepend about 21 times to check that reallocation works successfully
   for ( ; d.data_llint < 22; d.data_llint++) {
-    al_prepend(list, d, &status);
-    TEST_ASSERT(status == SMB_SUCCESS);
+    al_prepend(list, d);
 
     // Assert that the length of the list is correct
     TEST_ASSERT(al_length(list) == d.data_llint + 1);
@@ -139,15 +125,14 @@ int al_test_prepend()
 int al_test_set()
 {
   DATA d;
-  smb_status status;
-  smb_al *list = al_create(&status);
+  smb_status status = SMB_SUCCESS;
+  smb_al *list = al_create();
   const int length = 30;
 
   // Create data
   for (int i = 0; i < length; i++) {
     d.data_llint = i;
-    al_append(list, d, &status);
-    TEST_ASSERT(status == SMB_SUCCESS);
+    al_append(list, d);
   }
 
   // Verify data
@@ -178,16 +163,14 @@ int al_test_set()
 int al_test_remove()
 {
   DATA d;
-  smb_status status;
-  smb_al *list = al_create(&status);
+  smb_status status = SMB_SUCCESS;
+  smb_al *list = al_create();
   const int length = 23;
-  TEST_ASSERT(status == SMB_SUCCESS);
 
   // Create data
   for (int i = 0; i < length; i++) {
     d.data_llint = i;
-    al_append(list, d, &status);
-    TEST_ASSERT(status == SMB_SUCCESS);
+    al_append(list, d);
   }
 
   // Verify data
@@ -239,16 +222,14 @@ int al_test_remove()
 int al_test_insert()
 {
   DATA d;
-  smb_status status;
-  smb_al *list = al_create(&status);
+  smb_status status = SMB_SUCCESS;
+  smb_al *list = al_create();
   const int length = 20;
-  TEST_ASSERT(status == SMB_SUCCESS);
 
   // Create data
   for (int i = 0; i < length; i++) {
     d.data_llint = i;
-    al_append(list, d, &status);
-    TEST_ASSERT(status == SMB_SUCCESS);
+    al_append(list, d);
   }
 
   // Verify data
@@ -259,8 +240,7 @@ int al_test_insert()
 
   // Test insert when a realloc needs to occur
   d.data_llint = 100;
-  al_insert(list, 10, d, &status);
-  TEST_ASSERT(status == SMB_SUCCESS);
+  al_insert(list, 10, d);
   int values_one[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 100, 10, 11, 12, 13, 14,
                       15, 16, 17, 18, 19};
   for (int i = 0; i < al_length(list); i++) {
@@ -270,8 +250,7 @@ int al_test_insert()
 
   // Test insert at end
   d.data_llint++;
-  al_insert(list, al_length(list), d, &status);
-  TEST_ASSERT(status == SMB_SUCCESS);
+  al_insert(list, al_length(list), d);
   int values_two[] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 100, 10, 11, 12, 13, 14,
                       15, 16, 17, 18, 19, 101};
   for (int i = 0; i < al_length(list); i++) {
@@ -281,8 +260,7 @@ int al_test_insert()
 
   // Test insert at beginning
   d.data_llint++;
-  al_insert(list, 0, d, &status);
-  TEST_ASSERT(status == SMB_SUCCESS);
+  al_insert(list, 0, d);
   int values_three[] = {102, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 100, 10, 11, 12,
                         13, 14, 15, 16, 17, 18, 19, 101};
   for (int i = 0; i < al_length(list); i++) {

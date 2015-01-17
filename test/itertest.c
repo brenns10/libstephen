@@ -51,7 +51,7 @@
 
    The elements should be integers of 100 * index.
  */
-smb_iter (*get_iter)(int n, smb_status *status);
+smb_iter (*get_iter)(int n);
 /**
    @brief Clean up the iterator's underlying list.
  */
@@ -70,12 +70,8 @@ void *test_data;
  */
 int iter_test_empty()
 {
-  smb_status status;
-  smb_iter it = get_iter(0, &status);
-  TEST_ASSERT(status == SMB_SUCCESS);
-
+  smb_iter it = get_iter(0);
   TEST_ASSERT(! it.has_next(&it));
-
   it.destroy(&it);
   cleanup();
   return 0;
@@ -86,9 +82,7 @@ int iter_test_empty()
  */
 int iter_test_destroy()
 {
-  smb_status status;
-  smb_iter it = get_iter(10, &status);
-  TEST_ASSERT(status == SMB_SUCCESS);
+  smb_iter it = get_iter(10);
   it.destroy(&it);
   cleanup();
   return 0;
@@ -99,10 +93,8 @@ int iter_test_destroy()
  */
 int iter_test_delete()
 {
-  smb_status status;
   smb_iter *it = smb_new(smb_iter, 1);
-  *it = get_iter(10, &status);
-  TEST_ASSERT(status == SMB_SUCCESS);
+  *it = get_iter(10);
   it->delete(it);
   cleanup();
   return 0;
@@ -113,12 +105,10 @@ int iter_test_delete()
  */
 int iter_test_count()
 {
+  smb_status status = SMB_SUCCESS;
   #define MAX_TEST_COUNT 1000
-  smb_status status;
   for (int i = 0; i < MAX_TEST_COUNT; i++) {
-    smb_iter it = get_iter(i, &status);
-    TEST_ASSERT(status == SMB_SUCCESS);
-
+    smb_iter it = get_iter(i);
     int n = 0;
     while (it.has_next(&it)) {
       it.next(&it, &status);
@@ -139,8 +129,7 @@ int iter_test_values()
 {
   #define TEST_COUNT 1000
   smb_status status;
-  smb_iter it = get_iter(TEST_COUNT, &status);
-  TEST_ASSERT(status == SMB_SUCCESS);
+  smb_iter it = get_iter(TEST_COUNT);
   DATA d;
   int i = 0;
   while (it.has_next(&it)) {
@@ -166,13 +155,13 @@ int iter_test_values()
    @param size Number of elements to add.
    @return An iterator.
  */
-smb_iter get_al_iter(int size, smb_status *status)
+smb_iter get_al_iter(int size)
 {
-  test_data = al_create(status);
+  test_data = al_create();
 
   for (int i = 0; i < size; i++) {
     DATA d = { .data_llint = 100 * i };
-    al_append(test_data, d, status);
+    al_append(test_data, d);
   }
 
   return al_get_iter(test_data);
@@ -191,13 +180,13 @@ void al_cleanup(void)
    @param Number of elements in the list.
    @return An iterator.
  */
-smb_iter get_ll_iter(int size, smb_status *status)
+smb_iter get_ll_iter(int size)
 {
-  test_data = ll_create(status);
+  test_data = ll_create();
 
   for (int i = 0; i < size; i++) {
     DATA d = { .data_llint = 100 * i };
-    ll_append(test_data, d, status);
+    ll_append(test_data, d);
   }
 
   return ll_get_iter(test_data);

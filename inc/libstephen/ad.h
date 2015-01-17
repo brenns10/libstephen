@@ -80,12 +80,12 @@ typedef struct smb_ad
 
 } smb_ad;
 
-void arg_data_init(smb_ad *data, smb_status *status);
-smb_ad *arg_data_create(smb_status *status);
+void arg_data_init(smb_ad *data);
+smb_ad *arg_data_create();
 void arg_data_destroy(smb_ad *data);
 void arg_data_delete(smb_ad *data);
 
-void process_args(smb_ad *data, int argc, char **argv, smb_status *status);
+void process_args(smb_ad *data, int argc, char **argv);
 int check_flag(smb_ad *data, char flag);
 int check_long_flag(smb_ad *data, char *flag);
 int check_bare_string(smb_ad *data, char *string);

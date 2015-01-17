@@ -51,9 +51,7 @@
  */
 int ad_test_heap(void)
 {
-  smb_status status;
-  smb_ad *arg_data = arg_data_create(&status);
-  TEST_ASSERT(status == SMB_SUCCESS);
+  smb_ad *arg_data = arg_data_create();
   arg_data_delete(arg_data);
   return 0;
 }
@@ -64,9 +62,7 @@ int ad_test_heap(void)
 int ad_test_stack(void)
 {
   smb_ad ad;
-  smb_status status;
-  arg_data_init(&ad, &status);
-  TEST_ASSERT(status == SMB_SUCCESS);
+  arg_data_init(&ad);
   arg_data_destroy(&ad);
   return 0;
 }
@@ -88,11 +84,8 @@ char *basic_flags[] = {
 int ad_test_basic_flags(void)
 {
   smb_ad ad;
-  smb_status status;
-  arg_data_init(&ad, &status);
-  TEST_ASSERT(status == SMB_SUCCESS);
-  process_args(&ad, sizeof(basic_flags) / sizeof(char*), basic_flags, &status);
-  TEST_ASSERT(status == SMB_SUCCESS);
+  arg_data_init(&ad);
+  process_args(&ad, sizeof(basic_flags) / sizeof(char*), basic_flags);
 
   for (char c = 'a'; c <= 'z'; c++) {
     if (c <= 'd') {
@@ -128,11 +121,8 @@ char *grouped_flags[] = {
 int ad_test_grouped_flags(void)
 {
   smb_ad ad;
-  smb_status status;
-  arg_data_init(&ad, &status);
-  TEST_ASSERT(status == SMB_SUCCESS);
-  process_args(&ad, sizeof(grouped_flags) / sizeof(char*), grouped_flags, &status);
-  TEST_ASSERT(status == SMB_SUCCESS);
+  arg_data_init(&ad);
+  process_args(&ad, sizeof(grouped_flags) / sizeof(char*), grouped_flags);
 
   for (char c = 'a'; c <= 'z'; c++) {
     if (c <= 'd') {
@@ -169,11 +159,8 @@ int ad_test_flag_params(void)
 {
   smb_ad ad;
   char *str;
-  smb_status status;
-  arg_data_init(&ad, &status);
-  TEST_ASSERT(status == SMB_SUCCESS);
-  process_args(&ad, sizeof(flag_params) / sizeof(char*), flag_params, &status);
-  TEST_ASSERT(status == SMB_SUCCESS);
+  arg_data_init(&ad);
+  process_args(&ad, sizeof(flag_params) / sizeof(char*), flag_params);
 
   TEST_ASSERT(check_flag(&ad, 'a'));
   TEST_ASSERT(check_flag(&ad, 'b'));
@@ -207,11 +194,8 @@ char *long_flags[] = {
 int ad_test_long_flags(void)
 {
   smb_ad ad;
-  smb_status status;
-  arg_data_init(&ad, &status);
-  TEST_ASSERT(status == SMB_SUCCESS);
-  process_args(&ad, sizeof(long_flags) / sizeof(char*), long_flags, &status);
-  TEST_ASSERT(status == SMB_SUCCESS);
+  arg_data_init(&ad);
+  process_args(&ad, sizeof(long_flags) / sizeof(char*), long_flags);
 
   TEST_ASSERT(check_long_flag(&ad, "this-is-a-long-flag"));
   TEST_ASSERT(check_long_flag(&ad, "this-is-another-long-flag"));
@@ -236,11 +220,8 @@ int ad_test_long_params(void)
 {
   smb_ad ad;
   char *str;
-  smb_status status;
-  arg_data_init(&ad, &status);
-  TEST_ASSERT(status == SMB_SUCCESS);
-  process_args(&ad, sizeof(long_params) / sizeof(char*), long_params, &status);
-  TEST_ASSERT(status == SMB_SUCCESS);
+  arg_data_init(&ad);
+  process_args(&ad, sizeof(long_params) / sizeof(char*), long_params);
 
   TEST_ASSERT(check_long_flag(&ad, "long-flag1"));
   TEST_ASSERT(check_long_flag(&ad, "long-flag2"));
@@ -277,11 +258,8 @@ int ad_test_bare_strings(void)
 {
   smb_ad ad;
   char *str;
-  smb_status status;
-  arg_data_init(&ad, &status);
-  TEST_ASSERT(status == SMB_SUCCESS);
-  process_args(&ad, sizeof(bare_strings) / sizeof(char*), bare_strings, &status);
-  TEST_ASSERT(status == SMB_SUCCESS);
+  arg_data_init(&ad);
+  process_args(&ad, sizeof(bare_strings) / sizeof(char*), bare_strings);
 
   TEST_ASSERT(check_flag(&ad, 'a'));
   TEST_ASSERT(check_long_flag(&ad, "blah"));
@@ -392,11 +370,8 @@ int args_test_main(int argc, char **argv)
 {
   printf("Mallocs: %d\n", SMB_GET_MALLOC_COUNTER);
   smb_ad ArgData;
-  smb_status status;
-  arg_data_init(&ArgData, &status);
-  assert(status == SMB_SUCCESS);
-  process_args(&ArgData, argc - 1, argv + 1, &status);
-  assert(status == SMB_SUCCESS);
+  arg_data_init(&ArgData);
+  process_args(&ArgData, argc - 1, argv + 1);
 
   iterate_flags(&ArgData, 'A', 'Z');
   iterate_flags(&ArgData, 'a', 'z');

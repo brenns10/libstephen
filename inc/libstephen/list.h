@@ -66,12 +66,12 @@ typedef struct smb_list
   /**
      @see ll_append @see al_append
    */
-  void (*append)(struct smb_list *l, DATA newData, smb_status *status);
+  void (*append)(struct smb_list *l, DATA newData);
 
   /**
      @see ll_prepend @see al_prepend
    */
-  void (*prepend)(struct smb_list *l, DATA newData, smb_status *status);
+  void (*prepend)(struct smb_list *l, DATA newData);
 
   /**
      @see ll_get @see al_get
@@ -91,7 +91,7 @@ typedef struct smb_list
   /**
      @see ll_insert @see al_insert
    */
-  void (*insert)(struct smb_list *l, int index, DATA newData, smb_status *status);
+  void (*insert)(struct smb_list *l, int index, DATA newData);
 
   /**
      @see ll_delete @see al_delete
@@ -106,7 +106,7 @@ typedef struct smb_list
   /**
      @see ll_push_back @see al_push_back
    */
-  void (*push_back)(struct smb_list *l, DATA newData, smb_status *status);
+  void (*push_back)(struct smb_list *l, DATA newData);
 
   /**
      @see ll_pop_back @see al_pop_back
@@ -121,7 +121,7 @@ typedef struct smb_list
   /**
      @see ll_push_front @see al_push_front
    */
-  void (*push_front)(struct smb_list *l, DATA newData, smb_status *status);
+  void (*push_front)(struct smb_list *l, DATA newData);
 
   /**
      @see ll_pop_front @see al_pop_front

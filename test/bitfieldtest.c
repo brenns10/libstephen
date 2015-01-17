@@ -48,12 +48,9 @@
 
 int bf_test_init()
 {
-  smb_status status;
   unsigned char field[SMB_BITFIELD_SIZE(test_bools)];
   int i;
-
-  bf_init(field, test_bools, &status);
-  TEST_ASSERT(status == SMB_SUCCESS);
+  bf_init(field, test_bools);
 
   for (i = 0; i < SMB_BITFIELD_SIZE(test_bools); i++) {
     TEST_ASSERT(field[i] == 0);
@@ -64,19 +61,14 @@ int bf_test_init()
 
 int bf_test_memory()
 {
-  smb_status status;
   unsigned char *field;
-
-  field = bf_create(test_bools, &status);
-  TEST_ASSERT(status == SMB_SUCCESS);
+  field = bf_create(test_bools);
   bf_delete(field, test_bools);
-
   return 0; // looking for memory leaks here
 }
 
 int bf_test_check()
 {
-  smb_status status;
   unsigned char field[2] = {0x00, 0xFF};
   int i;
 
@@ -96,12 +88,10 @@ int bf_test_check()
 
 int bf_test_set()
 {
-  smb_status status;
   unsigned char field[SMB_BITFIELD_SIZE(test_bools)];
   int i;
 
-  bf_init(field, test_bools, &status);
-  TEST_ASSERT(status == SMB_SUCCESS);
+  bf_init(field, test_bools);
   for (i = 0; i < test_bools; i += 2) {
     TEST_ASSERT(!bf_check(field, i));
     bf_set(field, i);
@@ -121,12 +111,10 @@ int bf_test_set()
 
 int bf_test_clear()
 {
-  smb_status status;
   unsigned char field[SMB_BITFIELD_SIZE(test_bools)];
   int i;
 
-  bf_init(field, test_bools, &status);
-  TEST_ASSERT(status == SMB_SUCCESS);
+  bf_init(field, test_bools);
   for (i = 0; i < test_bools; i++) {
     bf_set(field, i); // this is already tested
   }
@@ -150,12 +138,10 @@ int bf_test_clear()
 
 int bf_test_flip()
 {
-  smb_status status;
   unsigned char field[SMB_BITFIELD_SIZE(test_bools)];
   int i;
 
-  bf_init(field, test_bools, &status);
-  TEST_ASSERT(status == SMB_SUCCESS);
+  bf_init(field, test_bools);
   // Set all the even numbered fields
   for (i = 0; i < test_bools; i += 2) {
     bf_set(field, i); //tested

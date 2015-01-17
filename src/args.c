@@ -114,33 +114,15 @@ char process_flag(smb_ad *pData, char *cFlags)
    @param pData The structure containing the arg data.
    @param sTitle The title of the long flag, including '--'
    @returns The adjusted pointer to the title, without '--'.
-   @exception SMB_ALLOCATION_ERROR If an allocation error occurs, no change is
-   made and NULL is returned.
  */
-char *process_long_flag(smb_ad *pData, char *sTitle, smb_status *status)
+char *process_long_flag(smb_ad *pData, char *sTitle)
 {
-  *status = SMB_SUCCESS;
   DATA d, e;
   d.data_ptr = sTitle + 2;
-  ll_append(pData->long_flags, d, status); // Add the portion AFTER the "--"
-
-  if (*status == SMB_ALLOCATION_ERROR) {
-    return NULL;
-  }
+  ll_append(pData->long_flags, d); // Add the portion AFTER the "--"
 
   e.data_ptr = NULL;
-  ll_append(pData->long_flag_strings, e, status);
-
-  if (*status == SMB_ALLOCATION_ERROR) {
-    // Remove the entry in long_flags so we are in a consistent state.
-    ll_pop_back(pData->long_flags, status);
-    // There must be an element in that list, we just added it.
-    assert(*status == SMB_SUCCESS);
-    // Set the allocation error and return NULL.
-    *status = SMB_ALLOCATION_ERROR;
-    return NULL;
-  }
-
+  ll_append(pData->long_flag_strings, e);
   return sTitle + 2;
 }
 
@@ -155,19 +137,17 @@ char *process_long_flag(smb_ad *pData, char *sTitle, smb_status *status)
    @param sStr The string to add.
    @param previous_long_flag The last long flag encountered.
    @param previous_flag The last regular (character) flag encountered.
-   @param[out] status Status variable.
-   @exception SMB_ALLOCATION_ERROR If a memory allocation failed.
  */
 void process_bare_string(smb_ad *pData, char *sStr, char *previous_long_flag,
-                         int previous_flag, smb_status *status)
+                         int previous_flag)
 {
-  *status = SMB_SUCCESS;
   if (previous_long_flag) {
     DATA d;
     d.data_ptr = sStr;
+    smb_status status;
     ll_set(pData->long_flag_strings, ll_length(pData->long_flag_strings) - 1, d,
-           status);
-    assert(*status == SMB_SUCCESS);
+           &status);
+    assert(status == SMB_SUCCESS);
   } else if (previous_flag != EOF) {
     int idx = flag_index(previous_flag);
     // The flag index would be negative if the previous flag was not a
@@ -176,7 +156,7 @@ void process_bare_string(smb_ad *pData, char *sStr, char *previous_long_flag,
   } else {
     DATA d;
     d.data_ptr = sStr;
-    ll_append(pData->bare_strings, d, status);
+    ll_append(pData->bare_strings, d);
   }
 }
 
@@ -221,57 +201,27 @@ int find_string(smb_ll *toSearch, char *toFind)
 
    @param data The pointer to the memory to allocate in.
  */
-void arg_data_init(smb_ad *data, smb_status *status)
+void arg_data_init(smb_ad *data)
 {
-  *status = SMB_SUCCESS;
   data->flags = 0;
-  for (int i = 0; i < MAX_FLAGS; i++) data->flag_strings[i] = NULL;
+  for (int i = 0; i < MAX_FLAGS; i++) {
+    data->flag_strings[i] = NULL;
+  }
 
-  data->long_flags = ll_create(status);
-  if (*status == SMB_ALLOCATION_ERROR)
-    goto exit;
-
-  data->long_flag_strings = ll_create(status);
-  if (*status == SMB_ALLOCATION_ERROR)
-    goto cleanup_long_flags;
-
-  data->bare_strings = ll_create(status);
-  if (*status == SMB_ALLOCATION_ERROR)
-    goto cleanup_long_flag_strings;
-
-  return; // success return path
-
-  // Error cleanup and return path.
- cleanup_long_flag_strings:
-  ll_delete(data->long_flag_strings);
- cleanup_long_flags:
-  ll_delete(data->long_flags);
- exit:
+  data->long_flags = ll_create();
+  data->long_flag_strings = ll_create();
+  data->bare_strings = ll_create();
   return;
 }
 
 /**
    @brief Allocate and initialize a smb_ad structure for argument parsing.
-   @param[out] status Status variable.
    @returns A pointer to the structure.
-   @exception SMB_ALLOCATION_ERROR If any allocation fails, returns NULL.
  */
-smb_ad *arg_data_create(smb_status *status)
+smb_ad *arg_data_create()
 {
-  *status = SMB_SUCCESS;
-  smb_ad *data = (smb_ad*) malloc(sizeof(smb_ad));
-  if (data == NULL) {
-    *status = SMB_ALLOCATION_ERROR;
-    return NULL;
-  }
-
-  arg_data_init(data, status);
-  if (*status == SMB_ALLOCATION_ERROR) {
-    free(data);
-    return NULL;
-  }
-
-  SMB_INCREMENT_MALLOC_COUNTER(sizeof(smb_ad));
+  smb_ad *data = smb_new(smb_ad, 1);
+  arg_data_init(data);
   return data;
 }
 
@@ -311,16 +261,11 @@ void arg_data_delete(smb_ad *data)
    the object about every desired flag.
    @param argc The number of arguments (not including program name).
    @param argv The arguments themselves (not including program name).
-   @param[out] status Status variable.
-   @exception SMB_ALLOCATION_ERROR If an allocation error occurs, the function
-   will return.  No memory will be leaked, but the arg processing will be
-   incomplete.  It will be in a consistent state, and may be used to check args.
  */
-void process_args(smb_ad *data, int argc, char **argv, smb_status *status)
+void process_args(smb_ad *data, int argc, char **argv)
 {
   char *previous_long_flag = NULL;
   int previous_flag = EOF;
-  *status = SMB_SUCCESS;
 
   while (argc--) {
     // At the beginning of the loop, argc refers to number of remaining args,
@@ -333,17 +278,13 @@ void process_args(smb_ad *data, int argc, char **argv, smb_status *status)
       switch (*(*argv + 1)) {
       case '-':
         // Long flag
-        previous_long_flag = process_long_flag(data, *argv, status);
-        if (*status != SMB_SUCCESS)
-          return;
+        previous_long_flag = process_long_flag(data, *argv);
         previous_flag = EOF;
         break;
       case '\0':
         // A single '-'...counts as a bare string in my book
-        process_bare_string(data, *argv, previous_long_flag, previous_flag,
-                            status);
-        if (*status != SMB_SUCCESS)
-          return;
+        process_bare_string(data, *argv, previous_long_flag, previous_flag);
+
         previous_long_flag = NULL;
         previous_flag = EOF;
         break;
@@ -357,10 +298,7 @@ void process_args(smb_ad *data, int argc, char **argv, smb_status *status)
 
     default:
       // This is a raw string.  We first need to check if it belongs to a flag.
-      process_bare_string(data, *argv, previous_long_flag, previous_flag,
-                          status);
-      if (*status != SMB_SUCCESS)
-        return;
+      process_bare_string(data, *argv, previous_long_flag, previous_flag);
       previous_long_flag = NULL;
       previous_flag = EOF;
       break;

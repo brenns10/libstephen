@@ -45,14 +45,12 @@
 
 int ll_test_create()
 {
-  smb_status status;
+  smb_status status = SMB_SUCCESS;
   DATA d;
   d.data_llint = 13;
 
-  smb_ll *list = ll_create(&status);
-  TEST_ASSERT(status == SMB_SUCCESS);
-  ll_append(list, d, &status);
-  TEST_ASSERT(status == SMB_SUCCESS);
+  smb_ll *list = ll_create();
+  ll_append(list, d);
 
   TEST_ASSERT(ll_length(list) == 1);
 
@@ -65,30 +63,22 @@ int ll_test_create()
 
 int ll_test_create_empty()
 {
-  smb_status status;
-  smb_ll *list = ll_create(&status);
-  TEST_ASSERT(status == SMB_SUCCESS);
-
+  smb_ll *list = ll_create();
   TEST_ASSERT(ll_length(list) == 0);
-
   ll_delete(list);
   return 0;
 }
 
 int ll_test_append()
 {
-  smb_status status;
+  smb_status status = SMB_SUCCESS;
   DATA d;
-  d.data_llint = 0;
+  smb_ll *list = ll_create();
 
-  smb_ll *list = ll_create(&status);
-
-  for ( ; d.data_llint < 200; d.data_llint++) {
+  for (d.data_llint = 0; d.data_llint < 200; d.data_llint++) {
     // Put a small, 200 item load on it.  This tests appending on
     // empty and general appending.
-    ll_append(list, d, &status);
-    TEST_ASSERT(status == SMB_SUCCESS);
-
+    ll_append(list, d);
     TEST_ASSERT(ll_length(list) == d.data_llint + 1);
 
     // Test that the data is correct.
@@ -104,16 +94,13 @@ int ll_test_append()
 
 int ll_test_prepend()
 {
-  smb_status status;
+  smb_status status = SMB_SUCCESS;
   DATA d;
-  d.data_llint = 0;
-  smb_ll *list = ll_create(&status);
+  smb_ll *list = ll_create();
 
   // Test prepend about 200 times...
-  for ( ; d.data_llint < 200; d.data_llint++) {
-    ll_prepend(list, d, &status);
-    TEST_ASSERT(status == SMB_SUCCESS);
-
+  for (d.data_llint = 0; d.data_llint < 200; d.data_llint++) {
+    ll_prepend(list, d);
     TEST_ASSERT(ll_length(list) == d.data_llint + 1);
 
     for (int i = 0; i < ll_length(list); i++) {
@@ -128,15 +115,14 @@ int ll_test_prepend()
 
 int ll_test_set()
 {
-  smb_status status;
+  smb_status status = SMB_SUCCESS;
   DATA d;
-  smb_ll *list = ll_create(&status);
+  smb_ll *list = ll_create();
   const int length = 30;
 
   // Create the data
   for (d.data_llint = 0 ; d.data_llint < length; d.data_llint++) {
-    ll_append(list, d, &status);
-    TEST_ASSERT(status == SMB_SUCCESS);
+    ll_append(list, d);
   }
 
   // Verify the data
@@ -166,16 +152,14 @@ int ll_test_set()
 
 int ll_test_remove()
 {
-  smb_status status;
+  smb_status status = SMB_SUCCESS;
   DATA d;
-  d.data_llint = 0;
-  smb_ll *list = ll_create(&status);
+  smb_ll *list = ll_create();
   const int length = 20;
 
   // Create the data
   for (d.data_llint = 0 ; d.data_llint < length; d.data_llint++) {
-    ll_append(list, d, &status);
-    TEST_ASSERT(status == SMB_SUCCESS);
+    ll_append(list, d);
   }
 
   // Verify the data
@@ -218,16 +202,14 @@ int ll_test_remove()
 
 int ll_test_insert()
 {
-  smb_status status;
+  smb_status status = SMB_SUCCESS;
   DATA d;
-  d.data_llint = 0;
-  smb_ll *list = ll_create(&status);
+  smb_ll *list = ll_create();
   const int length = 20;
 
   // Create the data
   for (d.data_llint = 0 ; d.data_llint < length; d.data_llint++) {
-    ll_append(list, d, &status);
-    TEST_ASSERT(status == SMB_SUCCESS);
+    ll_append(list, d);
   }
 
   // Verify the data
@@ -238,18 +220,15 @@ int ll_test_insert()
 
   // Here are the three insertions for the test:
   d.data_llint = 100;
-  ll_insert(list, 0, d, &status);
-  TEST_ASSERT(status == SMB_SUCCESS);
+  ll_insert(list, 0, d);
   TEST_ASSERT(ll_length(list) == length + 1);
 
   d.data_llint = 101;
-  ll_insert(list, 10, d, &status);
-  TEST_ASSERT(status == SMB_SUCCESS);
+  ll_insert(list, 10, d);
   TEST_ASSERT(ll_length(list) == length + 2);
 
   d.data_llint = 102;
-  ll_insert(list, ll_length(list), d, &status);
-  TEST_ASSERT(status == SMB_SUCCESS);
+  ll_insert(list, ll_length(list), d);
   TEST_ASSERT(ll_length(list) == length + 3);
 
   int value = 0;

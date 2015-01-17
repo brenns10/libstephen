@@ -116,16 +116,14 @@ typedef struct smb_ht
 
 } smb_ht;
 
-void ht_init(smb_ht *pTable, HASH_FUNCTION hash_func, DATA_COMPARE equal,
-             smb_status *status);
-smb_ht *ht_create(HASH_FUNCTION hash_func, DATA_COMPARE equal,
-                  smb_status *status);
+void ht_init(smb_ht *pTable, HASH_FUNCTION hash_func, DATA_COMPARE equal);
+smb_ht *ht_create(HASH_FUNCTION hash_func, DATA_COMPARE equal);
 void ht_destroy_act(smb_ht *pTable, DATA_ACTION deleter);
 void ht_destroy(smb_ht *pTable);
 void ht_delete_act(smb_ht *pTable, DATA_ACTION deleter);
 void ht_delete(smb_ht *pTable);
 
-void ht_insert(smb_ht *pTable, DATA dKey, DATA dValue, smb_status *status);
+void ht_insert(smb_ht *pTable, DATA dKey, DATA dValue);
 void ht_remove_act(smb_ht *pTable, DATA dKey, DATA_ACTION deleter,
                    smb_status *status);
 void ht_remove(smb_ht *pTable, DATA dKey, smb_status *status);

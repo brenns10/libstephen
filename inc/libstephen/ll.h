@@ -94,25 +94,25 @@ typedef struct smb_ll
 
 } smb_ll;
 
-void ll_init(smb_ll *newList, smb_status *status);
-smb_ll *ll_create(smb_status *status);
+void ll_init(smb_ll *newList);
+smb_ll *ll_create();
 void ll_destroy(smb_ll *list);
 void ll_delete(smb_ll *list);
 
-smb_list ll_create_list(smb_status *status);
+smb_list ll_create_list();
 smb_list ll_cast_to_list(smb_ll *list);
 
-void ll_append(smb_ll *list, DATA newData, smb_status *status);
-void ll_prepend(smb_ll *list, DATA newData, smb_status *status);
-void ll_push_back(smb_ll *list, DATA newData, smb_status *status);
+void ll_append(smb_ll *list, DATA newData);
+void ll_prepend(smb_ll *list, DATA newData);
+void ll_push_back(smb_ll *list, DATA newData);
 DATA ll_pop_back(smb_ll *list, smb_status *status);
 DATA ll_peek_back(smb_ll *list, smb_status *status);
-void ll_push_front(smb_ll *list, DATA newData, smb_status *status);
+void ll_push_front(smb_ll *list, DATA newData);
 DATA ll_pop_front(smb_ll *list, smb_status *status);
 DATA ll_peek_front(smb_ll *list, smb_status *status);
 DATA ll_get(const smb_ll *list, int index, smb_status *status);
 void ll_remove(smb_ll *list, int index, smb_status *status);
-void ll_insert(smb_ll *list, int index, DATA newData, smb_status *status);
+void ll_insert(smb_ll *list, int index, DATA newData);
 void ll_set(smb_ll *list, int index, DATA newData, smb_status *status);
 int  ll_length(const smb_ll *list);
 
