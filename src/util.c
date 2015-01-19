@@ -108,7 +108,7 @@ void *smb___free(void *ptr)
    @param[out] alloc The number of characters allocated to the buffer.
    @returns A buffer containing the line.
  */
-wchar_t *smb_read_linew(FILE *file, int *alloc)
+wchar_t *smb_read_linew(FILE *file, smb_status *status)
 {
   #define SMBRL_BUFSIZE 256
   int bufsize = SMBRL_BUFSIZE;
@@ -123,9 +123,6 @@ wchar_t *smb_read_linew(FILE *file, int *alloc)
     // If we hit EOF, replace it with a null character and return.
     if (wc == WEOF || wc == L'\n') {
       buffer[position++] = L'\0';
-      // Set the out parameter to the number of characters allocated.
-      if (alloc)
-        *alloc = bufsize;
       return buffer;
     } else {
       buffer[position++] = wc;
@@ -140,7 +137,7 @@ wchar_t *smb_read_linew(FILE *file, int *alloc)
 }
 
 
-char *smb_read_line(FILE *file, int *alloc)
+char *smb_read_line(FILE *file, smb_status *status)
 {
   int bufsize = SMBRL_BUFSIZE;
   int position = 0;
@@ -154,9 +151,6 @@ char *smb_read_line(FILE *file, int *alloc)
     // If we hit EOF, replace it with a null character and return.
     if (c == EOF || c == '\n') {
       buffer[position++] = '\0';
-      // Set the out parameter to the number of characters allocated.
-      if (alloc)
-        *alloc = bufsize;
       return buffer;
     } else {
       buffer[position++] = c;
