@@ -29,15 +29,6 @@ with the grammar/parsing tools too.  Also, I wrote a shell called LSH, with the
 intention of integrating it with Libstephen.  If I get a solid syntax working
 with it, I can migrate that into Libstephen as well.
 
-## Get Rid of Memory Leak Detection
-
-When I added memory leak detection to Libstephen, it was a really cool idea.
-The fact that I could count the bytes I allocated myself, and detect memory
-leaks myself, was great.  But my approach involves some code tradeoffs that are
-a bit confining.  Basically, it sucks to have to know how many bytes you're
-freeing when you free them!  Plus, tools like Valgrind do more with less work.
-It stands to reason that I should get rid of memory leak detection before 1.0.
-
 ## Unit Test Setup and Tear Down
 
 Most unit testing libraries have setup and tear down methods.  I can make
