@@ -41,6 +41,7 @@
 #include <stdio.h>            /* printf */
 #include <string.h>           /* strncpy */
 
+#include "libstephen/base.h"
 #include "libstephen/ut.h"    /* functions we're defining */
 
 /**
