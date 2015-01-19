@@ -246,7 +246,7 @@ void arg_data_destroy(smb_ad * data)
 void arg_data_delete(smb_ad *data)
 {
   arg_data_destroy(data);
-  free(data);
+  smb_free(data);
 }
 
 /**

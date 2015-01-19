@@ -38,7 +38,6 @@
 
 *******************************************************************************/
 
-#include <stdlib.h>           /* malloc */
 #include <stdio.h>            /* printf */
 #include <string.h>           /* strncpy */
 
@@ -55,7 +54,7 @@
  */
 smb_ut_test *su_create_test(char *description, int (*run)(), int check_mem_leaks)
 {
-  smb_ut_test *test = (smb_ut_test*) malloc(sizeof(smb_ut_test));
+  smb_ut_test *test = smb_new(smb_ut_test, 1);
   strncpy(test->description, description, SMB_UNIT_DESCRIPTION_SIZE - 1);
   test->description[SMB_UNIT_DESCRIPTION_SIZE - 1] = 0;
 
@@ -73,7 +72,7 @@ smb_ut_test *su_create_test(char *description, int (*run)(), int check_mem_leaks
  */
 smb_ut_group *su_create_test_group(char *description)
 {
-  smb_ut_group *group = (smb_ut_group*) malloc(sizeof(smb_ut_group));
+  smb_ut_group *group = smb_new(smb_ut_group, 1);
   strncpy(group->description, description, SMB_UNIT_DESCRIPTION_SIZE - 1);
   group->description[SMB_UNIT_DESCRIPTION_SIZE - 1] = 0;
 
@@ -166,7 +165,7 @@ int su_run_group(smb_ut_group *group)
  */
 void su_delete_test(smb_ut_test *test)
 {
-  free(test);
+  smb_free(test);
 }
 
 /**
@@ -188,5 +187,5 @@ void su_delete_group(smb_ut_group *group)
     if (group->tests[i]) // don't delete if already deleted
       su_delete_test(group->tests[i]);
   }
-  free(group);
+  smb_free(group);
 }

@@ -171,7 +171,7 @@ smb_al *al_create()
  */
 void al_destroy(smb_al *list)
 {
-  free(list->data);
+  smb_free(list->data);
 }
 
 /**
@@ -182,7 +182,7 @@ void al_destroy(smb_al *list)
 void al_delete(smb_al *list)
 {
   al_destroy(list);
-  free(list);
+  smb_free(list);
 }
 
 /**

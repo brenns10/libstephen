@@ -47,9 +47,6 @@
  */
 int main(int argc, char ** argv)
 {
-
-  int mallocs;
-
   linked_list_test();
   array_list_test();
   hash_table_test();
@@ -57,6 +54,5 @@ int main(int argc, char ** argv)
   utf8_test();
   iter_test();
   args_test();
-
   // return args_test_main(argc, argv);
 }

@@ -82,7 +82,7 @@ void ll_remove_node(smb_ll *list, smb_ll_node *the_node)
   } else {
     list->tail = previous;
   }
-  free(the_node);
+  smb_free(the_node);
 }
 
 /**
@@ -190,15 +190,14 @@ void ll_destroy(smb_ll *list)
    to the smb_ll object.
 
    This is equivalent to calling ll_destroy on the pointer, and then calling
-   free() on the pointer (so long as you then decrement the malloc counter).
+   free() on the pointer.
 
    @param list A pointer to the list to delete.
  */
 void ll_delete(smb_ll *list)
 {
   ll_destroy(list);
-  // Free the list header
-  free(list);
+  smb_free(list);
 }
 
 /**

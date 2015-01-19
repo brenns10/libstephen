@@ -89,7 +89,7 @@ unsigned char *bf_create(int num_bools) {
  */
 void bf_delete(unsigned char *data, int num_bools) {
   int size = SMB_BITFIELD_SIZE(num_bools);
-  free(data);
+  smb_free(data);
 }
 
 /**

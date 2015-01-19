@@ -88,7 +88,7 @@ smb_ht_bckt *ht_bucket_create(DATA key, DATA value, smb_ht_bckt *next)
  */
 void ht_bucket_delete(smb_ht_bckt *pToDelete)
 {
-  free(pToDelete);
+  smb_free(pToDelete);
 }
 
 /**
@@ -191,7 +191,7 @@ void ht_resize(smb_ht *table)
   }
 
   // Step three: free old data.
-  free(pOldBuffer);
+  smb_free(pOldBuffer);
 }
 
 /**
@@ -308,8 +308,8 @@ void ht_delete_act(smb_ht *table, DATA_ACTION deleter)
   }
 
   ht_destroy_act(table, deleter);
-  free(table->table);
-  free(table);
+  smb_free(table->table);
+  smb_free(table);
 }
 
 /**
