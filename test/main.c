@@ -58,12 +58,5 @@ int main(int argc, char ** argv)
   iter_test();
   args_test();
 
-  if (mallocs = SMB_GET_MALLOC_COUNTER) {
-    printf("#### MEMORY LEAK DETECTED!!  MALLOCS: %d. ####\n", mallocs);
-    return 1;
-  } else {
-    return 0;
-  }
-
   // return args_test_main(argc, argv);
 }

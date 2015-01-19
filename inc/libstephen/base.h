@@ -54,84 +54,8 @@
   The debug option enables all diagnostics.
  */
 #ifdef SMB_DEBUG
-#define SMB_ENABLE_MEMORY_DIAGNOSTICS
 #define SMB_ENABLE_DIAGNOSTIC_CODE
 #define SMB_ENABLE_DIAGNOSTIC_PRINTING
-#endif
-
-/**
-   @brief Increments the memory allocation counter.  Don't use this.
-
-   This function is used for memory management.  It is enabled and disabled by
-   the preprocessor.  So you should stick to the macros for this.
-
-   @see SMB_INCREMENT_MALLOC_COUNTER
-
-   @param number_of_mallocs The number of bytes allocated.
- */
-void smb___helper_inc_malloc_counter(size_t number_of_mallocs);
-
-/**
-   @brief Decrements memory allocation counter.  Don't use.
-
-   @see smb___helper_inc_malloc_counter
-   @see SMB_DECREMENT_MALLOC_COUNTER
-
-   @param The number of bytes freed.
- */
-void smb___helper_dec_malloc_counter(size_t number_of_frees);
-
-/**
-   @brief Gets the memory allocation counter.  Don't use.
-
-   @see smb___helper_inc_malloc_counter
-   @see SMB_GET_MALLOC_COUNTER
-
-   @returns The number of bytes allocated.
- */
-size_t smb___helper_get_malloc_counter();
-
-/**
-   @brief Increment the memory allocation counter.
-
-   Call this function with the number of bytes every time you allocate memory.
-   This will only do anything if SMB_MEMORY_DIAGNOSTICS is defined.
-
-   @param The number of bytes allocated.
-*/
-#ifdef SMB_ENABLE_MEMORY_DIAGNOSTICS
-#define SMB_INCREMENT_MALLOC_COUNTER(x) smb___helper_inc_malloc_counter(x)
-#else
-#define SMB_INCREMENT_MALLOC_COUNTER(x)
-#endif // SMB_ENABLE_MEMORY_DIAGNOSTICS
-
-/**
-   @brief Decrement the memory allocation couter.
-
-   Call this function with the number of bytes every time you free memory.
-   This will only do anything if SMB_MEMORY_DIAGNOSTICS is defined.
-
-   @param The number of bytes freed.
-*/
-#ifdef SMB_ENABLE_MEMORY_DIAGNOSTICS
-#define SMB_DECREMENT_MALLOC_COUNTER(x) smb___helper_dec_malloc_counter(x)
-#else
-#define SMB_DECREMENT_MALLOC_COUNTER(x)
-#endif // SMB_ENABLE_MEMORY_DIAGNOSTICS
-
-/**
-   @brief Get the memory allocation counter.
-
-   Call this function to get the number of bytes currently allocated by my code.
-   Only does anything if SMB_MEMORY_DIAGNOSTICS is defined.  If it's not
-   defined, evaluates to 0.
-
-   @returns The number of bytes allocated right now.
-*/
-#ifdef SMB_ENABLE_MEMORY_DIAGNOSTICS
-#define SMB_GET_MALLOC_COUNTER smb___helper_get_malloc_counter()
-#else
-#define SMB_GET_MALLOC_COUNTER 0
 #endif
 
 /**
@@ -226,8 +150,8 @@ void data_printer_pointer(FILE *f, DATA d);
 *******************************************************************************/
 
 void *smb___new(size_t amt);
-void *smb___renew(void *ptr, size_t newsize, size_t oldsize);
-void *smb___free(void *ptr, size_t oldsize);
+void *smb___renew(void *ptr, size_t newsize);
+void *smb___free(void *ptr);
 
 /**
    @brief A nicer allocation function.
@@ -255,8 +179,8 @@ void *smb___free(void *ptr, size_t oldsize);
    @param oldamt The previous amount of items that were allocated.
    @returns A pointer to the reallocated memory.
  */
-#define smb_renew(type, ptr, newamt, oldamt) \
-  ((type*) smb___renew(ptr, (newamt) * sizeof(type), (oldamt) * sizeof(type)))
+#define smb_renew(type, ptr, newamt) \
+  ((type*) smb___renew(ptr, (newamt) * sizeof(type)))
 
 /**
    @brief A nicer free function.
@@ -268,7 +192,7 @@ void *smb___free(void *ptr, size_t oldsize);
    @param ptr The memory you're freeing.
    @param amt The number of items you're freeing.
  */
-#define smb_free(type, ptr, amt) smb___free(ptr, (amt) * sizeof(type))
+#define smb_free(ptr) smb___free(ptr)
 
 /*******************************************************************************
 

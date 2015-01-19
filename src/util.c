@@ -46,63 +46,14 @@
 
 #include "libstephen/base.h"  /* SMB_* */
 
-static size_t mallocs;
-unsigned int ERROR_VAR;
-char *output_file = NULL;
-struct timeval start = {.tv_sec = 0, .tv_usec = 0};
-
-void smb_set_memory_log_location(char *location)
-{
-  output_file = location;
-}
-
-void smb___write_current_memory()
-{
-  struct timeval tv;
-  double secs;
-  FILE *out;
-
-  if (output_file == NULL) return;
-
-  out = fopen(output_file, "a");
-  gettimeofday(&tv, NULL);
-
-  if (start.tv_sec == 0 && start.tv_usec == 0) {
-    start = tv;
-  }
-
-  secs = tv.tv_sec - start.tv_sec + (tv.tv_usec - start.tv_usec)/1000000.0;
-
-  fprintf(out, "%f, %u\n", secs, mallocs);
-  fclose(out);
-}
-
-void smb___helper_inc_malloc_counter(size_t number_of_mallocs)
-{
-  mallocs += number_of_mallocs;
-  smb___write_current_memory();
-}
-
-size_t smb___helper_get_malloc_counter()
-{
-  return mallocs;
-  return 0;
-}
-
-void smb___helper_dec_malloc_counter(size_t number_of_frees)
-{
-  mallocs -= number_of_frees;
-  smb___write_current_memory();
-}
 
 /**
    @brief Utility function for macro smb_new().  Wrapper over malloc().
 
    Allocate a certain amount of memory.  If allocation fails, EXIT with an error
-   message.  Account for the allocated bytes via the
-   SMB_INCREMENT_MALLOC_COUNTER() macro.
+   message.
 
-   @parm amt The number of bytes to allocate.
+   @param amt The number of bytes to allocate.
    @returns The pointer to the allocated memory (guaranteed).
  */
 void *smb___new(size_t amt)
@@ -112,45 +63,38 @@ void *smb___new(size_t amt)
     fprintf(stderr, "smb_new: allocation error\n");
     exit(1);
   }
-  SMB_INCREMENT_MALLOC_COUNTER(amt);
   return result;
 }
 
 /**
    @brief Utility function for macro smb_renew().  Wrapper over realloc().
 
-   Reallocate a certain amount of memory.  You need to know the old size of the
-   memory to keep proper accounting of the memory.
+   Reallocate a certain amount of memory.
 
    @param ptr The memory to reallocate.
    @param newsize The new size of the memory.
-   @param oldsize The old size of the memory.
    @returns The pointer to the new block.
  */
-void *smb___renew(void *ptr, size_t newsize, size_t oldsize)
+void *smb___renew(void *ptr, size_t newsize)
 {
   void *result = realloc(ptr, newsize);
   if (!result) {
     fprintf(stderr, "smb_renew: allocation error\n");
     exit(1);
   }
-  SMB_INCREMENT_MALLOC_COUNTER(newsize-oldsize);
   return result;
 }
 
 /**
    @brief Utility function for macro smb_free().  Wrapper over free().
 
-   Free a certain amount of memory, and account for the memory in the allocation
-   counter.
+   Free a pointer.
 
    @param ptr Memory to free.
-   @param oldsize The size of the memory.
  */
-void *smb___free(void *ptr, size_t oldsize)
+void *smb___free(void *ptr)
 {
   free(ptr);
-  SMB_DECREMENT_MALLOC_COUNTER(oldsize);
 }
 
 /**
@@ -189,7 +133,7 @@ wchar_t *smb_read_linew(FILE *file, int *alloc)
 
     // If we have exceeded the buffer, reallocate.
     if (position >= bufsize) {
-      buffer = smb_renew(wchar_t, buffer, bufsize+SMBRL_BUFSIZE, bufsize);
+      buffer = smb_renew(wchar_t, buffer, bufsize+SMBRL_BUFSIZE);
       bufsize += SMBRL_BUFSIZE;
     }
   }
@@ -220,7 +164,7 @@ char *smb_read_line(FILE *file, int *alloc)
 
     // If we have exceeded the buffer, reallocate.
     if (position >= bufsize) {
-      buffer = smb_renew(char, buffer, bufsize+SMBRL_BUFSIZE, bufsize);
+      buffer = smb_renew(char, buffer, bufsize+SMBRL_BUFSIZE);
       bufsize += SMBRL_BUFSIZE;
     }
   }

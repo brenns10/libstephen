@@ -83,7 +83,6 @@ void ll_remove_node(smb_ll *list, smb_ll_node *the_node)
     list->tail = previous;
   }
   free(the_node);
-  SMB_DECREMENT_MALLOC_COUNTER(sizeof(smb_ll_node));
 }
 
 /**
@@ -200,7 +199,6 @@ void ll_delete(smb_ll *list)
   ll_destroy(list);
   // Free the list header
   free(list);
-  SMB_DECREMENT_MALLOC_COUNTER(sizeof(smb_ll));
 }
 
 /**
@@ -560,7 +558,7 @@ void ll_iter_destroy(smb_iter *iter)
 void ll_iter_delete(smb_iter *iter)
 {
   iter->destroy(iter);
-  smb_free(smb_iter, iter, 1);
+  smb_free(iter);
 }
 
 /**

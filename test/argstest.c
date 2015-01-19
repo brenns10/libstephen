@@ -368,7 +368,7 @@ void iterate_bare_strings(smb_ad *pArgData)
 
 int args_test_main(int argc, char **argv)
 {
-  printf("Mallocs: %d\n", SMB_GET_MALLOC_COUNTER);
+  printf("Mallocs: %d\n");
   smb_ad ArgData;
   arg_data_init(&ArgData);
   process_args(&ArgData, argc - 1, argv + 1);
@@ -378,8 +378,6 @@ int args_test_main(int argc, char **argv)
 
   iterate_long_flags(&ArgData);
   iterate_bare_strings(&ArgData);
-  printf("Mallocs: %d\n", SMB_GET_MALLOC_COUNTER);
   arg_data_destroy(&ArgData);
-  printf("Mallocs: %d\n", SMB_GET_MALLOC_COUNTER);
   return 0;
 }

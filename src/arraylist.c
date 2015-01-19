@@ -71,10 +71,8 @@
  */
 void al_expand(smb_al *list)
 {
-  int newAllocation = list->allocated + SMB_AL_BLOCK_SIZE;
-  DATA *newBlock = smb_renew(DATA, list->data, newAllocation, list->allocated);
-  list->data = newBlock;
-  list->allocated = newAllocation;
+  list->allocated = list->allocated + SMB_AL_BLOCK_SIZE;
+  list->data = smb_renew(DATA, list->data, list->allocated);
 }
 
 /**
@@ -174,7 +172,6 @@ smb_al *al_create()
 void al_destroy(smb_al *list)
 {
   free(list->data);
-  SMB_DECREMENT_MALLOC_COUNTER(list->allocated * sizeof(DATA));
 }
 
 /**
@@ -186,7 +183,6 @@ void al_delete(smb_al *list)
 {
   al_destroy(list);
   free(list);
-  SMB_DECREMENT_MALLOC_COUNTER(sizeof(smb_al));
 }
 
 /**
@@ -467,7 +463,7 @@ void al_iter_destroy(smb_iter *iter)
 void al_iter_delete(smb_iter *iter)
 {
   iter->destroy(iter);
-  smb_free(smb_iter, iter, 1);
+  smb_free(iter);
 }
 
 /**

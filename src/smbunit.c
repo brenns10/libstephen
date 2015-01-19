@@ -42,7 +42,6 @@
 #include <stdio.h>            /* printf */
 #include <string.h>           /* strncpy */
 
-#include "libstephen/base.h"  /* SMB_INCREMENT_MALLOC_COUNTER */
 #include "libstephen/ut.h"    /* functions we're defining */
 
 /**
@@ -57,7 +56,6 @@
 smb_ut_test *su_create_test(char *description, int (*run)(), int check_mem_leaks)
 {
   smb_ut_test *test = (smb_ut_test*) malloc(sizeof(smb_ut_test));
-  SMB_INCREMENT_MALLOC_COUNTER(sizeof(smb_ut_test));
   strncpy(test->description, description, SMB_UNIT_DESCRIPTION_SIZE - 1);
   test->description[SMB_UNIT_DESCRIPTION_SIZE - 1] = 0;
 
@@ -76,7 +74,6 @@ smb_ut_test *su_create_test(char *description, int (*run)(), int check_mem_leaks
 smb_ut_group *su_create_test_group(char *description)
 {
   smb_ut_group *group = (smb_ut_group*) malloc(sizeof(smb_ut_group));
-  SMB_INCREMENT_MALLOC_COUNTER(sizeof(smb_ut_group));
   strncpy(group->description, description, SMB_UNIT_DESCRIPTION_SIZE - 1);
   group->description[SMB_UNIT_DESCRIPTION_SIZE - 1] = 0;
 
@@ -120,18 +117,11 @@ void su_add_test(smb_ut_group *group, smb_ut_test *test)
  */
 int su_run_test(smb_ut_test *test)
 {
-  int mallocs = SMB_GET_MALLOC_COUNTER;
   int result = test->run();
-  mallocs = SMB_GET_MALLOC_COUNTER - mallocs;
 
   if (result) {
     printf ("TEST \"%s\" failed with code: %d\n",test->description, result);
     return 1;
-  }
-
-  if (test->check_mem_leaks && mallocs) {
-    printf ("TEST \"%s\" LEAKED %d BYTES!\n", test->description, mallocs);
-    return 3;
   }
 
   printf ("TEST \"%s\" passed!\n",test->description);
@@ -170,18 +160,13 @@ int su_run_group(smb_ut_group *group)
 
    Note that no actual cleanup is required by the test, so the only benefit to
    using this function is that it is future-safe (updates to smbunit may require
-   cleanup to be performed in this function), and that it automatically calls
-   SMB_DECREMENT_MALLOC_COUNTER().  Failing to call that when freeing a test
-   WILL result in a detected memory leak if you place appropriate code in the
-   main method, but WILL NOT result in a detected memory leak in any tests.
-   Remember that no actual memory leak would have actually occurred.
+   cleanup to be performed in this function).
 
    @param test The test to free
  */
 void su_delete_test(smb_ut_test *test)
 {
   free(test);
-  SMB_DECREMENT_MALLOC_COUNTER(sizeof(smb_ut_test));
 }
 
 /**
@@ -204,5 +189,4 @@ void su_delete_group(smb_ut_group *group)
       su_delete_test(group->tests[i]);
   }
   free(group);
-  SMB_DECREMENT_MALLOC_COUNTER(sizeof(smb_ut_group));
 }

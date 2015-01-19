@@ -246,9 +246,7 @@ void arg_data_destroy(smb_ad * data)
 void arg_data_delete(smb_ad *data)
 {
   arg_data_destroy(data);
-
   free(data);
-  SMB_DECREMENT_MALLOC_COUNTER(sizeof(smb_ad));
 }
 
 /**

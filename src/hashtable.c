@@ -89,7 +89,6 @@ smb_ht_bckt *ht_bucket_create(DATA key, DATA value, smb_ht_bckt *next)
 void ht_bucket_delete(smb_ht_bckt *pToDelete)
 {
   free(pToDelete);
-  SMB_DECREMENT_MALLOC_COUNTER(sizeof(smb_ht_bckt));
 }
 
 /**
@@ -193,7 +192,6 @@ void ht_resize(smb_ht *table)
 
   // Step three: free old data.
   free(pOldBuffer);
-  SMB_DECREMENT_MALLOC_COUNTER(oldAllocated * sizeof(smb_ht_bckt*));
 }
 
 /**
@@ -305,13 +303,12 @@ void ht_destroy(smb_ht *table)
  */
 void ht_delete_act(smb_ht *table, DATA_ACTION deleter)
 {
-  if (!table) return;
+  if (!table) {
+    return;
+  }
 
   ht_destroy_act(table, deleter);
-
-  SMB_DECREMENT_MALLOC_COUNTER(table->allocated * sizeof(smb_ht_bckt*));
   free(table->table);
-  SMB_DECREMENT_MALLOC_COUNTER(sizeof(smb_ht));
   free(table);
 }
 
