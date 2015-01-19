@@ -99,7 +99,7 @@ void utf8_test(void)
   smb_ut_group *group = su_create_test_group("utf8");
 
   smb_ut_test *predetermined = su_create_test("predetermined",
-                                              utf8_test_predetermined, 1);
+                                              utf8_test_predetermined);
   su_add_test(group, predetermined);
 
   su_run_group(group);

@@ -259,25 +259,25 @@ void linked_list_test()
   // Use the smbunit test framework.  Load tests and run them.
   smb_ut_group *group = su_create_test_group("linked list");
 
-  smb_ut_test *create = su_create_test("create", ll_test_create, 1);
+  smb_ut_test *create = su_create_test("create", ll_test_create);
   su_add_test(group, create);
 
-  smb_ut_test *create_empty = su_create_test("create_empty", ll_test_create_empty, 1);
+  smb_ut_test *create_empty = su_create_test("create_empty", ll_test_create_empty);
   su_add_test(group, create_empty);
 
-  smb_ut_test *append = su_create_test("append", ll_test_append, 1);
+  smb_ut_test *append = su_create_test("append", ll_test_append);
   su_add_test(group, append);
 
-  smb_ut_test *prepend = su_create_test("prepend", ll_test_prepend, 1);
+  smb_ut_test *prepend = su_create_test("prepend", ll_test_prepend);
   su_add_test(group, prepend);
 
-  smb_ut_test *set = su_create_test("set", ll_test_set, 1);
+  smb_ut_test *set = su_create_test("set", ll_test_set);
   su_add_test(group, set);
 
-  smb_ut_test *remove = su_create_test("remove", ll_test_remove, 1);
+  smb_ut_test *remove = su_create_test("remove", ll_test_remove);
   su_add_test(group, remove);
 
-  smb_ut_test *insert = su_create_test("insert", ll_test_insert, 1);
+  smb_ut_test *insert = su_create_test("insert", ll_test_insert);
   su_add_test(group, insert);
 
   su_run_group(group);

@@ -92,11 +92,6 @@ typedef struct smb_ut_test
    */
   int expected_errors;
 
-  /**
-     @brief Should we check for memory leaks?
-   */
-  int check_mem_leaks;
-
 } smb_ut_test;
 
 /**
@@ -125,7 +120,7 @@ typedef struct smb_ut_group
 
 } smb_ut_group;
 
-smb_ut_test *su_create_test(char *description, int (*run)(), int check_mem_leaks);
+smb_ut_test *su_create_test(char *description, int (*run)());
 smb_ut_group *su_create_test_group(char *description);
 void su_add_test(smb_ut_group *group, smb_ut_test *test);
 int su_run_test(smb_ut_test *test);

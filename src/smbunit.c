@@ -49,19 +49,14 @@
 
    @param description A description of the test.
    @param run A function pointer to the test function.
-   @param check_mem_leaks Whether to check if the mallocs before = mallocs
-   after.  0 for no, 1 for yes.
    @returns A pointer to the new test.
  */
-smb_ut_test *su_create_test(char *description, int (*run)(), int check_mem_leaks)
+smb_ut_test *su_create_test(char *description, int (*run)())
 {
   smb_ut_test *test = smb_new(smb_ut_test, 1);
   strncpy(test->description, description, SMB_UNIT_DESCRIPTION_SIZE - 1);
   test->description[SMB_UNIT_DESCRIPTION_SIZE - 1] = 0;
-
   test->run = run;
-  test->check_mem_leaks = check_mem_leaks;
-
   return test;
 }
 

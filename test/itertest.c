@@ -218,19 +218,19 @@ void run_tests(char *desc)
 {
   smb_ut_group *group = su_create_test_group(desc);
 
-  smb_ut_test *empty = su_create_test("empty", iter_test_empty, 1);
+  smb_ut_test *empty = su_create_test("empty", iter_test_empty);
   su_add_test(group, empty);
 
-  smb_ut_test *destroy = su_create_test("destroy", iter_test_destroy, 1);
+  smb_ut_test *destroy = su_create_test("destroy", iter_test_destroy);
   su_add_test(group, destroy);
 
-  smb_ut_test *delete = su_create_test("delete", iter_test_delete, 1);
+  smb_ut_test *delete = su_create_test("delete", iter_test_delete);
   su_add_test(group, delete);
 
-  smb_ut_test *count = su_create_test("count", iter_test_count, 1);
+  smb_ut_test *count = su_create_test("count", iter_test_count);
   su_add_test(group, count);
 
-  smb_ut_test *values = su_create_test("values", iter_test_values, 1);
+  smb_ut_test *values = su_create_test("values", iter_test_values);
   su_add_test(group, values);
 
   su_run_group(group);

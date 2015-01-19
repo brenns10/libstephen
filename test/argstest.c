@@ -283,33 +283,30 @@ void args_test(void)
 {
   smb_ut_group *group = su_create_test_group("args");
 
-  smb_ut_test *heap = su_create_test("heap", &ad_test_heap, 1);
+  smb_ut_test *heap = su_create_test("heap", &ad_test_heap);
   su_add_test(group, heap);
 
-  smb_ut_test *stack = su_create_test("stack", &ad_test_stack, 1);
+  smb_ut_test *stack = su_create_test("stack", &ad_test_stack);
   su_add_test(group, stack);
 
-  smb_ut_test *basic_flags = su_create_test("basic_flags", &ad_test_basic_flags,
-                                            1);
+  smb_ut_test *basic_flags = su_create_test("basic_flags", &ad_test_basic_flags);
   su_add_test(group, basic_flags);
 
   smb_ut_test *grouped_flags = su_create_test("grouped_flags",
-                                              &ad_test_grouped_flags, 1);
+                                              &ad_test_grouped_flags);
   su_add_test(group, grouped_flags);
 
-  smb_ut_test *flag_params = su_create_test("flag_params", &ad_test_flag_params,
-                                            1);
+  smb_ut_test *flag_params = su_create_test("flag_params", &ad_test_flag_params);
   su_add_test(group, flag_params);
 
-  smb_ut_test *long_flags = su_create_test("long_flags", &ad_test_long_flags,1);
+  smb_ut_test *long_flags = su_create_test("long_flags", &ad_test_long_flags);
   su_add_test(group, long_flags);
 
-  smb_ut_test *long_params = su_create_test("long_params", &ad_test_long_params,
-                                            1);
+  smb_ut_test *long_params = su_create_test("long_params", &ad_test_long_params);
   su_add_test(group, long_params);
 
   smb_ut_test *bare_strings = su_create_test("bare_strings",
-                                             &ad_test_bare_strings, 1);
+                                             &ad_test_bare_strings);
   su_add_test(group, bare_strings);
 
   su_run_group(group);

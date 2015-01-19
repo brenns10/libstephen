@@ -279,25 +279,25 @@ void array_list_test()
 {
   smb_ut_group *group = su_create_test_group("array list");
 
-  smb_ut_test *create = su_create_test("create", al_test_create, 1);
+  smb_ut_test *create = su_create_test("create", al_test_create);
   su_add_test(group, create);
 
-  smb_ut_test *create_empty = su_create_test("create_empty", al_test_create_empty, 1);
+  smb_ut_test *create_empty = su_create_test("create_empty", al_test_create_empty);
   su_add_test(group, create_empty);
 
-  smb_ut_test *append = su_create_test("append", al_test_append, 1);
+  smb_ut_test *append = su_create_test("append", al_test_append);
   su_add_test(group, append);
 
-  smb_ut_test *prepend = su_create_test("prepend", al_test_prepend, 1);
+  smb_ut_test *prepend = su_create_test("prepend", al_test_prepend);
   su_add_test(group, prepend);
 
-  smb_ut_test *set = su_create_test("set", al_test_set, 1);
+  smb_ut_test *set = su_create_test("set", al_test_set);
   su_add_test(group, set);
 
-  smb_ut_test *remove = su_create_test("remove", al_test_remove, 1);
+  smb_ut_test *remove = su_create_test("remove", al_test_remove);
   su_add_test(group, remove);
 
-  smb_ut_test *insert = su_create_test("insert", al_test_insert, 1);
+  smb_ut_test *insert = su_create_test("insert", al_test_insert);
   su_add_test(group, insert);
 
   // The other elementary operations on the smb_al, i.e. the push, pop and

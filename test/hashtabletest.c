@@ -304,22 +304,22 @@ void hash_table_test()
 {
   smb_ut_group *group = su_create_test_group("hash table");
 
-  smb_ut_test *insert = su_create_test("insert", ht_test_insert, 1);
+  smb_ut_test *insert = su_create_test("insert", ht_test_insert);
   su_add_test(group, insert);
 
-  smb_ut_test *remove = su_create_test("remove", ht_test_remove, 1);
+  smb_ut_test *remove = su_create_test("remove", ht_test_remove);
   su_add_test(group, remove);
 
-  smb_ut_test *remove_invalid = su_create_test("remove_invalid", ht_test_remove_invalid, 1);
+  smb_ut_test *remove_invalid = su_create_test("remove_invalid", ht_test_remove_invalid);
   su_add_test(group, remove_invalid);
 
-  smb_ut_test *buckets = su_create_test("buckets", ht_test_buckets, 1);
+  smb_ut_test *buckets = su_create_test("buckets", ht_test_buckets);
   su_add_test(group, buckets);
 
-  smb_ut_test *resize = su_create_test("resize", ht_test_resize, 1);
+  smb_ut_test *resize = su_create_test("resize", ht_test_resize);
   su_add_test(group, resize);
 
-  smb_ut_test *duplicate = su_create_test("duplicate", ht_test_duplicate, 1);
+  smb_ut_test *duplicate = su_create_test("duplicate", ht_test_duplicate);
   su_add_test(group, duplicate);
 
   su_run_group(group);
