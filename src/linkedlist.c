@@ -714,9 +714,9 @@ void ll_fill_functions(smb_list *generic_list)
    @param[out] status Status variable.
    @returns A generic list interface object.
  */
-smb_list ll_create_list(smb_status *status)
+smb_list ll_create_list()
 {
-  smb_ll *list = ll_create(status);
+  smb_ll *list = ll_create();
   return ll_cast_to_list(list);
 }
 

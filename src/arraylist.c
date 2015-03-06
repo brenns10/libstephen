@@ -632,8 +632,8 @@ smb_list al_cast_to_list(smb_al *list)
 
    @returns A generic list pointing to a new array list.
  */
-smb_list al_create_list(smb_status *status)
+smb_list al_create_list()
 {
-  smb_al *list = al_create(status);
+  smb_al *list = al_create();
   return al_cast_to_list(list);
 }
