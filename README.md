@@ -1,16 +1,15 @@
-# libstephen
+xo# libstephen
 
 - Author: Stephen Brennan
 - Version: Prerelease
-- Homepage: https://www.bitbucket.org/brenns10/libstephen
+- Homepage: https://github.com/brenns10/libstephen
 - License: Revised BSD
 
 ## Description
 
-libstephen is a C library, compiled as both static and dynamic, which provides a
-number of basic tools on which to base software programs.  Its primary purpose
-is to be a meaningful programming project for the author, and to be the
-foundation for future projects.
+libstephen is a C library that provides a number of basic tools for C
+programming.  I primarily started it so I could implement some data structures
+in C, and now it is the basis for some of my other C programming projects.
 
 ### Data Structures
 
@@ -31,9 +30,6 @@ documentation comments in source code.  This can be put into a more readable
 form by running the command "make docs" in the project root directory.
 Reference materials will be produced in the doc/ folder.  Please note that the
 tools Doxygen and Graphviz are required to produce this documentation.
-
-More user-friendly documentation may be found at the project's home:
-<https://www.bitbucket.org/brenns10/libstephen>
 
 ## Test Coverage
 
@@ -59,8 +55,8 @@ support it in release mode.
 
 If anyone feels so generous as to contribute in any way, it is always
 appreciated.  Bug reports are welcome, as well as code improvements in the form
-of Bitbucket pull requests.  All these things are available at the project
-homepage: <https://www.bitbucket.org/brenns10/libstephen>
+of pull requests.  All these things are available at the project homepage:
+<https://github.com/brenns10/libstephen>
 
 ## Plans
 
@@ -68,7 +64,7 @@ For information on future plans for the library, see `TODO.md`.
 
 ## License
 
-Copyright (c) 2013-2014, Stephen Brennan.
+Copyright (c) 2013-2015, Stephen Brennan.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
