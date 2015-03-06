@@ -68,6 +68,11 @@ void utf8_test(void);
 void iter_test(void);
 
 /**
+   Run the list tests
+ */
+void list_test(void);
+
+/**
    Run the args tests
  */
 void args_test(void);

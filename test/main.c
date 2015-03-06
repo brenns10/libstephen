@@ -53,6 +53,7 @@ int main(int argc, char ** argv)
   bit_field_test();
   utf8_test();
   iter_test();
+  list_test();
   args_test();
   // return args_test_main(argc, argv);
 }
