@@ -108,6 +108,13 @@ int test_set()
   // Test that the length is still correct
   TEST_ASSERT(list.length(&list) == length);
 
+  list.set(&list, list.length(&list), d, &status);
+  TEST_ASSERT(status == SMB_INDEX_ERROR);
+
+  status = SMB_SUCCESS;
+  list.get(&list, list.length(&list), &status);
+  TEST_ASSERT(status == SMB_INDEX_ERROR);
+
   list.delete(&list);
   return 0;
 }
@@ -180,7 +187,7 @@ int test_insert()
     TEST_ASSERT(status == SMB_SUCCESS);
   }
 
-  // Here are the three insertions for the test:
+  // Here are the insertions for the test:
   d.data_llint = 100;
   list.insert(&list, 0, d);
   TEST_ASSERT(list.length(&list) == length + 1);
@@ -193,14 +200,29 @@ int test_insert()
   list.insert(&list, list.length(&list), d);
   TEST_ASSERT(list.length(&list) == length + 3);
 
+
+  d.data_llint = 101;
+  list.insert(&list, -1, d);
+  TEST_ASSERT(list.length(&list) == length + 4);
+
+  d.data_llint = 102;
+  list.insert(&list, list.length(&list) + 1, d);
+  TEST_ASSERT(list.length(&list) == length + 5);
+
   int value = 0;
 
   for (int i = 0; i < list.length(&list); i++) {
     if (i == 0) {
+      TEST_ASSERT(list.get(&list, i, &status).data_llint == 101);
+      TEST_ASSERT(status == SMB_SUCCESS);
+    } else if (i == 1) {
       TEST_ASSERT(list.get(&list, i, &status).data_llint == 100);
       TEST_ASSERT(status == SMB_SUCCESS);
-    } else if (i == 10) {
+    } else if (i == 11) {
       TEST_ASSERT(list.get(&list, i, &status).data_llint == 101);
+      TEST_ASSERT(status == SMB_SUCCESS);
+    } else if (i == list.length(&list) - 2) {
+      TEST_ASSERT(list.get(&list, i, &status).data_llint == 102);
       TEST_ASSERT(status == SMB_SUCCESS);
     } else if (i == list.length(&list) - 1) {
       TEST_ASSERT(list.get(&list, i, &status).data_llint == 102);
