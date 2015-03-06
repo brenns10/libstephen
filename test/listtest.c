@@ -156,6 +156,14 @@ int test_remove()
   TEST_ASSERT(status == SMB_SUCCESS);
   TEST_ASSERT(list.length(&list) == length - 3);
 
+  // Remove invalid element
+  list.remove(&list, list.length(&list), &status);
+  TEST_ASSERT(status == SMB_INDEX_ERROR);
+  status = SMB_SUCCESS;
+  list.remove(&list, -1, &status);
+  TEST_ASSERT(status == SMB_INDEX_ERROR);
+  status = SMB_SUCCESS;
+
   // Test all elements values
   int value = 1;
   for (int i = 0; i < length - 3; i++) {
