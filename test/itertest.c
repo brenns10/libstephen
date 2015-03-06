@@ -115,6 +115,8 @@ int iter_test_count()
       TEST_ASSERT(status == SMB_SUCCESS);
       n++;
     }
+    it.next(&it, &status);
+    TEST_ASSERT(status == SMB_STOP_ITERATION);
     it.destroy(&it);
     cleanup();
     TEST_ASSERT(i == n);
