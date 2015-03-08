@@ -308,7 +308,7 @@ DATA ll_peek_back(smb_ll *list, smb_status *status)
   if (last_node) {
     return last_node->data;
   } else {
-    *status = SMB_SUCCESS;
+    *status = SMB_INDEX_ERROR;
     DATA mock_data;
     return mock_data;
   }
