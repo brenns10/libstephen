@@ -1,4 +1,4 @@
-xo# libstephen
+# libstephen
 
 - Author: Stephen Brennan
 - Version: Prerelease
