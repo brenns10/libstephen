@@ -246,6 +246,40 @@ int test_insert()
   return 0;
 }
 
+int test_front(void)
+{
+  smb_list list = get_list();
+  smb_status status = SMB_SUCCESS;
+  DATA d;
+  const int length = 5;
+
+  // Push test data to get 0, 1, 2, 3, 4
+  for (d.data_llint = length-1; d.data_llint >= 0; d.data_llint--) {
+    list.push_front(&list, d);
+  }
+
+  // Test that peek works correctly with data.
+  TEST_ASSERT(list.peek_front(&list, &status).data_llint == 0);
+  TEST_ASSERT(status == SMB_SUCCESS);
+
+  // Check that pop works correctly.
+  for (d.data_llint = 0; d.data_llint < length; d.data_llint++) {
+    TEST_ASSERT(list.pop_front(&list, &status).data_llint == d.data_llint);
+    TEST_ASSERT(status == SMB_SUCCESS);
+  }
+
+  // Check that peek and pop will fail correctly.
+  list.peek_front(&list, &status);
+  TEST_ASSERT(status == SMB_INDEX_ERROR);
+  status = SMB_SUCCESS;
+  list.pop_front(&list, &status);
+  TEST_ASSERT(status == SMB_INDEX_ERROR);
+
+  // Cleanup
+  list.delete(&list);
+  return 0;
+}
+
 /*******************************************************************************
 
                                   Test Runner
@@ -278,6 +312,9 @@ void run_list_tests(char *desc)
 
   smb_ut_test *insert = su_create_test("insert", test_insert);
   su_add_test(group, insert);
+
+  smb_ut_test *front = su_create_test("front", test_front);
+  su_add_test(group, front);
 
   su_run_group(group);
   su_delete_group(group);
