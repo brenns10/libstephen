@@ -8,6 +8,9 @@
 
   @brief        Libstephen: Generic list tests.
 
+  @copyright    Copyright (c) 2013-2015, Stephen Brennan.  Released under the
+                Revised BSD License.  See the LICENSE.txt file for details.
+
 *******************************************************************************/
 
 #include <string.h>

@@ -99,9 +99,9 @@ set of conventions.
   user.
 * Public functions are required to have the above.
 * Files should start with a standard header (as can be seen in
-  `src/linkedlist.c`).  It should contain `@file`, `@author`, `@date`, `@brief`,
-  and `@copyright`.  After the `@brief`, a more full explanation of the module
-  may be provided, if necessary.
+  `src/linkedlist.c`).  It should contain `@file`, `@author`, `@date`, and
+  `@brief`.  After the `@brief`, a more full explanation of the module may be
+  provided, if necessary.
 * Comments may be used to delimit sections of code.  They should be of the form
   forward slash, 79 asterisks, blank line, centered header title line, blank
   line, 79 asterisks, and forward slash.
