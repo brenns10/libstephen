@@ -326,8 +326,8 @@ int test_index_of(void)
   int strsize = strlen(t1) + 1;
   const int length = 20;
 
-  // Make a copy of the test string so pointer arithmetic won't work.
-  t2 = (char*)malloc(strsize);
+  // Make a copy of the test string so pointer comparison won't work.
+  t2 = (char*)smb_new(char, strsize);
   strncpy(t2, t1, strsize);
   d.data_ptr = t1;
 
@@ -341,6 +341,7 @@ int test_index_of(void)
   // Now assert that the string will be found in the list.
   TEST_ASSERT(list.index_of(&list, d, &data_compare_string) == 0);
 
+  smb_free(t2);
   list.pop_back(&list, &status);
 
   // Push test data to get 0, 1, 2, 3, 4, ..., 20
