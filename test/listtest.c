@@ -10,6 +10,8 @@
 
 *******************************************************************************/
 
+#include <string.h>
+
 #include "libstephen/base.h"
 #include "libstephen/list.h"
 #include "libstephen/ll.h"
@@ -314,6 +316,47 @@ int test_back(void)
   return 0;
 }
 
+int test_index_of(void)
+{
+  smb_list list = get_list();
+  smb_status status = SMB_SUCCESS;
+  DATA d, d2;
+  char *t1 = "I'm a string";
+  char *t2;
+  int strsize = strlen(t1) + 1;
+  const int length = 20;
+
+  // Make a copy of the test string so pointer arithmetic won't work.
+  t2 = (char*)malloc(strsize);
+  strncpy(t2, t1, strsize);
+  d.data_ptr = t1;
+
+  // Check that the string won't be found in an empty list.
+  TEST_ASSERT(list.index_of(&list, d, &data_compare_string) == -1);
+
+  // Now add the copy to the list.
+  d2.data_ptr = t2;
+  list.append(&list, d2);
+
+  // Now assert that the string will be found in the list.
+  TEST_ASSERT(list.index_of(&list, d, &data_compare_string) == 0);
+
+  list.pop_back(&list, &status);
+
+  // Push test data to get 0, 1, 2, 3, 4, ..., 20
+  for (d.data_llint = 0; d.data_llint < length; d.data_llint++) {
+    list.push_back(&list, d);
+  }
+
+  // Check that it finds the data.
+  for (d.data_llint = 0; d.data_llint < length; d.data_llint++) {
+    TEST_ASSERT(list.index_of(&list, d, NULL) == d.data_llint);
+  }
+
+  list.delete(&list);
+  return 0;
+}
+
 /*******************************************************************************
 
                                   Test Runner
@@ -352,6 +395,9 @@ void run_list_tests(char *desc)
 
   smb_ut_test *back = su_create_test("back", test_back);
   su_add_test(group, back);
+
+  smb_ut_test *index_of = su_create_test("index_of", test_index_of);
+  su_add_test(group, index_of);
 
   su_run_group(group);
   su_delete_group(group);

@@ -89,7 +89,7 @@ void al_push_front(smb_al *list, DATA newData);
 DATA al_pop_front(smb_al *list, smb_status *status);
 DATA al_peek_front(smb_al *list, smb_status *status);
 int al_length(const smb_al *list);
-int al_index_of(const smb_al *list, DATA d);
+int al_index_of(const smb_al *list, DATA d, DATA_COMPARE comp);
 
 smb_iter al_get_iter(const smb_al *list);
 

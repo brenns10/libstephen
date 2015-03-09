@@ -410,13 +410,21 @@ int al_length(const smb_al *list)
 
    @param list A pointer to the list
    @param d The item to search for
+   @param comp The comparator to use.  NULL for bit comparison.
  */
-int al_index_of(const smb_al *list, DATA d)
+int al_index_of(const smb_al *list, DATA d, DATA_COMPARE comp)
 {
   int i;
   for (i = 0; i < list->length; i++) {
-    if (list->data[i].data_llint == d.data_llint)
-      return i;
+    if (comp == NULL) {
+      if (list->data[i].data_llint == d.data_llint) {
+        return i;
+      }
+    } else {
+      if (comp(list->data[i], d) == 0) {
+        return i;
+      }
+    }
   }
   return -1;
 }
@@ -583,6 +591,12 @@ DATA al_peek_front_adapter(smb_list *l, smb_status *status)
   return al_peek_front(list, status);
 }
 
+int al_index_of_adapter(const smb_list *l, DATA d, DATA_COMPARE comp)
+{
+  const smb_al *list = (smb_al*) (l->data);
+  return al_index_of(list, d, comp);
+}
+
 /**
    @brief Populate generic smb_list with function pointers necessary to use
    smb_al with it.
@@ -609,6 +623,7 @@ void al_fill_functions(smb_list *l)
   l->push_front = al_push_front_adapter;
   l->pop_front = al_pop_front_adapter;
   l->peek_front = al_peek_front_adapter;
+  l->index_of = al_index_of_adapter;
 }
 
 /**

@@ -495,6 +495,34 @@ int ll_length(const smb_ll *list)
 }
 
 /**
+   @brief Returns whether or not the list contains the item.
+
+   @param list Pointer to the list.
+   @param d The item to search for.
+   @param comp The comparator to use.  NULL for bit comparison.
+ */
+int ll_index_of(const smb_ll *list, DATA d, DATA_COMPARE comp)
+{
+  int idx = 0;
+  smb_ll_node *curr = list->head;
+
+  while (curr) {
+    if (comp != NULL) {
+      if (comp(curr->data, d) == 0) {
+        return idx;
+      }
+    } else {
+      if (curr->data.data_llint == d.data_llint) {
+        return idx;
+      }
+    }
+    idx++;
+    curr = curr->next;
+  }
+  return -1;
+}
+
+/**
    @brief Get the next item in the linked list.
 
    @param iterator A pointer to the iterator.
@@ -679,6 +707,12 @@ int ll_length_adapter(const smb_list *l)
   return ll_length(list);
 }
 
+int ll_index_of_adapter(const smb_list *l, DATA d, DATA_COMPARE comp)
+{
+  const smb_ll *list = (const smb_ll*) (l->data);
+  return ll_index_of(list, d, comp);
+}
+
 /**
    @brief Populate a generic smb_list with function pointers necessary to use
    smb_ll with it.
@@ -705,6 +739,7 @@ void ll_fill_functions(smb_list *generic_list)
   generic_list->peek_front = ll_peek_front_adapter;
   generic_list->length = ll_length_adapter;
   generic_list->set = ll_set_adapter;
+  generic_list->index_of = ll_index_of_adapter;
 }
 
 /**

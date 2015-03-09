@@ -115,6 +115,7 @@ void ll_remove(smb_ll *list, int index, smb_status *status);
 void ll_insert(smb_ll *list, int index, DATA newData);
 void ll_set(smb_ll *list, int index, DATA newData, smb_status *status);
 int  ll_length(const smb_ll *list);
+int  ll_index_of(const smb_ll *list, DATA d, DATA_COMPARE comp);
 
 smb_iter ll_get_iter(const smb_ll *list);
 

@@ -133,6 +133,19 @@ typedef struct smb_list
    */
   DATA (*peek_front)(struct smb_list *l, smb_status *status);
 
+  /**
+     @brief Return the index of an item, or -1 if the list doesn't contain it.
+
+     Performs a linear search, O(n) in the number of elements of the list.
+
+     @param l A pointer to the list.
+     @param d The data to search for.
+     @param comp The comparator to use.  If NULL, compares the bits of d.
+     @return The index of the first occurrence of d, else -1.
+     @exception None.
+   */
+  int (*index_of)(const struct smb_list *l, DATA d, DATA_COMPARE comp);
+
 } smb_list;
 
 /**
