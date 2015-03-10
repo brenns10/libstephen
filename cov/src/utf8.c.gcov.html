@@ -1,0 +1,231 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage.info - src/utf8.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">src</a> - utf8.c<span style="font-size: 80%;"> (source / <a href="utf8.c.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">31</td>
+            <td class="headerCovTableEntry">46</td>
+            <td class="headerCovTableEntryLo">67.4 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2015-03-10 14:19:19</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntry">3</td>
+            <td class="headerCovTableEntryLo">66.7 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /***************************************************************************//**</a>
+<span class="lineNum">       2 </span>            : 
+<span class="lineNum">       3 </span>            :   @file         utf8.c
+<span class="lineNum">       4 </span>            : 
+<span class="lineNum">       5 </span>            :   @author       Stephen Brennan
+<span class="lineNum">       6 </span>            : 
+<span class="lineNum">       7 </span>            :   @date         Created Tuesday,  8 July 2014
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            :   @brief        Functions for converting between UTF-8 and UCS-4.
+<span class="lineNum">      10 </span>            : 
+<span class="lineNum">      11 </span>            :   @copyright    Copyright (c) 2013-2015, Stephen Brennan.  Released under the
+<span class="lineNum">      12 </span>            :                 Revised BSD License.  See the LICENSE.txt file for details.
+<span class="lineNum">      13 </span>            : 
+<span class="lineNum">      14 </span>            : *******************************************************************************/
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            : #include &lt;stdio.h&gt;
+<span class="lineNum">      17 </span>            : #include &lt;wchar.h&gt;
+<span class="lineNum">      18 </span>            : 
+<span class="lineNum">      19 </span>            : #include &quot;libstephen/base.h&quot;
+<span class="lineNum">      20 </span>            : #include &quot;libstephen/util.h&quot;
+<span class="lineNum">      21 </span>            : 
+<span class="lineNum">      22 </span>            : /*******************************************************************************
+<span class="lineNum">      23 </span>            : 
+<span class="lineNum">      24 </span>            :                                   UTF-8 Format
+<span class="lineNum">      25 </span>            : 
+<span class="lineNum">      26 </span>            :   UTF-8 takes a Unicode code point and turns it into a 1, 2, 3, or 4 byte
+<span class="lineNum">      27 </span>            :   sequence.  This table shows the code points and how they translate:
+<span class="lineNum">      28 </span>            : 
+<span class="lineNum">      29 </span>            :   Bits  Code point range      Bytes  Layout
+<span class="lineNum">      30 </span>            :   ----  ----------------      -----  ------
+<span class="lineNum">      31 </span>            :   7     U+0000  -- U+007F     1      0xxx xxxx
+<span class="lineNum">      32 </span>            :   11    U+0080  -- U+07FF     2      110x xxxx  10xx xxxx
+<span class="lineNum">      33 </span>            :   16    U+0800  -- U+FFFF     3      1110 xxxx  10xx xxxx  10xx xxxx
+<span class="lineNum">      34 </span>            :   21    U+10000 -- U+1FFFFF   4      1111 0xxx  10xx xxxx  10xx xxxx  10xx xxxx
+<span class="lineNum">      35 </span>            : 
+<span class="lineNum">      36 </span>            : *******************************************************************************/
+<span class="lineNum">      37 </span>            : 
+<span class="lineNum">      38 </span>            : 
+<span class="lineNum">      39 </span>            : #define SINGLE_MASK  0x80u // 1000 0000
+<span class="lineNum">      40 </span>            : #define SINGLE_VALUE 0x00u // 0xxx xxxx
+<span class="lineNum">      41 </span>            : 
+<span class="lineNum">      42 </span>            : #define DOUBLE_MASK  0xE0u // 1110 0000
+<span class="lineNum">      43 </span>            : #define DOUBLE_VALUE 0xC0u // 110x xxxx
+<span class="lineNum">      44 </span>            : 
+<span class="lineNum">      45 </span>            : #define TRIPLE_MASK  0xF0u // 1111 0000
+<span class="lineNum">      46 </span>            : #define TRIPLE_VALUE 0xE0u // 1110 xxxx
+<span class="lineNum">      47 </span>            : 
+<span class="lineNum">      48 </span>            : #define QUAD_MASK    0xF8u // 1111 1000
+<span class="lineNum">      49 </span>            : #define QUAD_VALUE   0xF0u // 1111 0xxx
+<span class="lineNum">      50 </span>            : 
+<span class="lineNum">      51 </span>            : #define CONT_BITS    6
+<span class="lineNum">      52 </span>            : #define CONT_MASK    0x3Fu // 0011 1111
+<span class="lineNum">      53 </span>            : #define CONT_VALUE   0x80  // 10xx xxxx
+<span class="lineNum">      54 </span>            : 
+<span class="lineNum">      55 </span>            : /**
+<span class="lineNum">      56 </span>            :    @brief A function supporting iteration through a UTF-8 string.
+<span class="lineNum">      57 </span>            : 
+<span class="lineNum">      58 </span>            :    Use this function to iterate through a UTF-8 string on a per-codepoint basis,
+<span class="lineNum">      59 </span>            :    rather than on a per-byte basis.  This is useful only if you're going to *do
+<span class="lineNum">      60 </span>            :    something* with the code points.  Otherwise, it is wise to act in an
+<span class="lineNum">      61 </span>            :    encoding-agnostic way (as UTF-8 allows) and act in a bytewise manner.
+<span class="lineNum">      62 </span>            : 
+<span class="lineNum">      63 </span>            :    This function uses a pointer to an iteration variable.  Initially, the
+<span class="lineNum">      64 </span>            :    variable is set to the index of the next code point in the string.  The
+<span class="lineNum">      65 </span>            :    funtion reads this character from the string, updates the iteration variable
+<span class="lineNum">      66 </span>            :    to hold the index of the next code point, and returns the character.
+<span class="lineNum">      67 </span>            : 
+<span class="lineNum">      68 </span>            :    @param _src The UTF-8 string to iterate through.
+<span class="lineNum">      69 </span>            :    @param _s A pointer to the iteration variable.
+<span class="lineNum">      70 </span>            :    @returns The character at `_src[*_s]`, with *_s updated.
+<a name="71"><span class="lineNum">      71 </span>            :    @retval WEOF on error</a>
+<span class="lineNum">      72 </span>            :  */
+<span class="lineNum">      73 </span><span class="lineCov">          8 : wint_t utf8iter(const char *_src, int *_s)</span>
+<span class="lineNum">      74 </span>            : {
+<span class="lineNum">      75 </span><span class="lineCov">          8 :   const unsigned char *src = (const char *) _src;</span>
+<span class="lineNum">      76 </span><span class="lineCov">          8 :   int cont, s = *_s;</span>
+<span class="lineNum">      77 </span>            :   wint_t dest;
+<span class="lineNum">      78 </span>            : 
+<span class="lineNum">      79 </span>            :   // Read the first byte in a sequence
+<span class="lineNum">      80 </span><span class="lineCov">          8 :   if ((src[s] &amp; SINGLE_MASK) == SINGLE_VALUE) {</span>
+<span class="lineNum">      81 </span><span class="lineCov">          2 :     dest = src[s++];</span>
+<span class="lineNum">      82 </span><span class="lineCov">          2 :     *_s = s;</span>
+<span class="lineNum">      83 </span><span class="lineCov">          2 :     return dest;</span>
+<span class="lineNum">      84 </span><span class="lineCov">          6 :   } else if ((src[s] &amp; DOUBLE_MASK) == DOUBLE_VALUE) {</span>
+<span class="lineNum">      85 </span><span class="lineCov">          2 :     dest = (~DOUBLE_MASK) &amp; src[s++];</span>
+<span class="lineNum">      86 </span><span class="lineCov">          2 :     cont = 1;</span>
+<span class="lineNum">      87 </span><span class="lineCov">          4 :   } else if ((src[s] &amp; TRIPLE_MASK) == TRIPLE_VALUE) {</span>
+<span class="lineNum">      88 </span><span class="lineCov">          2 :     dest = (~TRIPLE_MASK) &amp; src[s++];</span>
+<span class="lineNum">      89 </span><span class="lineCov">          2 :     cont = 2;</span>
+<span class="lineNum">      90 </span><span class="lineCov">          2 :   } else if ((src[s] &amp; QUAD_MASK) == QUAD_VALUE) {</span>
+<span class="lineNum">      91 </span><span class="lineCov">          2 :     dest = (~QUAD_MASK) &amp; src[s++];</span>
+<span class="lineNum">      92 </span><span class="lineCov">          2 :     cont = 3;</span>
+<span class="lineNum">      93 </span>            :   } else {
+<span class="lineNum">      94 </span><span class="lineNoCov">          0 :     PRINT_ERROR_LOC;</span>
+<span class="lineNum">      95 </span><span class="lineNoCov">          0 :     fprintf(stderr, &quot;error: bad initial byte(0x%2.2x)\n&quot;, src[s]);</span>
+<span class="lineNum">      96 </span><span class="lineNoCov">          0 :     return WEOF;</span>
+<span class="lineNum">      97 </span>            :   }
+<span class="lineNum">      98 </span>            : 
+<span class="lineNum">      99 </span>            :   // Read continuation bits:
+<span class="lineNum">     100 </span><span class="lineCov">         18 :   for ( ; cont &gt; 0 &amp;&amp; src[s] != '\0'; s++, cont--) {</span>
+<span class="lineNum">     101 </span><span class="lineCov">         12 :     if ((src[s] &amp; ~CONT_MASK) != CONT_VALUE) {</span>
+<span class="lineNum">     102 </span><span class="lineNoCov">          0 :       PRINT_ERROR_LOC;</span>
+<span class="lineNum">     103 </span><span class="lineNoCov">          0 :       fprintf(stderr, &quot;error: bad continuation byte(0x%2.2x)\n&quot;, src[s]);</span>
+<span class="lineNum">     104 </span><span class="lineNoCov">          0 :       *_s = s;</span>
+<span class="lineNum">     105 </span><span class="lineNoCov">          0 :       return WEOF;</span>
+<span class="lineNum">     106 </span>            :     }
+<span class="lineNum">     107 </span><span class="lineCov">         12 :     dest &lt;&lt;= CONT_BITS;</span>
+<span class="lineNum">     108 </span><span class="lineCov">         12 :     dest |= src[s] &amp; CONT_MASK;</span>
+<span class="lineNum">     109 </span>            :   }
+<span class="lineNum">     110 </span><span class="lineCov">          6 :   *_s = s;</span>
+<span class="lineNum">     111 </span>            : 
+<span class="lineNum">     112 </span><span class="lineCov">          6 :   if (cont != 0) {</span>
+<span class="lineNum">     113 </span><span class="lineNoCov">          0 :     PRINT_ERROR_LOC;</span>
+<span class="lineNum">     114 </span><span class="lineNoCov">          0 :     fprintf(stderr, &quot;error: unexpected string termination while reading &quot;</span>
+<span class="lineNum">     115 </span>            :             &quot;continuation bytes.\n&quot;);
+<span class="lineNum">     116 </span><span class="lineNoCov">          0 :     return WEOF;</span>
+<span class="lineNum">     117 </span>            :   }
+<span class="lineNum">     118 </span><span class="lineCov">          6 :   return dest;</span>
+<span class="lineNum">     119 </span>            : }
+<span class="lineNum">     120 </span>            : 
+<span class="lineNum">     121 </span>            : /**
+<span class="lineNum">     122 </span>            :    @brief Return the wide character represented at the given index in a string.
+<span class="lineNum">     123 </span>            :    @param src UTF-8 formatted string
+<span class="lineNum">     124 </span>            :    @param s Index of the *first byte* of a character
+<a name="125"><span class="lineNum">     125 </span>            :    @returns WEOF on any error, else the wide character at the given index.</a>
+<span class="lineNum">     126 </span>            :  */
+<span class="lineNum">     127 </span><span class="lineNoCov">          0 : wint_t utf8char(const char *src, int s)</span>
+<span class="lineNum">     128 </span>            : {
+<span class="lineNum">     129 </span><span class="lineNoCov">          0 :   return utf8iter(src, &amp;s);</span>
+<span class="lineNum">     130 </span>            : }
+<span class="lineNum">     131 </span>            : 
+<span class="lineNum">     132 </span>            : 
+<span class="lineNum">     133 </span>            : /**
+<span class="lineNum">     134 </span>            :    @brief Convert a UTF-8 char string to a UCS-4 wchar_t string.
+<span class="lineNum">     135 </span>            :    @param dest Destination buffer.
+<span class="lineNum">     136 </span>            :    @param _src Source buffer.
+<span class="lineNum">     137 </span>            :    @param n Number of characters allocated in destination buffer.
+<a name="138"><span class="lineNum">     138 </span>            :    @returns 0 if converted OK, &lt;0 otherwise.</a>
+<span class="lineNum">     139 </span>            :  */
+<span class="lineNum">     140 </span><span class="lineCov">          5 : int utf8toucs4(wchar_t *dest, const char *src, int n)</span>
+<span class="lineNum">     141 </span>            : {
+<span class="lineNum">     142 </span><span class="lineCov">          5 :   int d = 0, s = 0;</span>
+<span class="lineNum">     143 </span>            :   wint_t wc;
+<span class="lineNum">     144 </span><span class="lineCov">         13 :   for ( ; src[s] != '\0' &amp;&amp; d &lt; n-1; d++) {</span>
+<span class="lineNum">     145 </span><span class="lineCov">          8 :     wc = utf8iter(src, &amp;s);</span>
+<span class="lineNum">     146 </span><span class="lineCov">          8 :     if (wc == WEOF) {</span>
+<span class="lineNum">     147 </span><span class="lineNoCov">          0 :       PRINT_ERROR_LOC;</span>
+<span class="lineNum">     148 </span><span class="lineNoCov">          0 :       fprintf(stderr, &quot;error: UTF-8 character could not be converted\n&quot;);</span>
+<span class="lineNum">     149 </span><span class="lineNoCov">          0 :       return -1;</span>
+<span class="lineNum">     150 </span>            :     }
+<span class="lineNum">     151 </span><span class="lineCov">          8 :     dest[d] = (wchar_t) wc;</span>
+<span class="lineNum">     152 </span>            :   }
+<span class="lineNum">     153 </span><span class="lineCov">          5 :   dest[d] = L'\0';</span>
+<span class="lineNum">     154 </span><span class="lineCov">          5 :   return 0;</span>
+<span class="lineNum">     155 </span>            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.11</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

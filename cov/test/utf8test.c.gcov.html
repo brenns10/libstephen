@@ -1,0 +1,159 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage.info - test/utf8test.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">test</a> - utf8test.c<span style="font-size: 80%;"> (source / <a href="utf8test.c.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">24</td>
+            <td class="headerCovTableEntry">24</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2015-03-10 14:19:19</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /***************************************************************************//**</a>
+<span class="lineNum">       2 </span>            : 
+<span class="lineNum">       3 </span>            :   @file         utf8test.c
+<span class="lineNum">       4 </span>            : 
+<span class="lineNum">       5 </span>            :   @author       Stephen Brennan
+<span class="lineNum">       6 </span>            : 
+<span class="lineNum">       7 </span>            :   @date         Created Wednesday,  9 July 2014
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            :   @brief        Tests the utf8 functions.
+<span class="lineNum">      10 </span>            : 
+<span class="lineNum">      11 </span>            :   @copyright    Copyright (c) 2013-2015, Stephen Brennan.  Released under the
+<span class="lineNum">      12 </span>            :                 Revised BSD License.  See the LICENSE.txt file for details.
+<span class="lineNum">      13 </span>            : 
+<span class="lineNum">      14 </span>            : *******************************************************************************/
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            : #include &lt;stdio.h&gt;
+<span class="lineNum">      17 </span>            : #include &lt;wchar.h&gt;
+<span class="lineNum">      18 </span>            : 
+<span class="lineNum">      19 </span>            : #include &quot;libstephen/util.h&quot;
+<span class="lineNum">      20 </span>            : #include &quot;libstephen/ut.h&quot;
+<a name="21"><span class="lineNum">      21 </span>            : #include &quot;tests.h&quot;</a>
+<span class="lineNum">      22 </span>            : 
+<span class="lineNum">      23 </span><span class="lineCov">          1 : int utf8_test_predetermined(void)</span>
+<span class="lineNum">      24 </span>            : {
+<span class="lineNum">      25 </span>            :   #define BFSZ 5
+<span class="lineNum">      26 </span>            :   wchar_t result[BFSZ];
+<span class="lineNum">      27 </span>            : 
+<span class="lineNum">      28 </span>            :   // Code point U+1F602 -- Face with tears of joy
+<span class="lineNum">      29 </span>            :   // Code point in binary: 0001  1111 0110  0000 0010
+<span class="lineNum">      30 </span>            :   // 17 bits, so 4 bytes in UTF-8
+<span class="lineNum">      31 </span>            :   // UTF-8 template: 1111 0xxx  10xx xxxx  10xx xxxx  10xx xxxx
+<span class="lineNum">      32 </span>            :   // UTF-8 binary:   1111 0000  1001 1111  1001 1000  1000 0010
+<span class="lineNum">      33 </span>            :   // UTF-8 hex:         F    0     9    F     9    8     8    2
+<span class="lineNum">      34 </span><span class="lineCov">          1 :   char *face = &quot;\xF0\x9F\x98\x82&quot;;</span>
+<span class="lineNum">      35 </span><span class="lineCov">          1 :   utf8toucs4(result, face, BFSZ);</span>
+<span class="lineNum">      36 </span><span class="lineCov">          1 :   TEST_ASSERT(wcscmp(result, L&quot;\U0001F602&quot;) == 0);</span>
+<span class="lineNum">      37 </span>            : 
+<span class="lineNum">      38 </span>            :   // Code point U+4EBA -- Chinese character ren ('man')
+<span class="lineNum">      39 </span>            :   // Code point in binary: 0100 1110 1011 1010
+<span class="lineNum">      40 </span>            :   // 15 bits, so 3 bytes in UTF-8
+<span class="lineNum">      41 </span>            :   // UTF-8 template: 1110 xxxx  10xx xxxx  10xx xxxx
+<span class="lineNum">      42 </span>            :   // UTF-8 binary:   1110 0100  1011 1010  1011 1010
+<span class="lineNum">      43 </span>            :   // UTF-8 hex:         E    4     B    A     B    A
+<span class="lineNum">      44 </span><span class="lineCov">          1 :   char *ren = &quot;\xE4\xBA\xBA&quot;;</span>
+<span class="lineNum">      45 </span><span class="lineCov">          1 :   utf8toucs4(result, ren, BFSZ);</span>
+<span class="lineNum">      46 </span><span class="lineCov">          1 :   TEST_ASSERT(wcscmp(result, L&quot;\u4EBA&quot;) == 0);</span>
+<span class="lineNum">      47 </span>            : 
+<span class="lineNum">      48 </span>            :   // Code point U+0101 -- Latin small letter a with macron
+<span class="lineNum">      49 </span>            :   // Code point in binary: 0000 0001  0000 0001
+<span class="lineNum">      50 </span>            :   // 9 bits, so 2 bytes in UTF-8
+<span class="lineNum">      51 </span>            :   // UTF-8 template: 110x xxxx  10xx xxxx
+<span class="lineNum">      52 </span>            :   // UTF-8 binary:   1100 0100  1000 0001
+<span class="lineNum">      53 </span>            :   // UTF-8 hex:         C    4     8    1
+<span class="lineNum">      54 </span><span class="lineCov">          1 :   char *amac = &quot;\xC4\x81&quot;;</span>
+<span class="lineNum">      55 </span><span class="lineCov">          1 :   utf8toucs4(result, amac, BFSZ);</span>
+<span class="lineNum">      56 </span><span class="lineCov">          1 :   TEST_ASSERT(wcscmp(result, L&quot;\u0101&quot;) == 0);</span>
+<span class="lineNum">      57 </span>            : 
+<span class="lineNum">      58 </span>            :   // Code point U+0061 -- Latin small letter a
+<span class="lineNum">      59 </span>            :   // Code point in binary: 0110 0001
+<span class="lineNum">      60 </span>            :   // 7 bits, so 1 byte in UTF-8
+<span class="lineNum">      61 </span>            :   // UTF-8 hex: 61
+<span class="lineNum">      62 </span><span class="lineCov">          1 :   char *a = &quot;\x61&quot;;</span>
+<span class="lineNum">      63 </span><span class="lineCov">          1 :   utf8toucs4(result, a, BFSZ);</span>
+<span class="lineNum">      64 </span><span class="lineCov">          1 :   TEST_ASSERT(wcscmp(result, L&quot;a&quot;) == 0);</span>
+<span class="lineNum">      65 </span>            : 
+<span class="lineNum">      66 </span><span class="lineCov">          1 :   char *alltogether = &quot;\xF0\x9F\x98\x82\xE4\xBA\xBA\xC4\x81\x61&quot;;</span>
+<span class="lineNum">      67 </span><span class="lineCov">          1 :   utf8toucs4(result, alltogether, BFSZ);</span>
+<span class="lineNum">      68 </span><span class="lineCov">          1 :   TEST_ASSERT(wcscmp(result, L&quot;\U0001F602\u4EBA\u0101a&quot;) == 0);</span>
+<span class="lineNum">      69 </span>            : 
+<span class="lineNum">      70 </span><span class="lineCov">          1 :   return 0;</span>
+<a name="71"><span class="lineNum">      71 </span>            : }</a>
+<span class="lineNum">      72 </span>            : 
+<span class="lineNum">      73 </span><span class="lineCov">          1 : void utf8_test(void)</span>
+<span class="lineNum">      74 </span>            : {
+<span class="lineNum">      75 </span><span class="lineCov">          1 :   smb_ut_group *group = su_create_test_group(&quot;utf8&quot;);</span>
+<span class="lineNum">      76 </span>            : 
+<span class="lineNum">      77 </span><span class="lineCov">          1 :   smb_ut_test *predetermined = su_create_test(&quot;predetermined&quot;,</span>
+<span class="lineNum">      78 </span>            :                                               utf8_test_predetermined);
+<span class="lineNum">      79 </span><span class="lineCov">          1 :   su_add_test(group, predetermined);</span>
+<span class="lineNum">      80 </span>            : 
+<span class="lineNum">      81 </span><span class="lineCov">          1 :   su_run_group(group);</span>
+<span class="lineNum">      82 </span><span class="lineCov">          1 :   su_delete_group(group);</span>
+<span class="lineNum">      83 </span><span class="lineCov">          1 : }</span>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.11</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>
