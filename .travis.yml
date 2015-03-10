@@ -1,0 +1,5 @@
+language: c
+compiler: gcc
+install: true
+script: make test
+after_success: ./build_pages.sh
