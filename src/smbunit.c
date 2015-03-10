@@ -91,7 +91,7 @@ int su_run_test(smb_ut_test *test)
   int result = test->run();
 
   if (result) {
-    printf ("TEST \"%s\" failed with code: %d\n",test->description, result);
+    printf ("TEST \"%s\" failed on line: %d\n",test->description, result);
     return 1;
   }
 
@@ -119,7 +119,7 @@ int su_run_group(smb_ut_group *group)
     result = su_run_test(group->tests[i]);
     if (result) {
       printf ("## GROUP \"%s\" failed on test: %d\n\n", group->description, i);
-      return result;
+      exit(result);
     }
   }
   printf ("## GROUP \"%s\" passed!\n\n", group->description);
