@@ -54,6 +54,7 @@ all: lib test
 lib: bin/$(CFG)/libstephen.a
 
 test: lib bin/$(CFG)/test
+	bin/$(CFG)/test
 
 gcov:
 	lcov --capture --directory . --output-file coverage.info
