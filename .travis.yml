@@ -1,6 +1,8 @@
 language: c
 compiler: gcc
-install: true
+install:
+ - sudo apt-get update -qq
+ - sudo apt-get install -y doxygen graphviz lcov
 script: make test
 after_success: ./build_pages.sh
 env:
