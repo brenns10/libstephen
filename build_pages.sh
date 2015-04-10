@@ -30,8 +30,8 @@ if [ "$1" != "dry" ]; then
 fi
 
 # Copy the docs and coverage results.
-cp -R ../libstephen/doc doc
-cp -R ../libstephen/cov cov
+cp -R ../libstephen/doc .
+cp -R ../libstephen/cov .
 
 # Add and commit changes.
 git add -A .
