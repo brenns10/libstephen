@@ -49,11 +49,13 @@ TESTOBJECTS=$(patsubst test/%.c,obj/$(CFG)/test/%.o,$(TESTSOURCES))
 # Top Level Targets
 .PHONY: all test lib clean clean_docs clean_cov clean_all docs gcov
 
-all: lib test
+all: lib tests
 
 lib: bin/$(CFG)/libstephen.a
 
-test: lib bin/$(CFG)/test
+tests: lib bin/$(CFG)/test
+
+test: tests
 	bin/$(CFG)/test
 
 gcov:
