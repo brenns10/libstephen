@@ -9,6 +9,7 @@ set -e
 # Update git config.
 git config user.name "Travis Builder"
 git config user.email "smb196@case.edu"
+git fetch origin gh-pages
 
 # Get the current commit
 COMMIT=$(git rev-parse HEAD)
