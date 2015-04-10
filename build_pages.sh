@@ -6,12 +6,6 @@
 # Exit script on first error:
 set -e
 
-if [ "$1" != "dry" ]; then
-    # Update git config.
-    git config user.name "Travis Builder"
-    git config user.email "smb196@case.edu"
-fi
-
 # Get the current commit
 COMMIT=$(git rev-parse HEAD)
 
@@ -27,6 +21,13 @@ make docs
 cd ..
 git clone -b gh-pages "https://$GH_TOKEN@github.com/brenns10/libstephen.git" gh-pages
 cd gh-pages
+
+# Update git configuration so I can push.
+if [ "$1" != "dry" ]; then
+    # Update git config.
+    git config user.name "Travis Builder"
+    git config user.email "smb196@case.edu"
+fi
 
 # Copy the docs and coverage results.
 cp -R ../libstephen/doc doc
