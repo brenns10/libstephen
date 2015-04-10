@@ -1,4 +1,4 @@
-# libstephen
+# libstephen ![Build Status](https://travis-ci.org/brenns10/libstephen.svg?branch=master)
 
 - Author: Stephen Brennan
 - Version: Prerelease
