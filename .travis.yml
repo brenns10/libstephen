@@ -15,4 +15,4 @@ script: make test
 after_success: ./build_pages.sh
 env:
   global:
-    - secure: "ZMS++P+eIakxWmQWChWYpXlinjsPkf82Sl1tdiYF1/4fl3zul/aEjv92awFBZOTweO3M2ZOoZF09RmR8Z1aPPct4hP2U60gyTLCVYKkSnY2TjwNatEddBSPCXqYuCCJsT7DyYEu0lblkQ2tPEOKVHkrqp4XkGfC6IWalu+tS3p0="
+    - secure: "JS/6lbqPUbBRAUmwxDs7f67CEO1zB+BmuL9YUk/lNIlpMlsaY7rj/j5OdmR/3WY1i17g9nKSDGKyddZUr+ba8Al/dO0g7qiScj3p6a3QlSf149xgFUInK1YRkiQ1sLgu17BUwt2Bx1Ca2fipDHGHwDL01PeLpgO2UpsYNml5K5c="

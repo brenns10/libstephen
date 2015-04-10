@@ -37,5 +37,5 @@ cp -R ../libstephen/cov .
 git add -A .
 git commit -m "[ci skip] Autodoc commit for $COMMIT."
 if [ "$1" != "dry" ]; then
-    git push origin gh-pages
+    git push -q origin gh-pages
 fi
