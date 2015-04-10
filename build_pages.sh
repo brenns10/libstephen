@@ -6,12 +6,11 @@
 # Exit script on first error:
 set -e
 
-# Update git config.
-git config user.name "Travis Builder"
-git config user.email "smb196@case.edu"
-
-git remote add upstream "https://$GH_TOKEN@github.com/brenns10/libstephen.git"
-git fetch upstream gh-pages
+if [ "$1" != "dry" ]; then
+    # Update git config.
+    git config user.name "Travis Builder"
+    git config user.email "smb196@case.edu"
+fi
 
 # Get the current commit
 COMMIT=$(git rev-parse HEAD)
@@ -24,9 +23,18 @@ make gcov
 # Generate documentation.
 make docs
 
-# Switch to the gh-pages branch, remove the build artifacts.
-git checkout gh-pages --force
-rm -rf bin obj
-git add .
+# In a new directory, clone the gh-pages branch.
+cd ..
+git clone -b gh-pages "https://$GH_TOKEN@github.com/brenns10/libstephen.git" gh-pages
+cd gh-pages
+
+# Copy the docs and coverage results.
+cp -R ../libstephen/doc doc
+cp -R ../libstephen/cov cov
+
+# Add and commit changes.
+git add -A .
 git commit -m "[ci skip] Autodoc commit for $COMMIT."
-git push upstream gh-pages
+if [ "$1" != "dry" ]; then
+    git push origin gh-pages
+fi
