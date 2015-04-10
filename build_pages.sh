@@ -9,7 +9,9 @@ set -e
 # Update git config.
 git config user.name "Travis Builder"
 git config user.email "smb196@case.edu"
-git fetch origin gh-pages
+
+git remote add upstream "https://$GH_PAGES@github.com/brenns10/libstephen.git"
+git fetch upstream gh-pages
 
 # Get the current commit
 COMMIT=$(git rev-parse HEAD)
@@ -23,8 +25,8 @@ make gcov
 make docs
 
 # Switch to the gh-pages branch, remove the build artifacts.
-git checkout gh-pages
+git checkout gh-pages --force
 rm -rf bin obj
 git add .
 git commit -m "[ci skip] Autodoc commit for $COMMIT."
-git push "https://$GH_PAGES@github.com/brenns10/libstephen.git"
+git push upstream gh-pages
