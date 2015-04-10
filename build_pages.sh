@@ -10,7 +10,7 @@ set -e
 git config user.name "Travis Builder"
 git config user.email "smb196@case.edu"
 
-git remote add upstream "https://$GH_PAGES@github.com/brenns10/libstephen.git"
+git remote add upstream "https://$GH_TOKEN@github.com/brenns10/libstephen.git"
 git fetch upstream gh-pages
 
 # Get the current commit

@@ -11,4 +11,4 @@ script: make test
 after_success: ./build_pages.sh
 env:
   global:
-    - secure: DUbEJeTkKbpUeBj4lQmzWBzuPUQDCY7hwucQlYBv5GGvo4aiVFbH2Z+8DzUzRr82LWgDqnWxg8tDbj8Us/EGmsVB5LdjodXzQMwK1x6zTZ5VcK39zmc+5FUe3vFxz3iFex7Rw27jT8wDbNaZSVGo4Axm2fmhLbZXUHltJr4wEqA=
+    - secure: "ZMS++P+eIakxWmQWChWYpXlinjsPkf82Sl1tdiYF1/4fl3zul/aEjv92awFBZOTweO3M2ZOoZF09RmR8Z1aPPct4hP2U60gyTLCVYKkSnY2TjwNatEddBSPCXqYuCCJsT7DyYEu0lblkQ2tPEOKVHkrqp4XkGfC6IWalu+tS3p0="
