@@ -1,0 +1,239 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage.info - src/smbunit.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">src</a> - smbunit.c<span style="font-size: 80%;"> (source / <a href="smbunit.c.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">38</td>
+            <td class="headerCovTableEntry">42</td>
+            <td class="headerCovTableEntryHi">90.5 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2015-04-10 16:52:41</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">7</td>
+            <td class="headerCovTableEntry">7</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /***************************************************************************//**</a>
+<span class="lineNum">       2 </span>            : 
+<span class="lineNum">       3 </span>            :   @file         smbunit.c
+<span class="lineNum">       4 </span>            : 
+<span class="lineNum">       5 </span>            :   @author       Stephen Brennan
+<span class="lineNum">       6 </span>            : 
+<span class="lineNum">       7 </span>            :   @date         Created Saturday, 28 September 2013
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            :   @brief        A simple, lightweight unit test runner based on function
+<span class="lineNum">      10 </span>            :                 pointers.
+<span class="lineNum">      11 </span>            : 
+<span class="lineNum">      12 </span>            :   @copyright    Copyright (c) 2013-2015, Stephen Brennan.  Released under the
+<span class="lineNum">      13 </span>            :                 Revised BSD License.  See the LICENSE.txt file for details.
+<span class="lineNum">      14 </span>            : 
+<span class="lineNum">      15 </span>            : *******************************************************************************/
+<span class="lineNum">      16 </span>            : 
+<span class="lineNum">      17 </span>            : #include &lt;stdio.h&gt;            /* printf */
+<span class="lineNum">      18 </span>            : #include &lt;string.h&gt;           /* strncpy */
+<span class="lineNum">      19 </span>            : 
+<span class="lineNum">      20 </span>            : #include &quot;libstephen/base.h&quot;
+<span class="lineNum">      21 </span>            : #include &quot;libstephen/ut.h&quot;    /* functions we're defining */
+<span class="lineNum">      22 </span>            : 
+<span class="lineNum">      23 </span>            : /**
+<span class="lineNum">      24 </span>            :    @brief Create and return a new unit test.
+<span class="lineNum">      25 </span>            : 
+<span class="lineNum">      26 </span>            :    @param description A description of the test.
+<span class="lineNum">      27 </span>            :    @param run A function pointer to the test function.
+<a name="28"><span class="lineNum">      28 </span>            :    @returns A pointer to the new test.</a>
+<span class="lineNum">      29 </span>            :  */
+<span class="lineNum">      30 </span><span class="lineCov">         51 : smb_ut_test *su_create_test(char *description, int (*run)())</span>
+<span class="lineNum">      31 </span>            : {
+<span class="lineNum">      32 </span><span class="lineCov">         51 :   smb_ut_test *test = smb_new(smb_ut_test, 1);</span>
+<span class="lineNum">      33 </span><span class="lineCov">         51 :   strncpy(test-&gt;description, description, SMB_UNIT_DESCRIPTION_SIZE - 1);</span>
+<span class="lineNum">      34 </span><span class="lineCov">         51 :   test-&gt;description[SMB_UNIT_DESCRIPTION_SIZE - 1] = 0;</span>
+<span class="lineNum">      35 </span><span class="lineCov">         51 :   test-&gt;run = run;</span>
+<span class="lineNum">      36 </span><span class="lineCov">         51 :   return test;</span>
+<span class="lineNum">      37 </span>            : }
+<span class="lineNum">      38 </span>            : 
+<span class="lineNum">      39 </span>            : /**
+<span class="lineNum">      40 </span>            :    @brief Create and return a new test group.
+<span class="lineNum">      41 </span>            : 
+<span class="lineNum">      42 </span>            :    @param description A short description for the group.
+<a name="43"><span class="lineNum">      43 </span>            :    @returns A pointer to the test group.</a>
+<span class="lineNum">      44 </span>            :  */
+<span class="lineNum">      45 </span><span class="lineCov">         10 : smb_ut_group *su_create_test_group(char *description)</span>
+<span class="lineNum">      46 </span>            : {
+<span class="lineNum">      47 </span><span class="lineCov">         10 :   smb_ut_group *group = smb_new(smb_ut_group, 1);</span>
+<span class="lineNum">      48 </span><span class="lineCov">         10 :   strncpy(group-&gt;description, description, SMB_UNIT_DESCRIPTION_SIZE - 1);</span>
+<span class="lineNum">      49 </span><span class="lineCov">         10 :   group-&gt;description[SMB_UNIT_DESCRIPTION_SIZE - 1] = 0;</span>
+<span class="lineNum">      50 </span>            : 
+<span class="lineNum">      51 </span><span class="lineCov">         10 :   group-&gt;num_tests = 0;</span>
+<span class="lineNum">      52 </span><span class="lineCov">         10 :   return group;</span>
+<span class="lineNum">      53 </span>            : }
+<span class="lineNum">      54 </span>            : 
+<span class="lineNum">      55 </span>            : /**
+<span class="lineNum">      56 </span>            :    @brief Add a test to the given test group.
+<span class="lineNum">      57 </span>            : 
+<span class="lineNum">      58 </span>            :    A maximum of SMB_UNIT_TESTS_PER_GROUP may be added to the group.  After the
+<span class="lineNum">      59 </span>            :    limit is reached, this function fails *silently*, so as to prevent
+<span class="lineNum">      60 </span>            :    interference with the actual tests.
+<span class="lineNum">      61 </span>            : 
+<span class="lineNum">      62 </span>            :    @param group A pointer to the group to add the test to.
+<a name="63"><span class="lineNum">      63 </span>            :    @param test A pointer to the test.</a>
+<span class="lineNum">      64 </span>            :  */
+<span class="lineNum">      65 </span><span class="lineCov">         51 : void su_add_test(smb_ut_group *group, smb_ut_test *test)</span>
+<span class="lineNum">      66 </span>            : {
+<span class="lineNum">      67 </span><span class="lineCov">         51 :   if (group-&gt;num_tests &lt; SMB_UNIT_TESTS_PER_GROUP) {</span>
+<span class="lineNum">      68 </span><span class="lineCov">         51 :     group-&gt;tests[group-&gt;num_tests++] = test;</span>
+<span class="lineNum">      69 </span>            :   }
+<span class="lineNum">      70 </span><span class="lineCov">         51 : }</span>
+<span class="lineNum">      71 </span>            : 
+<span class="lineNum">      72 </span>            : /**
+<span class="lineNum">      73 </span>            :    @brief Run the given test.
+<span class="lineNum">      74 </span>            : 
+<span class="lineNum">      75 </span>            :    Tracks memory allocations and thrown errors.  In order to do this, all errors
+<span class="lineNum">      76 </span>            :    are cleared before execution of the test.
+<span class="lineNum">      77 </span>            : 
+<span class="lineNum">      78 </span>            :    @param test The test to run
+<span class="lineNum">      79 </span>            :    @returns A code based on the execution of the test (and whether or not the
+<span class="lineNum">      80 </span>            :    feature is enabled for the test):
+<span class="lineNum">      81 </span>            :    @retval 0 Test passed all its conditions.
+<span class="lineNum">      82 </span>            :    @retval 1 Test returned a non-zero return code.  This will be reported on
+<span class="lineNum">      83 </span>            :    stdout, along with the specific return code.  The reason for a non-zero
+<span class="lineNum">      84 </span>            :    return code is usually a failed assertion, in which case the code corresponds
+<span class="lineNum">      85 </span>            :    to the assertion number.
+<span class="lineNum">      86 </span>            :    @retval 3 Memory was leaked.  The test returned 0 and all expected errors
+<a name="87"><span class="lineNum">      87 </span>            :    were found (or no errors were expected or found), but memory leaked.</a>
+<span class="lineNum">      88 </span>            :  */
+<span class="lineNum">      89 </span><span class="lineCov">         51 : int su_run_test(smb_ut_test *test)</span>
+<span class="lineNum">      90 </span>            : {
+<span class="lineNum">      91 </span><span class="lineCov">         51 :   int result = test-&gt;run();</span>
+<span class="lineNum">      92 </span>            : 
+<span class="lineNum">      93 </span><span class="lineCov">         51 :   if (result) {</span>
+<span class="lineNum">      94 </span><span class="lineNoCov">          0 :     printf (&quot;TEST \&quot;%s\&quot; failed on line: %d\n&quot;,test-&gt;description, result);</span>
+<span class="lineNum">      95 </span><span class="lineNoCov">          0 :     return 1;</span>
+<span class="lineNum">      96 </span>            :   }
+<span class="lineNum">      97 </span>            : 
+<span class="lineNum">      98 </span><span class="lineCov">         51 :   printf (&quot;TEST \&quot;%s\&quot; passed!\n&quot;,test-&gt;description);</span>
+<span class="lineNum">      99 </span><span class="lineCov">         51 :   return 0;</span>
+<span class="lineNum">     100 </span>            : }
+<span class="lineNum">     101 </span>            : 
+<span class="lineNum">     102 </span>            : /**
+<span class="lineNum">     103 </span>            :    @brief Run a group of tests.
+<span class="lineNum">     104 </span>            : 
+<span class="lineNum">     105 </span>            :    The tests are run sequentially (in the order they were added to the group).
+<span class="lineNum">     106 </span>            :    If a test fails, the remaining tests are not executed.
+<span class="lineNum">     107 </span>            : 
+<span class="lineNum">     108 </span>            :    @param group A pointer to the smb_ut_group to run.
+<span class="lineNum">     109 </span>            : 
+<span class="lineNum">     110 </span>            :    @returns An integer.  Since the tests are run sequentially via the
+<span class="lineNum">     111 </span>            :    su_run_test() function, it returns 0 if all tests succeeded, or else the
+<a name="112"><span class="lineNum">     112 </span>            :    return code of the failed test from su_run_test().</a>
+<span class="lineNum">     113 </span>            :  */
+<span class="lineNum">     114 </span><span class="lineCov">         10 : int su_run_group(smb_ut_group *group)</span>
+<span class="lineNum">     115 </span>            : {
+<span class="lineNum">     116 </span><span class="lineCov">         10 :   int result = 0;</span>
+<span class="lineNum">     117 </span><span class="lineCov">         10 :   printf (&quot;## GROUP \&quot;%s\&quot; running...\n&quot;,group-&gt;description);</span>
+<span class="lineNum">     118 </span><span class="lineCov">         61 :   for (int i = 0; i &lt; group-&gt;num_tests; i++) {</span>
+<span class="lineNum">     119 </span><span class="lineCov">         51 :     result = su_run_test(group-&gt;tests[i]);</span>
+<span class="lineNum">     120 </span><span class="lineCov">         51 :     if (result) {</span>
+<span class="lineNum">     121 </span><span class="lineNoCov">          0 :       printf (&quot;## GROUP \&quot;%s\&quot; failed on test: %d\n\n&quot;, group-&gt;description, i);</span>
+<span class="lineNum">     122 </span><span class="lineNoCov">          0 :       exit(result);</span>
+<span class="lineNum">     123 </span>            :     }
+<span class="lineNum">     124 </span>            :   }
+<span class="lineNum">     125 </span><span class="lineCov">         10 :   printf (&quot;## GROUP \&quot;%s\&quot; passed!\n\n&quot;, group-&gt;description);</span>
+<span class="lineNum">     126 </span><span class="lineCov">         10 :   return 0;</span>
+<span class="lineNum">     127 </span>            : }
+<span class="lineNum">     128 </span>            : 
+<span class="lineNum">     129 </span>            : /**
+<span class="lineNum">     130 </span>            :    @brief Frees the memory associated with the test, and performs cleanup.
+<span class="lineNum">     131 </span>            : 
+<span class="lineNum">     132 </span>            :    Note that no actual cleanup is required by the test, so the only benefit to
+<span class="lineNum">     133 </span>            :    using this function is that it is future-safe (updates to smbunit may require
+<span class="lineNum">     134 </span>            :    cleanup to be performed in this function).
+<span class="lineNum">     135 </span>            : 
+<a name="136"><span class="lineNum">     136 </span>            :    @param test The test to free</a>
+<span class="lineNum">     137 </span>            :  */
+<span class="lineNum">     138 </span><span class="lineCov">         51 : void su_delete_test(smb_ut_test *test)</span>
+<span class="lineNum">     139 </span>            : {
+<span class="lineNum">     140 </span><span class="lineCov">         51 :   smb_free(test);</span>
+<span class="lineNum">     141 </span><span class="lineCov">         51 : }</span>
+<span class="lineNum">     142 </span>            : 
+<span class="lineNum">     143 </span>            : /**
+<span class="lineNum">     144 </span>            :    @brief Free the memory associated with the group AND ALL TESTS WITHIN IT.
+<span class="lineNum">     145 </span>            :    You MUST use this to delete test groups.
+<span class="lineNum">     146 </span>            : 
+<span class="lineNum">     147 </span>            :    Note that if a pointer to a smb_ut_test within the smb_ut_group
+<span class="lineNum">     148 </span>            :    is already invalid (freed), then su_delete_group() assumes that it has been
+<span class="lineNum">     149 </span>            :    freed and moves on.  So you may include a single test in more than one group
+<span class="lineNum">     150 </span>            :    and safely delete them both (but after deleting the first group, the test
+<span class="lineNum">     151 </span>            :    will no longer be valid and a segmentation fault will occur if you try to run
+<span class="lineNum">     152 </span>            :    the second group).
+<span class="lineNum">     153 </span>            : 
+<a name="154"><span class="lineNum">     154 </span>            :    @param group A pointer to the group to free</a>
+<span class="lineNum">     155 </span>            :  */
+<span class="lineNum">     156 </span><span class="lineCov">         10 : void su_delete_group(smb_ut_group *group)</span>
+<span class="lineNum">     157 </span>            : {
+<span class="lineNum">     158 </span><span class="lineCov">         61 :   for (int i = 0; i &lt; group-&gt;num_tests; i++) {</span>
+<span class="lineNum">     159 </span><span class="lineCov">         51 :     if (group-&gt;tests[i]) // don't delete if already deleted</span>
+<span class="lineNum">     160 </span><span class="lineCov">         51 :       su_delete_test(group-&gt;tests[i]);</span>
+<span class="lineNum">     161 </span>            :   }
+<span class="lineNum">     162 </span><span class="lineCov">         10 :   smb_free(group);</span>
+<span class="lineNum">     163 </span><span class="lineCov">         10 : }</span>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.11</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

@@ -1,0 +1,200 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage.info - src/bitfield.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">src</a> - bitfield.c<span style="font-size: 80%;"> (source / <a href="bitfield.c.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">33</td>
+            <td class="headerCovTableEntry">33</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2015-04-10 16:52:41</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">7</td>
+            <td class="headerCovTableEntry">7</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /***************************************************************************//**</a>
+<span class="lineNum">       2 </span>            : 
+<span class="lineNum">       3 </span>            :   @file         bitfield.c
+<span class="lineNum">       4 </span>            : 
+<span class="lineNum">       5 </span>            :   @author       Stephen Brennan
+<span class="lineNum">       6 </span>            : 
+<span class="lineNum">       7 </span>            :   @date         Created Wednesday, 29 January 2014
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            :   @brief        A tiny little bit of code that allows for efficient storage and
+<span class="lineNum">      10 </span>            :                 access to large amounts of boolean data.
+<span class="lineNum">      11 </span>            : 
+<span class="lineNum">      12 </span>            :   @copyright    Copyright (c) 2013-2015, Stephen Brennan.  Released under the
+<span class="lineNum">      13 </span>            :                 Revised BSD License.  See the LICENSE.txt file for details.
+<span class="lineNum">      14 </span>            : 
+<span class="lineNum">      15 </span>            : *******************************************************************************/
+<span class="lineNum">      16 </span>            : 
+<span class="lineNum">      17 </span>            : #include &lt;string.h&gt;
+<span class="lineNum">      18 </span>            : #include &lt;assert.h&gt;
+<span class="lineNum">      19 </span>            : 
+<span class="lineNum">      20 </span>            : #include &quot;libstephen/base.h&quot;
+<span class="lineNum">      21 </span>            : #include &quot;libstephen/bf.h&quot;
+<span class="lineNum">      22 </span>            : 
+<span class="lineNum">      23 </span>            : /**
+<span class="lineNum">      24 </span>            :    @brief Initialize the memory where a bitfield is contained to all 0's.
+<span class="lineNum">      25 </span>            : 
+<span class="lineNum">      26 </span>            :    This is public so people can use the function to allocate their own bitfields
+<span class="lineNum">      27 </span>            :    on function stacks instead of via the heap.  No errors are defined for this
+<span class="lineNum">      28 </span>            :    function.
+<span class="lineNum">      29 </span>            : 
+<span class="lineNum">      30 </span>            :    @param data A pointer to the bitfield.
+<span class="lineNum">      31 </span>            :    @param num_bools The size of the bitfield, in number of bools (aka bits, not
+<a name="32"><span class="lineNum">      32 </span>            :      bytes).</a>
+<span class="lineNum">      33 </span>            :  */
+<span class="lineNum">      34 </span><span class="lineCov">          5 : void bf_init(unsigned char *data, int num_bools) {</span>
+<span class="lineNum">      35 </span><span class="lineCov">          5 :   int size = SMB_BITFIELD_SIZE(num_bools);</span>
+<span class="lineNum">      36 </span><span class="lineCov">          5 :   memset(data, 0, size);</span>
+<span class="lineNum">      37 </span><span class="lineCov">          5 : }</span>
+<span class="lineNum">      38 </span>            : 
+<span class="lineNum">      39 </span>            : /**
+<span class="lineNum">      40 </span>            :    @brief Allocate a bitfield capable of holding the given number of bools.
+<span class="lineNum">      41 </span>            : 
+<span class="lineNum">      42 </span>            :    This will be allocated in dynamic memory, and a pointer will be returned.
+<span class="lineNum">      43 </span>            :    The bf_init function is available for creating bitfields in arbitrary
+<span class="lineNum">      44 </span>            :    locations.
+<span class="lineNum">      45 </span>            : 
+<span class="lineNum">      46 </span>            :    @param num_bools The number of bools to fit in the bit field.
+<a name="47"><span class="lineNum">      47 </span>            :    @returns A pointer to the bitfield.</a>
+<span class="lineNum">      48 </span>            :  */
+<span class="lineNum">      49 </span><span class="lineCov">          1 : unsigned char *bf_create(int num_bools) {</span>
+<span class="lineNum">      50 </span>            :   unsigned char *data;
+<span class="lineNum">      51 </span><span class="lineCov">          1 :   int size = SMB_BITFIELD_SIZE(num_bools);</span>
+<span class="lineNum">      52 </span>            : 
+<span class="lineNum">      53 </span><span class="lineCov">          1 :   data = smb_new(unsigned char, size);</span>
+<span class="lineNum">      54 </span>            : 
+<span class="lineNum">      55 </span><span class="lineCov">          1 :   bf_init(data, num_bools);</span>
+<span class="lineNum">      56 </span><span class="lineCov">          1 :   return data;</span>
+<span class="lineNum">      57 </span>            : }
+<span class="lineNum">      58 </span>            : 
+<span class="lineNum">      59 </span>            : /**
+<span class="lineNum">      60 </span>            :    @brief Delete the bitfield pointed to.  Only do this if you created the
+<span class="lineNum">      61 </span>            :    bitfield via bf_create().
+<span class="lineNum">      62 </span>            : 
+<span class="lineNum">      63 </span>            :    @param data A pointer to the bitfield.
+<a name="64"><span class="lineNum">      64 </span>            :    @param num_bools The number of bools contained in the bitfield.</a>
+<span class="lineNum">      65 </span>            :  */
+<span class="lineNum">      66 </span><span class="lineCov">          1 : void bf_delete(unsigned char *data, int num_bools) {</span>
+<span class="lineNum">      67 </span><span class="lineCov">          1 :   int size = SMB_BITFIELD_SIZE(num_bools);</span>
+<span class="lineNum">      68 </span><span class="lineCov">          1 :   smb_free(data);</span>
+<span class="lineNum">      69 </span><span class="lineCov">          1 : }</span>
+<span class="lineNum">      70 </span>            : 
+<span class="lineNum">      71 </span>            : /**
+<span class="lineNum">      72 </span>            :    @brief Check whether the given bit is set.
+<span class="lineNum">      73 </span>            : 
+<span class="lineNum">      74 </span>            :    @param data A pointer to the bitfield.
+<span class="lineNum">      75 </span>            :    @param index The index of the bit to Check
+<span class="lineNum">      76 </span>            :    @retval 0 if the bit is not set.
+<a name="77"><span class="lineNum">      77 </span>            :    @retval Nonzero if the bit is set.</a>
+<span class="lineNum">      78 </span>            :  */
+<span class="lineNum">      79 </span><span class="lineCov">        416 : int bf_check(unsigned char *data, int index) {</span>
+<span class="lineNum">      80 </span><span class="lineCov">        416 :   int byte_index = (int)(index / BIT_PER_CHAR);</span>
+<span class="lineNum">      81 </span><span class="lineCov">        416 :   unsigned char bit_mask = 0x01 &lt;&lt; (index % BIT_PER_CHAR);</span>
+<span class="lineNum">      82 </span>            : 
+<span class="lineNum">      83 </span><span class="lineCov">        416 :   return data[byte_index] &amp; bit_mask;</span>
+<span class="lineNum">      84 </span>            : }
+<span class="lineNum">      85 </span>            : 
+<span class="lineNum">      86 </span>            : /**
+<span class="lineNum">      87 </span>            :    @brief Set a bit.
+<span class="lineNum">      88 </span>            : 
+<span class="lineNum">      89 </span>            :    @param data A pointer to the bitfield
+<a name="90"><span class="lineNum">      90 </span>            :    @param index The index of the bit to set.</a>
+<span class="lineNum">      91 </span>            :  */
+<span class="lineNum">      92 </span><span class="lineCov">        160 : void bf_set(unsigned char *data, int index) {</span>
+<span class="lineNum">      93 </span><span class="lineCov">        160 :   int byte_index = (int)(index / BIT_PER_CHAR);</span>
+<span class="lineNum">      94 </span><span class="lineCov">        160 :   unsigned char bit_mask = 0x01 &lt;&lt; (index % BIT_PER_CHAR);</span>
+<span class="lineNum">      95 </span>            : 
+<span class="lineNum">      96 </span><span class="lineCov">        160 :   data[byte_index] |= bit_mask;</span>
+<span class="lineNum">      97 </span><span class="lineCov">        160 : }</span>
+<span class="lineNum">      98 </span>            : 
+<span class="lineNum">      99 </span>            : /**
+<span class="lineNum">     100 </span>            :    @brief Clear a bit.
+<span class="lineNum">     101 </span>            : 
+<span class="lineNum">     102 </span>            :    @param data A pointer to the bitfield.
+<a name="103"><span class="lineNum">     103 </span>            :    @param index The index of the bit to clear.</a>
+<span class="lineNum">     104 </span>            :  */
+<span class="lineNum">     105 </span><span class="lineCov">         40 : void bf_clear(unsigned char *data, int index) {</span>
+<span class="lineNum">     106 </span><span class="lineCov">         40 :   int byte_index = (int)(index / BIT_PER_CHAR);</span>
+<span class="lineNum">     107 </span><span class="lineCov">         40 :   unsigned char bit_mask = ~(0x01 &lt;&lt; (index % BIT_PER_CHAR));</span>
+<span class="lineNum">     108 </span>            : 
+<span class="lineNum">     109 </span><span class="lineCov">         40 :   data[byte_index] &amp;= bit_mask;</span>
+<span class="lineNum">     110 </span><span class="lineCov">         40 : }</span>
+<span class="lineNum">     111 </span>            : 
+<span class="lineNum">     112 </span>            : /**
+<span class="lineNum">     113 </span>            :    @brief Clear a bit.
+<span class="lineNum">     114 </span>            : 
+<span class="lineNum">     115 </span>            :    @param data A pointer to the bitfield.
+<a name="116"><span class="lineNum">     116 </span>            :    @param index The index of the bit to flip.</a>
+<span class="lineNum">     117 </span>            :  */
+<span class="lineNum">     118 </span><span class="lineCov">         80 : void bf_flip(unsigned char *data, int index) {</span>
+<span class="lineNum">     119 </span><span class="lineCov">         80 :   int byte_index = (int)(index / BIT_PER_CHAR);</span>
+<span class="lineNum">     120 </span><span class="lineCov">         80 :   unsigned char bit_mask = 0x01 &lt;&lt; (index % BIT_PER_CHAR);</span>
+<span class="lineNum">     121 </span>            : 
+<span class="lineNum">     122 </span><span class="lineCov">         80 :   unsigned char value = ~(data[byte_index] &amp; bit_mask) &amp; bit_mask;</span>
+<span class="lineNum">     123 </span><span class="lineCov">         80 :   data[byte_index] = (data[byte_index] &amp; ~bit_mask) | value;</span>
+<span class="lineNum">     124 </span><span class="lineCov">         80 : }</span>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.11</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

@@ -1,0 +1,826 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage.info - src/linkedlist.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">src</a> - linkedlist.c<span style="font-size: 80%;"> (source / <a href="linkedlist.c.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">252</td>
+            <td class="headerCovTableEntry">252</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2015-04-10 16:52:41</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">44</td>
+            <td class="headerCovTableEntry">44</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /***************************************************************************//**</a>
+<span class="lineNum">       2 </span>            : 
+<span class="lineNum">       3 </span>            :   @file         linkedlist.c
+<span class="lineNum">       4 </span>            : 
+<span class="lineNum">       5 </span>            :   @author       Stephen Brennan
+<span class="lineNum">       6 </span>            : 
+<span class="lineNum">       7 </span>            :   @date         Created Thursday, 12 September 2013
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            :   @brief        A linked list data structure.
+<span class="lineNum">      10 </span>            : 
+<span class="lineNum">      11 </span>            :   This linked list data structure provides most basic features necessary in a
+<span class="lineNum">      12 </span>            :   linked list, along with some more advanced ones like iterators, stack
+<span class="lineNum">      13 </span>            :   functionality, and a generic list data structure that can use a different
+<span class="lineNum">      14 </span>            :   implementation.
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            :   @copyright    Copyright (c) 2013-2015, Stephen Brennan.  Released under the
+<span class="lineNum">      17 </span>            :                 Revised BSD License.  See the LICENSE.txt file for details.
+<span class="lineNum">      18 </span>            : 
+<span class="lineNum">      19 </span>            : *******************************************************************************/
+<span class="lineNum">      20 </span>            : 
+<span class="lineNum">      21 </span>            : #include &lt;stdlib.h&gt;
+<span class="lineNum">      22 </span>            : #include &lt;stdio.h&gt;
+<span class="lineNum">      23 </span>            : #include &lt;stdbool.h&gt;
+<span class="lineNum">      24 </span>            : #include &lt;assert.h&gt;
+<span class="lineNum">      25 </span>            : 
+<span class="lineNum">      26 </span>            : #include &quot;libstephen/ll.h&quot;
+<span class="lineNum">      27 </span>            : 
+<span class="lineNum">      28 </span>            : /*******************************************************************************
+<span class="lineNum">      29 </span>            : 
+<span class="lineNum">      30 </span>            :                                Private Functions
+<span class="lineNum">      31 </span>            : 
+<span class="lineNum">      32 </span>            : *******************************************************************************/
+<span class="lineNum">      33 </span>            : 
+<span class="lineNum">      34 </span>            : /**
+<span class="lineNum">      35 </span>            :    @brief Removes the given node, reassigning the links to and from it.
+<span class="lineNum">      36 </span>            : 
+<span class="lineNum">      37 </span>            :    Frees the node, in addition no reassigning links.  Once this function is
+<span class="lineNum">      38 </span>            :    called, the_node is invlidated.
+<span class="lineNum">      39 </span>            : 
+<span class="lineNum">      40 </span>            :    This function is a *private* function, not declared in libstephen.h for a
+<span class="lineNum">      41 </span>            :    reason.  It is only necessary for the implementation functions within this
+<span class="lineNum">      42 </span>            :    file.
+<span class="lineNum">      43 </span>            : 
+<span class="lineNum">      44 </span>            :    @param list The list that contains this node.
+<a name="45"><span class="lineNum">      45 </span>            :    @param the_node The node to delete.</a>
+<span class="lineNum">      46 </span>            :  */
+<span class="lineNum">      47 </span><span class="lineCov">     501043 : void ll_remove_node(smb_ll *list, smb_ll_node *the_node)</span>
+<span class="lineNum">      48 </span>            : {
+<span class="lineNum">      49 </span><span class="lineCov">     501043 :   smb_ll_node *previous = the_node-&gt;prev;</span>
+<span class="lineNum">      50 </span><span class="lineCov">     501043 :   smb_ll_node *next = the_node-&gt;next;</span>
+<span class="lineNum">      51 </span><span class="lineCov">     501043 :   if (previous) {</span>
+<span class="lineNum">      52 </span><span class="lineCov">          6 :     previous-&gt;next = next;</span>
+<span class="lineNum">      53 </span>            :   } else {
+<span class="lineNum">      54 </span><span class="lineCov">     501037 :     list-&gt;head = next;</span>
+<span class="lineNum">      55 </span>            :   }
+<span class="lineNum">      56 </span><span class="lineCov">     501043 :   if (next) {</span>
+<span class="lineNum">      57 </span><span class="lineCov">     500019 :     next-&gt;prev = previous;</span>
+<span class="lineNum">      58 </span>            :   } else {
+<span class="lineNum">      59 </span><span class="lineCov">       1024 :     list-&gt;tail = previous;</span>
+<span class="lineNum">      60 </span>            :   }
+<span class="lineNum">      61 </span><span class="lineCov">     501043 :   smb_free(the_node);</span>
+<span class="lineNum">      62 </span><span class="lineCov">     501043 : }</span>
+<span class="lineNum">      63 </span>            : 
+<span class="lineNum">      64 </span>            : /**
+<span class="lineNum">      65 </span>            :    @brief Navigates to the given index in the list, returning the correct node,
+<span class="lineNum">      66 </span>            :    or NULL.
+<span class="lineNum">      67 </span>            : 
+<span class="lineNum">      68 </span>            :    This function is a *private* function, not declared in libstephen.h for a
+<span class="lineNum">      69 </span>            :    reason.
+<span class="lineNum">      70 </span>            : 
+<span class="lineNum">      71 </span>            :    @param list The list to navigate within.
+<span class="lineNum">      72 </span>            :    @param index The index to find in the list.
+<span class="lineNum">      73 </span>            :    @param[out] status Status variable.
+<span class="lineNum">      74 </span>            :    @returns A pointer to the node navigated to.
+<span class="lineNum">      75 </span>            :    @retval NULL if the index was out of range.
+<a name="76"><span class="lineNum">      76 </span>            :    @exception SMB_INDEX_ERROR if the given index was out of range.</a>
+<span class="lineNum">      77 </span>            :  */
+<span class="lineNum">      78 </span><span class="lineCov">      40390 : smb_ll_node * ll_navigate(const smb_ll *list, int index, smb_status *status)</span>
+<span class="lineNum">      79 </span>            : {
+<span class="lineNum">      80 </span><span class="lineCov">      40390 :   smb_ll_node *node = list-&gt;head;</span>
+<span class="lineNum">      81 </span><span class="lineCov">      40390 :   if (index &lt; 0 || index &gt;= list-&gt;length) {</span>
+<span class="lineNum">      82 </span><span class="lineCov">          4 :     *status = SMB_INDEX_ERROR;</span>
+<span class="lineNum">      83 </span><span class="lineCov">          4 :     return NULL;</span>
+<span class="lineNum">      84 </span>            :   }
+<span class="lineNum">      85 </span><span class="lineCov">      40386 :   int i = 0;</span>
+<span class="lineNum">      86 </span><span class="lineCov">    2749545 :   while (i &lt; index) {</span>
+<span class="lineNum">      87 </span><span class="lineCov">    2668773 :     node = node-&gt;next;</span>
+<span class="lineNum">      88 </span><span class="lineCov">    2668773 :     i++;</span>
+<span class="lineNum">      89 </span>            :   }
+<span class="lineNum">      90 </span><span class="lineCov">      40386 :   return node;</span>
+<span class="lineNum">      91 </span>            : }
+<span class="lineNum">      92 </span>            : 
+<span class="lineNum">      93 </span>            : /**
+<span class="lineNum">      94 </span>            :    @brief Allocates and initializes a node with the given data.
+<span class="lineNum">      95 </span>            : 
+<span class="lineNum">      96 </span>            :    @param data The data to insert into the new node.
+<span class="lineNum">      97 </span>            :    @param[out] status Status variable.
+<a name="98"><span class="lineNum">      98 </span>            :    @return A pointer to the node created.</a>
+<span class="lineNum">      99 </span>            :  */
+<span class="lineNum">     100 </span><span class="lineCov">     501043 : smb_ll_node *ll_create_node(DATA data)</span>
+<span class="lineNum">     101 </span>            : {
+<span class="lineNum">     102 </span><span class="lineCov">     501043 :   smb_ll_node *new_node = smb_new(smb_ll_node, 1);</span>
+<span class="lineNum">     103 </span><span class="lineCov">     501043 :   new_node-&gt;data = data;</span>
+<span class="lineNum">     104 </span><span class="lineCov">     501043 :   new_node-&gt;next = NULL;</span>
+<span class="lineNum">     105 </span><span class="lineCov">     501043 :   new_node-&gt;prev = NULL;</span>
+<span class="lineNum">     106 </span><span class="lineCov">     501043 :   return new_node;</span>
+<span class="lineNum">     107 </span>            : }
+<span class="lineNum">     108 </span>            : 
+<span class="lineNum">     109 </span>            : /*******************************************************************************
+<span class="lineNum">     110 </span>            : 
+<span class="lineNum">     111 </span>            :                                 Public Functions
+<span class="lineNum">     112 </span>            : 
+<span class="lineNum">     113 </span>            : *******************************************************************************/
+<span class="lineNum">     114 </span>            : 
+<span class="lineNum">     115 </span>            : /**
+<span class="lineNum">     116 </span>            :    @brief Initializes a new list in memory which has already been allocated.
+<span class="lineNum">     117 </span>            : 
+<span class="lineNum">     118 </span>            :    No errors are defined for ll_init, but the parameter is used to allow for the
+<span class="lineNum">     119 </span>            :    possibility of future errors.  For now, you may safely `assert(status ==
+<span class="lineNum">     120 </span>            :    SMB_SUCCESS)`.
+<span class="lineNum">     121 </span>            : 
+<a name="122"><span class="lineNum">     122 </span>            :    @param new_list A pointer to the memory to initialize.</a>
+<span class="lineNum">     123 </span>            :  */
+<span class="lineNum">     124 </span><span class="lineCov">       1038 : void ll_init(smb_ll *new_list)</span>
+<span class="lineNum">     125 </span>            : {
+<span class="lineNum">     126 </span><span class="lineCov">       1038 :   new_list-&gt;length = 0;</span>
+<span class="lineNum">     127 </span><span class="lineCov">       1038 :   new_list-&gt;head = NULL;</span>
+<span class="lineNum">     128 </span><span class="lineCov">       1038 :   new_list-&gt;tail = NULL;</span>
+<span class="lineNum">     129 </span><span class="lineCov">       1038 : }</span>
+<span class="lineNum">     130 </span>            : 
+<span class="lineNum">     131 </span>            : /**
+<span class="lineNum">     132 </span>            :    @brief Allocates and initializes a new, empty linked list.
+<a name="133"><span class="lineNum">     133 </span>            :    @returns A pointer to the new list.</a>
+<span class="lineNum">     134 </span>            :  */
+<span class="lineNum">     135 </span><span class="lineCov">       1038 : smb_ll *ll_create()</span>
+<span class="lineNum">     136 </span>            : {
+<span class="lineNum">     137 </span><span class="lineCov">       1038 :   smb_ll *new_list = smb_new(smb_ll, 1);</span>
+<span class="lineNum">     138 </span><span class="lineCov">       1038 :   ll_init(new_list);</span>
+<span class="lineNum">     139 </span><span class="lineCov">       1038 :   return new_list;</span>
+<span class="lineNum">     140 </span>            : }
+<span class="lineNum">     141 </span>            : 
+<span class="lineNum">     142 </span>            : /**
+<span class="lineNum">     143 </span>            :    @brief Frees all the resources held by the linked list without freeing the
+<span class="lineNum">     144 </span>            :    actual pointer to the list.
+<span class="lineNum">     145 </span>            : 
+<span class="lineNum">     146 </span>            :    If you create a list on the stack and use ll_init to initialize it, calling
+<span class="lineNum">     147 </span>            :    ll_delete will attempt to free your stack memory (bad).  Use this to free all
+<span class="lineNum">     148 </span>            :    the resources of the list without freeing the pointer.
+<span class="lineNum">     149 </span>            : 
+<a name="150"><span class="lineNum">     150 </span>            :    @param list The list to destroy.</a>
+<span class="lineNum">     151 </span>            :  */
+<span class="lineNum">     152 </span><span class="lineCov">       1038 : void ll_destroy(smb_ll *list)</span>
+<span class="lineNum">     153 </span>            : {
+<span class="lineNum">     154 </span>            :   // Iterate through each node, deleting them as we go
+<span class="lineNum">     155 </span><span class="lineCov">       1038 :   smb_ll_node *iter = list-&gt;head;</span>
+<span class="lineNum">     156 </span>            :   smb_ll_node *temp;
+<span class="lineNum">     157 </span><span class="lineCov">     503105 :   while (iter) {</span>
+<span class="lineNum">     158 </span><span class="lineCov">     501029 :     temp = iter-&gt;next;</span>
+<span class="lineNum">     159 </span><span class="lineCov">     501029 :     ll_remove_node(list, iter);</span>
+<span class="lineNum">     160 </span><span class="lineCov">     501029 :     iter = temp;</span>
+<span class="lineNum">     161 </span>            :   }
+<span class="lineNum">     162 </span><span class="lineCov">       1038 : }</span>
+<span class="lineNum">     163 </span>            : 
+<span class="lineNum">     164 </span>            : /**
+<span class="lineNum">     165 </span>            :    @brief Frees the resources held by the linked list, and the memory allocated
+<span class="lineNum">     166 </span>            :    to the smb_ll object.
+<span class="lineNum">     167 </span>            : 
+<span class="lineNum">     168 </span>            :    This is equivalent to calling ll_destroy on the pointer, and then calling
+<span class="lineNum">     169 </span>            :    free() on the pointer.
+<span class="lineNum">     170 </span>            : 
+<a name="171"><span class="lineNum">     171 </span>            :    @param list A pointer to the list to delete.</a>
+<span class="lineNum">     172 </span>            :  */
+<span class="lineNum">     173 </span><span class="lineCov">       1038 : void ll_delete(smb_ll *list)</span>
+<span class="lineNum">     174 </span>            : {
+<span class="lineNum">     175 </span><span class="lineCov">       1038 :   ll_destroy(list);</span>
+<span class="lineNum">     176 </span><span class="lineCov">       1038 :   smb_free(list);</span>
+<span class="lineNum">     177 </span><span class="lineCov">       1038 : }</span>
+<span class="lineNum">     178 </span>            : 
+<span class="lineNum">     179 </span>            : /**
+<span class="lineNum">     180 </span>            :    @brief Append the given data to the end of the list.
+<span class="lineNum">     181 </span>            : 
+<span class="lineNum">     182 </span>            :    @param list A pointer to the list to append to.
+<span class="lineNum">     183 </span>            :    @param new_data The data to append.
+<a name="184"><span class="lineNum">     184 </span>            :    @param[out] status Status variable.</a>
+<span class="lineNum">     185 </span>            :  */
+<span class="lineNum">     186 </span><span class="lineCov">     500835 : void ll_append(smb_ll *list, DATA new_data)</span>
+<span class="lineNum">     187 </span>            : {
+<span class="lineNum">     188 </span>            :   // Create the new node
+<span class="lineNum">     189 </span><span class="lineCov">     500835 :   smb_ll_node *new_node = ll_create_node(new_data);</span>
+<span class="lineNum">     190 </span>            : 
+<span class="lineNum">     191 </span>            :   // Get the last node in the list
+<span class="lineNum">     192 </span><span class="lineCov">     500835 :   smb_ll_node *last_node = list-&gt;tail;</span>
+<span class="lineNum">     193 </span>            : 
+<span class="lineNum">     194 </span>            :   // Link them together
+<span class="lineNum">     195 </span><span class="lineCov">     500835 :   if (last_node)</span>
+<span class="lineNum">     196 </span><span class="lineCov">     499818 :     last_node-&gt;next = new_node;</span>
+<span class="lineNum">     197 </span>            :   else
+<span class="lineNum">     198 </span><span class="lineCov">       1017 :     list-&gt;head = new_node;</span>
+<span class="lineNum">     199 </span><span class="lineCov">     500835 :   new_node-&gt;prev = last_node;</span>
+<span class="lineNum">     200 </span><span class="lineCov">     500835 :   list-&gt;tail = new_node;</span>
+<span class="lineNum">     201 </span><span class="lineCov">     500835 :   list-&gt;length++;</span>
+<span class="lineNum">     202 </span><span class="lineCov">     500835 : }</span>
+<span class="lineNum">     203 </span>            : 
+<span class="lineNum">     204 </span>            : /**
+<span class="lineNum">     205 </span>            :    @brief Prepend the given data to the beginning of the list.  All other data
+<span class="lineNum">     206 </span>            :    is shifted forward one index.
+<span class="lineNum">     207 </span>            : 
+<span class="lineNum">     208 </span>            :    @param list A pointer to the list.
+<span class="lineNum">     209 </span>            :    @param new_data The data to prepend.
+<a name="210"><span class="lineNum">     210 </span>            :    @param[out] status Status variable.</a>
+<span class="lineNum">     211 </span>            :  */
+<span class="lineNum">     212 </span><span class="lineCov">        207 : void ll_prepend(smb_ll *list, DATA new_data)</span>
+<span class="lineNum">     213 </span>            : {
+<span class="lineNum">     214 </span>            :   // Create the new smb_ll_node
+<span class="lineNum">     215 </span><span class="lineCov">        207 :   smb_ll_node *new_node = ll_create_node(new_data);</span>
+<span class="lineNum">     216 </span><span class="lineCov">        207 :   smb_ll_node *first_node = list-&gt;head;</span>
+<span class="lineNum">     217 </span><span class="lineCov">        207 :   new_node-&gt;next = first_node;</span>
+<span class="lineNum">     218 </span><span class="lineCov">        207 :   if (first_node)</span>
+<span class="lineNum">     219 </span><span class="lineCov">        205 :     first_node-&gt;prev = new_node;</span>
+<span class="lineNum">     220 </span>            :   else
+<span class="lineNum">     221 </span><span class="lineCov">          2 :     list-&gt;tail = new_node;</span>
+<span class="lineNum">     222 </span><span class="lineCov">        207 :   list-&gt;head = new_node;</span>
+<span class="lineNum">     223 </span><span class="lineCov">        207 :   list-&gt;length++;</span>
+<span class="lineNum">     224 </span><span class="lineCov">        207 : }</span>
+<span class="lineNum">     225 </span>            : 
+<span class="lineNum">     226 </span>            : /**
+<span class="lineNum">     227 </span>            :    @brief Push the data to the back of the list.  An alias for ll_append. @see
+<span class="lineNum">     228 </span>            :    ll_append
+<span class="lineNum">     229 </span>            : 
+<span class="lineNum">     230 </span>            :    Push, of course, refers to its usage in the context of stacks.  In other
+<span class="lineNum">     231 </span>            :    words, the function appends an item at the end fo the list.
+<span class="lineNum">     232 </span>            : 
+<span class="lineNum">     233 </span>            :    @param list A pointer to the list to push to.
+<a name="234"><span class="lineNum">     234 </span>            :    @param new_data The data to push.</a>
+<span class="lineNum">     235 </span>            :  */
+<span class="lineNum">     236 </span><span class="lineCov">         25 : void ll_push_back(smb_ll *list, DATA new_data)</span>
+<span class="lineNum">     237 </span>            : {
+<span class="lineNum">     238 </span><span class="lineCov">         25 :   ll_append(list, new_data);</span>
+<span class="lineNum">     239 </span><span class="lineCov">         25 : }</span>
+<span class="lineNum">     240 </span>            : 
+<span class="lineNum">     241 </span>            : /**
+<span class="lineNum">     242 </span>            :    @brief Pop data from the back of the list.
+<span class="lineNum">     243 </span>            : 
+<span class="lineNum">     244 </span>            :    Pop, of course, refers to its usage in the context of stacks.  In other
+<span class="lineNum">     245 </span>            :    words, the function removes the item at the back/end of the list and returns
+<span class="lineNum">     246 </span>            :    it.
+<span class="lineNum">     247 </span>            : 
+<span class="lineNum">     248 </span>            :    @param list A pointer to the list to pop from.
+<span class="lineNum">     249 </span>            :    @param[out] status Status variable.
+<span class="lineNum">     250 </span>            :    @returns The item from the back of the list.
+<a name="251"><span class="lineNum">     251 </span>            :    @exception INDEX_ERROR If the list is empty.</a>
+<span class="lineNum">     252 </span>            :  */
+<span class="lineNum">     253 </span><span class="lineCov">          7 : DATA ll_pop_back(smb_ll *list, smb_status *status)</span>
+<span class="lineNum">     254 </span>            : {
+<span class="lineNum">     255 </span><span class="lineCov">          7 :   *status = SMB_SUCCESS;</span>
+<span class="lineNum">     256 </span><span class="lineCov">          7 :   smb_ll_node *last_node = list-&gt;tail;</span>
+<span class="lineNum">     257 </span><span class="lineCov">          7 :   if (last_node) {</span>
+<span class="lineNum">     258 </span><span class="lineCov">          6 :     DATA to_return = last_node-&gt;data;</span>
+<span class="lineNum">     259 </span><span class="lineCov">          6 :     ll_remove_node(list, last_node);</span>
+<span class="lineNum">     260 </span><span class="lineCov">          6 :     list-&gt;length--;</span>
+<span class="lineNum">     261 </span><span class="lineCov">          6 :     return to_return;</span>
+<span class="lineNum">     262 </span>            :   } else {
+<span class="lineNum">     263 </span><span class="lineCov">          1 :     *status = SMB_INDEX_ERROR;</span>
+<span class="lineNum">     264 </span>            :     DATA mock_data;
+<span class="lineNum">     265 </span><span class="lineCov">          1 :     return mock_data;</span>
+<span class="lineNum">     266 </span>            :   }
+<span class="lineNum">     267 </span>            : }
+<span class="lineNum">     268 </span>            : 
+<span class="lineNum">     269 </span>            : /**
+<span class="lineNum">     270 </span>            :    @brief Peek at the back of the list.
+<span class="lineNum">     271 </span>            : 
+<span class="lineNum">     272 </span>            :    Peek, of course, refers to its usage in the context of stacks.  So this
+<span class="lineNum">     273 </span>            :    returns the item at the end/back of the list without removing it.
+<span class="lineNum">     274 </span>            : 
+<span class="lineNum">     275 </span>            :    @param list A pointer to the list to peek from.
+<span class="lineNum">     276 </span>            :    @param[out] status Status variable.
+<span class="lineNum">     277 </span>            :    @returns The item from the back of the list.
+<a name="278"><span class="lineNum">     278 </span>            :    @exception INDEX_ERROR If the list is empty.</a>
+<span class="lineNum">     279 </span>            :  */
+<span class="lineNum">     280 </span><span class="lineCov">          2 : DATA ll_peek_back(smb_ll *list, smb_status *status)</span>
+<span class="lineNum">     281 </span>            : {
+<span class="lineNum">     282 </span><span class="lineCov">          2 :   *status = SMB_SUCCESS;</span>
+<span class="lineNum">     283 </span><span class="lineCov">          2 :   smb_ll_node *last_node = list-&gt;tail;</span>
+<span class="lineNum">     284 </span><span class="lineCov">          2 :   if (last_node) {</span>
+<span class="lineNum">     285 </span><span class="lineCov">          1 :     return last_node-&gt;data;</span>
+<span class="lineNum">     286 </span>            :   } else {
+<span class="lineNum">     287 </span><span class="lineCov">          1 :     *status = SMB_INDEX_ERROR;</span>
+<span class="lineNum">     288 </span>            :     DATA mock_data;
+<span class="lineNum">     289 </span><span class="lineCov">          1 :     return mock_data;</span>
+<span class="lineNum">     290 </span>            :   }
+<span class="lineNum">     291 </span>            : }
+<span class="lineNum">     292 </span>            : 
+<span class="lineNum">     293 </span>            : /**
+<span class="lineNum">     294 </span>            :    @brief Push the data to the front of the list.  An alias for ll_prepend.
+<span class="lineNum">     295 </span>            :    @see ll_push_back If the term 'push' is unfamiliar.
+<span class="lineNum">     296 </span>            : 
+<span class="lineNum">     297 </span>            :    @param list A pointer to the list.
+<span class="lineNum">     298 </span>            :    @param new_data The data to push.
+<span class="lineNum">     299 </span>            :    @param[out] status Status variable.
+<a name="300"><span class="lineNum">     300 </span>            :  */</a>
+<span class="lineNum">     301 </span>            : 
+<span class="lineNum">     302 </span><span class="lineCov">          5 : void ll_push_front(smb_ll *list, DATA new_data)</span>
+<span class="lineNum">     303 </span>            : {
+<span class="lineNum">     304 </span><span class="lineCov">          5 :   ll_prepend(list, new_data);</span>
+<span class="lineNum">     305 </span><span class="lineCov">          5 : }</span>
+<span class="lineNum">     306 </span>            : 
+<span class="lineNum">     307 </span>            : /**
+<span class="lineNum">     308 </span>            :    @brief Pop the data from the front of the list.
+<span class="lineNum">     309 </span>            :    @see ll_pop_back If the term 'pop' is unfamiliar.
+<span class="lineNum">     310 </span>            : 
+<span class="lineNum">     311 </span>            :    @param list A pointer to the list to pop from
+<span class="lineNum">     312 </span>            :    @param[out] status Status variable.
+<span class="lineNum">     313 </span>            :    @returns The data from the front of the list.
+<a name="314"><span class="lineNum">     314 </span>            :    @exception INDEX_ERROR If the list is empty.</a>
+<span class="lineNum">     315 </span>            :  */
+<span class="lineNum">     316 </span><span class="lineCov">          6 : DATA ll_pop_front(smb_ll *list, smb_status *status)</span>
+<span class="lineNum">     317 </span>            : {
+<span class="lineNum">     318 </span><span class="lineCov">          6 :   *status = SMB_SUCCESS;</span>
+<span class="lineNum">     319 </span><span class="lineCov">          6 :   smb_ll_node *first_node = list-&gt;head;</span>
+<span class="lineNum">     320 </span><span class="lineCov">          6 :   if (first_node) {</span>
+<span class="lineNum">     321 </span><span class="lineCov">          5 :     DATA to_return = first_node-&gt;data;</span>
+<span class="lineNum">     322 </span><span class="lineCov">          5 :     ll_remove_node(list, first_node);</span>
+<span class="lineNum">     323 </span><span class="lineCov">          5 :     list-&gt;length--;</span>
+<span class="lineNum">     324 </span><span class="lineCov">          5 :     return to_return;</span>
+<span class="lineNum">     325 </span>            :   } else {
+<span class="lineNum">     326 </span><span class="lineCov">          1 :     *status = SMB_INDEX_ERROR; // The list is empty</span>
+<span class="lineNum">     327 </span>            :     DATA mock_data;
+<span class="lineNum">     328 </span><span class="lineCov">          1 :     return mock_data;</span>
+<span class="lineNum">     329 </span>            :   }
+<span class="lineNum">     330 </span>            : }
+<span class="lineNum">     331 </span>            : 
+<span class="lineNum">     332 </span>            : /**
+<span class="lineNum">     333 </span>            :    @brief Peek at the front of the list.
+<span class="lineNum">     334 </span>            :    @see ll_peek_back If the term 'peek' is unfamiliar.
+<span class="lineNum">     335 </span>            : 
+<span class="lineNum">     336 </span>            :    @param list A pointer to the list to peek from.
+<span class="lineNum">     337 </span>            :    @param[out] status Status variable.
+<span class="lineNum">     338 </span>            :    @return The data from the front of the list.
+<a name="339"><span class="lineNum">     339 </span>            :    @exception INDEX_ERROR If the list is empty.</a>
+<span class="lineNum">     340 </span>            :  */
+<span class="lineNum">     341 </span><span class="lineCov">          2 : DATA ll_peek_front(smb_ll *list, smb_status *status)</span>
+<span class="lineNum">     342 </span>            : {
+<span class="lineNum">     343 </span><span class="lineCov">          2 :   *status = SMB_SUCCESS;</span>
+<span class="lineNum">     344 </span><span class="lineCov">          2 :   smb_ll_node *first_node = list-&gt;head;</span>
+<span class="lineNum">     345 </span><span class="lineCov">          2 :   if (first_node) {</span>
+<span class="lineNum">     346 </span><span class="lineCov">          1 :     return first_node-&gt;data;</span>
+<span class="lineNum">     347 </span>            :   } else {
+<span class="lineNum">     348 </span><span class="lineCov">          1 :     *status = SMB_INDEX_ERROR; // The list is empty</span>
+<span class="lineNum">     349 </span>            :     DATA mock_data;
+<span class="lineNum">     350 </span><span class="lineCov">          1 :     return mock_data;</span>
+<span class="lineNum">     351 </span>            :   }
+<span class="lineNum">     352 </span>            : }
+<span class="lineNum">     353 </span>            : 
+<span class="lineNum">     354 </span>            : /**
+<span class="lineNum">     355 </span>            :    @brief Gets the data from the given index.
+<span class="lineNum">     356 </span>            : 
+<span class="lineNum">     357 </span>            :    However, there is no guarantee that the index was valid.  An empty DATA
+<span class="lineNum">     358 </span>            :    object is returned in that case, and an INDEX_ERROR is raised.
+<span class="lineNum">     359 </span>            : 
+<span class="lineNum">     360 </span>            :    @param list A pointer to the list to get from.
+<span class="lineNum">     361 </span>            :    @param index The index to get from the list.
+<span class="lineNum">     362 </span>            :    @param[out] status Status variable.
+<span class="lineNum">     363 </span>            :    @return The data at the specified index, if it exists.
+<a name="364"><span class="lineNum">     364 </span>            :    @exception INDEX_ERROR If the given index is out of range.</a>
+<span class="lineNum">     365 </span>            :  */
+<span class="lineNum">     366 </span><span class="lineCov">      40350 : DATA ll_get(const smb_ll *list, int index, smb_status *status)</span>
+<span class="lineNum">     367 </span>            : {
+<span class="lineNum">     368 </span><span class="lineCov">      40350 :   *status = SMB_SUCCESS;</span>
+<span class="lineNum">     369 </span>            :   // Navigate to that position in the node.
+<span class="lineNum">     370 </span><span class="lineCov">      40350 :   smb_ll_node * the_node = ll_navigate(list, index, status);</span>
+<span class="lineNum">     371 </span><span class="lineCov">      40350 :   if (*status == SMB_INDEX_ERROR) {</span>
+<span class="lineNum">     372 </span>            :     // Return a dummy value.
+<span class="lineNum">     373 </span>            :     DATA mock_data;
+<span class="lineNum">     374 </span><span class="lineCov">          1 :     return mock_data;</span>
+<span class="lineNum">     375 </span>            :   } else {
+<span class="lineNum">     376 </span><span class="lineCov">      40349 :     return the_node-&gt;data;</span>
+<span class="lineNum">     377 </span>            :   }
+<span class="lineNum">     378 </span>            : }
+<span class="lineNum">     379 </span>            : 
+<span class="lineNum">     380 </span>            : /**
+<span class="lineNum">     381 </span>            :    @brief Removes the node at the given index, if the index exists.
+<span class="lineNum">     382 </span>            : 
+<span class="lineNum">     383 </span>            :    If the item is not at the end of the list, the index of every item after this
+<span class="lineNum">     384 </span>            :    one will be shifted down one.
+<span class="lineNum">     385 </span>            : 
+<span class="lineNum">     386 </span>            :    @param list A pointer to the list to remove from.
+<span class="lineNum">     387 </span>            :    @param index The index to remove from the list.
+<span class="lineNum">     388 </span>            :    @param[out] status Status variable.
+<a name="389"><span class="lineNum">     389 </span>            :    @exception INDEX_ERROR If the given index is out of range.</a>
+<span class="lineNum">     390 </span>            :  */
+<span class="lineNum">     391 </span><span class="lineCov">          5 : void ll_remove(smb_ll *list, int index, smb_status *status)</span>
+<span class="lineNum">     392 </span>            : {
+<span class="lineNum">     393 </span>            :   // Fond the node
+<span class="lineNum">     394 </span><span class="lineCov">          5 :   smb_ll_node *the_node = ll_navigate(list, index, status);</span>
+<span class="lineNum">     395 </span><span class="lineCov">          5 :   if (*status == SMB_INDEX_ERROR) {</span>
+<span class="lineNum">     396 </span><span class="lineCov">          7 :     return; // Return the INDEX_ERROR</span>
+<span class="lineNum">     397 </span>            :   }
+<span class="lineNum">     398 </span>            :   // Remove it (managing the links and the list header)
+<span class="lineNum">     399 </span><span class="lineCov">          3 :   ll_remove_node(list, the_node);</span>
+<span class="lineNum">     400 </span><span class="lineCov">          3 :   list-&gt;length--;</span>
+<span class="lineNum">     401 </span>            : }
+<span class="lineNum">     402 </span>            : 
+<span class="lineNum">     403 </span>            : /**
+<span class="lineNum">     404 </span>            :    @brief Inserts an item at the specified location in the list.
+<span class="lineNum">     405 </span>            : 
+<span class="lineNum">     406 </span>            :    If the location is not the end of the list, then every item at the given
+<span class="lineNum">     407 </span>            :    index and after will be shifted up one index.  If the provided location is
+<span class="lineNum">     408 </span>            :    less than 0, the location will be treated as 0.  If the provided location is
+<span class="lineNum">     409 </span>            :    greater than the length of the list, the item will be added to the end of the
+<span class="lineNum">     410 </span>            :    list.
+<span class="lineNum">     411 </span>            : 
+<span class="lineNum">     412 </span>            :    @param list A pointer to the list to insert into.
+<span class="lineNum">     413 </span>            :    @param index The index to insert at.
+<a name="414"><span class="lineNum">     414 </span>            :    @param new_data The data to insert.</a>
+<span class="lineNum">     415 </span>            :  */
+<span class="lineNum">     416 </span><span class="lineCov">          5 : void ll_insert(smb_ll *list, int index, DATA new_data)</span>
+<span class="lineNum">     417 </span>            : {
+<span class="lineNum">     418 </span><span class="lineCov">          5 :   if (index &lt;= 0) {</span>
+<span class="lineNum">     419 </span><span class="lineCov">          2 :     ll_prepend(list, new_data);</span>
+<span class="lineNum">     420 </span><span class="lineCov">          3 :   } else if (index &gt;= list-&gt;length) {</span>
+<span class="lineNum">     421 </span><span class="lineCov">          2 :     ll_append(list, new_data);</span>
+<span class="lineNum">     422 </span>            :   } else {
+<span class="lineNum">     423 </span><span class="lineCov">          1 :     smb_ll_node *new_node = ll_create_node(new_data);</span>
+<span class="lineNum">     424 </span>            : 
+<span class="lineNum">     425 </span><span class="lineCov">          1 :     smb_status status = SMB_SUCCESS;</span>
+<span class="lineNum">     426 </span><span class="lineCov">          1 :     smb_ll_node *current = ll_navigate(list, index, &amp;status);</span>
+<span class="lineNum">     427 </span>            : 
+<span class="lineNum">     428 </span>            :     // Since we already checked indices, there can be no errors.
+<span class="lineNum">     429 </span><span class="lineCov">          1 :     assert(status == SMB_SUCCESS);</span>
+<span class="lineNum">     430 </span>            : 
+<span class="lineNum">     431 </span><span class="lineCov">          1 :     current-&gt;prev-&gt;next = new_node;</span>
+<span class="lineNum">     432 </span><span class="lineCov">          1 :     new_node-&gt;prev = current-&gt;prev;</span>
+<span class="lineNum">     433 </span><span class="lineCov">          1 :     new_node-&gt;next = current;</span>
+<span class="lineNum">     434 </span><span class="lineCov">          1 :     current-&gt;prev = new_node;</span>
+<span class="lineNum">     435 </span><span class="lineCov">          1 :     list-&gt;length++;</span>
+<span class="lineNum">     436 </span>            :   }
+<span class="lineNum">     437 </span><span class="lineCov">          5 : }</span>
+<span class="lineNum">     438 </span>            : 
+<span class="lineNum">     439 </span>            : /**
+<span class="lineNum">     440 </span>            :    @brief Sets an existing element to a new value.
+<span class="lineNum">     441 </span>            : 
+<span class="lineNum">     442 </span>            :    It is illegal to call ll_set on an out of bounds index.  You must use
+<span class="lineNum">     443 </span>            :    ll_insert for that.
+<span class="lineNum">     444 </span>            : 
+<span class="lineNum">     445 </span>            :    @param list The list to modify.
+<span class="lineNum">     446 </span>            :    @param index The index of the item to set.
+<span class="lineNum">     447 </span>            :    @param new_data The data to set the index to.
+<span class="lineNum">     448 </span>            :    @param[out] status Status variable.
+<a name="449"><span class="lineNum">     449 </span>            :    @exception INDEX_ERROR If the index is out of bounds</a>
+<span class="lineNum">     450 </span>            :  */
+<span class="lineNum">     451 </span><span class="lineCov">         34 : void ll_set(smb_ll *list, int index, DATA new_data, smb_status *status)</span>
+<span class="lineNum">     452 </span>            : {
+<span class="lineNum">     453 </span><span class="lineCov">         34 :   *status = SMB_SUCCESS;</span>
+<span class="lineNum">     454 </span><span class="lineCov">         34 :   smb_ll_node *current = ll_navigate(list, index, status);</span>
+<span class="lineNum">     455 </span><span class="lineCov">         34 :   if (current) {</span>
+<span class="lineNum">     456 </span><span class="lineCov">         33 :     current-&gt;data = new_data;</span>
+<span class="lineNum">     457 </span>            :   } else {
+<span class="lineNum">     458 </span><span class="lineCov">          1 :     *status = SMB_INDEX_ERROR;</span>
+<span class="lineNum">     459 </span>            :   }
+<span class="lineNum">     460 </span><span class="lineCov">         34 : }</span>
+<span class="lineNum">     461 </span>            : 
+<span class="lineNum">     462 </span>            : /**
+<span class="lineNum">     463 </span>            :    @brief Returns the length of the given list.
+<span class="lineNum">     464 </span>            : 
+<span class="lineNum">     465 </span>            :    @param list A pointer to the list
+<a name="466"><span class="lineNum">     466 </span>            :    @returns The length of the list.</a>
+<span class="lineNum">     467 </span>            :  */
+<span class="lineNum">     468 </span><span class="lineCov">     542654 : int ll_length(const smb_ll *list)</span>
+<span class="lineNum">     469 </span>            : {
+<span class="lineNum">     470 </span><span class="lineCov">     542654 :   return list-&gt;length;</span>
+<span class="lineNum">     471 </span>            : }
+<span class="lineNum">     472 </span>            : 
+<span class="lineNum">     473 </span>            : /**
+<span class="lineNum">     474 </span>            :    @brief Returns whether or not the list contains the item.
+<span class="lineNum">     475 </span>            : 
+<span class="lineNum">     476 </span>            :    @param list Pointer to the list.
+<span class="lineNum">     477 </span>            :    @param d The item to search for.
+<a name="478"><span class="lineNum">     478 </span>            :    @param comp The comparator to use.  NULL for bit comparison.</a>
+<span class="lineNum">     479 </span>            :  */
+<span class="lineNum">     480 </span><span class="lineCov">         22 : int ll_index_of(const smb_ll *list, DATA d, DATA_COMPARE comp)</span>
+<span class="lineNum">     481 </span>            : {
+<span class="lineNum">     482 </span><span class="lineCov">         22 :   int idx = 0;</span>
+<span class="lineNum">     483 </span><span class="lineCov">         22 :   smb_ll_node *curr = list-&gt;head;</span>
+<span class="lineNum">     484 </span>            : 
+<span class="lineNum">     485 </span><span class="lineCov">        234 :   while (curr) {</span>
+<span class="lineNum">     486 </span><span class="lineCov">        211 :     if (comp != NULL) {</span>
+<span class="lineNum">     487 </span><span class="lineCov">          1 :       if (comp(curr-&gt;data, d) == 0) {</span>
+<span class="lineNum">     488 </span><span class="lineCov">          1 :         return idx;</span>
+<span class="lineNum">     489 </span>            :       }
+<span class="lineNum">     490 </span>            :     } else {
+<span class="lineNum">     491 </span><span class="lineCov">        210 :       if (curr-&gt;data.data_llint == d.data_llint) {</span>
+<span class="lineNum">     492 </span><span class="lineCov">         20 :         return idx;</span>
+<span class="lineNum">     493 </span>            :       }
+<span class="lineNum">     494 </span>            :     }
+<span class="lineNum">     495 </span><span class="lineCov">        190 :     idx++;</span>
+<span class="lineNum">     496 </span><span class="lineCov">        190 :     curr = curr-&gt;next;</span>
+<span class="lineNum">     497 </span>            :   }
+<span class="lineNum">     498 </span><span class="lineCov">          1 :   return -1;</span>
+<span class="lineNum">     499 </span>            : }
+<span class="lineNum">     500 </span>            : 
+<span class="lineNum">     501 </span>            : /**
+<span class="lineNum">     502 </span>            :    @brief Get the next item in the linked list.
+<span class="lineNum">     503 </span>            : 
+<span class="lineNum">     504 </span>            :    @param iterator A pointer to the iterator.
+<span class="lineNum">     505 </span>            :    @param[out] status Status variable.
+<span class="lineNum">     506 </span>            :    @returns The data at the new location of the iterator.
+<a name="507"><span class="lineNum">     507 </span>            :    @exception SMB_STOP_ITERATION If the list does not have another item.</a>
+<span class="lineNum">     508 </span>            :  */
+<span class="lineNum">     509 </span><span class="lineCov">     501529 : DATA ll_iter_next(smb_iter *iter, smb_status *status)</span>
+<span class="lineNum">     510 </span>            : {
+<span class="lineNum">     511 </span><span class="lineCov">     501529 :   *status = SMB_SUCCESS;</span>
+<span class="lineNum">     512 </span><span class="lineCov">     501529 :   smb_ll_node *node = iter-&gt;state.data_ptr;</span>
+<span class="lineNum">     513 </span><span class="lineCov">     501529 :   if (node == NULL) {</span>
+<span class="lineNum">     514 </span><span class="lineCov">       1000 :     *status = SMB_STOP_ITERATION;</span>
+<span class="lineNum">     515 </span><span class="lineCov">       1000 :     return iter-&gt;state; // a DATA containing NULL</span>
+<span class="lineNum">     516 </span>            :   }
+<span class="lineNum">     517 </span><span class="lineCov">     500529 :   iter-&gt;state.data_ptr = node-&gt;next;</span>
+<span class="lineNum">     518 </span><span class="lineCov">     500529 :   iter-&gt;index++;</span>
+<span class="lineNum">     519 </span><span class="lineCov">     500529 :   return node-&gt;data;</span>
+<span class="lineNum">     520 </span>            : }
+<span class="lineNum">     521 </span>            : 
+<span class="lineNum">     522 </span>            : /**
+<span class="lineNum">     523 </span>            :    @brief Check if the iterator can be advanced.
+<span class="lineNum">     524 </span>            : 
+<span class="lineNum">     525 </span>            :    @param iter A pointer to the iterator.
+<a name="526"><span class="lineNum">     526 </span>            :    @returns Whether the iterator can be advanced.</a>
+<span class="lineNum">     527 </span>            :  */
+<span class="lineNum">     528 </span><span class="lineCov">     501532 : bool ll_iter_has_next(smb_iter *iter)</span>
+<span class="lineNum">     529 </span>            : {
+<span class="lineNum">     530 </span>            :   bool node_clean, index_clean;
+<span class="lineNum">     531 </span><span class="lineCov">     501532 :   smb_ll_node *node = iter-&gt;state.data_ptr;</span>
+<span class="lineNum">     532 </span><span class="lineCov">     501532 :   const smb_ll *ds = iter-&gt;ds;</span>
+<span class="lineNum">     533 </span>            : 
+<span class="lineNum">     534 </span>            :   // Is there a node to return?
+<span class="lineNum">     535 </span><span class="lineCov">     501532 :   node_clean = node != NULL;</span>
+<span class="lineNum">     536 </span>            :   // Is the index valid?
+<span class="lineNum">     537 </span><span class="lineCov">     501532 :   index_clean = iter-&gt;index &lt; ll_length(ds);</span>
+<span class="lineNum">     538 </span>            : 
+<span class="lineNum">     539 </span>            :   // Both should have the same value.  It is impossible for the node to be null
+<span class="lineNum">     540 </span>            :   // when the index is in bounds.  So, assert it.
+<span class="lineNum">     541 </span><span class="lineCov">     501532 :   assert(node_clean == index_clean);</span>
+<span class="lineNum">     542 </span>            : 
+<span class="lineNum">     543 </span><span class="lineCov">     501532 :   return node_clean;</span>
+<span class="lineNum">     544 </span>            : }
+<span class="lineNum">     545 </span>            : 
+<span class="lineNum">     546 </span>            : /**
+<span class="lineNum">     547 </span>            :    @brief Free the resources held by the iterator.
+<span class="lineNum">     548 </span>            :    @param iter A pointer to the iterator.
+<a name="549"><span class="lineNum">     549 </span>            :    @param free_src Whether to free the source list.</a>
+<span class="lineNum">     550 </span>            :  */
+<span class="lineNum">     551 </span><span class="lineCov">       1019 : void ll_iter_destroy(smb_iter *iter)</span>
+<span class="lineNum">     552 </span>            : {
+<span class="lineNum">     553 </span>            :   // Nothing to destroy
+<span class="lineNum">     554 </span><span class="lineCov">       1019 : }</span>
+<span class="lineNum">     555 </span>            : 
+<span class="lineNum">     556 </span>            : /**
+<span class="lineNum">     557 </span>            :    @brief Free the iterator and its resources.
+<span class="lineNum">     558 </span>            :    @param iter A pointer to the iterator
+<a name="559"><span class="lineNum">     559 </span>            :    @param free_src Whether to free the source list.</a>
+<span class="lineNum">     560 </span>            :  */
+<span class="lineNum">     561 </span><span class="lineCov">          1 : void ll_iter_delete(smb_iter *iter)</span>
+<span class="lineNum">     562 </span>            : {
+<span class="lineNum">     563 </span><span class="lineCov">          1 :   iter-&gt;destroy(iter);</span>
+<span class="lineNum">     564 </span><span class="lineCov">          1 :   smb_free(iter);</span>
+<span class="lineNum">     565 </span><span class="lineCov">          1 : }</span>
+<span class="lineNum">     566 </span>            : 
+<span class="lineNum">     567 </span>            : /**
+<span class="lineNum">     568 </span>            :    @brief Get an iterator for the linked list.
+<span class="lineNum">     569 </span>            : 
+<span class="lineNum">     570 </span>            :    @param list A pointer to the list.
+<a name="571"><span class="lineNum">     571 </span>            :    @returns an iterator</a>
+<span class="lineNum">     572 </span>            :  */
+<span class="lineNum">     573 </span><span class="lineCov">       1019 : smb_iter ll_get_iter(const smb_ll *list)</span>
+<span class="lineNum">     574 </span>            : {
+<span class="lineNum">     575 </span><span class="lineCov">       2038 :   smb_iter iter = {</span>
+<span class="lineNum">     576 </span>            :     // Data in the iterator
+<span class="lineNum">     577 </span>            :     .ds = list,
+<span class="lineNum">     578 </span><span class="lineCov">       1019 :     .state = (DATA) { .data_ptr = list-&gt;head },</span>
+<span class="lineNum">     579 </span>            :     .index = 0,
+<span class="lineNum">     580 </span>            : 
+<span class="lineNum">     581 </span>            :     // Functions
+<span class="lineNum">     582 </span>            :     .next = &amp;ll_iter_next,
+<span class="lineNum">     583 </span>            :     .has_next = &amp;ll_iter_has_next,
+<span class="lineNum">     584 </span>            :     .destroy = &amp;ll_iter_destroy,
+<span class="lineNum">     585 </span>            :     .delete = &amp;ll_iter_delete
+<span class="lineNum">     586 </span>            :   };
+<span class="lineNum">     587 </span>            : 
+<span class="lineNum">     588 </span><span class="lineCov">       1019 :   return iter;</span>
+<span class="lineNum">     589 </span>            : }
+<span class="lineNum">     590 </span>            : 
+<span class="lineNum">     591 </span>            : /*******************************************************************************
+<span class="lineNum">     592 </span>            : 
+<span class="lineNum">     593 </span>            :                          Linked List Adapter Functions
+<span class="lineNum">     594 </span>            : 
+<span class="lineNum">     595 </span>            :   These guys are used as the function pointers for the smb_list.  They really
+<span class="lineNum">     596 </span>            :   don't need any documentation.
+<span class="lineNum">     597 </span>            : 
+<a name="598"><span class="lineNum">     598 </span>            : *******************************************************************************/</a>
+<span class="lineNum">     599 </span>            : 
+<span class="lineNum">     600 </span><span class="lineCov">        271 : void ll_append_adapter(smb_list *l, DATA new_data)</span>
+<span class="lineNum">     601 </span>            : {
+<span class="lineNum">     602 </span><span class="lineCov">        271 :   smb_ll *list = (smb_ll*) (l-&gt;data);</span>
+<span class="lineNum">     603 </span><span class="lineCov">        271 :   return ll_append(list, new_data);</span>
+<a name="604"><span class="lineNum">     604 </span>            : }</a>
+<span class="lineNum">     605 </span>            : 
+<span class="lineNum">     606 </span><span class="lineCov">        200 : void ll_prepend_adapter(smb_list *l, DATA new_data)</span>
+<span class="lineNum">     607 </span>            : {
+<span class="lineNum">     608 </span><span class="lineCov">        200 :   smb_ll *list = (smb_ll*) (l-&gt;data);</span>
+<span class="lineNum">     609 </span><span class="lineCov">        200 :   return ll_prepend(list, new_data);</span>
+<a name="610"><span class="lineNum">     610 </span>            : }</a>
+<span class="lineNum">     611 </span>            : 
+<span class="lineNum">     612 </span><span class="lineCov">      40345 : DATA ll_get_adapter(const smb_list *l, int index, smb_status *status)</span>
+<span class="lineNum">     613 </span>            : {
+<span class="lineNum">     614 </span><span class="lineCov">      40345 :   const smb_ll *list = (const smb_ll*) (l-&gt;data);</span>
+<span class="lineNum">     615 </span><span class="lineCov">      40345 :   return ll_get(list, index, status);</span>
+<a name="616"><span class="lineNum">     616 </span>            : }</a>
+<span class="lineNum">     617 </span>            : 
+<span class="lineNum">     618 </span><span class="lineCov">          5 : void ll_remove_adapter(smb_list *l, int index, smb_status *status)</span>
+<span class="lineNum">     619 </span>            : {
+<span class="lineNum">     620 </span><span class="lineCov">          5 :   smb_ll *list = (smb_ll*) (l-&gt;data);</span>
+<span class="lineNum">     621 </span><span class="lineCov">          5 :   return ll_remove(list, index, status);</span>
+<a name="622"><span class="lineNum">     622 </span>            : }</a>
+<span class="lineNum">     623 </span>            : 
+<span class="lineNum">     624 </span><span class="lineCov">          5 : void ll_insert_adapter(smb_list *l, int index, DATA new_data)</span>
+<span class="lineNum">     625 </span>            : {
+<span class="lineNum">     626 </span><span class="lineCov">          5 :   smb_ll *list = (smb_ll*) (l-&gt;data);</span>
+<span class="lineNum">     627 </span><span class="lineCov">          5 :   return ll_insert(list, index, new_data);</span>
+<a name="628"><span class="lineNum">     628 </span>            : }</a>
+<span class="lineNum">     629 </span>            : 
+<span class="lineNum">     630 </span><span class="lineCov">          8 : void ll_delete_adapter(smb_list *l)</span>
+<span class="lineNum">     631 </span>            : {
+<span class="lineNum">     632 </span><span class="lineCov">          8 :   smb_ll *list = (smb_ll*) (l-&gt;data);</span>
+<span class="lineNum">     633 </span><span class="lineCov">          8 :   ll_delete(list);</span>
+<span class="lineNum">     634 </span><span class="lineCov">          8 :   l-&gt;data = NULL;</span>
+<span class="lineNum">     635 </span><span class="lineCov">          8 :   return;</span>
+<a name="636"><span class="lineNum">     636 </span>            : }</a>
+<span class="lineNum">     637 </span>            : 
+<span class="lineNum">     638 </span><span class="lineCov">         31 : void ll_set_adapter(smb_list *l, int index, DATA new_data, smb_status *status)</span>
+<span class="lineNum">     639 </span>            : {
+<span class="lineNum">     640 </span><span class="lineCov">         31 :   smb_ll *list = (smb_ll*) (l-&gt;data);</span>
+<span class="lineNum">     641 </span><span class="lineCov">         31 :   return ll_set(list, index, new_data, status);</span>
+<a name="642"><span class="lineNum">     642 </span>            : }</a>
+<span class="lineNum">     643 </span>            : 
+<span class="lineNum">     644 </span><span class="lineCov">         25 : void ll_push_back_adapter(smb_list *l, DATA new_data)</span>
+<span class="lineNum">     645 </span>            : {
+<span class="lineNum">     646 </span><span class="lineCov">         25 :   smb_ll *list = (smb_ll*) (l-&gt;data);</span>
+<span class="lineNum">     647 </span><span class="lineCov">         25 :   return ll_push_back(list, new_data);</span>
+<a name="648"><span class="lineNum">     648 </span>            : }</a>
+<span class="lineNum">     649 </span>            : 
+<span class="lineNum">     650 </span><span class="lineCov">          7 : DATA ll_pop_back_adapter(smb_list *l, smb_status *status)</span>
+<span class="lineNum">     651 </span>            : {
+<span class="lineNum">     652 </span><span class="lineCov">          7 :   smb_ll *list = (smb_ll*) (l-&gt;data);</span>
+<span class="lineNum">     653 </span><span class="lineCov">          7 :   return ll_pop_back(list, status);</span>
+<a name="654"><span class="lineNum">     654 </span>            : }</a>
+<span class="lineNum">     655 </span>            : 
+<span class="lineNum">     656 </span><span class="lineCov">          2 : DATA ll_peek_back_adapter(smb_list *l, smb_status *status)</span>
+<span class="lineNum">     657 </span>            : {
+<span class="lineNum">     658 </span><span class="lineCov">          2 :   smb_ll *list = (smb_ll*) (l-&gt;data);</span>
+<span class="lineNum">     659 </span><span class="lineCov">          2 :   return ll_peek_back(list, status);</span>
+<a name="660"><span class="lineNum">     660 </span>            : }</a>
+<span class="lineNum">     661 </span>            : 
+<span class="lineNum">     662 </span><span class="lineCov">          5 : void ll_push_front_adapter(smb_list *l, DATA new_data)</span>
+<span class="lineNum">     663 </span>            : {
+<span class="lineNum">     664 </span><span class="lineCov">          5 :   smb_ll *list = (smb_ll*) (l-&gt;data);</span>
+<span class="lineNum">     665 </span><span class="lineCov">          5 :   return  ll_push_front(list, new_data);</span>
+<a name="666"><span class="lineNum">     666 </span>            : }</a>
+<span class="lineNum">     667 </span>            : 
+<span class="lineNum">     668 </span><span class="lineCov">          6 : DATA ll_pop_front_adapter(smb_list *l, smb_status *status)</span>
+<span class="lineNum">     669 </span>            : {
+<span class="lineNum">     670 </span><span class="lineCov">          6 :   smb_ll *list = (smb_ll*) (l-&gt;data);</span>
+<span class="lineNum">     671 </span><span class="lineCov">          6 :   return ll_pop_front(list, status);</span>
+<a name="672"><span class="lineNum">     672 </span>            : }</a>
+<span class="lineNum">     673 </span>            : 
+<span class="lineNum">     674 </span><span class="lineCov">          2 : DATA ll_peek_front_adapter(smb_list *l, smb_status *status)</span>
+<span class="lineNum">     675 </span>            : {
+<span class="lineNum">     676 </span><span class="lineCov">          2 :   smb_ll *list = (smb_ll*) (l-&gt;data);</span>
+<span class="lineNum">     677 </span><span class="lineCov">          2 :   return ll_peek_front(list, status);</span>
+<a name="678"><span class="lineNum">     678 </span>            : }</a>
+<span class="lineNum">     679 </span>            : 
+<span class="lineNum">     680 </span><span class="lineCov">      41116 : int ll_length_adapter(const smb_list *l)</span>
+<span class="lineNum">     681 </span>            : {
+<span class="lineNum">     682 </span><span class="lineCov">      41116 :   const smb_ll *list = (const smb_ll*) (l-&gt;data);</span>
+<span class="lineNum">     683 </span><span class="lineCov">      41116 :   return ll_length(list);</span>
+<a name="684"><span class="lineNum">     684 </span>            : }</a>
+<span class="lineNum">     685 </span>            : 
+<span class="lineNum">     686 </span><span class="lineCov">         22 : int ll_index_of_adapter(const smb_list *l, DATA d, DATA_COMPARE comp)</span>
+<span class="lineNum">     687 </span>            : {
+<span class="lineNum">     688 </span><span class="lineCov">         22 :   const smb_ll *list = (const smb_ll*) (l-&gt;data);</span>
+<span class="lineNum">     689 </span><span class="lineCov">         22 :   return ll_index_of(list, d, comp);</span>
+<span class="lineNum">     690 </span>            : }
+<span class="lineNum">     691 </span>            : 
+<span class="lineNum">     692 </span>            : /**
+<span class="lineNum">     693 </span>            :    @brief Populate a generic smb_list with function pointers necessary to use
+<span class="lineNum">     694 </span>            :    smb_ll with it.
+<span class="lineNum">     695 </span>            : 
+<span class="lineNum">     696 </span>            :    Note that this is a *private* function, not defined in libstephen.h for a
+<span class="lineNum">     697 </span>            :    reason.  You shouldn't need the function, as there is library functionality
+<span class="lineNum">     698 </span>            :    that provides it for you.
+<span class="lineNum">     699 </span>            : 
+<a name="700"><span class="lineNum">     700 </span>            :    @param generic_list The smb_list to populate with function pointers.</a>
+<span class="lineNum">     701 </span>            :  */
+<span class="lineNum">     702 </span><span class="lineCov">          8 : void ll_fill_functions(smb_list *generic_list)</span>
+<span class="lineNum">     703 </span>            : {
+<span class="lineNum">     704 </span><span class="lineCov">          8 :   generic_list-&gt;append = ll_append_adapter;</span>
+<span class="lineNum">     705 </span><span class="lineCov">          8 :   generic_list-&gt;prepend = ll_prepend_adapter;</span>
+<span class="lineNum">     706 </span><span class="lineCov">          8 :   generic_list-&gt;get = ll_get_adapter;</span>
+<span class="lineNum">     707 </span><span class="lineCov">          8 :   generic_list-&gt;remove = ll_remove_adapter;</span>
+<span class="lineNum">     708 </span><span class="lineCov">          8 :   generic_list-&gt;insert = ll_insert_adapter;</span>
+<span class="lineNum">     709 </span><span class="lineCov">          8 :   generic_list-&gt;delete = ll_delete_adapter;</span>
+<span class="lineNum">     710 </span><span class="lineCov">          8 :   generic_list-&gt;push_back = ll_push_back_adapter;</span>
+<span class="lineNum">     711 </span><span class="lineCov">          8 :   generic_list-&gt;pop_back = ll_pop_back_adapter;</span>
+<span class="lineNum">     712 </span><span class="lineCov">          8 :   generic_list-&gt;peek_back = ll_peek_back_adapter;</span>
+<span class="lineNum">     713 </span><span class="lineCov">          8 :   generic_list-&gt;push_front = ll_push_front_adapter;</span>
+<span class="lineNum">     714 </span><span class="lineCov">          8 :   generic_list-&gt;pop_front = ll_pop_front_adapter;</span>
+<span class="lineNum">     715 </span><span class="lineCov">          8 :   generic_list-&gt;peek_front = ll_peek_front_adapter;</span>
+<span class="lineNum">     716 </span><span class="lineCov">          8 :   generic_list-&gt;length = ll_length_adapter;</span>
+<span class="lineNum">     717 </span><span class="lineCov">          8 :   generic_list-&gt;set = ll_set_adapter;</span>
+<span class="lineNum">     718 </span><span class="lineCov">          8 :   generic_list-&gt;index_of = ll_index_of_adapter;</span>
+<span class="lineNum">     719 </span><span class="lineCov">          8 : }</span>
+<span class="lineNum">     720 </span>            : 
+<span class="lineNum">     721 </span>            : /**
+<span class="lineNum">     722 </span>            :    @brief Creates a new, empty list, and returns it as an instance of the
+<span class="lineNum">     723 </span>            :    generic smb_list data structure. @see smb_list
+<span class="lineNum">     724 </span>            : 
+<span class="lineNum">     725 </span>            :    @param[out] status Status variable.
+<a name="726"><span class="lineNum">     726 </span>            :    @returns A generic list interface object.</a>
+<span class="lineNum">     727 </span>            :  */
+<span class="lineNum">     728 </span><span class="lineCov">          8 : smb_list ll_create_list()</span>
+<span class="lineNum">     729 </span>            : {
+<span class="lineNum">     730 </span><span class="lineCov">          8 :   smb_ll *list = ll_create();</span>
+<span class="lineNum">     731 </span><span class="lineCov">          8 :   return ll_cast_to_list(list);</span>
+<span class="lineNum">     732 </span>            : }
+<span class="lineNum">     733 </span>            : 
+<span class="lineNum">     734 </span>            : /**
+<span class="lineNum">     735 </span>            :    @brief Cast a smb_ll pointer to an instance of the smb_list interface.  @see
+<span class="lineNum">     736 </span>            :    smb_list
+<span class="lineNum">     737 </span>            : 
+<span class="lineNum">     738 </span>            :    @param list The linked list to cast to a generic list.
+<span class="lineNum">     739 </span>            : 
+<a name="740"><span class="lineNum">     740 </span>            :    @return A generic list interface object.</a>
+<span class="lineNum">     741 </span>            :  */
+<span class="lineNum">     742 </span><span class="lineCov">          8 : smb_list ll_cast_to_list(smb_ll *list)</span>
+<span class="lineNum">     743 </span>            : {
+<span class="lineNum">     744 </span>            :   smb_list generic_list;
+<span class="lineNum">     745 </span><span class="lineCov">          8 :   generic_list.data = list;</span>
+<span class="lineNum">     746 </span>            : 
+<span class="lineNum">     747 </span><span class="lineCov">          8 :   ll_fill_functions(&amp;generic_list);</span>
+<span class="lineNum">     748 </span>            : 
+<span class="lineNum">     749 </span><span class="lineCov">          8 :   return generic_list;</span>
+<span class="lineNum">     750 </span>            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.11</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

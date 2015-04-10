@@ -1,0 +1,545 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage.info - src/hashtable.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">src</a> - hashtable.c<span style="font-size: 80%;"> (source / <a href="hashtable.c.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">124</td>
+            <td class="headerCovTableEntry">148</td>
+            <td class="headerCovTableEntryMed">83.8 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2015-04-10 16:52:41</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">16</td>
+            <td class="headerCovTableEntry">19</td>
+            <td class="headerCovTableEntryMed">84.2 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /***************************************************************************//**</a>
+<span class="lineNum">       2 </span>            : 
+<span class="lineNum">       3 </span>            :   @file         hashtable.c
+<span class="lineNum">       4 </span>            : 
+<span class="lineNum">       5 </span>            :   @author       Stephen Brennan
+<span class="lineNum">       6 </span>            : 
+<span class="lineNum">       7 </span>            :   @date         Created Thursday, 7 November 2013
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            :   @brief        A simple hash table and string hash function.
+<span class="lineNum">      10 </span>            : 
+<span class="lineNum">      11 </span>            :   @copyright    Copyright (c) 2013-2015, Stephen Brennan.  Released under the
+<span class="lineNum">      12 </span>            :                 Revised BSD License.  See the LICENSE.txt file for details.
+<span class="lineNum">      13 </span>            : 
+<span class="lineNum">      14 </span>            : *******************************************************************************/
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            : #include &lt;string.h&gt;
+<span class="lineNum">      17 </span>            : #include &lt;stdio.h&gt;
+<span class="lineNum">      18 </span>            : 
+<span class="lineNum">      19 </span>            : #include &quot;libstephen/ht.h&quot;
+<span class="lineNum">      20 </span>            : 
+<span class="lineNum">      21 </span>            : /*******************************************************************************
+<span class="lineNum">      22 </span>            : 
+<span class="lineNum">      23 </span>            :                                Private Functions
+<span class="lineNum">      24 </span>            : 
+<span class="lineNum">      25 </span>            : *******************************************************************************/
+<span class="lineNum">      26 </span>            : 
+<span class="lineNum">      27 </span>            : /**
+<span class="lineNum">      28 </span>            :    @brief Returns the next hashtable size.
+<span class="lineNum">      29 </span>            : 
+<span class="lineNum">      30 </span>            :    @param current The current size of the hash table.
+<a name="31"><span class="lineNum">      31 </span>            :    @returns The next size in the sequence for hash tables.</a>
+<span class="lineNum">      32 </span>            :  */
+<span class="lineNum">      33 </span><span class="lineCov">          1 : int ht_next_size(int current)</span>
+<span class="lineNum">      34 </span>            : {
+<span class="lineNum">      35 </span><span class="lineCov">          1 :   return 2 * current + 1; // Try not to use something with a common factor of 1.</span>
+<span class="lineNum">      36 </span>            :                           // I'm also striving for simplicity here.  It would
+<span class="lineNum">      37 </span>            :                           // probably be best to use only prime numbers here,
+<span class="lineNum">      38 </span>            :                           // but this is considerably simpler.
+<span class="lineNum">      39 </span>            : }
+<span class="lineNum">      40 </span>            : 
+<span class="lineNum">      41 </span>            : /**
+<span class="lineNum">      42 </span>            :    @brief Allocate and initialize a hash table bucket.
+<span class="lineNum">      43 </span>            : 
+<span class="lineNum">      44 </span>            :    @param key The key stored
+<span class="lineNum">      45 </span>            :    @param value The value stored
+<span class="lineNum">      46 </span>            :    @param next The next bucket pointer
+<span class="lineNum">      47 </span>            :    @param[out] status Status variable.
+<a name="48"><span class="lineNum">      48 </span>            :    @returns A pointer to a new hash table bucket.</a>
+<span class="lineNum">      49 </span>            :  */
+<span class="lineNum">      50 </span><span class="lineCov">        219 : smb_ht_bckt *ht_bucket_create(DATA key, DATA value, smb_ht_bckt *next)</span>
+<span class="lineNum">      51 </span>            : {
+<span class="lineNum">      52 </span>            :   smb_ht_bckt *pBucket;
+<span class="lineNum">      53 </span><span class="lineCov">        219 :   pBucket = smb_new(smb_ht_bckt, 1);</span>
+<span class="lineNum">      54 </span><span class="lineCov">        219 :   pBucket-&gt;key = key;</span>
+<span class="lineNum">      55 </span><span class="lineCov">        219 :   pBucket-&gt;value = value;</span>
+<span class="lineNum">      56 </span><span class="lineCov">        219 :   pBucket-&gt;next = next;</span>
+<span class="lineNum">      57 </span><span class="lineCov">        219 :   return pBucket;</span>
+<span class="lineNum">      58 </span>            : }
+<span class="lineNum">      59 </span>            : 
+<span class="lineNum">      60 </span>            : /**
+<span class="lineNum">      61 </span>            :    @brief Free a hash table bucket.
+<span class="lineNum">      62 </span>            : 
+<a name="63"><span class="lineNum">      63 </span>            :    @param pToDelete The bucket to delete.</a>
+<span class="lineNum">      64 </span>            :  */
+<span class="lineNum">      65 </span><span class="lineCov">        219 : void ht_bucket_delete(smb_ht_bckt *pToDelete)</span>
+<span class="lineNum">      66 </span>            : {
+<span class="lineNum">      67 </span><span class="lineCov">        219 :   smb_free(pToDelete);</span>
+<span class="lineNum">      68 </span><span class="lineCov">        219 : }</span>
+<span class="lineNum">      69 </span>            : 
+<span class="lineNum">      70 </span>            : /**
+<span class="lineNum">      71 </span>            :   @brief Finds a value within a singly linked hash table bucket list.
+<span class="lineNum">      72 </span>            : 
+<span class="lineNum">      73 </span>            :   This function actually performs a lot of tasks rolled into one.  First, if you
+<span class="lineNum">      74 </span>            :   pass NULL as the pBucket, it will return NULL.  More interestingly, it will
+<span class="lineNum">      75 </span>            :   return the pointer to the bucket that equals key if it exists, or the last
+<span class="lineNum">      76 </span>            :   bucket in the list if there is none equalling key.  This way, you can just
+<span class="lineNum">      77 </span>            :   check the return value, and if key == pBucket-&gt;key, you have the pre-xisting
+<span class="lineNum">      78 </span>            :   spot for key.  Otherwise, you can just create the next item in the list.
+<span class="lineNum">      79 </span>            : 
+<span class="lineNum">      80 </span>            :   @param pBucket The bucket to search within.
+<span class="lineNum">      81 </span>            :   @param key The key to search for.
+<a name="82"><span class="lineNum">      82 </span>            :   @returns The bucket containing key.</a>
+<span class="lineNum">      83 </span>            :  */
+<span class="lineNum">      84 </span><span class="lineCov">        238 : smb_ht_bckt *ht_find_in_bucket(smb_ht_bckt *pBucket, DATA key,</span>
+<span class="lineNum">      85 </span>            :                                DATA_COMPARE equal)
+<span class="lineNum">      86 </span>            : {
+<span class="lineNum">      87 </span><span class="lineCov">        238 :   if (pBucket == NULL) return NULL;</span>
+<span class="lineNum">      88 </span>            : 
+<span class="lineNum">      89 </span><span class="lineCov">        783 :   while (pBucket-&gt;next &amp;&amp; equal(pBucket-&gt;key, key) != 0)</span>
+<span class="lineNum">      90 </span><span class="lineCov">        307 :     pBucket = pBucket-&gt;next;</span>
+<span class="lineNum">      91 </span>            : 
+<span class="lineNum">      92 </span><span class="lineCov">        238 :   return pBucket;</span>
+<span class="lineNum">      93 </span>            : }
+<span class="lineNum">      94 </span>            : 
+<span class="lineNum">      95 </span>            : /**
+<span class="lineNum">      96 </span>            :    @brief Insert a bucket with data into the hash table.  If the key already
+<span class="lineNum">      97 </span>            :    exists in the table, overwrites with a new value.
+<span class="lineNum">      98 </span>            : 
+<span class="lineNum">      99 </span>            :    This function is at a lower lever than ht_insert.  In order to properly
+<span class="lineNum">     100 </span>            :    implement a hash table, the table must expand as you add to it, which is the
+<span class="lineNum">     101 </span>            :    part that ht_insert takes care of.
+<span class="lineNum">     102 </span>            : 
+<span class="lineNum">     103 </span>            :    @param table The table to insert into.
+<span class="lineNum">     104 </span>            :    @param pBucket The bucket containing the data to insert.  Note that this
+<a name="105"><span class="lineNum">     105 </span>            :    bucket may not be the final bucket containing the data.</a>
+<span class="lineNum">     106 </span>            :  */
+<span class="lineNum">     107 </span><span class="lineCov">        399 : void ht_insert_bucket(smb_ht *table, smb_ht_bckt *pBucket)</span>
+<span class="lineNum">     108 </span>            : {
+<span class="lineNum">     109 </span>            :   smb_ht_bckt *curr;
+<span class="lineNum">     110 </span><span class="lineCov">        399 :   unsigned int index = table-&gt;hash(pBucket-&gt;key) % table-&gt;allocated;</span>
+<span class="lineNum">     111 </span>            : 
+<span class="lineNum">     112 </span><span class="lineCov">        399 :   if (table-&gt;table[index]) {</span>
+<span class="lineNum">     113 </span>            :     // A linked list already exists here.
+<span class="lineNum">     114 </span><span class="lineCov">         22 :     curr = ht_find_in_bucket(table-&gt;table[index], pBucket-&gt;key, table-&gt;equal);</span>
+<span class="lineNum">     115 </span><span class="lineCov">         22 :     if (table-&gt;equal(curr-&gt;key, pBucket-&gt;key) == 0) {</span>
+<span class="lineNum">     116 </span>            :       // Key already exists in table
+<span class="lineNum">     117 </span><span class="lineCov">          3 :       curr-&gt;value = pBucket-&gt;value;</span>
+<span class="lineNum">     118 </span><span class="lineCov">          3 :       ht_bucket_delete(pBucket);</span>
+<span class="lineNum">     119 </span>            :     } else {
+<span class="lineNum">     120 </span>            :       // assert curr-&gt;next == NULL
+<span class="lineNum">     121 </span><span class="lineCov">         19 :       curr-&gt;next = pBucket;</span>
+<span class="lineNum">     122 </span><span class="lineCov">         19 :       table-&gt;length++;</span>
+<span class="lineNum">     123 </span>            :     }
+<span class="lineNum">     124 </span>            :   } else {
+<span class="lineNum">     125 </span>            :     // No linked list exists yet
+<span class="lineNum">     126 </span><span class="lineCov">        377 :     table-&gt;table[index] = pBucket;</span>
+<span class="lineNum">     127 </span><span class="lineCov">        377 :     table-&gt;length++;</span>
+<span class="lineNum">     128 </span>            :   }
+<span class="lineNum">     129 </span>            : 
+<span class="lineNum">     130 </span><span class="lineCov">        399 : }</span>
+<span class="lineNum">     131 </span>            : 
+<span class="lineNum">     132 </span>            : /**
+<span class="lineNum">     133 </span>            :    @brief Expand the hash table, adding increment to the capacity of the table.
+<span class="lineNum">     134 </span>            : 
+<a name="135"><span class="lineNum">     135 </span>            :    @param table The table to expand.</a>
+<span class="lineNum">     136 </span>            :  */
+<span class="lineNum">     137 </span><span class="lineCov">          1 : void ht_resize(smb_ht *table)</span>
+<span class="lineNum">     138 </span>            : {
+<span class="lineNum">     139 </span>            :   smb_ht_bckt **pOldBuffer;
+<span class="lineNum">     140 </span>            :   smb_ht_bckt *curr, *temp;
+<span class="lineNum">     141 </span>            :   int index, oldLength, oldAllocated;
+<span class="lineNum">     142 </span>            : 
+<span class="lineNum">     143 </span>            :   // Step one: allocate new space for the table
+<span class="lineNum">     144 </span><span class="lineCov">          1 :   pOldBuffer = table-&gt;table;</span>
+<span class="lineNum">     145 </span><span class="lineCov">          1 :   oldLength = table-&gt;length;</span>
+<span class="lineNum">     146 </span><span class="lineCov">          1 :   oldAllocated = table-&gt;allocated;</span>
+<span class="lineNum">     147 </span><span class="lineCov">          1 :   table-&gt;length = 0;</span>
+<span class="lineNum">     148 </span><span class="lineCov">          1 :   table-&gt;allocated = ht_next_size(oldAllocated);</span>
+<span class="lineNum">     149 </span><span class="lineCov">          1 :   table-&gt;table = smb_new(smb_ht_bckt*, table-&gt;allocated);</span>
+<span class="lineNum">     150 </span>            : 
+<span class="lineNum">     151 </span>            :   // Zero out the new block too.
+<span class="lineNum">     152 </span><span class="lineCov">          1 :   memset((void*)table-&gt;table, 0, table-&gt;allocated * sizeof(smb_ht_bckt*));</span>
+<span class="lineNum">     153 </span>            : 
+<span class="lineNum">     154 </span>            :   // Step two, add the old items to the new table (no freeing, please)
+<span class="lineNum">     155 </span><span class="lineCov">        258 :   for (index = 0; index &lt; oldAllocated; index++) {</span>
+<span class="lineNum">     156 </span><span class="lineCov">        257 :     if (pOldBuffer[index]) {</span>
+<span class="lineNum">     157 </span>            :       // a bucket exists here
+<span class="lineNum">     158 </span><span class="lineCov">        180 :       curr = pOldBuffer[index];</span>
+<span class="lineNum">     159 </span><span class="lineCov">        540 :       while (curr) {</span>
+<span class="lineNum">     160 </span><span class="lineCov">        180 :         temp = curr-&gt;next; // Hang on to the next pointer...it could be changed</span>
+<span class="lineNum">     161 </span>            :                            // once added to the &quot;new&quot; hash table
+<span class="lineNum">     162 </span><span class="lineCov">        180 :         curr-&gt;next = NULL;</span>
+<span class="lineNum">     163 </span><span class="lineCov">        180 :         ht_insert_bucket(table, curr);</span>
+<span class="lineNum">     164 </span><span class="lineCov">        180 :         curr = temp;</span>
+<span class="lineNum">     165 </span>            :       }
+<span class="lineNum">     166 </span>            :     }
+<span class="lineNum">     167 </span>            :   }
+<span class="lineNum">     168 </span>            : 
+<span class="lineNum">     169 </span>            :   // Step three: free old data.
+<span class="lineNum">     170 </span><span class="lineCov">          1 :   smb_free(pOldBuffer);</span>
+<span class="lineNum">     171 </span><span class="lineCov">          1 : }</span>
+<span class="lineNum">     172 </span>            : 
+<span class="lineNum">     173 </span>            : /**
+<span class="lineNum">     174 </span>            :    @brief Return the load factor of a hash table.
+<span class="lineNum">     175 </span>            : 
+<span class="lineNum">     176 </span>            :    @param table The table to find the load factor of.
+<a name="177"><span class="lineNum">     177 </span>            :    @returns The load factor of the hash table.</a>
+<span class="lineNum">     178 </span>            :  */
+<span class="lineNum">     179 </span><span class="lineCov">        219 : double ht_load_factor(smb_ht *table)</span>
+<span class="lineNum">     180 </span>            : {
+<span class="lineNum">     181 </span><span class="lineCov">        219 :   return ((double) table-&gt;length) / ((double) table-&gt;allocated);</span>
+<span class="lineNum">     182 </span>            : }
+<span class="lineNum">     183 </span>            : 
+<span class="lineNum">     184 </span>            : ////////////////////////////////////////////////////////////////////////////////
+<span class="lineNum">     185 </span>            : // Public Interface Functions
+<span class="lineNum">     186 </span>            : ////////////////////////////////////////////////////////////////////////////////
+<span class="lineNum">     187 </span>            : 
+<span class="lineNum">     188 </span>            : /**
+<span class="lineNum">     189 </span>            :    @brief Initialize a hash table in memory already allocated.
+<span class="lineNum">     190 </span>            : 
+<span class="lineNum">     191 </span>            :    @param table A pointer to the table to initialize.
+<span class="lineNum">     192 </span>            :    @param hash_func A hash function for the table.
+<a name="193"><span class="lineNum">     193 </span>            :    @param equal A comparison function for DATA.</a>
+<span class="lineNum">     194 </span>            :  */
+<span class="lineNum">     195 </span><span class="lineCov">          6 : void ht_init(smb_ht *table, HASH_FUNCTION hash_func, DATA_COMPARE equal)</span>
+<span class="lineNum">     196 </span>            : {
+<span class="lineNum">     197 </span>            :   // Initialize values
+<span class="lineNum">     198 </span><span class="lineCov">          6 :   table-&gt;length = 0;</span>
+<span class="lineNum">     199 </span><span class="lineCov">          6 :   table-&gt;allocated = HASH_TABLE_INITIAL_SIZE;</span>
+<span class="lineNum">     200 </span><span class="lineCov">          6 :   table-&gt;hash = hash_func;</span>
+<span class="lineNum">     201 </span><span class="lineCov">          6 :   table-&gt;equal = equal;</span>
+<span class="lineNum">     202 </span>            : 
+<span class="lineNum">     203 </span>            :   // Create the bucket list
+<span class="lineNum">     204 </span><span class="lineCov">          6 :   table-&gt;table = smb_new(smb_ht_bckt*, HASH_TABLE_INITIAL_SIZE);</span>
+<span class="lineNum">     205 </span>            : 
+<span class="lineNum">     206 </span>            :   // Zero out the entries in the table so we don't get segmentation faults.
+<span class="lineNum">     207 </span><span class="lineCov">          6 :   memset((void*)table-&gt;table, 0, HASH_TABLE_INITIAL_SIZE * sizeof(smb_ht_bckt*));</span>
+<span class="lineNum">     208 </span><span class="lineCov">          6 : }</span>
+<span class="lineNum">     209 </span>            : 
+<span class="lineNum">     210 </span>            : /**
+<span class="lineNum">     211 </span>            :    @brief Allocate and initialize a hash table.
+<span class="lineNum">     212 </span>            : 
+<span class="lineNum">     213 </span>            :    @param hash_func A function that takes one DATA and returns a hash value
+<span class="lineNum">     214 </span>            :    generated from it.  It should be a good hash function.
+<span class="lineNum">     215 </span>            :    @param equal A comparison function for DATA.
+<a name="216"><span class="lineNum">     216 </span>            :    @returns A pointer to the new hash table.</a>
+<span class="lineNum">     217 </span>            :  */
+<span class="lineNum">     218 </span><span class="lineCov">          6 : smb_ht *ht_create(HASH_FUNCTION hash_func, DATA_COMPARE equal)</span>
+<span class="lineNum">     219 </span>            : {
+<span class="lineNum">     220 </span>            :   // Allocate and create the table.
+<span class="lineNum">     221 </span>            :   smb_ht *table;
+<span class="lineNum">     222 </span><span class="lineCov">          6 :   table = smb_new(smb_ht, 1);</span>
+<span class="lineNum">     223 </span><span class="lineCov">          6 :   ht_init(table, hash_func, equal);</span>
+<span class="lineNum">     224 </span><span class="lineCov">          6 :   return table;</span>
+<span class="lineNum">     225 </span>            : }
+<span class="lineNum">     226 </span>            : 
+<span class="lineNum">     227 </span>            : /**
+<span class="lineNum">     228 </span>            :    @brief Free resources used by the hash table, but does not free the pointer
+<span class="lineNum">     229 </span>            :    itself.  Perform an action on the data as it is deleted.
+<span class="lineNum">     230 </span>            : 
+<span class="lineNum">     231 </span>            :    Useful for stack valued hash tables.  A deleter must be specified in this
+<span class="lineNum">     232 </span>            :    function call.
+<span class="lineNum">     233 </span>            : 
+<span class="lineNum">     234 </span>            :    @param table The table to destroy.
+<a name="235"><span class="lineNum">     235 </span>            :    @param deleter The deletion action on the data.</a>
+<span class="lineNum">     236 </span>            :  */
+<span class="lineNum">     237 </span><span class="lineCov">          6 : void ht_destroy_act(smb_ht *table, DATA_ACTION deleter)</span>
+<span class="lineNum">     238 </span>            : {
+<span class="lineNum">     239 </span>            :   int i;
+<span class="lineNum">     240 </span>            :   smb_ht_bckt *curr, *temp;
+<span class="lineNum">     241 </span>            : 
+<span class="lineNum">     242 </span><span class="lineCov">         12 :   if (!table) return;</span>
+<span class="lineNum">     243 </span>            : 
+<span class="lineNum">     244 </span>            :   // Free all smb_ht_bckt's in the table
+<span class="lineNum">     245 </span><span class="lineCov">       1806 :   for (i = 0; i &lt; table-&gt;allocated; i++) {</span>
+<span class="lineNum">     246 </span><span class="lineCov">       1800 :     curr = table-&gt;table[i];</span>
+<span class="lineNum">     247 </span><span class="lineCov">       3808 :     while (curr) {</span>
+<span class="lineNum">     248 </span><span class="lineCov">        208 :       temp = curr-&gt;next;</span>
+<span class="lineNum">     249 </span><span class="lineCov">        208 :       if (deleter)</span>
+<span class="lineNum">     250 </span><span class="lineCov">        203 :         deleter(curr-&gt;value);</span>
+<span class="lineNum">     251 </span><span class="lineCov">        208 :       ht_bucket_delete(curr);</span>
+<span class="lineNum">     252 </span><span class="lineCov">        208 :       curr = temp;</span>
+<span class="lineNum">     253 </span>            :     }
+<span class="lineNum">     254 </span><span class="lineCov">       1800 :     table-&gt;table[i] = NULL;</span>
+<span class="lineNum">     255 </span>            :   }
+<span class="lineNum">     256 </span>            : }
+<span class="lineNum">     257 </span>            : 
+<span class="lineNum">     258 </span>            : /**
+<span class="lineNum">     259 </span>            :    @brief Free any resources used by the hash table, but doesn't free the
+<span class="lineNum">     260 </span>            :    pointer.  Doesn't perform any actions on the data as it is deleted.
+<span class="lineNum">     261 </span>            : 
+<span class="lineNum">     262 </span>            :    If pointers are contained within the hash table, they are not freed.  Use
+<span class="lineNum">     263 </span>            :    ht_destroy_act to specify a deletion action on the hash table.
+<span class="lineNum">     264 </span>            : 
+<a name="265"><span class="lineNum">     265 </span>            :    @param table The table to destroy.</a>
+<span class="lineNum">     266 </span>            :  */
+<span class="lineNum">     267 </span><span class="lineNoCov">          0 : void ht_destroy(smb_ht *table)</span>
+<span class="lineNum">     268 </span>            : {
+<span class="lineNum">     269 </span><span class="lineNoCov">          0 :   ht_destroy_act(table, NULL);</span>
+<span class="lineNum">     270 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     271 </span>            : 
+<span class="lineNum">     272 </span>            : /**
+<span class="lineNum">     273 </span>            :    @brief Free the hash table and its resources.  Perform an action on each data before
+<span class="lineNum">     274 </span>            :    freeing the table.  Useful for freeing pointers stored in the table.
+<span class="lineNum">     275 </span>            : 
+<span class="lineNum">     276 </span>            :    @param table The table to free.
+<span class="lineNum">     277 </span>            :    @param deleter The action to perform on each value in the hash table before
+<a name="278"><span class="lineNum">     278 </span>            :    deletion.</a>
+<span class="lineNum">     279 </span>            :  */
+<span class="lineNum">     280 </span><span class="lineCov">          6 : void ht_delete_act(smb_ht *table, DATA_ACTION deleter)</span>
+<span class="lineNum">     281 </span>            : {
+<span class="lineNum">     282 </span><span class="lineCov">          6 :   if (!table) {</span>
+<span class="lineNum">     283 </span><span class="lineCov">          6 :     return;</span>
+<span class="lineNum">     284 </span>            :   }
+<span class="lineNum">     285 </span>            : 
+<span class="lineNum">     286 </span><span class="lineCov">          6 :   ht_destroy_act(table, deleter);</span>
+<span class="lineNum">     287 </span><span class="lineCov">          6 :   smb_free(table-&gt;table);</span>
+<span class="lineNum">     288 </span><span class="lineCov">          6 :   smb_free(table);</span>
+<span class="lineNum">     289 </span>            : }
+<span class="lineNum">     290 </span>            : 
+<span class="lineNum">     291 </span>            : /**
+<span class="lineNum">     292 </span>            :    @brief Free the hash table and its resources.  No pointers contained in the
+<span class="lineNum">     293 </span>            :    table will be freed.
+<span class="lineNum">     294 </span>            : 
+<a name="295"><span class="lineNum">     295 </span>            :    @param table The table to free.</a>
+<span class="lineNum">     296 </span>            :  */
+<span class="lineNum">     297 </span><span class="lineCov">          2 : void ht_delete(smb_ht *table)</span>
+<span class="lineNum">     298 </span>            : {
+<span class="lineNum">     299 </span><span class="lineCov">          2 :   ht_delete_act(table, NULL);</span>
+<span class="lineNum">     300 </span><span class="lineCov">          2 : }</span>
+<span class="lineNum">     301 </span>            : 
+<span class="lineNum">     302 </span>            : /**
+<span class="lineNum">     303 </span>            :    @brief Insert data into the hash table.
+<span class="lineNum">     304 </span>            : 
+<span class="lineNum">     305 </span>            :    Expands the hash table if the load factor is below a threshold.  If the key
+<span class="lineNum">     306 </span>            :    already exists in the table, then the function will overwrite it with the new
+<span class="lineNum">     307 </span>            :    data provided.
+<span class="lineNum">     308 </span>            : 
+<span class="lineNum">     309 </span>            :    @param table A pointer to the hash table.
+<span class="lineNum">     310 </span>            :    @param key The key to insert.
+<a name="311"><span class="lineNum">     311 </span>            :    @param value The value to insert at the key.</a>
+<span class="lineNum">     312 </span>            :  */
+<span class="lineNum">     313 </span><span class="lineCov">        219 : void ht_insert(smb_ht *table, DATA key, DATA value)</span>
+<span class="lineNum">     314 </span>            : {
+<span class="lineNum">     315 </span><span class="lineCov">        219 :   if (ht_load_factor(table) &gt; HASH_TABLE_MAX_LOAD_FACTOR) {</span>
+<span class="lineNum">     316 </span><span class="lineCov">          1 :     ht_resize(table);</span>
+<span class="lineNum">     317 </span>            :   }
+<span class="lineNum">     318 </span>            : 
+<span class="lineNum">     319 </span><span class="lineCov">        219 :   smb_ht_bckt *pBucket = ht_bucket_create(key, value, NULL);</span>
+<span class="lineNum">     320 </span><span class="lineCov">        219 :   ht_insert_bucket(table, pBucket);</span>
+<span class="lineNum">     321 </span><span class="lineCov">        219 : }</span>
+<span class="lineNum">     322 </span>            : 
+<span class="lineNum">     323 </span>            : /**
+<span class="lineNum">     324 </span>            :    @brief Remove the key, value pair stored in the hash table.
+<span class="lineNum">     325 </span>            : 
+<span class="lineNum">     326 </span>            :    @param table A pointer to the hash table.
+<span class="lineNum">     327 </span>            :    @param key The key to delete.
+<span class="lineNum">     328 </span>            :    @param deleter The action to perform on the value before removing it.
+<span class="lineNum">     329 </span>            :    @param[out] status Status variable.
+<a name="330"><span class="lineNum">     330 </span>            :    @exception SMB_NOT_FOUND_ERROR If an item with the given key is not found.</a>
+<span class="lineNum">     331 </span>            :  */
+<span class="lineNum">     332 </span><span class="lineCov">          8 : void ht_remove_act(smb_ht *table, DATA key, DATA_ACTION deleter,</span>
+<span class="lineNum">     333 </span>            :                    smb_status *status)
+<span class="lineNum">     334 </span>            : {
+<span class="lineNum">     335 </span><span class="lineCov">          8 :   *status = SMB_SUCCESS;</span>
+<span class="lineNum">     336 </span>            : 
+<span class="lineNum">     337 </span>            :   smb_ht_bckt *curr, *prev;
+<span class="lineNum">     338 </span><span class="lineCov">          8 :   int index = table-&gt;hash(key) % table-&gt;allocated;</span>
+<span class="lineNum">     339 </span>            : 
+<span class="lineNum">     340 </span>            :   // Stop if the key doesn't exist in the table.
+<span class="lineNum">     341 </span><span class="lineCov">          8 :   if (!table-&gt;table[index]) {</span>
+<span class="lineNum">     342 </span><span class="lineNoCov">          0 :     *status = SMB_NOT_FOUND_ERROR;</span>
+<span class="lineNum">     343 </span><span class="lineCov">          8 :     return;</span>
+<span class="lineNum">     344 </span>            :   }
+<span class="lineNum">     345 </span>            : 
+<span class="lineNum">     346 </span><span class="lineCov">          8 :   curr = table-&gt;table[index];</span>
+<span class="lineNum">     347 </span><span class="lineCov">          8 :   prev = NULL;</span>
+<span class="lineNum">     348 </span>            : 
+<span class="lineNum">     349 </span><span class="lineCov">         43 :   while (curr &amp;&amp; table-&gt;equal(curr-&gt;key, key) != 0) {</span>
+<span class="lineNum">     350 </span><span class="lineCov">         27 :     prev = curr;</span>
+<span class="lineNum">     351 </span><span class="lineCov">         27 :     curr = curr-&gt;next;</span>
+<span class="lineNum">     352 </span>            :   }
+<span class="lineNum">     353 </span>            : 
+<span class="lineNum">     354 </span><span class="lineCov">          8 :   if (curr &amp;&amp; prev) {</span>
+<span class="lineNum">     355 </span>            :     // Found a match, and there is something before it in the linked list.
+<span class="lineNum">     356 </span><span class="lineCov">          2 :     prev-&gt;next = curr-&gt;next;</span>
+<span class="lineNum">     357 </span><span class="lineCov">          2 :     if (deleter)</span>
+<span class="lineNum">     358 </span><span class="lineCov">          2 :       deleter(curr-&gt;value); // Perform user requested action</span>
+<span class="lineNum">     359 </span><span class="lineCov">          2 :     ht_bucket_delete(curr);</span>
+<span class="lineNum">     360 </span><span class="lineCov">          2 :     table-&gt;length--;</span>
+<span class="lineNum">     361 </span><span class="lineCov">          6 :   } else if (curr &amp;&amp; !prev) {</span>
+<span class="lineNum">     362 </span>            :     // Found a match, and it is the first in the linked list
+<span class="lineNum">     363 </span><span class="lineCov">          6 :     table-&gt;table[index] = curr-&gt;next;</span>
+<span class="lineNum">     364 </span><span class="lineCov">          6 :     if (deleter)</span>
+<span class="lineNum">     365 </span><span class="lineCov">          6 :       deleter(curr-&gt;value); // Perform user requested action</span>
+<span class="lineNum">     366 </span><span class="lineCov">          6 :     ht_bucket_delete(curr);</span>
+<span class="lineNum">     367 </span><span class="lineCov">          6 :     table-&gt;length--;</span>
+<span class="lineNum">     368 </span>            :   } else {
+<span class="lineNum">     369 </span>            :     // Didn't find a match in this bucket list
+<span class="lineNum">     370 </span><span class="lineNoCov">          0 :     *status = SMB_NOT_FOUND_ERROR;</span>
+<span class="lineNum">     371 </span>            :   }
+<span class="lineNum">     372 </span>            : }
+<span class="lineNum">     373 </span>            : 
+<span class="lineNum">     374 </span>            : /**
+<span class="lineNum">     375 </span>            :    @brief Remove the key, value pair stored in the hash table.
+<span class="lineNum">     376 </span>            : 
+<span class="lineNum">     377 </span>            :    This function does not call a deleter on the stored data.
+<span class="lineNum">     378 </span>            : 
+<span class="lineNum">     379 </span>            :    @param table A pointer to the hash table.
+<span class="lineNum">     380 </span>            :    @param key The key to delete.
+<span class="lineNum">     381 </span>            :    @param[out] status Status variable.
+<a name="382"><span class="lineNum">     382 </span>            :    @exception SMB_NOT_FOUND_ERROR If an item with the given key is not found.</a>
+<span class="lineNum">     383 </span>            :  */
+<span class="lineNum">     384 </span><span class="lineNoCov">          0 : void ht_remove(smb_ht *table, DATA key, smb_status *status)</span>
+<span class="lineNum">     385 </span>            : {
+<span class="lineNum">     386 </span><span class="lineNoCov">          0 :   ht_remove_act(table, key, NULL, status);</span>
+<span class="lineNum">     387 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     388 </span>            : 
+<span class="lineNum">     389 </span>            : /**
+<span class="lineNum">     390 </span>            :    @brief Return the value associated with the key provided.
+<span class="lineNum">     391 </span>            : 
+<span class="lineNum">     392 </span>            :    @param table A pointer to the hash table.
+<span class="lineNum">     393 </span>            :    @param key The key whose value to retrieve.
+<span class="lineNum">     394 </span>            :    @param[out] status Status variable.
+<span class="lineNum">     395 </span>            :    @returns The value associated the key.
+<a name="396"><span class="lineNum">     396 </span>            :    @exception NOT_FOUND_ERROR</a>
+<span class="lineNum">     397 </span>            :  */
+<span class="lineNum">     398 </span><span class="lineCov">        217 : DATA ht_get(smb_ht const *table, DATA key, smb_status *status)</span>
+<span class="lineNum">     399 </span>            : {
+<span class="lineNum">     400 </span><span class="lineCov">        217 :   *status = SMB_SUCCESS;</span>
+<span class="lineNum">     401 </span>            : 
+<span class="lineNum">     402 </span>            :   smb_ht_bckt *pBucket;
+<span class="lineNum">     403 </span>            :   DATA d;
+<span class="lineNum">     404 </span><span class="lineCov">        217 :   int index = table-&gt;hash(key) % table-&gt;allocated;</span>
+<span class="lineNum">     405 </span>            : 
+<span class="lineNum">     406 </span><span class="lineCov">        217 :   if (table-&gt;table[index]) {</span>
+<span class="lineNum">     407 </span><span class="lineCov">        216 :     pBucket = ht_find_in_bucket(table-&gt;table[index], key, table-&gt;equal);</span>
+<span class="lineNum">     408 </span><span class="lineCov">        216 :     if (table-&gt;equal(pBucket-&gt;key, key) == 0){</span>
+<span class="lineNum">     409 </span><span class="lineCov">        216 :       return pBucket-&gt;value;</span>
+<span class="lineNum">     410 </span>            :     }
+<span class="lineNum">     411 </span>            :   }
+<span class="lineNum">     412 </span>            :   // ELSE: Not found
+<span class="lineNum">     413 </span><span class="lineCov">          1 :   *status = SMB_NOT_FOUND_ERROR;</span>
+<span class="lineNum">     414 </span><span class="lineCov">          1 :   return d;</span>
+<span class="lineNum">     415 </span>            : }
+<span class="lineNum">     416 </span>            : 
+<span class="lineNum">     417 </span>            : /**
+<span class="lineNum">     418 </span>            :    @brief Return the hash of the data, interpreting it as a string.
+<span class="lineNum">     419 </span>            : 
+<span class="lineNum">     420 </span>            :    @param data The string to hash, assuming that the value contained is a char*.
+<a name="421"><span class="lineNum">     421 </span>            :    @returns The hash value of the string.</a>
+<span class="lineNum">     422 </span>            :  */
+<span class="lineNum">     423 </span><span class="lineCov">         42 : unsigned int ht_string_hash(DATA data)</span>
+<span class="lineNum">     424 </span>            : {
+<span class="lineNum">     425 </span><span class="lineCov">         42 :   char *theString = (char *)data.data_ptr;</span>
+<span class="lineNum">     426 </span><span class="lineCov">         42 :   unsigned int hash = 0;</span>
+<span class="lineNum">     427 </span>            : 
+<span class="lineNum">     428 </span><span class="lineCov">        478 :   while (theString &amp;&amp; *theString != '\0' ) {</span>
+<span class="lineNum">     429 </span><span class="lineCov">        394 :     hash = (hash &lt;&lt; 5) - hash + *theString;</span>
+<span class="lineNum">     430 </span><span class="lineCov">        394 :     theString++;</span>
+<span class="lineNum">     431 </span>            :   }
+<span class="lineNum">     432 </span>            : 
+<span class="lineNum">     433 </span>            :   // printf(&quot;Hash of \&quot;%s\&quot;: %u\n&quot;, (char*)data.data_ptr, hash);
+<span class="lineNum">     434 </span><span class="lineCov">         42 :   return hash;</span>
+<span class="lineNum">     435 </span>            : }
+<span class="lineNum">     436 </span>            : 
+<span class="lineNum">     437 </span>            : /**
+<span class="lineNum">     438 </span>            :    @brief Print the entire hash table.
+<span class="lineNum">     439 </span>            : 
+<span class="lineNum">     440 </span>            :    This function is useful for diagnostics.  It can show every row in the table
+<span class="lineNum">     441 </span>            :    (with full_mode) so you can see how well entries are distributed in the
+<span class="lineNum">     442 </span>            :    table.  Or, it can be compact and show just the rows with data.
+<span class="lineNum">     443 </span>            : 
+<span class="lineNum">     444 </span>            :    @param table The table to print.
+<a name="445"><span class="lineNum">     445 </span>            :    @param full_mode Whether to print every row in the hash table.</a>
+<span class="lineNum">     446 </span>            :  */
+<span class="lineNum">     447 </span><span class="lineNoCov">          0 : void ht_print(smb_ht const *table, int full_mode)</span>
+<span class="lineNum">     448 </span>            : {
+<span class="lineNum">     449 </span><span class="lineNoCov">          0 :   smb_ht_bckt *curr = NULL;</span>
+<span class="lineNum">     450 </span>            :   int i;
+<span class="lineNum">     451 </span><span class="lineNoCov">          0 :   int printed = 0;</span>
+<span class="lineNum">     452 </span>            : 
+<span class="lineNum">     453 </span><span class="lineNoCov">          0 :   for (i = 0; i &lt; table-&gt;allocated; i++) {</span>
+<span class="lineNum">     454 </span><span class="lineNoCov">          0 :     curr = table-&gt;table[i];</span>
+<span class="lineNum">     455 </span><span class="lineNoCov">          0 :     if (table-&gt;table[i] || full_mode)</span>
+<span class="lineNum">     456 </span><span class="lineNoCov">          0 :       printf(&quot;[%d]: &quot;, i);</span>
+<span class="lineNum">     457 </span><span class="lineNoCov">          0 :     while (curr) {</span>
+<span class="lineNum">     458 </span><span class="lineNoCov">          0 :       printf(&quot;0x%Lx|0x%Lx, &quot;, curr-&gt;key.data_llint, curr-&gt;value.data_llint);</span>
+<span class="lineNum">     459 </span><span class="lineNoCov">          0 :       curr = curr-&gt;next;</span>
+<span class="lineNum">     460 </span><span class="lineNoCov">          0 :       printed++;</span>
+<span class="lineNum">     461 </span>            :     }
+<span class="lineNum">     462 </span><span class="lineNoCov">          0 :     if (table-&gt;table[i] || full_mode)</span>
+<span class="lineNum">     463 </span><span class="lineNoCov">          0 :       printf(&quot;\n&quot;);</span>
+<span class="lineNum">     464 </span>            :   }
+<span class="lineNum">     465 </span>            : 
+<span class="lineNum">     466 </span><span class="lineNoCov">          0 :   if (printed != table-&gt;length)</span>
+<span class="lineNum">     467 </span><span class="lineNoCov">          0 :     printf(&quot;Error: %d items printed, but %d items are recorded by hash table.\n&quot;,</span>
+<span class="lineNum">     468 </span>            :            printed, table-&gt;length);
+<span class="lineNum">     469 </span><span class="lineNoCov">          0 : }</span>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.11</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>
