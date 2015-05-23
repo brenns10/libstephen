@@ -4,5 +4,8 @@ bin/*
 doc/*
 cov/*
 *~
+GTAGS
+GRTAGS
+GPATH
 syntax: regexp
 (.*/)?\#[^/]*\#$
