@@ -59,8 +59,9 @@ test: tests
 	valgrind bin/$(CFG)/test
 
 gcov:
-	lcov --capture --directory . --output-file coverage.info
-	genhtml coverage.info --output-directory cov/
+	lcov -c -d obj/coverage -b src -o coverage.info
+	lcov -e coverage.info "`pwd`/src/*" -o coverage.info
+	genhtml coverage.info -o cov/
 	rm coverage.info
 
 clean_all: clean clean_docs clean_cov
