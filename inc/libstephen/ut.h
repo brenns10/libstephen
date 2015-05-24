@@ -19,7 +19,7 @@
 /**
    @brief The size of a description text field (in characters) for an smbunit test.
  */
-#define SMB_UNIT_DESCRIPTION_SIZE 20
+#define SMB_UNIT_DESCRIPTION_SIZE 50
 
 /**
    @brief The max number of unit tests in a single test group.
