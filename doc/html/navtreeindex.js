@@ -9,9 +9,10 @@ var NAVTREEINDEX =
 "hashtable_8c.html":[0,0,4],
 "iter_8c.html":[0,0,5],
 "linkedlist_8c.html":[0,0,6],
-"smbunit_8c.html":[0,0,7],
-"utf8_8c.html":[0,0,8],
-"util_8c.html":[0,0,9],
+"log_8c.html":[0,0,7],
+"smbunit_8c.html":[0,0,8],
+"utf8_8c.html":[0,0,9],
+"util_8c.html":[0,0,10],
 "globals.html":[0,1,0],
 "globals_func.html":[0,1,1],
 "globals_defs.html":[0,1,2]

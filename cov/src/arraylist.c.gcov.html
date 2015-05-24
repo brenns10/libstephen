@@ -31,13 +31,13 @@
             <td class="headerValue">coverage.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">181</td>
-            <td class="headerCovTableEntry">181</td>
+            <td class="headerCovTableEntry">190</td>
+            <td class="headerCovTableEntry">190</td>
             <td class="headerCovTableEntryHi">100.0 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2015-05-24 02:59:25</td>
+            <td class="headerValue">2015-05-24 18:28:16</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">44</td>
@@ -350,8 +350,8 @@
 <span class="lineNum">     288 </span>            :  */
 <span class="lineNum">     289 </span><span class="lineCov">         25 : void al_push_back(smb_al *list, DATA newData)</span>
 <span class="lineNum">     290 </span>            : {
-<span class="lineNum">     291 </span><span class="lineCov">         25 :   return al_append(list, newData);</span>
-<span class="lineNum">     292 </span>            : }
+<span class="lineNum">     291 </span><span class="lineCov">         25 :   al_append(list, newData);</span>
+<span class="lineNum">     292 </span><span class="lineCov">         25 : }</span>
 <span class="lineNum">     293 </span>            : 
 <span class="lineNum">     294 </span>            : /**
 <span class="lineNum">     295 </span>            :    @brief Pop the data from the back of the list.  @see ll_pop_back if you don't
@@ -395,8 +395,8 @@
 <span class="lineNum">     333 </span>            :  */
 <span class="lineNum">     334 </span><span class="lineCov">          5 : void al_push_front(smb_al *list, DATA newData)</span>
 <span class="lineNum">     335 </span>            : {
-<span class="lineNum">     336 </span><span class="lineCov">          5 :   return al_prepend(list, newData);</span>
-<span class="lineNum">     337 </span>            : }
+<span class="lineNum">     336 </span><span class="lineCov">          5 :   al_prepend(list, newData);</span>
+<span class="lineNum">     337 </span><span class="lineCov">          5 : }</span>
 <span class="lineNum">     338 </span>            : 
 <span class="lineNum">     339 </span>            : /**
 <span class="lineNum">     340 </span>            :    @brief Pop the data from the front of the list.  @see ll_pop_back if you
@@ -544,14 +544,14 @@
 <span class="lineNum">     482 </span><span class="lineCov">        271 : void al_append_adapter(smb_list *l, DATA newData)</span>
 <span class="lineNum">     483 </span>            : {
 <span class="lineNum">     484 </span><span class="lineCov">        271 :   smb_al *list = (smb_al*) (l-&gt;data);</span>
-<span class="lineNum">     485 </span><span class="lineCov">        271 :   return al_append(list, newData);</span>
-<a name="486"><span class="lineNum">     486 </span>            : }</a>
+<span class="lineNum">     485 </span><span class="lineCov">        271 :   al_append(list, newData);</span>
+<a name="486"><span class="lineNum">     486 </span><span class="lineCov">        271 : }</span></a>
 <span class="lineNum">     487 </span>            : 
 <span class="lineNum">     488 </span><span class="lineCov">        200 : void al_prepend_adapter(smb_list *l, DATA newData)</span>
 <span class="lineNum">     489 </span>            : {
 <span class="lineNum">     490 </span><span class="lineCov">        200 :   smb_al *list = (smb_al*) (l-&gt;data);</span>
-<span class="lineNum">     491 </span><span class="lineCov">        200 :   return al_prepend(list, newData);</span>
-<a name="492"><span class="lineNum">     492 </span>            : }</a>
+<span class="lineNum">     491 </span><span class="lineCov">        200 :   al_prepend(list, newData);</span>
+<a name="492"><span class="lineNum">     492 </span><span class="lineCov">        200 : }</span></a>
 <span class="lineNum">     493 </span>            : 
 <span class="lineNum">     494 </span><span class="lineCov">      40345 : DATA al_get_adapter(const smb_list *l, int index, smb_status *status)</span>
 <span class="lineNum">     495 </span>            : {
@@ -562,20 +562,20 @@
 <span class="lineNum">     500 </span><span class="lineCov">         31 : void al_set_adapter(smb_list *l, int index, DATA newData, smb_status *status)</span>
 <span class="lineNum">     501 </span>            : {
 <span class="lineNum">     502 </span><span class="lineCov">         31 :   smb_al *list = (smb_al*) (l-&gt;data);</span>
-<span class="lineNum">     503 </span><span class="lineCov">         31 :   return al_set(list, index, newData, status);</span>
-<a name="504"><span class="lineNum">     504 </span>            : }</a>
+<span class="lineNum">     503 </span><span class="lineCov">         31 :   al_set(list, index, newData, status);</span>
+<a name="504"><span class="lineNum">     504 </span><span class="lineCov">         31 : }</span></a>
 <span class="lineNum">     505 </span>            : 
 <span class="lineNum">     506 </span><span class="lineCov">          5 : void al_remove_adapter(smb_list *l, int index, smb_status *status)</span>
 <span class="lineNum">     507 </span>            : {
 <span class="lineNum">     508 </span><span class="lineCov">          5 :   smb_al *list = (smb_al*) (l-&gt;data);</span>
-<span class="lineNum">     509 </span><span class="lineCov">          5 :   return al_remove(list, index, status);</span>
-<a name="510"><span class="lineNum">     510 </span>            : }</a>
+<span class="lineNum">     509 </span><span class="lineCov">          5 :   al_remove(list, index, status);</span>
+<a name="510"><span class="lineNum">     510 </span><span class="lineCov">          5 : }</span></a>
 <span class="lineNum">     511 </span>            : 
 <span class="lineNum">     512 </span><span class="lineCov">          5 : void al_insert_adapter(smb_list *l, int index, DATA newData)</span>
 <span class="lineNum">     513 </span>            : {
 <span class="lineNum">     514 </span><span class="lineCov">          5 :   smb_al *list = (smb_al*) (l-&gt;data);</span>
-<span class="lineNum">     515 </span><span class="lineCov">          5 :   return al_insert(list, index, newData);</span>
-<a name="516"><span class="lineNum">     516 </span>            : }</a>
+<span class="lineNum">     515 </span><span class="lineCov">          5 :   al_insert(list, index, newData);</span>
+<a name="516"><span class="lineNum">     516 </span><span class="lineCov">          5 : }</span></a>
 <span class="lineNum">     517 </span>            : 
 <span class="lineNum">     518 </span><span class="lineCov">          8 : void al_delete_adapter(smb_list *l)</span>
 <span class="lineNum">     519 </span>            : {
@@ -594,8 +594,8 @@
 <span class="lineNum">     532 </span><span class="lineCov">         25 : void al_push_back_adapter(smb_list *l, DATA newData)</span>
 <span class="lineNum">     533 </span>            : {
 <span class="lineNum">     534 </span><span class="lineCov">         25 :   smb_al *list = (smb_al*) (l-&gt;data);</span>
-<span class="lineNum">     535 </span><span class="lineCov">         25 :   return al_push_back(list, newData);</span>
-<a name="536"><span class="lineNum">     536 </span>            : }</a>
+<span class="lineNum">     535 </span><span class="lineCov">         25 :   al_push_back(list, newData);</span>
+<a name="536"><span class="lineNum">     536 </span><span class="lineCov">         25 : }</span></a>
 <span class="lineNum">     537 </span>            : 
 <span class="lineNum">     538 </span><span class="lineCov">          7 : DATA al_pop_back_adapter(smb_list *l, smb_status *status)</span>
 <span class="lineNum">     539 </span>            : {
@@ -612,8 +612,8 @@
 <span class="lineNum">     550 </span><span class="lineCov">          5 : void al_push_front_adapter(smb_list *l, DATA newData)</span>
 <span class="lineNum">     551 </span>            : {
 <span class="lineNum">     552 </span><span class="lineCov">          5 :   smb_al *list = (smb_al*) (l-&gt;data);</span>
-<span class="lineNum">     553 </span><span class="lineCov">          5 :   return al_push_front(list, newData);</span>
-<a name="554"><span class="lineNum">     554 </span>            : }</a>
+<span class="lineNum">     553 </span><span class="lineCov">          5 :   al_push_front(list, newData);</span>
+<a name="554"><span class="lineNum">     554 </span><span class="lineCov">          5 : }</span></a>
 <span class="lineNum">     555 </span>            : 
 <span class="lineNum">     556 </span><span class="lineCov">          6 : DATA al_pop_front_adapter(smb_list *l, smb_status *status)</span>
 <span class="lineNum">     557 </span>            : {

@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2015-05-24 02:59:25</td>
+            <td class="headerValue">2015-05-24 18:28:16</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">5</td>
@@ -94,14 +94,14 @@
 <span class="lineNum">      32 </span>            :    @param amt The number of bytes to allocate.
 <a name="33"><span class="lineNum">      33 </span>            :    @returns The pointer to the allocated memory (guaranteed).</a>
 <span class="lineNum">      34 </span>            :  */
-<span class="lineNum">      35 </span><span class="lineCov">     504435 : void *smb___new(size_t amt)</span>
+<span class="lineNum">      35 </span><span class="lineCov">     504468 : void *smb___new(size_t amt)</span>
 <span class="lineNum">      36 </span>            : {
-<span class="lineNum">      37 </span><span class="lineCov">     504435 :   void *result = malloc(amt);</span>
-<span class="lineNum">      38 </span><span class="lineCov">     504435 :   if (!result) {</span>
+<span class="lineNum">      37 </span><span class="lineCov">     504468 :   void *result = malloc(amt);</span>
+<span class="lineNum">      38 </span><span class="lineCov">     504468 :   if (!result) {</span>
 <span class="lineNum">      39 </span><span class="lineNoCov">          0 :     fprintf(stderr, &quot;smb_new: allocation error\n&quot;);</span>
 <span class="lineNum">      40 </span><span class="lineNoCov">          0 :     exit(1);</span>
 <span class="lineNum">      41 </span>            :   }
-<span class="lineNum">      42 </span><span class="lineCov">     504435 :   return result;</span>
+<span class="lineNum">      42 </span><span class="lineCov">     504468 :   return result;</span>
 <span class="lineNum">      43 </span>            : }
 <span class="lineNum">      44 </span>            : 
 <span class="lineNum">      45 </span>            : /**
@@ -130,10 +130,10 @@
 <span class="lineNum">      68 </span>            : 
 <a name="69"><span class="lineNum">      69 </span>            :    @param ptr Memory to free.</a>
 <span class="lineNum">      70 </span>            :  */
-<span class="lineNum">      71 </span><span class="lineCov">     504435 : void *smb___free(void *ptr)</span>
+<span class="lineNum">      71 </span><span class="lineCov">     504468 : void smb___free(void *ptr)</span>
 <span class="lineNum">      72 </span>            : {
-<span class="lineNum">      73 </span><span class="lineCov">     504435 :   free(ptr);</span>
-<span class="lineNum">      74 </span><span class="lineCov">     504435 : }</span>
+<span class="lineNum">      73 </span><span class="lineCov">     504468 :   free(ptr);</span>
+<span class="lineNum">      74 </span><span class="lineCov">     504468 : }</span>
 <span class="lineNum">      75 </span>            : 
 <span class="lineNum">      76 </span>            : /**
 <span class="lineNum">      77 </span>            :    @brief Read a line of input from the given file.
@@ -219,7 +219,7 @@
 <span class="lineNum">     157 </span>            :  */
 <span class="lineNum">     158 </span><span class="lineNoCov">          0 : void data_printer_int(FILE *f, DATA d)</span>
 <span class="lineNum">     159 </span>            : {
-<span class="lineNum">     160 </span><span class="lineNoCov">          0 :   fprintf(f, &quot;%Ld&quot;, d.data_llint);</span>
+<span class="lineNum">     160 </span><span class="lineNoCov">          0 :   fprintf(f, &quot;%lld&quot;, d.data_llint);</span>
 <span class="lineNum">     161 </span><span class="lineNoCov">          0 : }</span>
 <span class="lineNum">     162 </span>            : 
 <span class="lineNum">     163 </span>            : /**
@@ -229,7 +229,7 @@
 <span class="lineNum">     167 </span>            :  */
 <span class="lineNum">     168 </span><span class="lineNoCov">          0 : void data_printer_float(FILE *f, DATA d)</span>
 <span class="lineNum">     169 </span>            : {
-<span class="lineNum">     170 </span><span class="lineNoCov">          0 :   fprintf(f, &quot;%Lf&quot;, d.data_dbl);</span>
+<span class="lineNum">     170 </span><span class="lineNoCov">          0 :   fprintf(f, &quot;%f&quot;, d.data_dbl);</span>
 <span class="lineNum">     171 </span><span class="lineNoCov">          0 : }</span>
 <span class="lineNum">     172 </span>            : 
 <span class="lineNum">     173 </span>            : /**

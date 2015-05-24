@@ -9,7 +9,7 @@ var util_8c =
     [ "data_printer_int", "util_8c.html#ae828fc251b2ab93ad38c7fecb2b086dc", null ],
     [ "data_printer_pointer", "util_8c.html#ad2e4d81b660c6b55d2dabf4955408cef", null ],
     [ "data_printer_string", "util_8c.html#a8476cd51fa728489728f95077f2a19e5", null ],
-    [ "smb___free", "util_8c.html#aef965488ccd43a2fed0ce5159b85b061", null ],
+    [ "smb___free", "util_8c.html#a9d55b20e3e32a8ab273d659ffd49ea9c", null ],
     [ "smb___new", "util_8c.html#a01abcbf929d4a55deec703d4e2ace058", null ],
     [ "smb___renew", "util_8c.html#a07be0eb29b8df12ecd7e6c70f619cedc", null ],
     [ "smb_read_line", "util_8c.html#aaba7c259e6d50d9914f8575ecb4dff74", null ],

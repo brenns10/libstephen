@@ -7,6 +7,7 @@ var files =
     [ "src/hashtable.c", "hashtable_8c.html", "hashtable_8c" ],
     [ "src/iter.c", "iter_8c.html", "iter_8c" ],
     [ "src/linkedlist.c", "linkedlist_8c.html", "linkedlist_8c" ],
+    [ "src/log.c", "log_8c.html", "log_8c" ],
     [ "src/smbunit.c", "smbunit_8c.html", "smbunit_8c" ],
     [ "src/utf8.c", "utf8_8c.html", "utf8_8c" ],
     [ "src/util.c", "util_8c.html", "util_8c" ]

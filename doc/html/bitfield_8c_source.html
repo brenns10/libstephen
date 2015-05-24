@@ -119,38 +119,37 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00057"></a>00057 }
 <a name="l00058"></a>00058 
 <a name="l00066"></a><a class="code" href="bitfield_8c.html#a174755f374e71763a5955fe906ac18db">00066</a> <span class="keywordtype">void</span> <a class="code" href="bitfield_8c.html#a174755f374e71763a5955fe906ac18db" title="Delete the bitfield pointed to. Only do this if you created the bitfield via bf_create().">bf_delete</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *data, <span class="keywordtype">int</span> num_bools) {
-<a name="l00067"></a>00067   <span class="keywordtype">int</span> size = SMB_BITFIELD_SIZE(num_bools);
-<a name="l00068"></a>00068   smb_free(data);
-<a name="l00069"></a>00069 }
-<a name="l00070"></a>00070 
-<a name="l00079"></a><a class="code" href="bitfield_8c.html#a9328312753b9574fd47e0fb98c1c709b">00079</a> <span class="keywordtype">int</span> <a class="code" href="bitfield_8c.html#a9328312753b9574fd47e0fb98c1c709b" title="Check whether the given bit is set.">bf_check</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *data, <span class="keywordtype">int</span> index) {
-<a name="l00080"></a>00080   <span class="keywordtype">int</span> byte_index = (int)(index / BIT_PER_CHAR);
-<a name="l00081"></a>00081   <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> bit_mask = 0x01 &lt;&lt; (index % BIT_PER_CHAR);
-<a name="l00082"></a>00082 
-<a name="l00083"></a>00083   <span class="keywordflow">return</span> data[byte_index] &amp; bit_mask;
-<a name="l00084"></a>00084 }
-<a name="l00085"></a>00085 
-<a name="l00092"></a><a class="code" href="bitfield_8c.html#ac68fe3af1d0a674d926c5034d38c382b">00092</a> <span class="keywordtype">void</span> <a class="code" href="bitfield_8c.html#ac68fe3af1d0a674d926c5034d38c382b" title="Set a bit.">bf_set</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *data, <span class="keywordtype">int</span> index) {
-<a name="l00093"></a>00093   <span class="keywordtype">int</span> byte_index = (int)(index / BIT_PER_CHAR);
-<a name="l00094"></a>00094   <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> bit_mask = 0x01 &lt;&lt; (index % BIT_PER_CHAR);
-<a name="l00095"></a>00095 
-<a name="l00096"></a>00096   data[byte_index] |= bit_mask;
-<a name="l00097"></a>00097 }
-<a name="l00098"></a>00098 
-<a name="l00105"></a><a class="code" href="bitfield_8c.html#a1e418c7a5036d6dbd3127ef1a532b382">00105</a> <span class="keywordtype">void</span> <a class="code" href="bitfield_8c.html#a1e418c7a5036d6dbd3127ef1a532b382" title="Clear a bit.">bf_clear</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *data, <span class="keywordtype">int</span> index) {
-<a name="l00106"></a>00106   <span class="keywordtype">int</span> byte_index = (int)(index / BIT_PER_CHAR);
-<a name="l00107"></a>00107   <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> bit_mask = ~(0x01 &lt;&lt; (index % BIT_PER_CHAR));
-<a name="l00108"></a>00108 
-<a name="l00109"></a>00109   data[byte_index] &amp;= bit_mask;
-<a name="l00110"></a>00110 }
-<a name="l00111"></a>00111 
-<a name="l00118"></a><a class="code" href="bitfield_8c.html#adfc59fcb672ba55ab19ae4e183826b43">00118</a> <span class="keywordtype">void</span> <a class="code" href="bitfield_8c.html#adfc59fcb672ba55ab19ae4e183826b43" title="Clear a bit.">bf_flip</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *data, <span class="keywordtype">int</span> index) {
-<a name="l00119"></a>00119   <span class="keywordtype">int</span> byte_index = (int)(index / BIT_PER_CHAR);
-<a name="l00120"></a>00120   <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> bit_mask = 0x01 &lt;&lt; (index % BIT_PER_CHAR);
-<a name="l00121"></a>00121 
-<a name="l00122"></a>00122   <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> value = ~(data[byte_index] &amp; bit_mask) &amp; bit_mask;
-<a name="l00123"></a>00123   data[byte_index] = (data[byte_index] &amp; ~bit_mask) | value;
-<a name="l00124"></a>00124 }
+<a name="l00067"></a>00067   smb_free(data);
+<a name="l00068"></a>00068 }
+<a name="l00069"></a>00069 
+<a name="l00078"></a><a class="code" href="bitfield_8c.html#a9328312753b9574fd47e0fb98c1c709b">00078</a> <span class="keywordtype">int</span> <a class="code" href="bitfield_8c.html#a9328312753b9574fd47e0fb98c1c709b" title="Check whether the given bit is set.">bf_check</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *data, <span class="keywordtype">int</span> index) {
+<a name="l00079"></a>00079   <span class="keywordtype">int</span> byte_index = (int)(index / BIT_PER_CHAR);
+<a name="l00080"></a>00080   <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> bit_mask = 0x01 &lt;&lt; (index % BIT_PER_CHAR);
+<a name="l00081"></a>00081 
+<a name="l00082"></a>00082   <span class="keywordflow">return</span> data[byte_index] &amp; bit_mask;
+<a name="l00083"></a>00083 }
+<a name="l00084"></a>00084 
+<a name="l00091"></a><a class="code" href="bitfield_8c.html#ac68fe3af1d0a674d926c5034d38c382b">00091</a> <span class="keywordtype">void</span> <a class="code" href="bitfield_8c.html#ac68fe3af1d0a674d926c5034d38c382b" title="Set a bit.">bf_set</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *data, <span class="keywordtype">int</span> index) {
+<a name="l00092"></a>00092   <span class="keywordtype">int</span> byte_index = (int)(index / BIT_PER_CHAR);
+<a name="l00093"></a>00093   <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> bit_mask = 0x01 &lt;&lt; (index % BIT_PER_CHAR);
+<a name="l00094"></a>00094 
+<a name="l00095"></a>00095   data[byte_index] |= bit_mask;
+<a name="l00096"></a>00096 }
+<a name="l00097"></a>00097 
+<a name="l00104"></a><a class="code" href="bitfield_8c.html#a1e418c7a5036d6dbd3127ef1a532b382">00104</a> <span class="keywordtype">void</span> <a class="code" href="bitfield_8c.html#a1e418c7a5036d6dbd3127ef1a532b382" title="Clear a bit.">bf_clear</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *data, <span class="keywordtype">int</span> index) {
+<a name="l00105"></a>00105   <span class="keywordtype">int</span> byte_index = (int)(index / BIT_PER_CHAR);
+<a name="l00106"></a>00106   <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> bit_mask = ~(0x01 &lt;&lt; (index % BIT_PER_CHAR));
+<a name="l00107"></a>00107 
+<a name="l00108"></a>00108   data[byte_index] &amp;= bit_mask;
+<a name="l00109"></a>00109 }
+<a name="l00110"></a>00110 
+<a name="l00117"></a><a class="code" href="bitfield_8c.html#adfc59fcb672ba55ab19ae4e183826b43">00117</a> <span class="keywordtype">void</span> <a class="code" href="bitfield_8c.html#adfc59fcb672ba55ab19ae4e183826b43" title="Clear a bit.">bf_flip</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *data, <span class="keywordtype">int</span> index) {
+<a name="l00118"></a>00118   <span class="keywordtype">int</span> byte_index = (int)(index / BIT_PER_CHAR);
+<a name="l00119"></a>00119   <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> bit_mask = 0x01 &lt;&lt; (index % BIT_PER_CHAR);
+<a name="l00120"></a>00120 
+<a name="l00121"></a>00121   <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> value = ~(data[byte_index] &amp; bit_mask) &amp; bit_mask;
+<a name="l00122"></a>00122   data[byte_index] = (data[byte_index] &amp; ~bit_mask) | value;
+<a name="l00123"></a>00123 }
 </pre></div></div><!-- contents -->
 </div>
 <!-- window showing the filter options -->
@@ -171,7 +170,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul>
       <li class="navelem"><a class="el" href="bitfield_8c.html">bitfield.c</a>      </li>
 
-    <li class="footer">Generated on Sun May 24 2015 02:59:25 for libstephen by
+    <li class="footer">Generated on Sun May 24 2015 18:28:17 for libstephen by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.6.1 </li>
    </ul>

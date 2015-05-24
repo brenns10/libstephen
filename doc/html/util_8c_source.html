@@ -127,7 +127,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00061"></a>00061   <span class="keywordflow">return</span> result;
 <a name="l00062"></a>00062 }
 <a name="l00063"></a>00063 
-<a name="l00071"></a><a class="code" href="util_8c.html#aef965488ccd43a2fed0ce5159b85b061">00071</a> <span class="keywordtype">void</span> *<a class="code" href="util_8c.html#aef965488ccd43a2fed0ce5159b85b061" title="Utility function for macro smb_free(). Wrapper over free().">smb___free</a>(<span class="keywordtype">void</span> *ptr)
+<a name="l00071"></a><a class="code" href="util_8c.html#a9d55b20e3e32a8ab273d659ffd49ea9c">00071</a> <span class="keywordtype">void</span> <a class="code" href="util_8c.html#a9d55b20e3e32a8ab273d659ffd49ea9c" title="Utility function for macro smb_free(). Wrapper over free().">smb___free</a>(<span class="keywordtype">void</span> *ptr)
 <a name="l00072"></a>00072 {
 <a name="l00073"></a>00073   free(ptr);
 <a name="l00074"></a>00074 }
@@ -195,12 +195,12 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00152"></a>00152 
 <a name="l00158"></a><a class="code" href="util_8c.html#ae828fc251b2ab93ad38c7fecb2b086dc">00158</a> <span class="keywordtype">void</span> <a class="code" href="util_8c.html#ae828fc251b2ab93ad38c7fecb2b086dc" title="Print a DATA, treating it as an int.">data_printer_int</a>(FILE *f, DATA d)
 <a name="l00159"></a>00159 {
-<a name="l00160"></a>00160   fprintf(f, <span class="stringliteral">&quot;%Ld&quot;</span>, d.data_llint);
+<a name="l00160"></a>00160   fprintf(f, <span class="stringliteral">&quot;%lld&quot;</span>, d.data_llint);
 <a name="l00161"></a>00161 }
 <a name="l00162"></a>00162 
 <a name="l00168"></a><a class="code" href="util_8c.html#ab4e0aaacbb85c79e00a23a6e35d7b3bb">00168</a> <span class="keywordtype">void</span> <a class="code" href="util_8c.html#ab4e0aaacbb85c79e00a23a6e35d7b3bb" title="Print a DATA, treating it as a float.">data_printer_float</a>(FILE *f, DATA d)
 <a name="l00169"></a>00169 {
-<a name="l00170"></a>00170   fprintf(f, <span class="stringliteral">&quot;%Lf&quot;</span>, d.data_dbl);
+<a name="l00170"></a>00170   fprintf(f, <span class="stringliteral">&quot;%f&quot;</span>, d.data_dbl);
 <a name="l00171"></a>00171 }
 <a name="l00172"></a>00172 
 <a name="l00178"></a><a class="code" href="util_8c.html#ad2e4d81b660c6b55d2dabf4955408cef">00178</a> <span class="keywordtype">void</span> <a class="code" href="util_8c.html#ad2e4d81b660c6b55d2dabf4955408cef" title="Print a DATA, treating it as a pointer.">data_printer_pointer</a>(FILE *f, DATA d)
@@ -270,7 +270,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul>
       <li class="navelem"><a class="el" href="util_8c.html">util.c</a>      </li>
 
-    <li class="footer">Generated on Sun May 24 2015 02:59:25 for libstephen by
+    <li class="footer">Generated on Sun May 24 2015 18:28:17 for libstephen by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.6.1 </li>
    </ul>
