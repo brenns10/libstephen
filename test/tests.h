@@ -54,6 +54,11 @@ void list_test(void);
 void args_test(void);
 
 /**
+   Run the cbuf test.
+ */
+void charbuf_test(void);
+
+/**
    Output statistics of main function args.
  */
 int args_test_main(int argc, char **argv);
