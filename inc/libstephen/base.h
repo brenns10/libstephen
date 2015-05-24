@@ -185,7 +185,7 @@ typedef int smb_status;
 #define SMB_INDEX_ERROR 1
 #define SMB_NOT_FOUND_ERROR 2
 #define SMB_STOP_ITERATION 3
-
+#define SMB_EXTERNAL_EXCEPTION_START 100
 
 char *smb_status_string(smb_status status);
 
