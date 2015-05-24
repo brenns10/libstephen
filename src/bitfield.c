@@ -64,7 +64,6 @@ unsigned char *bf_create(int num_bools) {
    @param num_bools The number of bools contained in the bitfield.
  */
 void bf_delete(unsigned char *data, int num_bools) {
-  int size = SMB_BITFIELD_SIZE(num_bools);
   smb_free(data);
 }
 

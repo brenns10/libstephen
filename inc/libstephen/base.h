@@ -47,9 +47,9 @@
    @brief Print this (printf) only if SMB_ENABLE_DIAGNOSTIC_PRINTING is defined.
 */
 #ifdef SMB_ENABLE_DIAGNOSTIC_PRINTING
-#define SMB_DP(x...) printf(x)
+#define SMB_DP(...) printf(__VA_ARGS__)
 #else
-#define SMB_DP(x...)
+#define SMB_DP(...)
 #endif // SMB_ENABLE_DIAGNOSTIC_PRINTING
 
 
@@ -127,7 +127,7 @@ void data_printer_pointer(FILE *f, DATA d);
 
 void *smb___new(size_t amt);
 void *smb___renew(void *ptr, size_t newsize);
-void *smb___free(void *ptr);
+void smb___free(void *ptr);
 
 /**
    @brief A nicer allocation function.

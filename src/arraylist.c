@@ -288,7 +288,7 @@ void al_set(smb_al *list, int index, DATA newData, smb_status *status)
  */
 void al_push_back(smb_al *list, DATA newData)
 {
-  return al_append(list, newData);
+  al_append(list, newData);
 }
 
 /**
@@ -333,7 +333,7 @@ DATA al_peek_back(smb_al *list, smb_status *status)
  */
 void al_push_front(smb_al *list, DATA newData)
 {
-  return al_prepend(list, newData);
+  al_prepend(list, newData);
 }
 
 /**
@@ -482,13 +482,13 @@ smb_iter al_get_iter(const smb_al *list)
 void al_append_adapter(smb_list *l, DATA newData)
 {
   smb_al *list = (smb_al*) (l->data);
-  return al_append(list, newData);
+  al_append(list, newData);
 }
 
 void al_prepend_adapter(smb_list *l, DATA newData)
 {
   smb_al *list = (smb_al*) (l->data);
-  return al_prepend(list, newData);
+  al_prepend(list, newData);
 }
 
 DATA al_get_adapter(const smb_list *l, int index, smb_status *status)
@@ -500,19 +500,19 @@ DATA al_get_adapter(const smb_list *l, int index, smb_status *status)
 void al_set_adapter(smb_list *l, int index, DATA newData, smb_status *status)
 {
   smb_al *list = (smb_al*) (l->data);
-  return al_set(list, index, newData, status);
+  al_set(list, index, newData, status);
 }
 
 void al_remove_adapter(smb_list *l, int index, smb_status *status)
 {
   smb_al *list = (smb_al*) (l->data);
-  return al_remove(list, index, status);
+  al_remove(list, index, status);
 }
 
 void al_insert_adapter(smb_list *l, int index, DATA newData)
 {
   smb_al *list = (smb_al*) (l->data);
-  return al_insert(list, index, newData);
+  al_insert(list, index, newData);
 }
 
 void al_delete_adapter(smb_list *l)
@@ -532,7 +532,7 @@ int al_length_adapter(const smb_list *l)
 void al_push_back_adapter(smb_list *l, DATA newData)
 {
   smb_al *list = (smb_al*) (l->data);
-  return al_push_back(list, newData);
+  al_push_back(list, newData);
 }
 
 DATA al_pop_back_adapter(smb_list *l, smb_status *status)
@@ -550,7 +550,7 @@ DATA al_peek_back_adapter(smb_list *l, smb_status *status)
 void al_push_front_adapter(smb_list *l, DATA newData)
 {
   smb_al *list = (smb_al*) (l->data);
-  return al_push_front(list, newData);
+  al_push_front(list, newData);
 }
 
 DATA al_pop_front_adapter(smb_list *l, smb_status *status)

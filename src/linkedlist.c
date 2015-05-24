@@ -600,13 +600,13 @@ smb_iter ll_get_iter(const smb_ll *list)
 void ll_append_adapter(smb_list *l, DATA new_data)
 {
   smb_ll *list = (smb_ll*) (l->data);
-  return ll_append(list, new_data);
+  ll_append(list, new_data);
 }
 
 void ll_prepend_adapter(smb_list *l, DATA new_data)
 {
   smb_ll *list = (smb_ll*) (l->data);
-  return ll_prepend(list, new_data);
+  ll_prepend(list, new_data);
 }
 
 DATA ll_get_adapter(const smb_list *l, int index, smb_status *status)
@@ -618,13 +618,13 @@ DATA ll_get_adapter(const smb_list *l, int index, smb_status *status)
 void ll_remove_adapter(smb_list *l, int index, smb_status *status)
 {
   smb_ll *list = (smb_ll*) (l->data);
-  return ll_remove(list, index, status);
+  ll_remove(list, index, status);
 }
 
 void ll_insert_adapter(smb_list *l, int index, DATA new_data)
 {
   smb_ll *list = (smb_ll*) (l->data);
-  return ll_insert(list, index, new_data);
+  ll_insert(list, index, new_data);
 }
 
 void ll_delete_adapter(smb_list *l)
@@ -632,19 +632,18 @@ void ll_delete_adapter(smb_list *l)
   smb_ll *list = (smb_ll*) (l->data);
   ll_delete(list);
   l->data = NULL;
-  return;
 }
 
 void ll_set_adapter(smb_list *l, int index, DATA new_data, smb_status *status)
 {
   smb_ll *list = (smb_ll*) (l->data);
-  return ll_set(list, index, new_data, status);
+  ll_set(list, index, new_data, status);
 }
 
 void ll_push_back_adapter(smb_list *l, DATA new_data)
 {
   smb_ll *list = (smb_ll*) (l->data);
-  return ll_push_back(list, new_data);
+  ll_push_back(list, new_data);
 }
 
 DATA ll_pop_back_adapter(smb_list *l, smb_status *status)
@@ -662,7 +661,7 @@ DATA ll_peek_back_adapter(smb_list *l, smb_status *status)
 void ll_push_front_adapter(smb_list *l, DATA new_data)
 {
   smb_ll *list = (smb_ll*) (l->data);
-  return  ll_push_front(list, new_data);
+  ll_push_front(list, new_data);
 }
 
 DATA ll_pop_front_adapter(smb_list *l, smb_status *status)

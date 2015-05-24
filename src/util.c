@@ -68,7 +68,7 @@ void *smb___renew(void *ptr, size_t newsize)
 
    @param ptr Memory to free.
  */
-void *smb___free(void *ptr)
+void smb___free(void *ptr)
 {
   free(ptr);
 }
@@ -157,7 +157,7 @@ void data_printer_string(FILE *f, DATA d)
  */
 void data_printer_int(FILE *f, DATA d)
 {
-  fprintf(f, "%Ld", d.data_llint);
+  fprintf(f, "%lld", d.data_llint);
 }
 
 /**
@@ -167,7 +167,7 @@ void data_printer_int(FILE *f, DATA d)
  */
 void data_printer_float(FILE *f, DATA d)
 {
-  fprintf(f, "%Lf", d.data_dbl);
+  fprintf(f, "%f", d.data_dbl);
 }
 
 /**

@@ -12,7 +12,7 @@
 
 # Configuration Variables
 CC=gcc
-FLAGS=
+FLAGS=-Wall -pedantic
 INC=-Iinc/
 CFLAGS=$(FLAGS) -c -std=c99 -fPIC $(SMB_CONF) $(INC)
 LFLAGS=$(FLAGS)

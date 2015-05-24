@@ -72,7 +72,7 @@
  */
 wint_t utf8iter(const char *_src, int *_s)
 {
-  const unsigned char *src = (const char *) _src;
+  const unsigned char *src = (const unsigned char *) _src;
   int cont, s = *_s;
   wint_t dest;
 

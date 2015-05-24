@@ -119,12 +119,11 @@ int ht_test_remove()
 int ht_test_remove_invalid()
 {
   smb_status status = SMB_SUCCESS;
-  DATA key, value;
-  int i;
+  DATA key;
   smb_ht *table = ht_create(&ht_string_hash, &data_compare_string);
 
   key.data_ptr = "invalid key";
-  value = ht_get(table, key, &status);
+  ht_get(table, key, &status);
   TEST_ASSERT(status == SMB_NOT_FOUND_ERROR);
 
   ht_delete(table);

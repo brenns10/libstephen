@@ -341,7 +341,6 @@ void iterate_bare_strings(smb_ad *pArgData)
 
 int args_test_main(int argc, char **argv)
 {
-  printf("Mallocs: %d\n");
   smb_ad ArgData;
   arg_data_init(&ArgData);
   process_args(&ArgData, argc - 1, argv + 1);

@@ -138,11 +138,10 @@ void ht_resize(smb_ht *table)
 {
   smb_ht_bckt **pOldBuffer;
   smb_ht_bckt *curr, *temp;
-  int index, oldLength, oldAllocated;
+  int index, oldAllocated;
 
   // Step one: allocate new space for the table
   pOldBuffer = table->table;
-  oldLength = table->length;
   oldAllocated = table->allocated;
   table->length = 0;
   table->allocated = ht_next_size(oldAllocated);
@@ -455,7 +454,7 @@ void ht_print(smb_ht const *table, int full_mode)
     if (table->table[i] || full_mode)
       printf("[%d]: ", i);
     while (curr) {
-      printf("0x%Lx|0x%Lx, ", curr->key.data_llint, curr->value.data_llint);
+      printf("0x%llx|0x%llx, ", curr->key.data_llint, curr->value.data_llint);
       curr = curr->next;
       printed++;
     }
