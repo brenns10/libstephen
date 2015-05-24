@@ -73,18 +73,14 @@ void cb_append(cbuf *obj, char *buf)
   obj->length += length;
 }
 
-void cb_printf(cbuf *obj, char *format, ...)
+void cb_vprintf(cbuf *obj, char *format, va_list va)
 {
-  va_list v1, v2;
+  va_list v2;
   int length;
-
-  // Get the varargs lists ready.
-  va_start(v1, format);
-  va_copy(v2, v1);
+  va_copy(v2, va);
 
   // Find the length of the formatted string.
-  length = vsnprintf(NULL, 0, format, v1);
-  va_end(v1);  // Have to va_stop() it when you're done using it.
+  length = vsnprintf(NULL, 0, format, va);
 
   // Make sure we have enough room for everything.
   cb_expand_to_fit(obj, obj->length + length + 1);
@@ -92,6 +88,14 @@ void cb_printf(cbuf *obj, char *format, ...)
   // Put the formatted string into the buffer.
   vsnprintf(obj->buf + obj->length, length + 1, format, v2);
   va_end(v2);
+}
+
+void cb_printf(cbuf *obj, char *format, ...)
+{
+  va_list va;
+  va_start(va, format);
+  cb_vprintf(obj, format, va);
+  va_end(va);  // Have to va_stop() it when you're done using it.
 }
 
 /*******************************************************************************
@@ -149,9 +153,9 @@ void wcb_append(wcbuf *obj, wchar_t *str)
   obj->length += length;
 }
 
-void wcb_printf(wcbuf *obj, wchar_t *format, ...)
+void wcb_vprintf(wcbuf *obj, wchar_t *format, va_list v1)
 {
-  va_list v1, v2;
+  va_list v2;
   char *mbformat, *mbout;
   size_t mbformat_len, mbout_len, wcout_len;
 
@@ -161,11 +165,9 @@ void wcb_printf(wcbuf *obj, wchar_t *format, ...)
   wcstombs(mbformat, format, mbformat_len+1);
 
   // Then, use vsnprintf first to find out how many bytes of output to allocate.
-  va_start(v1, format);
   va_copy(v2, v1);
   mbout_len = vsnprintf(NULL, 0, mbformat, v1);
-  va_end(v1);
-
+ 
   // Now, actually allocate the memory and do the multibyte print.
   mbout = smb_new(char, mbout_len + 1);
   vsnprintf(mbout, mbout_len + 1, mbformat, v2);
@@ -184,4 +186,12 @@ void wcb_printf(wcbuf *obj, wchar_t *format, ...)
   // Free up allocated memory, and we're good to go.
   smb_free(mbformat);
   smb_free(mbout);
+}
+
+void wcb_printf(wcbuf *obj, wchar_t *format, ...)
+{
+  va_list va;
+  va_start(va, format);
+  wcb_vprintf(obj, format, va);
+  va_end(va);
 }

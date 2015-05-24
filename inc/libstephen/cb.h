@@ -16,6 +16,7 @@
 #ifndef LIBSTEPHEN_CB_H
 #define LIBSTEPHEN_CB_H
 
+#include <stdarg.h>
 #include <wchar.h>
 
 /**
@@ -81,6 +82,13 @@ void cb_append(cbuf *obj, char *str);
    @param ... The arguments to the format string.
  */
 void cb_printf(cbuf *obj, char *format, ...);
+/**
+   @brief Format and print a string onto the cbuf using a va_list.
+   @param obj The cbuf to print into.
+   @param format The format string to print.
+   @param va_list The vararg list.
+ */
+void cb_vprintf(cbuf *obj, char *format, va_list va);
 
 
 /**
@@ -141,5 +149,12 @@ void wcb_append(wcbuf *obj, wchar_t *str);
    @param ... The arguments to to put into the format string.
  */
 void wcb_printf(wcbuf *obj, wchar_t *format, ...);
+/**
+   @brief Format and print a string onto the wcbuf using a va_list.
+   @param obj The wcbuf to print into.
+   @param format The format string to print.
+   @param va_list The vararg list.
+ */
+void wcb_vprintf(wcbuf *obj, wchar_t *format, va_list va);
 
 #endif //LIBSTEPHEN_CB_H
