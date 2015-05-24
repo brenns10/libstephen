@@ -56,7 +56,7 @@ lib: bin/$(CFG)/libstephen.a
 tests: lib bin/$(CFG)/test
 
 test: tests
-	bin/$(CFG)/test
+	valgrind bin/$(CFG)/test
 
 gcov:
 	lcov --capture --directory . --output-file coverage.info
