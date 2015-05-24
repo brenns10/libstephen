@@ -24,7 +24,7 @@
 /**
    @brief The max number of unit tests in a single test group.
  */
-#define SMB_UNIT_TESTS_PER_GROUP 20
+#define SMB_UNIT_TESTS_PER_GROUP 50
 
 /**
    @brief Asserts that an expression is true.  If false, returns line number.
