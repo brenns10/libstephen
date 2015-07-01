@@ -475,6 +475,16 @@ int ll_length(const smb_ll *list)
   return list->length;
 }
 
+/**
+   @brief Recursive mergesort helper function.
+
+   @param head Pointer to the head pointer (will be updated to reflect new list
+   after sorting).
+   @param length Length of sublist.  Expects the trailing node will not point to
+   the next sublist.
+   @param cmp Comparator.
+   @returns The tail of the sorted list!
+ */
 static smb_ll_node *ll_sort_rec(smb_ll_node **head, int length, DATA_COMPARE cmp)
 {
   smb_ll_node *left = *head;
@@ -529,6 +539,12 @@ static smb_ll_node *ll_sort_rec(smb_ll_node **head, int length, DATA_COMPARE cmp
   return tail;
 }
 
+/**
+   @brief Stable sort of linked list.
+   @param list List to sort.
+   @param comp Comparator for sorting.
+   @return Nothing, but the list is sorted in place.
+ */
 void ll_sort(smb_ll *list, DATA_COMPARE comp)
 {
   list->tail = ll_sort_rec(&list->head, list->length, comp);
