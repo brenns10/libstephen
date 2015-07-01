@@ -31,13 +31,13 @@
             <td class="headerValue">coverage.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">21</td>
+            <td class="headerCovTableEntry">22</td>
             <td class="headerCovTableEntry">75</td>
-            <td class="headerCovTableEntryLo">28.0 %</td>
+            <td class="headerCovTableEntryLo">29.3 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2015-05-24 22:39:30</td>
+            <td class="headerValue">2015-07-01 19:58:32</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">5</td>
@@ -94,14 +94,14 @@
 <span class="lineNum">      32 </span>            :    @param amt The number of bytes to allocate.
 <a name="33"><span class="lineNum">      33 </span>            :    @returns The pointer to the allocated memory (guaranteed).</a>
 <span class="lineNum">      34 </span>            :  */
-<span class="lineNum">      35 </span><span class="lineCov">     504468 : void *smb___new(size_t amt)</span>
+<span class="lineNum">      35 </span><span class="lineCov">     504480 : void *smb___new(size_t amt)</span>
 <span class="lineNum">      36 </span>            : {
-<span class="lineNum">      37 </span><span class="lineCov">     504468 :   void *result = malloc(amt);</span>
-<span class="lineNum">      38 </span><span class="lineCov">     504468 :   if (!result) {</span>
+<span class="lineNum">      37 </span><span class="lineCov">     504480 :   void *result = malloc(amt);</span>
+<span class="lineNum">      38 </span><span class="lineCov">     504480 :   if (!result) {</span>
 <span class="lineNum">      39 </span><span class="lineNoCov">          0 :     fprintf(stderr, &quot;smb_new: allocation error\n&quot;);</span>
 <span class="lineNum">      40 </span><span class="lineNoCov">          0 :     exit(1);</span>
 <span class="lineNum">      41 </span>            :   }
-<span class="lineNum">      42 </span><span class="lineCov">     504468 :   return result;</span>
+<span class="lineNum">      42 </span><span class="lineCov">     504480 :   return result;</span>
 <span class="lineNum">      43 </span>            : }
 <span class="lineNum">      44 </span>            : 
 <span class="lineNum">      45 </span>            : /**
@@ -130,10 +130,10 @@
 <span class="lineNum">      68 </span>            : 
 <a name="69"><span class="lineNum">      69 </span>            :    @param ptr Memory to free.</a>
 <span class="lineNum">      70 </span>            :  */
-<span class="lineNum">      71 </span><span class="lineCov">     504468 : void smb___free(void *ptr)</span>
+<span class="lineNum">      71 </span><span class="lineCov">     504480 : void smb___free(void *ptr)</span>
 <span class="lineNum">      72 </span>            : {
-<span class="lineNum">      73 </span><span class="lineCov">     504468 :   free(ptr);</span>
-<span class="lineNum">      74 </span><span class="lineCov">     504468 : }</span>
+<span class="lineNum">      73 </span><span class="lineCov">     504480 :   free(ptr);</span>
+<span class="lineNum">      74 </span><span class="lineCov">     504480 : }</span>
 <span class="lineNum">      75 </span>            : 
 <span class="lineNum">      76 </span>            : /**
 <span class="lineNum">      77 </span>            :    @brief Read a line of input from the given file.
@@ -264,15 +264,15 @@
 <span class="lineNum">     202 </span>            :    @return An integer indicating whether the ints are equal, less than, or
 <a name="203"><span class="lineNum">     203 </span>            :    greater than.</a>
 <span class="lineNum">     204 </span>            :  */
-<span class="lineNum">     205 </span><span class="lineCov">        570 : int data_compare_int(DATA d1, DATA d2)</span>
+<span class="lineNum">     205 </span><span class="lineCov">        586 : int data_compare_int(DATA d1, DATA d2)</span>
 <span class="lineNum">     206 </span>            : {
 <span class="lineNum">     207 </span>            :   // Since the difference between two long long ints could be more than an int,
 <span class="lineNum">     208 </span>            :   // we need to store the difference and conditionally return.
-<span class="lineNum">     209 </span><span class="lineCov">        570 :   long long int diff = d1.data_llint - d2.data_llint;</span>
-<span class="lineNum">     210 </span><span class="lineCov">        570 :   if (diff &lt; 0) {</span>
-<span class="lineNum">     211 </span><span class="lineCov">        353 :     return -1;</span>
-<span class="lineNum">     212 </span><span class="lineCov">        217 :   } else if (diff &gt; 0) {</span>
-<span class="lineNum">     213 </span><span class="lineNoCov">          0 :     return 1;</span>
+<span class="lineNum">     209 </span><span class="lineCov">        586 :   long long int diff = d1.data_llint - d2.data_llint;</span>
+<span class="lineNum">     210 </span><span class="lineCov">        586 :   if (diff &lt; 0) {</span>
+<span class="lineNum">     211 </span><span class="lineCov">        361 :     return -1;</span>
+<span class="lineNum">     212 </span><span class="lineCov">        225 :   } else if (diff &gt; 0) {</span>
+<span class="lineNum">     213 </span><span class="lineCov">          8 :     return 1;</span>
 <span class="lineNum">     214 </span>            :   } else {
 <span class="lineNum">     215 </span><span class="lineCov">        217 :     return 0;</span>
 <span class="lineNum">     216 </span>            :   }

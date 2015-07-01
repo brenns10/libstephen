@@ -120,6 +120,8 @@ Include dependency graph for linkedlist.c:</div>
 Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="linkedlist_8c.html#af6e64612c12b5631bea5f1e324f6a96d">ll_remove_node</a> (smb_ll *list, smb_ll_node *the_node)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Removes the given node, reassigning the links to and from it.  <a href="#af6e64612c12b5631bea5f1e324f6a96d"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad80d64042304cf08a4f4469db2a780c7"></a><!-- doxytag: member="linkedlist.c::ll_node_navigate" ref="ad80d64042304cf08a4f4469db2a780c7" args="(smb_ll_node *node, int index)" -->
+smb_ll_node *&#160;</td><td class="memItemRight" valign="bottom"><b>ll_node_navigate</b> (smb_ll_node *node, int index)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">smb_ll_node *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="linkedlist_8c.html#af6d730b037f2c13ba4607176975783cb">ll_navigate</a> (const smb_ll *list, int index, smb_status *status)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Navigates to the given index in the list, returning the correct node, or NULL.  <a href="#af6d730b037f2c13ba4607176975783cb"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">smb_ll_node *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="linkedlist_8c.html#a872179f2d91617c6d94db603f7801eac">ll_create_node</a> (DATA data)</td></tr>
@@ -158,6 +160,8 @@ Functions</h2></td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets an existing element to a new value.  <a href="#ad45a9374335d4b3bf517e1ea02878e87"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="linkedlist_8c.html#a14effb264a1e7bbb3c0d4674b5ce6fee">ll_length</a> (const smb_ll *list)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the length of the given list.  <a href="#a14effb264a1e7bbb3c0d4674b5ce6fee"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa699b130d63249003c0568e12201f30b"></a><!-- doxytag: member="linkedlist.c::ll_sort" ref="aa699b130d63249003c0568e12201f30b" args="(smb_ll *list, DATA_COMPARE comp)" -->
+void&#160;</td><td class="memItemRight" valign="bottom"><b>ll_sort</b> (smb_ll *list, DATA_COMPARE comp)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="linkedlist_8c.html#af7de6c5fb13dd594495b635e93d7627d">ll_index_of</a> (const smb_ll *list, DATA d, DATA_COMPARE comp)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns whether or not the list contains the item.  <a href="#af7de6c5fb13dd594495b635e93d7627d"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">DATA&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="linkedlist_8c.html#a61c5d55645e801161115bfa3a27519f1">ll_iter_next</a> (smb_iter *iter, smb_status *status)</td></tr>
@@ -251,7 +255,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>ll_index_of_adapter</b
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00186">186</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
+<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00191">191</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
 
 </div>
 </div>
@@ -280,7 +284,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>ll_index_of_adapter</b
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd>A generic list interface object. </dd></dl>
 
-<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00741">741</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
+<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00805">805</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
 
 </div>
 </div>
@@ -301,7 +305,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>ll_index_of_adapter</b
 <p>Allocates and initializes a new, empty linked list. </p>
 <dl class="return"><dt><b>Returns:</b></dt><dd>A pointer to the new list. </dd></dl>
 
-<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00135">135</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
+<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00140">140</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
 
 </div>
 </div>
@@ -329,7 +333,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>ll_index_of_adapter</b
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd>A generic list interface object. </dd></dl>
 
-<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00727">727</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
+<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00791">791</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
 
 </div>
 </div>
@@ -358,7 +362,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>ll_index_of_adapter</b
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd>A pointer to the node created. </dd></dl>
 
-<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00100">100</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
+<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00105">105</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
 
 </div>
 </div>
@@ -386,7 +390,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>ll_index_of_adapter</b
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00173">173</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
+<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00178">178</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
 
 </div>
 </div>
@@ -414,7 +418,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>ll_index_of_adapter</b
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00152">152</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
+<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00157">157</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
 
 </div>
 </div>
@@ -442,7 +446,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>ll_index_of_adapter</b
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00701">701</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
+<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00765">765</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
 
 </div>
 </div>
@@ -495,7 +499,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>ll_index_of_adapter</b
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00366">366</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
+<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00371">371</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
 
 </div>
 </div>
@@ -523,7 +527,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>ll_index_of_adapter</b
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd>an iterator </dd></dl>
 
-<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00573">573</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
+<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00637">637</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
 
 </div>
 </div>
@@ -568,7 +572,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>ll_index_of_adapter</b
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00480">480</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
+<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00544">544</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
 
 </div>
 </div>
@@ -596,7 +600,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>ll_index_of_adapter</b
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00124">124</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
+<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00129">129</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
 
 </div>
 </div>
@@ -642,7 +646,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>ll_index_of_adapter</b
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00416">416</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
+<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00421">421</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
 
 </div>
 </div>
@@ -670,7 +674,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>ll_index_of_adapter</b
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00561">561</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
+<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00625">625</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
 
 </div>
 </div>
@@ -698,7 +702,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>ll_index_of_adapter</b
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00551">551</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
+<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00615">615</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
 
 </div>
 </div>
@@ -726,7 +730,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>ll_index_of_adapter</b
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd>Whether the iterator can be advanced. </dd></dl>
 
-<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00528">528</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
+<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00592">592</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
 
 </div>
 </div>
@@ -771,7 +775,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>ll_index_of_adapter</b
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00509">509</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
+<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00573">573</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
 
 </div>
 </div>
@@ -799,7 +803,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>ll_index_of_adapter</b
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd>The length of the list. </dd></dl>
 
-<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00468">468</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
+<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00473">473</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
 
 </div>
 </div>
@@ -858,7 +862,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>ll_index_of_adapter</b
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00078">78</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
+<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00088">88</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
 
 </div>
 </div>
@@ -904,7 +908,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>ll_index_of_adapter</b
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00280">280</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
+<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00285">285</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
 
 </div>
 </div>
@@ -950,7 +954,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>ll_index_of_adapter</b
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00341">341</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
+<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00346">346</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
 
 </div>
 </div>
@@ -996,7 +1000,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>ll_index_of_adapter</b
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00253">253</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
+<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00258">258</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
 
 </div>
 </div>
@@ -1042,7 +1046,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>ll_index_of_adapter</b
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00316">316</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
+<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00321">321</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
 
 </div>
 </div>
@@ -1081,7 +1085,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>ll_index_of_adapter</b
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00212">212</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
+<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00217">217</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
 
 </div>
 </div>
@@ -1121,7 +1125,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>ll_index_of_adapter</b
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00236">236</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
+<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00241">241</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
 
 </div>
 </div>
@@ -1161,7 +1165,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>ll_index_of_adapter</b
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00302">302</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
+<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00307">307</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
 
 </div>
 </div>
@@ -1213,7 +1217,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>ll_index_of_adapter</b
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00391">391</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
+<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00396">396</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
 
 </div>
 </div>
@@ -1312,7 +1316,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>ll_index_of_adapter</b
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00451">451</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
+<p>Definition at line <a class="el" href="linkedlist_8c_source.html#l00456">456</a> of file <a class="el" href="linkedlist_8c_source.html">linkedlist.c</a>.</p>
 
 </div>
 </div>
@@ -1336,7 +1340,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>ll_index_of_adapter</b
     <ul>
       <li class="navelem"><a class="el" href="linkedlist_8c.html">linkedlist.c</a>      </li>
 
-    <li class="footer">Generated on Sun May 24 2015 22:39:30 for libstephen by
+    <li class="footer">Generated on Wed Jul 1 2015 19:58:32 for libstephen by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.6.1 </li>
    </ul>

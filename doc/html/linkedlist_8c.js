@@ -25,6 +25,7 @@ var linkedlist_8c =
     [ "ll_length", "linkedlist_8c.html#a14effb264a1e7bbb3c0d4674b5ce6fee", null ],
     [ "ll_length_adapter", "linkedlist_8c.html#a7dfb7c7c40852d0d727ff54c3dfc1ea7", null ],
     [ "ll_navigate", "linkedlist_8c.html#af6d730b037f2c13ba4607176975783cb", null ],
+    [ "ll_node_navigate", "linkedlist_8c.html#ad80d64042304cf08a4f4469db2a780c7", null ],
     [ "ll_peek_back", "linkedlist_8c.html#a020f9e50639387120cf56ec43b5e9a27", null ],
     [ "ll_peek_back_adapter", "linkedlist_8c.html#a01e0f1615fdc02889fb248673b76d5c7", null ],
     [ "ll_peek_front", "linkedlist_8c.html#a8c1f57a6ef176fce673207ab11dba216", null ],
@@ -43,5 +44,7 @@ var linkedlist_8c =
     [ "ll_remove_adapter", "linkedlist_8c.html#acca66093f625d85615853496ac5bbbc4", null ],
     [ "ll_remove_node", "linkedlist_8c.html#af6e64612c12b5631bea5f1e324f6a96d", null ],
     [ "ll_set", "linkedlist_8c.html#ad45a9374335d4b3bf517e1ea02878e87", null ],
-    [ "ll_set_adapter", "linkedlist_8c.html#ace820db6818d758d304ec5491fb13dfc", null ]
+    [ "ll_set_adapter", "linkedlist_8c.html#ace820db6818d758d304ec5491fb13dfc", null ],
+    [ "ll_sort", "linkedlist_8c.html#aa699b130d63249003c0568e12201f30b", null ],
+    [ "ll_sort_rec", "linkedlist_8c.html#a9cb331a6a9a705052ebdc2091ae46301", null ]
 ];
