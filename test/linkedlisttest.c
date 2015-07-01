@@ -45,6 +45,36 @@ int ll_test_create_empty()
   return 0;
 }
 
+int ll_test_sort()
+{
+  smb_ll *list = ll_create();
+  smb_status status = SMB_SUCCESS;
+  int values[] = {8, 1, 3, 5, 12, 4, 7, 9};
+  int results[] = {1, 3, 4, 5, 7, 8, 9, 12};
+  int i;
+  for (i = 0; i < sizeof(values)/sizeof(int); i++) {
+    ll_append(list, (DATA){.data_llint=values[i]});
+  }
+  ll_sort(list, &data_compare_int);
+  for (i = 0; i < sizeof(results)/sizeof(int); i++) {
+    TEST_ASSERT(ll_get(list, i, &status).data_llint == results[i]);
+    TEST_ASSERT(status == SMB_SUCCESS);
+  }
+  TEST_ASSERT(list->tail->data.data_llint ==
+              results[sizeof(results)/sizeof(int) - 1]);
+  TEST_ASSERT(list->tail->next == NULL);
+  ll_delete(list);
+  return 0;
+}
+
+int ll_test_sort_empty()
+{
+  smb_ll *list = ll_create();
+  ll_sort(list, &data_compare_int);
+  ll_delete(list);
+  return 0;
+}
+
 void linked_list_test()
 {
   // Use the smbunit test framework.  Load tests and run them.
@@ -55,6 +85,12 @@ void linked_list_test()
 
   smb_ut_test *create_empty = su_create_test("create_empty", ll_test_create_empty);
   su_add_test(group, create_empty);
+
+  smb_ut_test *sort = su_create_test("sort", ll_test_sort);
+  su_add_test(group, sort);
+
+  smb_ut_test *sort_empty = su_create_test("sort_empty", ll_test_sort_empty);
+  su_add_test(group, sort_empty);
 
   su_run_group(group);
   su_delete_group(group);
