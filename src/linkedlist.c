@@ -61,6 +61,16 @@ void ll_remove_node(smb_ll *list, smb_ll_node *the_node)
   smb_free(the_node);
 }
 
+smb_ll_node *ll_node_navigate(smb_ll_node *node, int index)
+{
+  int i = 0;
+  while (i < index) {
+    node = node->next;
+    i++;
+  }
+  return node;
+}
+
 /**
    @brief Navigates to the given index in the list, returning the correct node,
    or NULL.
@@ -82,12 +92,7 @@ smb_ll_node * ll_navigate(const smb_ll *list, int index, smb_status *status)
     *status = SMB_INDEX_ERROR;
     return NULL;
   }
-  int i = 0;
-  while (i < index) {
-    node = node->next;
-    i++;
-  }
-  return node;
+  return ll_node_navigate(node, index);
 }
 
 /**
@@ -468,6 +473,81 @@ void ll_set(smb_ll *list, int index, DATA new_data, smb_status *status)
 int ll_length(const smb_ll *list)
 {
   return list->length;
+}
+
+/**
+   @brief Recursive mergesort helper function.
+
+   @param head Pointer to the head pointer (will be updated to reflect new list
+   after sorting).
+   @param length Length of sublist.  Expects the trailing node will not point to
+   the next sublist.
+   @param cmp Comparator.
+   @returns The tail of the sorted list!
+ */
+static smb_ll_node *ll_sort_rec(smb_ll_node **head, int length, DATA_COMPARE cmp)
+{
+  smb_ll_node *left = *head;
+  smb_ll_node *right, *tail, *next;
+
+  // BASE CASE!
+  if (length <= 1) {
+    return *head;
+  }
+
+  // Find midpoint and bisect list.
+  right = ll_node_navigate(*head, length/2);
+  right->prev->next = NULL;
+  right->prev = NULL;
+
+  // Sort each sublist.
+  ll_sort_rec(&left, length/2, cmp);
+  ll_sort_rec(&right, length-length/2, cmp);
+
+  // Pick the first element.
+  if (cmp(left->data, right->data) <= 0) {
+    *head = left;
+    tail = left;
+    left = left->next;
+  } else {
+    *head = right;
+    tail = right;
+    right = right->next;
+  }
+
+  // Merge the remaining elements.
+  while (--length) {
+    if (left == NULL) {
+      next = right;
+      right = right->next;
+    } else if (right == NULL) {
+      next = left;
+      left = left->next;
+    } else if (cmp(left->data, right->data) <= 0) {
+      next = left;
+      left = left->next;
+    } else {
+      next = right;
+      right = right->next;
+    }
+    tail->next = next;
+    next->prev = tail;
+    next->next = NULL;
+    tail = next;
+  }
+  tail->next = NULL;
+  return tail;
+}
+
+/**
+   @brief Stable sort of linked list.
+   @param list List to sort.
+   @param comp Comparator for sorting.
+   @return Nothing, but the list is sorted in place.
+ */
+void ll_sort(smb_ll *list, DATA_COMPARE comp)
+{
+  list->tail = ll_sort_rec(&list->head, list->length, comp);
 }
 
 /**
