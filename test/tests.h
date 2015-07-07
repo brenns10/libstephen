@@ -34,11 +34,6 @@ void hash_table_test();
 void bit_field_test();
 
 /**
-   Run the utf8 tests
- */
-void utf8_test(void);
-
-/**
    Run the iter tests
  */
 void iter_test(void);

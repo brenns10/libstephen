@@ -27,7 +27,6 @@ int main(int argc, char ** argv)
   array_list_test();
   hash_table_test();
   bit_field_test();
-  utf8_test();
   iter_test();
   list_test();
   args_test();
