@@ -189,6 +189,66 @@ int test_wcbuf_printf(void)
   return 0;
 }
 
+/**
+   @brief Test trimming a cbuf.
+ */
+int test_cbuf_trim(void)
+{
+  cbuf *cb = cb_create(8);
+  cb_concat(cb, "abc");
+  TEST_ASSERT(cb->capacity == 8);
+  TEST_ASSERT(cb->length == 3);
+  cb_trim(cb);
+  TEST_ASSERT(cb->capacity == 4);
+  TEST_ASSERT(cb->length == 3);
+  cb_delete(cb);
+  return 0;
+}
+
+/**
+   @brief Test trimming a wcbuf.
+ */
+int test_wcbuf_trim(void)
+{
+  wcbuf *wcb = wcb_create(8);
+  wcb_concat(wcb, L"abc");
+  TEST_ASSERT(wcb->capacity == 8);
+  TEST_ASSERT(wcb->length == 3);
+  wcb_trim(wcb);
+  TEST_ASSERT(wcb->capacity == 4);
+  TEST_ASSERT(wcb->length == 3);
+  wcb_delete(wcb);
+  return 0;
+}
+
+/**
+   @brief Test clearing a cbuf.
+ */
+int test_cbuf_clear(void)
+{
+  cbuf *cb = cb_create(8);
+  cb_concat(cb, "abc");
+  TEST_ASSERT(strcmp(cb->buf, "abc") == 0);
+  cb_clear(cb);
+  TEST_ASSERT(strcmp(cb->buf, "") == 0);
+  cb_delete(cb);
+  return 0;
+}
+
+/**
+   @brief Test clearing a wcbuf.
+ */
+int test_wcbuf_clear(void)
+{
+  wcbuf *wcb = wcb_create(8);
+  wcb_concat(wcb, L"abc");
+  TEST_ASSERT(wcscmp(wcb->buf, L"abc") == 0);
+  wcb_clear(wcb);
+  TEST_ASSERT(wcscmp(wcb->buf, L"") == 0);
+  wcb_delete(wcb);
+  return 0;
+}
+
 void charbuf_test(void)
 {
   smb_ut_group *group = su_create_test_group("charbuf");
@@ -228,6 +288,18 @@ void charbuf_test(void)
 
   smb_ut_test *wcbuf_append_realloc = su_create_test("wcbuf_append_realloc", test_wcbuf_append_realloc);
   su_add_test(group, wcbuf_append_realloc);
+
+  smb_ut_test *cbuf_trim = su_create_test("cbuf_trim", test_cbuf_trim);
+  su_add_test(group, cbuf_trim);
+
+  smb_ut_test *wcbuf_trim = su_create_test("wcbuf_trim", test_wcbuf_trim);
+  su_add_test(group, wcbuf_trim);
+
+  smb_ut_test *cbuf_clear = su_create_test("cbuf_clear", test_cbuf_clear);
+  su_add_test(group, cbuf_clear);
+
+  smb_ut_test *wcbuf_clear = su_create_test("wcbuf_clear", test_wcbuf_clear);
+  su_add_test(group, wcbuf_clear);
 
   su_run_group(group);
   su_delete_group(group);
