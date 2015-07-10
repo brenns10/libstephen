@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2015-07-07 00:47:05</td>
+            <td class="headerValue">2015-07-10 15:48:12</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">7</td>
@@ -89,13 +89,13 @@
 <span class="lineNum">      27 </span>            :    @param run A function pointer to the test function.
 <a name="28"><span class="lineNum">      28 </span>            :    @returns A pointer to the new test.</a>
 <span class="lineNum">      29 </span>            :  */
-<span class="lineNum">      30 </span><span class="lineCov">         63 : smb_ut_test *su_create_test(char *description, int (*run)())</span>
+<span class="lineNum">      30 </span><span class="lineCov">         67 : smb_ut_test *su_create_test(char *description, int (*run)())</span>
 <span class="lineNum">      31 </span>            : {
-<span class="lineNum">      32 </span><span class="lineCov">         63 :   smb_ut_test *test = smb_new(smb_ut_test, 1);</span>
-<span class="lineNum">      33 </span><span class="lineCov">         63 :   strncpy(test-&gt;description, description, SMB_UNIT_DESCRIPTION_SIZE - 1);</span>
-<span class="lineNum">      34 </span><span class="lineCov">         63 :   test-&gt;description[SMB_UNIT_DESCRIPTION_SIZE - 1] = 0;</span>
-<span class="lineNum">      35 </span><span class="lineCov">         63 :   test-&gt;run = run;</span>
-<span class="lineNum">      36 </span><span class="lineCov">         63 :   return test;</span>
+<span class="lineNum">      32 </span><span class="lineCov">         67 :   smb_ut_test *test = smb_new(smb_ut_test, 1);</span>
+<span class="lineNum">      33 </span><span class="lineCov">         67 :   strncpy(test-&gt;description, description, SMB_UNIT_DESCRIPTION_SIZE - 1);</span>
+<span class="lineNum">      34 </span><span class="lineCov">         67 :   test-&gt;description[SMB_UNIT_DESCRIPTION_SIZE - 1] = 0;</span>
+<span class="lineNum">      35 </span><span class="lineCov">         67 :   test-&gt;run = run;</span>
+<span class="lineNum">      36 </span><span class="lineCov">         67 :   return test;</span>
 <span class="lineNum">      37 </span>            : }
 <span class="lineNum">      38 </span>            : 
 <span class="lineNum">      39 </span>            : /**
@@ -124,12 +124,12 @@
 <span class="lineNum">      62 </span>            :    @param group A pointer to the group to add the test to.
 <a name="63"><span class="lineNum">      63 </span>            :    @param test A pointer to the test.</a>
 <span class="lineNum">      64 </span>            :  */
-<span class="lineNum">      65 </span><span class="lineCov">         63 : void su_add_test(smb_ut_group *group, smb_ut_test *test)</span>
+<span class="lineNum">      65 </span><span class="lineCov">         67 : void su_add_test(smb_ut_group *group, smb_ut_test *test)</span>
 <span class="lineNum">      66 </span>            : {
-<span class="lineNum">      67 </span><span class="lineCov">         63 :   if (group-&gt;num_tests &lt; SMB_UNIT_TESTS_PER_GROUP) {</span>
-<span class="lineNum">      68 </span><span class="lineCov">         63 :     group-&gt;tests[group-&gt;num_tests++] = test;</span>
+<span class="lineNum">      67 </span><span class="lineCov">         67 :   if (group-&gt;num_tests &lt; SMB_UNIT_TESTS_PER_GROUP) {</span>
+<span class="lineNum">      68 </span><span class="lineCov">         67 :     group-&gt;tests[group-&gt;num_tests++] = test;</span>
 <span class="lineNum">      69 </span>            :   }
-<span class="lineNum">      70 </span><span class="lineCov">         63 : }</span>
+<span class="lineNum">      70 </span><span class="lineCov">         67 : }</span>
 <span class="lineNum">      71 </span>            : 
 <span class="lineNum">      72 </span>            : /**
 <span class="lineNum">      73 </span>            :    @brief Run the given test.
@@ -148,17 +148,17 @@
 <span class="lineNum">      86 </span>            :    @retval 3 Memory was leaked.  The test returned 0 and all expected errors
 <a name="87"><span class="lineNum">      87 </span>            :    were found (or no errors were expected or found), but memory leaked.</a>
 <span class="lineNum">      88 </span>            :  */
-<span class="lineNum">      89 </span><span class="lineCov">         63 : int su_run_test(smb_ut_test *test)</span>
+<span class="lineNum">      89 </span><span class="lineCov">         67 : int su_run_test(smb_ut_test *test)</span>
 <span class="lineNum">      90 </span>            : {
-<span class="lineNum">      91 </span><span class="lineCov">         63 :   int result = test-&gt;run();</span>
+<span class="lineNum">      91 </span><span class="lineCov">         67 :   int result = test-&gt;run();</span>
 <span class="lineNum">      92 </span>            : 
-<span class="lineNum">      93 </span><span class="lineCov">         63 :   if (result) {</span>
+<span class="lineNum">      93 </span><span class="lineCov">         67 :   if (result) {</span>
 <span class="lineNum">      94 </span><span class="lineNoCov">          0 :     printf (&quot;TEST \&quot;%s\&quot; failed on line: %d\n&quot;,test-&gt;description, result);</span>
 <span class="lineNum">      95 </span><span class="lineNoCov">          0 :     return 1;</span>
 <span class="lineNum">      96 </span>            :   }
 <span class="lineNum">      97 </span>            : 
-<span class="lineNum">      98 </span><span class="lineCov">         63 :   printf (&quot;TEST \&quot;%s\&quot; passed!\n&quot;,test-&gt;description);</span>
-<span class="lineNum">      99 </span><span class="lineCov">         63 :   return 0;</span>
+<span class="lineNum">      98 </span><span class="lineCov">         67 :   printf (&quot;TEST \&quot;%s\&quot; passed!\n&quot;,test-&gt;description);</span>
+<span class="lineNum">      99 </span><span class="lineCov">         67 :   return 0;</span>
 <span class="lineNum">     100 </span>            : }
 <span class="lineNum">     101 </span>            : 
 <span class="lineNum">     102 </span>            : /**
@@ -177,9 +177,9 @@
 <span class="lineNum">     115 </span>            : {
 <span class="lineNum">     116 </span><span class="lineCov">         11 :   int result = 0;</span>
 <span class="lineNum">     117 </span><span class="lineCov">         11 :   printf (&quot;## GROUP \&quot;%s\&quot; running...\n&quot;,group-&gt;description);</span>
-<span class="lineNum">     118 </span><span class="lineCov">         74 :   for (int i = 0; i &lt; group-&gt;num_tests; i++) {</span>
-<span class="lineNum">     119 </span><span class="lineCov">         63 :     result = su_run_test(group-&gt;tests[i]);</span>
-<span class="lineNum">     120 </span><span class="lineCov">         63 :     if (result) {</span>
+<span class="lineNum">     118 </span><span class="lineCov">         78 :   for (int i = 0; i &lt; group-&gt;num_tests; i++) {</span>
+<span class="lineNum">     119 </span><span class="lineCov">         67 :     result = su_run_test(group-&gt;tests[i]);</span>
+<span class="lineNum">     120 </span><span class="lineCov">         67 :     if (result) {</span>
 <span class="lineNum">     121 </span><span class="lineNoCov">          0 :       printf (&quot;## GROUP \&quot;%s\&quot; failed on test: %d\n\n&quot;, group-&gt;description, i);</span>
 <span class="lineNum">     122 </span><span class="lineNoCov">          0 :       exit(result);</span>
 <span class="lineNum">     123 </span>            :     }
@@ -197,10 +197,10 @@
 <span class="lineNum">     135 </span>            : 
 <a name="136"><span class="lineNum">     136 </span>            :    @param test The test to free</a>
 <span class="lineNum">     137 </span>            :  */
-<span class="lineNum">     138 </span><span class="lineCov">         63 : void su_delete_test(smb_ut_test *test)</span>
+<span class="lineNum">     138 </span><span class="lineCov">         67 : void su_delete_test(smb_ut_test *test)</span>
 <span class="lineNum">     139 </span>            : {
-<span class="lineNum">     140 </span><span class="lineCov">         63 :   smb_free(test);</span>
-<span class="lineNum">     141 </span><span class="lineCov">         63 : }</span>
+<span class="lineNum">     140 </span><span class="lineCov">         67 :   smb_free(test);</span>
+<span class="lineNum">     141 </span><span class="lineCov">         67 : }</span>
 <span class="lineNum">     142 </span>            : 
 <span class="lineNum">     143 </span>            : /**
 <span class="lineNum">     144 </span>            :    @brief Free the memory associated with the group AND ALL TESTS WITHIN IT.
@@ -217,9 +217,9 @@
 <span class="lineNum">     155 </span>            :  */
 <span class="lineNum">     156 </span><span class="lineCov">         11 : void su_delete_group(smb_ut_group *group)</span>
 <span class="lineNum">     157 </span>            : {
-<span class="lineNum">     158 </span><span class="lineCov">         74 :   for (int i = 0; i &lt; group-&gt;num_tests; i++) {</span>
-<span class="lineNum">     159 </span><span class="lineCov">         63 :     if (group-&gt;tests[i]) // don't delete if already deleted</span>
-<span class="lineNum">     160 </span><span class="lineCov">         63 :       su_delete_test(group-&gt;tests[i]);</span>
+<span class="lineNum">     158 </span><span class="lineCov">         78 :   for (int i = 0; i &lt; group-&gt;num_tests; i++) {</span>
+<span class="lineNum">     159 </span><span class="lineCov">         67 :     if (group-&gt;tests[i]) // don't delete if already deleted</span>
+<span class="lineNum">     160 </span><span class="lineCov">         67 :       su_delete_test(group-&gt;tests[i]);</span>
 <span class="lineNum">     161 </span>            :   }
 <span class="lineNum">     162 </span><span class="lineCov">         11 :   smb_free(group);</span>
 <span class="lineNum">     163 </span><span class="lineCov">         11 : }</span>

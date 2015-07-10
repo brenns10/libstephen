@@ -126,8 +126,10 @@ cbuf *&#160;</td><td class="memItemRight" valign="bottom"><b>cb_create</b> (int 
 void&#160;</td><td class="memItemRight" valign="bottom"><b>cb_destroy</b> (cbuf *obj)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a77192c60e014e95e21b4c5dfc01e928f"></a><!-- doxytag: member="charbuf.c::cb_delete" ref="a77192c60e014e95e21b4c5dfc01e928f" args="(cbuf *obj)" -->
 void&#160;</td><td class="memItemRight" valign="bottom"><b>cb_delete</b> (cbuf *obj)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a1548fa018ea62fc308606b209f09afb0"></a><!-- doxytag: member="charbuf.c::cb_append" ref="a1548fa018ea62fc308606b209f09afb0" args="(cbuf *obj, char *buf)" -->
-void&#160;</td><td class="memItemRight" valign="bottom"><b>cb_append</b> (cbuf *obj, char *buf)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad58e21de36a2a1e14eb428a3d758aec4"></a><!-- doxytag: member="charbuf.c::cb_concat" ref="ad58e21de36a2a1e14eb428a3d758aec4" args="(cbuf *obj, char *buf)" -->
+void&#160;</td><td class="memItemRight" valign="bottom"><b>cb_concat</b> (cbuf *obj, char *buf)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a96f64ecf859f4c51a1c4bc15462c1bde"></a><!-- doxytag: member="charbuf.c::cb_append" ref="a96f64ecf859f4c51a1c4bc15462c1bde" args="(cbuf *obj, char next)" -->
+void&#160;</td><td class="memItemRight" valign="bottom"><b>cb_append</b> (cbuf *obj, char next)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ab0bfed4c290915b3e2ab7823181f61f2"></a><!-- doxytag: member="charbuf.c::cb_vprintf" ref="ab0bfed4c290915b3e2ab7823181f61f2" args="(cbuf *obj, char *format, va_list va)" -->
 void&#160;</td><td class="memItemRight" valign="bottom"><b>cb_vprintf</b> (cbuf *obj, char *format, va_list va)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a0bc356fe4cea7b544e06f8a7d40da499"></a><!-- doxytag: member="charbuf.c::cb_printf" ref="a0bc356fe4cea7b544e06f8a7d40da499" args="(cbuf *obj, char *format,...)" -->
@@ -140,8 +142,10 @@ wcbuf *&#160;</td><td class="memItemRight" valign="bottom"><b>wcb_create</b> (in
 void&#160;</td><td class="memItemRight" valign="bottom"><b>wcb_destroy</b> (wcbuf *obj)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="afa755dacb080bc26fd441251d4eeb77f"></a><!-- doxytag: member="charbuf.c::wcb_delete" ref="afa755dacb080bc26fd441251d4eeb77f" args="(wcbuf *obj)" -->
 void&#160;</td><td class="memItemRight" valign="bottom"><b>wcb_delete</b> (wcbuf *obj)</td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a94a4e4879b84239220b6937b073278f8"></a><!-- doxytag: member="charbuf.c::wcb_append" ref="a94a4e4879b84239220b6937b073278f8" args="(wcbuf *obj, wchar_t *str)" -->
-void&#160;</td><td class="memItemRight" valign="bottom"><b>wcb_append</b> (wcbuf *obj, wchar_t *str)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af982be395693cac5b786e8af7f28437d"></a><!-- doxytag: member="charbuf.c::wcb_concat" ref="af982be395693cac5b786e8af7f28437d" args="(wcbuf *obj, wchar_t *str)" -->
+void&#160;</td><td class="memItemRight" valign="bottom"><b>wcb_concat</b> (wcbuf *obj, wchar_t *str)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="add5283a52016049800db532ff1b01d36"></a><!-- doxytag: member="charbuf.c::wcb_append" ref="add5283a52016049800db532ff1b01d36" args="(wcbuf *obj, wchar_t next)" -->
+void&#160;</td><td class="memItemRight" valign="bottom"><b>wcb_append</b> (wcbuf *obj, wchar_t next)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="af5e7a58c00e4184e43ba3b824177eb8e"></a><!-- doxytag: member="charbuf.c::wcb_vprintf" ref="af5e7a58c00e4184e43ba3b824177eb8e" args="(wcbuf *obj, wchar_t *format, va_list v1)" -->
 void&#160;</td><td class="memItemRight" valign="bottom"><b>wcb_vprintf</b> (wcbuf *obj, wchar_t *format, va_list v1)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="ad0158f0f1f4a87eca9c05986db21db07"></a><!-- doxytag: member="charbuf.c::wcb_printf" ref="ad0158f0f1f4a87eca9c05986db21db07" args="(wcbuf *obj, wchar_t *format,...)" -->
@@ -174,7 +178,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>wcb_printf</b> (wcbuf
     <ul>
       <li class="navelem"><a class="el" href="charbuf_8c.html">charbuf.c</a>      </li>
 
-    <li class="footer">Generated on Tue Jul 7 2015 00:47:05 for libstephen by
+    <li class="footer">Generated on Fri Jul 10 2015 15:48:13 for libstephen by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.6.1 </li>
    </ul>
