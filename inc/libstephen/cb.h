@@ -70,11 +70,17 @@ void cb_destroy(cbuf *obj);
 void cb_delete(cbuf *obj);
 
 /**
-   @brief Append a string onto the end of the character buffer.
-   @param obj The buffer to append onto.
-   @param str The string to append.
+   @brief Concat a string onto the end of the character buffer.
+   @param obj The buffer to concat onto.
+   @param str The string to concat.
  */
-void cb_append(cbuf *obj, char *str);
+void cb_concat(cbuf *obj, char *str);
+/**
+   @brief Append a character onto the end of the character buffer.
+   @param obj The buffer to append onto.
+   @param next The character to append.
+ */
+void cb_append(cbuf *obj, char next);
 /**
    @brief Format and print a string onto the end of a character buffer.
    @param obj The object to print onto.
@@ -137,11 +143,17 @@ void wcb_destroy(wcbuf *obj);
 void wcb_delete(wcbuf *obj);
 
 /**
-   @brief Append a wide character string into the wide buffer.
-   @param obj The wide buffer to append onto.
-   @param str The wide string to append on.
+   @brief Concat a wide character string into the wide buffer.
+   @param obj The wide buffer to concat onto.
+   @param str The wide string to concat on.
  */
-void wcb_append(wcbuf *obj, wchar_t *str);
+void wcb_concat(wcbuf *obj, wchar_t *str);
+/**
+   @brief Append a single character onto the buffer.
+   @param obj The wide buffer to append onto.
+   @param next The wide character to append.
+ */
+void wcb_append(wcbuf *obj, wchar_t next);
 /**
    @brief Printf a wide character string onto the wide buffer.
    @param obj The wide buffer to printf onto.

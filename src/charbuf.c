@@ -53,6 +53,15 @@ void cb_delete(cbuf *obj) {
   smb_free(obj);
 }
 
+/**
+   @brief Ensure that the cbuf can fit a certain amount of characters.
+   @param obj The cbuf to expand (if necessary).
+   @param minsize The minimum size the cbuf should be able to fit.
+
+   Note that minsize should include the NUL byte as part of the character count.
+   Therefore, to ensure that the string "four" fits in the buffer, you would
+   want to run `cb_expand_to_fit(obj, 5)` (assuming the buffer was empty).
+ */
 static void cb_expand_to_fit(cbuf *obj, int minsize)
 {
   int newcapacity = obj->capacity;
@@ -65,12 +74,20 @@ static void cb_expand_to_fit(cbuf *obj, int minsize)
   }
 }
 
-void cb_append(cbuf *obj, char *buf)
+void cb_concat(cbuf *obj, char *buf)
 {
   int length = strlen(buf);
   cb_expand_to_fit(obj, obj->length + length + 1);
   strcpy(obj->buf + obj->length, buf);
   obj->length += length;
+}
+
+void cb_append(cbuf *obj, char next)
+{
+  cb_expand_to_fit(obj, obj->length + 2); // include new character + nul
+  obj->buf[obj->length] = next;
+  obj->length++;
+  obj->buf[obj->length] = '\0';
 }
 
 void cb_vprintf(cbuf *obj, char *format, va_list va)
@@ -133,6 +150,15 @@ void wcb_delete(wcbuf *obj)
   smb_free(obj);
 }
 
+/**
+   @brief Ensure that the wcbuf can fit a certain amount of characters.
+   @param obj The wcbuf to expand (if necessary).
+   @param minsize The minimum size the wcbuf should be able to fit.
+
+   Note that minsize should include the NUL character as part of the character
+   count.  Therefore, to ensure that the string L"four" fits in the buffer, you
+   would want to run `cb_expand_to_fit(obj, 5)` (assuming the buffer was empty).
+ */
 static void wcb_expand_to_fit(wcbuf *obj, int minsize)
 {
   int newcapacity = obj->capacity;
@@ -145,12 +171,20 @@ static void wcb_expand_to_fit(wcbuf *obj, int minsize)
   }
 }
 
-void wcb_append(wcbuf *obj, wchar_t *str)
+void wcb_concat(wcbuf *obj, wchar_t *str)
 {
   int length = wcslen(str);
   wcb_expand_to_fit(obj, obj->length + length + 1);
   wcscpy(obj->buf + obj->length, str);
   obj->length += length;
+}
+
+void wcb_append(wcbuf *obj, wchar_t next)
+{
+  wcb_expand_to_fit(obj, obj->length + 2); // include new character + nul
+  obj->buf[obj->length] = next;
+  obj->length++;
+  obj->buf[obj->length] = L'\0';
 }
 
 void wcb_vprintf(wcbuf *obj, wchar_t *format, va_list v1)
@@ -167,7 +201,7 @@ void wcb_vprintf(wcbuf *obj, wchar_t *format, va_list v1)
   // Then, use vsnprintf first to find out how many bytes of output to allocate.
   va_copy(v2, v1);
   mbout_len = vsnprintf(NULL, 0, mbformat, v1);
- 
+
   // Now, actually allocate the memory and do the multibyte print.
   mbout = smb_new(char, mbout_len + 1);
   vsnprintf(mbout, mbout_len + 1, mbformat, v2);
