@@ -82,6 +82,16 @@ void cb_concat(cbuf *obj, char *str);
  */
 void cb_append(cbuf *obj, char next);
 /**
+   @brief Reallocate the buffer to the exact size of the contained string.
+   @param obj The buffer to reallocate.
+ */
+void cb_trim(cbuf *obj);
+/**
+   @brief Empty the buffer of its contents.
+   @param obj The buffer to clear.
+ */
+void cb_clear(cbuf *obj);
+/**
    @brief Format and print a string onto the end of a character buffer.
    @param obj The object to print onto.
    @param format The format string to print.
@@ -154,6 +164,16 @@ void wcb_concat(wcbuf *obj, wchar_t *str);
    @param next The wide character to append.
  */
 void wcb_append(wcbuf *obj, wchar_t next);
+/**
+   @brief Reallocate the buffer to the exact size of the contained string.
+   @param obj The buffer to reallocate.
+ */
+void wcb_trim(wcbuf *obj);
+/**
+   @brief Empty the buffer of its contents.
+   @param obj The buffer to clear.
+ */
+void wcb_clear(wcbuf *obj);
 /**
    @brief Printf a wide character string onto the wide buffer.
    @param obj The wide buffer to printf onto.

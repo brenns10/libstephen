@@ -90,6 +90,18 @@ void cb_append(cbuf *obj, char next)
   obj->buf[obj->length] = '\0';
 }
 
+void cb_trim(cbuf *obj)
+{
+  obj->buf = smb_renew(char, obj->buf, obj->length + 1);
+  obj->capacity = obj->length + 1;
+}
+
+void cb_clear(cbuf *obj)
+{
+  obj->buf[0] = '\0';
+  obj->length = 0;
+}
+
 void cb_vprintf(cbuf *obj, char *format, va_list va)
 {
   va_list v2;
@@ -185,6 +197,18 @@ void wcb_append(wcbuf *obj, wchar_t next)
   obj->buf[obj->length] = next;
   obj->length++;
   obj->buf[obj->length] = L'\0';
+}
+
+void wcb_trim(wcbuf *obj)
+{
+  obj->buf = smb_renew(wchar_t, obj->buf, obj->length + 1);
+  obj->capacity = obj->length + 1;
+}
+
+void wcb_clear(wcbuf *obj)
+{
+  obj->buf[0] = L'\0';
+  obj->length = 0;
 }
 
 void wcb_vprintf(wcbuf *obj, wchar_t *format, va_list v1)
