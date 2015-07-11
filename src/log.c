@@ -98,7 +98,7 @@ void sl_set_default_logger(smb_logger *obj)
 
 static char *sl_level_string(int level) {
   static char buf[20]; // plenty of space, to be safe.
-  if (level % 10 == 0 && level >= LNOTSET && level <= LCRITICAL) {
+  if (level % 10 == 0 && level >= LEVEL_NOTSET && level <= LEVEL_CRITICAL) {
     return level_names[level / 10];
   } else {
     snprintf(buf, 20, "%d", level);

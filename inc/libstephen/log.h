@@ -18,16 +18,16 @@
 
 #include "base.h"
 
-#define LNOTSET    0
-#define LDEBUG    10
-#define LINFO     20
-#define LWARNING  30
-#define LERROR    40
-#define LCRITICAL 50
+#define LEVEL_NOTSET    0
+#define LEVEL_DEBUG    10
+#define LEVEL_INFO     20
+#define LEVEL_WARNING  30
+#define LEVEL_ERROR    40
+#define LEVEL_CRITICAL 50
 
 #define SMB_MAX_LOGHANDLERS 10
 
-#define SMB_DEFAULT_LOGLEVEL  LNOTSET
+#define SMB_DEFAULT_LOGLEVEL  LEVEL_NOTSET
 #define SMB_DEFAULT_LOGDEST   stderr
 #define SMB_DEFAULT_LOGFORMAT "%s: (%s) %s: %s\n"
 
@@ -60,10 +60,10 @@ void sl_log(smb_logger *l, char *file, int line, const char *function, int level
 
 #define LOG(logger, level, ...) sl_log(logger, __FILE__, __LINE__, __func__, level, __VA_ARGS__);
 
-#define DEBUG(...)            LOG(NULL, LDEBUG,    __VA_ARGS__)
-#define INFO(...)             LOG(NULL, LINFO,     __VA_ARGS__)
-#define WARNING(...)          LOG(NULL, LWARNING,  __VA_ARGS__)
-#define ERROR(...)            LOG(NULL, LERROR,    __VA_ARGS__)
-#define CRITICAL(...)         LOG(NULL, LCRITICAL, __VA_ARGS__)
+#define DEBUG(...)            LOG(NULL, LEVEL_DEBUG,    __VA_ARGS__)
+#define INFO(...)             LOG(NULL, LEVEL_INFO,     __VA_ARGS__)
+#define WARNING(...)          LOG(NULL, LEVEL_WARNING,  __VA_ARGS__)
+#define ERROR(...)            LOG(NULL, LEVEL_ERROR,    __VA_ARGS__)
+#define CRITICAL(...)         LOG(NULL, LEVEL_CRITICAL, __VA_ARGS__)
 
 #endif // LIBSTEPHEN_LOG_H

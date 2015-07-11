@@ -22,20 +22,20 @@ int test_levels(void)
 {
   smb_status status = SMB_SUCCESS;
   sl_clear_handlers(NULL);
-  sl_add_handler(NULL, (smb_loghandler){.level=LDEBUG, .dst=stdout}, &status);
-  sl_add_handler(NULL, (smb_loghandler){.level=LINFO, .dst=stdout}, &status);
-  sl_add_handler(NULL, (smb_loghandler){.level=LWARNING, .dst=stdout}, &status);
-  sl_add_handler(NULL, (smb_loghandler){.level=LERROR, .dst=stdout}, &status);
-  sl_add_handler(NULL, (smb_loghandler){.level=LCRITICAL,  .dst=stdout}, &status);
-  LOG(NULL, LNOTSET, "this appears 0 times");
+  sl_add_handler(NULL, (smb_loghandler){.level=LEVEL_DEBUG, .dst=stdout}, &status);
+  sl_add_handler(NULL, (smb_loghandler){.level=LEVEL_INFO, .dst=stdout}, &status);
+  sl_add_handler(NULL, (smb_loghandler){.level=LEVEL_WARNING, .dst=stdout}, &status);
+  sl_add_handler(NULL, (smb_loghandler){.level=LEVEL_ERROR, .dst=stdout}, &status);
+  sl_add_handler(NULL, (smb_loghandler){.level=LEVEL_CRITICAL,  .dst=stdout}, &status);
+  LOG(NULL, LEVEL_NOTSET, "this appears 0 times");
   DEBUG("this appears 1 time");
   INFO("this appears 2 times");
   WARNING("this appears 3 times");
   ERROR("this appears 4 times");
   CRITICAL("this appears 5 times");
-  sl_set_level(NULL, LDEBUG);
+  sl_set_level(NULL, LEVEL_DEBUG);
   DEBUG("this appears 5 times");
-  LOG(NULL, LDEBUG + 1, "this also appears 5 times, with level 11");
+  LOG(NULL, LEVEL_DEBUG + 1, "this also appears 5 times, with level 11");
   return 0;
 }
 
@@ -44,7 +44,7 @@ int test_override(void)
   smb_status status = SMB_SUCCESS;
   smb_logger *logger = sl_create();
   sl_clear_handlers(NULL);
-  sl_add_handler(logger, (smb_loghandler){.level=LINFO, .dst=stdout}, &status);
+  sl_add_handler(logger, (smb_loghandler){.level=LEVEL_INFO, .dst=stdout}, &status);
   DEBUG("you shouldn't see this");
   INFO("you shouldn't see this");
   sl_set_default_logger(logger);
@@ -61,27 +61,27 @@ int test_too_many_levels(void)
 {
   smb_status status = SMB_SUCCESS;
   sl_clear_handlers(NULL);
-  sl_add_handler(NULL, (smb_loghandler){.level=LDEBUG, .dst=stdout}, &status);
+  sl_add_handler(NULL, (smb_loghandler){.level=LEVEL_DEBUG, .dst=stdout}, &status);
   TEST_ASSERT(status == SMB_SUCCESS);
-  sl_add_handler(NULL, (smb_loghandler){.level=LINFO, .dst=stdout}, &status);
+  sl_add_handler(NULL, (smb_loghandler){.level=LEVEL_INFO, .dst=stdout}, &status);
   TEST_ASSERT(status == SMB_SUCCESS);
-  sl_add_handler(NULL, (smb_loghandler){.level=LWARNING, .dst=stdout}, &status);
+  sl_add_handler(NULL, (smb_loghandler){.level=LEVEL_WARNING, .dst=stdout}, &status);
   TEST_ASSERT(status == SMB_SUCCESS);
-  sl_add_handler(NULL, (smb_loghandler){.level=LERROR, .dst=stdout}, &status);
+  sl_add_handler(NULL, (smb_loghandler){.level=LEVEL_ERROR, .dst=stdout}, &status);
   TEST_ASSERT(status == SMB_SUCCESS);
-  sl_add_handler(NULL, (smb_loghandler){.level=LCRITICAL,  .dst=stdout}, &status);
+  sl_add_handler(NULL, (smb_loghandler){.level=LEVEL_CRITICAL,  .dst=stdout}, &status);
   TEST_ASSERT(status == SMB_SUCCESS);
-  sl_add_handler(NULL, (smb_loghandler){.level=LDEBUG, .dst=stdout}, &status);
+  sl_add_handler(NULL, (smb_loghandler){.level=LEVEL_DEBUG, .dst=stdout}, &status);
   TEST_ASSERT(status == SMB_SUCCESS);
-  sl_add_handler(NULL, (smb_loghandler){.level=LINFO, .dst=stdout}, &status);
+  sl_add_handler(NULL, (smb_loghandler){.level=LEVEL_INFO, .dst=stdout}, &status);
   TEST_ASSERT(status == SMB_SUCCESS);
-  sl_add_handler(NULL, (smb_loghandler){.level=LWARNING, .dst=stdout}, &status);
+  sl_add_handler(NULL, (smb_loghandler){.level=LEVEL_WARNING, .dst=stdout}, &status);
   TEST_ASSERT(status == SMB_SUCCESS);
-  sl_add_handler(NULL, (smb_loghandler){.level=LERROR, .dst=stdout}, &status);
+  sl_add_handler(NULL, (smb_loghandler){.level=LEVEL_ERROR, .dst=stdout}, &status);
   TEST_ASSERT(status == SMB_SUCCESS);
-  sl_add_handler(NULL, (smb_loghandler){.level=LCRITICAL,  .dst=stdout}, &status);
+  sl_add_handler(NULL, (smb_loghandler){.level=LEVEL_CRITICAL,  .dst=stdout}, &status);
   TEST_ASSERT(status == SMB_SUCCESS);
-  sl_add_handler(NULL, (smb_loghandler){.level=LCRITICAL,  .dst=stdout}, &status);
+  sl_add_handler(NULL, (smb_loghandler){.level=LEVEL_CRITICAL,  .dst=stdout}, &status);
   TEST_ASSERT(status == SMB_INDEX_ERROR);
   return 0;
 }
