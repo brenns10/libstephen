@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2015-07-10 16:52:28</td>
+            <td class="headerValue">2015-07-11 16:36:07</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">11</td>
@@ -160,7 +160,7 @@
 <span class="lineNum">      98 </span>            : 
 <span class="lineNum">      99 </span><span class="lineCov">         14 : static char *sl_level_string(int level) {</span>
 <span class="lineNum">     100 </span>            :   static char buf[20]; // plenty of space, to be safe.
-<span class="lineNum">     101 </span><span class="lineCov">         14 :   if (level % 10 == 0 &amp;&amp; level &gt;= LNOTSET &amp;&amp; level &lt;= LCRITICAL) {</span>
+<span class="lineNum">     101 </span><span class="lineCov">         14 :   if (level % 10 == 0 &amp;&amp; level &gt;= LEVEL_NOTSET &amp;&amp; level &lt;= LEVEL_CRITICAL) {</span>
 <span class="lineNum">     102 </span><span class="lineCov">         13 :     return level_names[level / 10];</span>
 <span class="lineNum">     103 </span>            :   } else {
 <span class="lineNum">     104 </span><span class="lineCov">          1 :     snprintf(buf, 20, &quot;%d&quot;, level);</span>
