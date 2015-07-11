@@ -28,13 +28,13 @@ int test_levels(void)
   sl_add_handler(NULL, (smb_loghandler){.level=LEVEL_ERROR, .dst=stdout}, &status);
   sl_add_handler(NULL, (smb_loghandler){.level=LEVEL_CRITICAL,  .dst=stdout}, &status);
   LOG(NULL, LEVEL_NOTSET, "this appears 0 times");
-  DEBUG("this appears 1 time");
-  INFO("this appears 2 times");
-  WARNING("this appears 3 times");
-  ERROR("this appears 4 times");
-  CRITICAL("this appears 5 times");
+  LDEBUG("this appears 1 time");
+  LINFO("this appears 2 times");
+  LWARNING("this appears 3 times");
+  LERROR("this appears 4 times");
+  LCRITICAL("this appears 5 times");
   sl_set_level(NULL, LEVEL_DEBUG);
-  DEBUG("this appears 5 times");
+  LDEBUG("this appears 5 times");
   LOG(NULL, LEVEL_DEBUG + 1, "this also appears 5 times, with level 11");
   return 0;
 }
@@ -45,14 +45,14 @@ int test_override(void)
   smb_logger *logger = sl_create();
   sl_clear_handlers(NULL);
   sl_add_handler(logger, (smb_loghandler){.level=LEVEL_INFO, .dst=stdout}, &status);
-  DEBUG("you shouldn't see this");
-  INFO("you shouldn't see this");
+  LDEBUG("you shouldn't see this");
+  LINFO("you shouldn't see this");
   sl_set_default_logger(logger);
-  DEBUG("you shouldn't see this");
-  INFO("you should see this");
+  LDEBUG("you shouldn't see this");
+  LINFO("you should see this");
   sl_set_default_logger(NULL);
-  DEBUG("you shouldn't see this");
-  INFO("you shouldn't see this");
+  LDEBUG("you shouldn't see this");
+  LINFO("you shouldn't see this");
   sl_delete(logger);
   return 0;
 }

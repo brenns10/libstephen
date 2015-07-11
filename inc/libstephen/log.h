@@ -60,10 +60,10 @@ void sl_log(smb_logger *l, char *file, int line, const char *function, int level
 
 #define LOG(logger, level, ...) sl_log(logger, __FILE__, __LINE__, __func__, level, __VA_ARGS__);
 
-#define DEBUG(...)            LOG(NULL, LEVEL_DEBUG,    __VA_ARGS__)
-#define INFO(...)             LOG(NULL, LEVEL_INFO,     __VA_ARGS__)
-#define WARNING(...)          LOG(NULL, LEVEL_WARNING,  __VA_ARGS__)
-#define ERROR(...)            LOG(NULL, LEVEL_ERROR,    __VA_ARGS__)
-#define CRITICAL(...)         LOG(NULL, LEVEL_CRITICAL, __VA_ARGS__)
+#define LDEBUG(...)            LOG(NULL, LEVEL_DEBUG,    __VA_ARGS__)
+#define LINFO(...)             LOG(NULL, LEVEL_INFO,     __VA_ARGS__)
+#define LWARNING(...)          LOG(NULL, LEVEL_WARNING,  __VA_ARGS__)
+#define LERROR(...)            LOG(NULL, LEVEL_ERROR,    __VA_ARGS__)
+#define LCRITICAL(...)         LOG(NULL, LEVEL_CRITICAL, __VA_ARGS__)
 
 #endif // LIBSTEPHEN_LOG_H
