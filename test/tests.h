@@ -59,6 +59,11 @@ void charbuf_test(void);
 void log_test(void);
 
 /**
+   Run the string test.
+ */
+void string_test(void);
+
+/**
    Output statistics of main function args.
  */
 int args_test_main(int argc, char **argv);

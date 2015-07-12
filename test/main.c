@@ -32,5 +32,6 @@ int main(int argc, char ** argv)
   args_test();
   charbuf_test();
   log_test();
+  string_test();
   // return args_test_main(argc, argv);
 }
