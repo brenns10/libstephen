@@ -86,12 +86,12 @@ void su_add_test(smb_ut_group *group, smb_ut_test *test)
    @retval 3 Memory was leaked.  The test returned 0 and all expected errors
    were found (or no errors were expected or found), but memory leaked.
  */
-int su_run_test(smb_ut_test *test)
+int su_run_test(smb_ut_test *test, char *file)
 {
   int result = test->run();
 
   if (result) {
-    printf ("TEST \"%s\" failed on line: %d\n",test->description, result);
+    printf ("%s:%d: assertion failed in %s\n", file, result, test->description);
     return 1;
   }
 
@@ -116,7 +116,7 @@ int su_run_group(smb_ut_group *group)
   int result = 0;
   printf ("## GROUP \"%s\" running...\n",group->description);
   for (int i = 0; i < group->num_tests; i++) {
-    result = su_run_test(group->tests[i]);
+    result = su_run_test(group->tests[i], group->description);
     if (result) {
       printf ("## GROUP \"%s\" failed on test: %d\n\n", group->description, i);
       exit(result);

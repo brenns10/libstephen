@@ -99,7 +99,7 @@ typedef struct smb_ut_group
 smb_ut_test *su_create_test(char *description, int (*run)());
 smb_ut_group *su_create_test_group(char *description);
 void su_add_test(smb_ut_group *group, smb_ut_test *test);
-int su_run_test(smb_ut_test *test);
+int su_run_test(smb_ut_test *test, char *file);
 int su_run_group(smb_ut_group *group);
 void su_delete_test(smb_ut_test *test);
 void su_delete_group(smb_ut_group *group);
