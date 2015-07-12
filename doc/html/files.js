@@ -9,5 +9,6 @@ var files =
     [ "src/linkedlist.c", "linkedlist_8c.html", "linkedlist_8c" ],
     [ "src/log.c", "log_8c.html", "log_8c" ],
     [ "src/smbunit.c", "smbunit_8c.html", "smbunit_8c" ],
+    [ "src/string.c", "string_8c.html", "string_8c" ],
     [ "src/util.c", "util_8c.html", "util_8c" ]
 ];

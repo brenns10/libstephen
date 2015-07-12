@@ -10,5 +10,5 @@ var searchData=
   ['su_5fdelete_5fgroup',['su_delete_group',['../smbunit_8c.html#a63abf54d9afc1e99e2cd8f227a5df1ff',1,'smbunit.c']]],
   ['su_5fdelete_5ftest',['su_delete_test',['../smbunit_8c.html#a2cf009ab3ace56bd9abd4f58a73606b5',1,'smbunit.c']]],
   ['su_5frun_5fgroup',['su_run_group',['../smbunit_8c.html#a8cc60f8c319ad7b749b784ad9602ecd8',1,'smbunit.c']]],
-  ['su_5frun_5ftest',['su_run_test',['../smbunit_8c.html#a69790745218f1b710b628fedf99c1242',1,'smbunit.c']]]
+  ['su_5frun_5ftest',['su_run_test',['../smbunit_8c.html#ac8c3c8ac882832c9bf369204e7ce49ec',1,'smbunit.c']]]
 ];

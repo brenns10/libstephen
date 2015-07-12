@@ -11,7 +11,8 @@ var NAVTREEINDEX =
 "linkedlist_8c.html":[0,0,6],
 "log_8c.html":[0,0,7],
 "smbunit_8c.html":[0,0,8],
-"util_8c.html":[0,0,9],
+"string_8c.html":[0,0,9],
+"util_8c.html":[0,0,10],
 "globals.html":[0,1,0],
 "globals_func.html":[0,1,1],
 "globals_defs.html":[0,1,2]
