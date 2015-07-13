@@ -30,14 +30,6 @@
 #define HASH_TABLE_MAX_LOAD_FACTOR 0.7
 
 /**
-   @brief A hash function declaration.
-
-   @param toHash The data that will be passed to the hash function.
-   @returns The hash value
- */
-typedef unsigned int (*HASH_FUNCTION)(DATA toHash);
-
-/**
    @brief The bucket of a hash table.  Contains key,value pairs, and is a singly
    linked list.
  */
