@@ -20,38 +20,6 @@
 #include <stdio.h>   /* fprintf */
 #include <stdbool.h> /* bool */
 
-/*******************************************************************************
-
-                                  Diagnostics
-
-*******************************************************************************/
-
-/*
-  The debug option enables all diagnostics.
- */
-#ifdef SMB_DEBUG
-#define SMB_ENABLE_DIAGNOSTIC_CODE
-#define SMB_ENABLE_DIAGNOSTIC_PRINTING
-#endif
-
-/**
-   @brief Run this code only if SMB_ENABLE_DIAGNOSTIC_CODE is defined.
- */
-#ifdef SMB_ENABLE_DIAGNOSTIC_CODE
-#define SMB_DIAG_ONLY(x) x
-#else
-#define SMB_DIAG_ONLY(x)
-#endif // SMB_ENABLE_DIAGNOSTIC_CODE
-
-/**
-   @brief Print this (printf) only if SMB_ENABLE_DIAGNOSTIC_PRINTING is defined.
-*/
-#ifdef SMB_ENABLE_DIAGNOSTIC_PRINTING
-#define SMB_DP(...) printf(__VA_ARGS__)
-#else
-#define SMB_DP(...)
-#endif // SMB_ENABLE_DIAGNOSTIC_PRINTING
-
 
 /*******************************************************************************
 
@@ -65,58 +33,104 @@
    Capable of containing long integers, double precision floats, or pointers.
    Takes up 8 bytes.
  */
-typedef union DATA {
-  long long int data_llint;
-  double data_dbl;
-  void * data_ptr;
+typedef union {
+  long long int data_llint; // 64bit integer
+  double data_dbl;          // 64bit IEEE double precision float
+  void * data_ptr;          // pointer (max 64bit, hopefully)
 
-} DATA;
+} LsDATA;
 
-/**
-   @brief A function pointer that takes a DATA and performs an action on it
-
-   The function could count it, call free on it, print it, etc.  Useful for
-   stuff like deleting data structures full of items (if they're pointers to
-   dynamically allocated data, they'll need to be freed), applying an action to
-   every item in a list (e.g. printing), and many more applications.
- */
-typedef void (*DATA_ACTION)(DATA);
+#define LSO(x) ((LsDATA){.data_ptr=(x)})
+#define LSI(x) ((LsDATA){.data_llint=(x)})
+#define LSD(x) ((LsDATA){.data_dbl=(x)})
 
 /**
-   @brief A function pointer that takes two DATA and compares them.
+   @brief A function pointer that takes two LsDATA and compares them.
 
    This comparator function is used for two purposes: (1) to check for equality,
    and (2) to order data.  If a particular type of data has no ordering, then it
    is sufficient for the purposes of equality testing to return 0 if equal, and
    1 if not equal.  However, this will fail for any function that uses the
-   DATA_COMPARE to order DATA.  Therefore, any function that takes a
+   DATA_COMPARE to order LsDATA.  Therefore, any function that takes a
    DATA_COMPARE should specify in its documentation whether it will use it for
    equality testing, or for ordering.
 
-   The DATA_COMPARE function shall return 0 iff the two DATA are equal.  It
+   The DATA_COMPARE function shall return 0 iff the two LsDATA are equal.  It
    shall return a value less than 0 iff the first is less than the second.  It
    shall return a value greater than zero iff the first is greater than the
    second.
  */
-typedef int (*DATA_COMPARE)(DATA,DATA);
+typedef int (*LsProc_Compare)(LsDATA,LsDATA);
 
-int data_compare_string(DATA d1, DATA d2);
-int data_compare_int(DATA d1, DATA d2);
-int data_compare_float(DATA d1, DATA d2);
-int data_compare_pointer(DATA d1, DATA d2);
+int data_compare_string(LsDATA d1, LsDATA d2);
+int data_compare_int(LsDATA d1, LsDATA d2);
+int data_compare_float(LsDATA d1, LsDATA d2);
+int data_compare_pointer(LsDATA d1, LsDATA d2);
 
 /**
-   @brief A function pointer that takes a DATA and prints it.
+   @brief A hash function declaration.
+
+   @param toHash The data that will be passed to the hash function.
+   @returns The hash value
+ */
+typedef unsigned int (*LsProc_Hash)(LsDATA toHash);
+
+/**
+   @brief To-string function declaration.
+
+   This function MUST return a free-able string representation of the object
+   passed to it.  The caller takes responsibility for freeing the string when it
+   is done using it.
+   @param toStr Data to convert to a string.
+   @returns A freeable string.
+ */
+typedef char (*LsProc_Str)(LsDATA toStr);
+
+/**
+   @brief A function pointer that takes a LsDATA and prints it.
 
    This function should not print a trailing newline!  There are higher level
    functions that will deal with that.
  */
-typedef void (*DATA_PRINTER)(FILE*, DATA);
+typedef void (*LsProc_Print)(FILE*, LsDATA);
 
-void data_printer_string(FILE *f, DATA d);
-void data_printer_int(FILE *f, DATA d);
-void data_printer_float(FILE *f, DATA d);
-void data_printer_pointer(FILE *f, DATA d);
+void data_printer_string(FILE *f, LsDATA d);
+void data_printer_int(FILE *f, LsDATA d);
+void data_printer_float(FILE *f, LsDATA d);
+void data_printer_pointer(FILE *f, LsDATA d);
+
+typedef void (*LsProc_Free)(LsDATA);
+
+typedef smb_iter (*LsProc_Iter)(LsDATA);
+
+
+/*******************************************************************************
+
+                                  Type System
+
+*******************************************************************************/
+
+typedef void *LsVTable[];
+
+typedef struct {
+
+  char *tp_name;             // name of the type
+  LsProc_Free tp_destroy;    // for cleaning up contained items
+  LsProc_Compare tp_cmp;     // for comparisons
+  LsProc_Hash tp_hash;       // hashing, for hash table and set
+  LsProc_Str tp_str;         // to string
+  LsProc_Print tp_print;     // print to file
+  LsProc_Iter tp_iter;       // return an iterator
+  LsVTable tp_seq;           // get, set, delete, append, prepend, etc.
+  LsVTable tp_set;           // contains, union, intersection
+  LsVTable tp_map;           // get, set, delete
+
+} LsType;
+
+extern LsType LsString;
+extern LsType LsInt;
+extern LsType LsDouble;
+extern LsType LsObject;
 
 
 /*******************************************************************************
