@@ -33,5 +33,9 @@ int main(int argc, char ** argv)
   charbuf_test();
   log_test();
   string_test();
+  fsm_test();
+  fsm_io_test();
+  regex_test();
+  regex_search_test();
   // return args_test_main(argc, argv);
 }

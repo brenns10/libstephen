@@ -64,6 +64,15 @@ void log_test(void);
 void string_test(void);
 
 /**
+   Tests from cky.
+ */
+void fsm_test(void);
+void fsm_io_test(void);
+void regex_test(void);
+void regex_search_test(void);
+
+
+/**
    Output statistics of main function args.
  */
 int args_test_main(int argc, char **argv);
