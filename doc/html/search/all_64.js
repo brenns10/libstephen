@@ -7,5 +7,7 @@ var searchData=
   ['data_5fprinter_5ffloat',['data_printer_float',['../util_8c.html#ab4e0aaacbb85c79e00a23a6e35d7b3bb',1,'util.c']]],
   ['data_5fprinter_5fint',['data_printer_int',['../util_8c.html#ae828fc251b2ab93ad38c7fecb2b086dc',1,'util.c']]],
   ['data_5fprinter_5fpointer',['data_printer_pointer',['../util_8c.html#ad2e4d81b660c6b55d2dabf4955408cef',1,'util.c']]],
-  ['data_5fprinter_5fstring',['data_printer_string',['../util_8c.html#a8476cd51fa728489728f95077f2a19e5',1,'util.c']]]
+  ['data_5fprinter_5fstring',['data_printer_string',['../util_8c.html#a8476cd51fa728489728f95077f2a19e5',1,'util.c']]],
+  ['datastructs_2ec',['datastructs.c',['../regex_2datastructs_8c.html',1,'']]],
+  ['datastructs_2ec',['datastructs.c',['../fsm_2datastructs_8c.html',1,'']]]
 ];

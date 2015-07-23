@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2015-07-17 22:10:59</td>
+            <td class="headerValue">2015-07-23 04:11:50</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">22</td>
@@ -195,14 +195,14 @@
 <span class="lineNum">     133 </span>            : 
 <a name="134"><span class="lineNum">     134 </span>            : *******************************************************************************/</a>
 <span class="lineNum">     135 </span>            : 
-<span class="lineNum">     136 </span><span class="lineCov">         12 : void wcb_init(wcbuf *obj, int capacity)</span>
+<span class="lineNum">     136 </span><span class="lineCov">         13 : void wcb_init(wcbuf *obj, int capacity)</span>
 <span class="lineNum">     137 </span>            : {
 <span class="lineNum">     138 </span>            :   // Initialization logic
-<span class="lineNum">     139 </span><span class="lineCov">         12 :   obj-&gt;buf = smb_new(wchar_t, capacity);</span>
-<span class="lineNum">     140 </span><span class="lineCov">         12 :   obj-&gt;buf[0] = L'\0';</span>
-<span class="lineNum">     141 </span><span class="lineCov">         12 :   obj-&gt;capacity = capacity;</span>
-<span class="lineNum">     142 </span><span class="lineCov">         12 :   obj-&gt;length = 0;</span>
-<a name="143"><span class="lineNum">     143 </span><span class="lineCov">         12 : }</span></a>
+<span class="lineNum">     139 </span><span class="lineCov">         13 :   obj-&gt;buf = smb_new(wchar_t, capacity);</span>
+<span class="lineNum">     140 </span><span class="lineCov">         13 :   obj-&gt;buf[0] = L'\0';</span>
+<span class="lineNum">     141 </span><span class="lineCov">         13 :   obj-&gt;capacity = capacity;</span>
+<span class="lineNum">     142 </span><span class="lineCov">         13 :   obj-&gt;length = 0;</span>
+<a name="143"><span class="lineNum">     143 </span><span class="lineCov">         13 : }</span></a>
 <span class="lineNum">     144 </span>            : 
 <span class="lineNum">     145 </span><span class="lineCov">          8 : wcbuf *wcb_create(int capacity)</span>
 <span class="lineNum">     146 </span>            : {
@@ -233,25 +233,25 @@
 <span class="lineNum">     171 </span>            :    count.  Therefore, to ensure that the string L&quot;four&quot; fits in the buffer, you
 <a name="172"><span class="lineNum">     172 </span>            :    would want to run `cb_expand_to_fit(obj, 5)` (assuming the buffer was empty).</a>
 <span class="lineNum">     173 </span>            :  */
-<span class="lineNum">     174 </span><span class="lineCov">        154 : static void wcb_expand_to_fit(wcbuf *obj, int minsize)</span>
+<span class="lineNum">     174 </span><span class="lineCov">        165 : static void wcb_expand_to_fit(wcbuf *obj, int minsize)</span>
 <span class="lineNum">     175 </span>            : {
-<span class="lineNum">     176 </span><span class="lineCov">        154 :   int newcapacity = obj-&gt;capacity;</span>
-<span class="lineNum">     177 </span><span class="lineCov">        312 :   while (newcapacity &lt; minsize) {</span>
+<span class="lineNum">     176 </span><span class="lineCov">        165 :   int newcapacity = obj-&gt;capacity;</span>
+<span class="lineNum">     177 </span><span class="lineCov">        334 :   while (newcapacity &lt; minsize) {</span>
 <span class="lineNum">     178 </span><span class="lineCov">          4 :     newcapacity *= 2;</span>
 <span class="lineNum">     179 </span>            :   }
-<span class="lineNum">     180 </span><span class="lineCov">        154 :   if (newcapacity != obj-&gt;capacity) {</span>
+<span class="lineNum">     180 </span><span class="lineCov">        165 :   if (newcapacity != obj-&gt;capacity) {</span>
 <span class="lineNum">     181 </span><span class="lineCov">          3 :     obj-&gt;buf = smb_renew(wchar_t, obj-&gt;buf, newcapacity);</span>
 <span class="lineNum">     182 </span><span class="lineCov">          3 :     obj-&gt;capacity = newcapacity;</span>
 <span class="lineNum">     183 </span>            :   }
-<a name="184"><span class="lineNum">     184 </span><span class="lineCov">        154 : }</span></a>
+<a name="184"><span class="lineNum">     184 </span><span class="lineCov">        165 : }</span></a>
 <span class="lineNum">     185 </span>            : 
-<span class="lineNum">     186 </span><span class="lineCov">          7 : void wcb_concat(wcbuf *obj, wchar_t *str)</span>
+<span class="lineNum">     186 </span><span class="lineCov">         10 : void wcb_concat(wcbuf *obj, wchar_t *str)</span>
 <span class="lineNum">     187 </span>            : {
-<span class="lineNum">     188 </span><span class="lineCov">          7 :   int length = wcslen(str);</span>
-<span class="lineNum">     189 </span><span class="lineCov">          7 :   wcb_expand_to_fit(obj, obj-&gt;length + length + 1);</span>
-<span class="lineNum">     190 </span><span class="lineCov">          7 :   wcscpy(obj-&gt;buf + obj-&gt;length, str);</span>
-<span class="lineNum">     191 </span><span class="lineCov">          7 :   obj-&gt;length += length;</span>
-<a name="192"><span class="lineNum">     192 </span><span class="lineCov">          7 : }</span></a>
+<span class="lineNum">     188 </span><span class="lineCov">         10 :   int length = wcslen(str);</span>
+<span class="lineNum">     189 </span><span class="lineCov">         10 :   wcb_expand_to_fit(obj, obj-&gt;length + length + 1);</span>
+<span class="lineNum">     190 </span><span class="lineCov">         10 :   wcscpy(obj-&gt;buf + obj-&gt;length, str);</span>
+<span class="lineNum">     191 </span><span class="lineCov">         10 :   obj-&gt;length += length;</span>
+<a name="192"><span class="lineNum">     192 </span><span class="lineCov">         10 : }</span></a>
 <span class="lineNum">     193 </span>            : 
 <span class="lineNum">     194 </span><span class="lineCov">        146 : void wcb_append(wcbuf *obj, wchar_t next)</span>
 <span class="lineNum">     195 </span>            : {
@@ -273,48 +273,48 @@
 <span class="lineNum">     211 </span><span class="lineCov">          1 :   obj-&gt;length = 0;</span>
 <a name="212"><span class="lineNum">     212 </span><span class="lineCov">          1 : }</span></a>
 <span class="lineNum">     213 </span>            : 
-<span class="lineNum">     214 </span><span class="lineCov">          1 : void wcb_vprintf(wcbuf *obj, wchar_t *format, va_list v1)</span>
+<span class="lineNum">     214 </span><span class="lineCov">          9 : void wcb_vprintf(wcbuf *obj, wchar_t *format, va_list v1)</span>
 <span class="lineNum">     215 </span>            : {
 <span class="lineNum">     216 </span>            :   va_list v2;
 <span class="lineNum">     217 </span>            :   char *mbformat, *mbout;
 <span class="lineNum">     218 </span>            :   size_t mbformat_len, mbout_len, wcout_len;
 <span class="lineNum">     219 </span>            : 
 <span class="lineNum">     220 </span>            :   // First, convert the wide format string to a multibyte one.
-<span class="lineNum">     221 </span><span class="lineCov">          1 :   mbformat_len = wcstombs(NULL, format, 0);</span>
-<span class="lineNum">     222 </span><span class="lineCov">          1 :   mbformat = smb_new(char, mbformat_len + 1);</span>
-<span class="lineNum">     223 </span><span class="lineCov">          1 :   wcstombs(mbformat, format, mbformat_len+1);</span>
+<span class="lineNum">     221 </span><span class="lineCov">          9 :   mbformat_len = wcstombs(NULL, format, 0);</span>
+<span class="lineNum">     222 </span><span class="lineCov">          9 :   mbformat = smb_new(char, mbformat_len + 1);</span>
+<span class="lineNum">     223 </span><span class="lineCov">          9 :   wcstombs(mbformat, format, mbformat_len+1);</span>
 <span class="lineNum">     224 </span>            : 
 <span class="lineNum">     225 </span>            :   // Then, use vsnprintf first to find out how many bytes of output to allocate.
-<span class="lineNum">     226 </span><span class="lineCov">          1 :   va_copy(v2, v1);</span>
-<span class="lineNum">     227 </span><span class="lineCov">          1 :   mbout_len = vsnprintf(NULL, 0, mbformat, v1);</span>
+<span class="lineNum">     226 </span><span class="lineCov">          9 :   va_copy(v2, v1);</span>
+<span class="lineNum">     227 </span><span class="lineCov">          9 :   mbout_len = vsnprintf(NULL, 0, mbformat, v1);</span>
 <span class="lineNum">     228 </span>            : 
 <span class="lineNum">     229 </span>            :   // Now, actually allocate the memory and do the multibyte print.
-<span class="lineNum">     230 </span><span class="lineCov">          1 :   mbout = smb_new(char, mbout_len + 1);</span>
-<span class="lineNum">     231 </span><span class="lineCov">          1 :   vsnprintf(mbout, mbout_len + 1, mbformat, v2);</span>
-<span class="lineNum">     232 </span><span class="lineCov">          1 :   va_end(v2);</span>
+<span class="lineNum">     230 </span><span class="lineCov">          9 :   mbout = smb_new(char, mbout_len + 1);</span>
+<span class="lineNum">     231 </span><span class="lineCov">          9 :   vsnprintf(mbout, mbout_len + 1, mbformat, v2);</span>
+<span class="lineNum">     232 </span><span class="lineCov">          9 :   va_end(v2);</span>
 <span class="lineNum">     233 </span>            : 
 <span class="lineNum">     234 </span>            :   // And now, get the number of wide characters this is.
-<span class="lineNum">     235 </span><span class="lineCov">          1 :   wcout_len = mbstowcs(NULL, mbout, 0);</span>
+<span class="lineNum">     235 </span><span class="lineCov">          9 :   wcout_len = mbstowcs(NULL, mbout, 0);</span>
 <span class="lineNum">     236 </span>            : 
 <span class="lineNum">     237 </span>            :   // Make sure we have room for everything.
-<span class="lineNum">     238 </span><span class="lineCov">          1 :   wcb_expand_to_fit(obj, obj-&gt;length + wcout_len + 1);</span>
+<span class="lineNum">     238 </span><span class="lineCov">          9 :   wcb_expand_to_fit(obj, obj-&gt;length + wcout_len + 1);</span>
 <span class="lineNum">     239 </span>            : 
 <span class="lineNum">     240 </span>            :   // And, put the output in the buffer.
-<span class="lineNum">     241 </span><span class="lineCov">          1 :   mbstowcs(obj-&gt;buf + obj-&gt;length, mbout, wcout_len + 1);</span>
-<span class="lineNum">     242 </span><span class="lineCov">          1 :   obj-&gt;length += wcout_len;</span>
+<span class="lineNum">     241 </span><span class="lineCov">          9 :   mbstowcs(obj-&gt;buf + obj-&gt;length, mbout, wcout_len + 1);</span>
+<span class="lineNum">     242 </span><span class="lineCov">          9 :   obj-&gt;length += wcout_len;</span>
 <span class="lineNum">     243 </span>            : 
 <span class="lineNum">     244 </span>            :   // Free up allocated memory, and we're good to go.
-<span class="lineNum">     245 </span><span class="lineCov">          1 :   smb_free(mbformat);</span>
-<span class="lineNum">     246 </span><span class="lineCov">          1 :   smb_free(mbout);</span>
-<a name="247"><span class="lineNum">     247 </span><span class="lineCov">          1 : }</span></a>
+<span class="lineNum">     245 </span><span class="lineCov">          9 :   smb_free(mbformat);</span>
+<span class="lineNum">     246 </span><span class="lineCov">          9 :   smb_free(mbout);</span>
+<a name="247"><span class="lineNum">     247 </span><span class="lineCov">          9 : }</span></a>
 <span class="lineNum">     248 </span>            : 
-<span class="lineNum">     249 </span><span class="lineCov">          1 : void wcb_printf(wcbuf *obj, wchar_t *format, ...)</span>
+<span class="lineNum">     249 </span><span class="lineCov">          9 : void wcb_printf(wcbuf *obj, wchar_t *format, ...)</span>
 <span class="lineNum">     250 </span>            : {
 <span class="lineNum">     251 </span>            :   va_list va;
-<span class="lineNum">     252 </span><span class="lineCov">          1 :   va_start(va, format);</span>
-<span class="lineNum">     253 </span><span class="lineCov">          1 :   wcb_vprintf(obj, format, va);</span>
-<span class="lineNum">     254 </span><span class="lineCov">          1 :   va_end(va);</span>
-<span class="lineNum">     255 </span><span class="lineCov">          1 : }</span>
+<span class="lineNum">     252 </span><span class="lineCov">          9 :   va_start(va, format);</span>
+<span class="lineNum">     253 </span><span class="lineCov">          9 :   wcb_vprintf(obj, format, va);</span>
+<span class="lineNum">     254 </span><span class="lineCov">          9 :   va_end(va);</span>
+<span class="lineNum">     255 </span><span class="lineCov">          9 : }</span>
 </pre>
       </td>
     </tr>
