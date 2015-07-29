@@ -24,6 +24,7 @@ in C, and now it is the basis for some of my other C programming projects.
 - Unit testing framework (su)
 - Command line argument parser
 - Logging framework
+- Regular expressions
 
 ## Documentation
 
