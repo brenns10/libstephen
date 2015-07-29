@@ -339,7 +339,7 @@ fsm *regex_parse_recursive(const wchar_t *regex, const wchar_t **final)
     case L'(':
       new = regex_parse_recursive(regex + 1, &regex);
       regex_parse_check_modifier(new, &regex);
-      fsm_concat(curr, new);
+      fsm_concat_capture(curr, new);
       fsm_delete(new, true);
       break;
 
