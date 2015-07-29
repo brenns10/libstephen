@@ -32,8 +32,8 @@ int fsm_test_memory(void)
   fsm fsm_stack;
   fsm *fsm_heap;
 
-  fsm_trans_init(&fsm_trans_stack, 3, FSM_TRANS_POSITIVE, 12);
-  fsm_trans_heap = fsm_trans_create(3, FSM_TRANS_POSITIVE, 0);
+  fsm_trans_init(&fsm_trans_stack, 3, 0, 12);
+  fsm_trans_heap = fsm_trans_create(3, 0, 0);
   fsm_trans_destroy(&fsm_trans_stack);
 
   fsm_init(&fsm_stack);
@@ -75,8 +75,8 @@ static int test_fsm_sim_memory(void)
  */
 int fsm_test_check(void)
 {
-  fsm_trans *single_positive = fsm_trans_create(1, FSM_TRANS_POSITIVE, 10);
-  fsm_trans *multiple_positive = fsm_trans_create(2, FSM_TRANS_POSITIVE, 10);
+  fsm_trans *single_positive = fsm_trans_create(1, 0, 10);
+  fsm_trans *multiple_positive = fsm_trans_create(2, 0, 10);
   fsm_trans *single_negative = fsm_trans_create(1, FSM_TRANS_NEGATIVE, 10);
   fsm_trans *multiple_negative = fsm_trans_create(2, FSM_TRANS_NEGATIVE, 10);
 
@@ -128,7 +128,7 @@ int fsm_test_check(void)
  */
 int test_shortcut(void)
 {
-  fsm_trans *a = fsm_trans_create_single(L'a', L'b', FSM_TRANS_POSITIVE, 10);
+  fsm_trans *a = fsm_trans_create_single(L'a', L'b', 0, 10);
   fsm_trans b;
   fsm_trans_init_single(&b, L'a', L'b', FSM_TRANS_NEGATIVE, 10);
 
@@ -149,7 +149,7 @@ int test_shortcut(void)
  */
 int test_trans_copy(void)
 {
-  fsm_trans *a = fsm_trans_create_single(L'a', L'b', FSM_TRANS_POSITIVE, 10);
+  fsm_trans *a = fsm_trans_create_single(L'a', L'b', 0, 10);
   fsm_trans *c = fsm_trans_copy(a);
   TEST_ASSERT(fsm_trans_check(c, L'a'));
   TEST_ASSERT(fsm_trans_check(c, L'b'));
@@ -167,7 +167,7 @@ int test_simple_machine(void)
   fsm *f = fsm_create();
   int start = fsm_add_state(f, false);
   int end = fsm_add_state(f, true);
-  fsm_trans *t = fsm_trans_create_single(L'a', L'a', FSM_TRANS_POSITIVE, end);
+  fsm_trans *t = fsm_trans_create_single(L'a', L'a', 0, end);
 
   f->start = start;
   fsm_add_trans(f, start, t);
@@ -211,8 +211,8 @@ static int test_copy(void)
   start = fsm_add_state(orig, false);
   next = fsm_add_state(orig, false);
   end = fsm_add_state(orig, true);
-  fsm_add_single(orig, start, next, L'a', L'a', FSM_TRANS_POSITIVE);
-  fsm_add_single(orig, next, end, L'b', L'b', FSM_TRANS_POSITIVE);
+  fsm_add_single(orig, start, next, L'a', L'a', 0);
+  fsm_add_single(orig, next, end, L'b', L'b', 0);
   orig->start = start;
 
   // Ensure this works correctly.
@@ -258,15 +258,15 @@ static int test_concat(void)
 
   // src accepts "bar"
   src->start = s00;
-  fsm_add_single(src, s00, s01, L'b', L'b', FSM_TRANS_POSITIVE);
-  fsm_add_single(src, s01, s02, L'a', L'a', FSM_TRANS_POSITIVE);
-  fsm_add_single(src, s02, s03, L'r', L'r', FSM_TRANS_POSITIVE);
+  fsm_add_single(src, s00, s01, L'b', L'b', 0);
+  fsm_add_single(src, s01, s02, L'a', L'a', 0);
+  fsm_add_single(src, s02, s03, L'r', L'r', 0);
 
   // dst accepts "foo"
   dst->start = s10;
-  fsm_add_single(dst, s10, s11, L'f', L'f', FSM_TRANS_POSITIVE);
-  fsm_add_single(dst, s11, s12, L'o', L'o', FSM_TRANS_POSITIVE);
-  fsm_add_single(dst, s12, s13, L'o', L'o', FSM_TRANS_POSITIVE);
+  fsm_add_single(dst, s10, s11, L'f', L'f', 0);
+  fsm_add_single(dst, s11, s12, L'o', L'o', 0);
+  fsm_add_single(dst, s12, s13, L'o', L'o', 0);
 
   // They should work as advertised.
   TEST_ASSERT(fsm_sim_det(src, L"bar"));
@@ -311,15 +311,15 @@ static int test_union(void)
 
   // src accepts "bar"
   src->start = s00;
-  fsm_add_single(src, s00, s01, L'b', L'b', FSM_TRANS_POSITIVE);
-  fsm_add_single(src, s01, s02, L'a', L'a', FSM_TRANS_POSITIVE);
-  fsm_add_single(src, s02, s03, L'r', L'r', FSM_TRANS_POSITIVE);
+  fsm_add_single(src, s00, s01, L'b', L'b', 0);
+  fsm_add_single(src, s01, s02, L'a', L'a', 0);
+  fsm_add_single(src, s02, s03, L'r', L'r', 0);
 
   // dst accepts "foo"
   dst->start = s10;
-  fsm_add_single(dst, s10, s11, L'f', L'f', FSM_TRANS_POSITIVE);
-  fsm_add_single(dst, s11, s12, L'o', L'o', FSM_TRANS_POSITIVE);
-  fsm_add_single(dst, s12, s13, L'o', L'o', FSM_TRANS_POSITIVE);
+  fsm_add_single(dst, s10, s11, L'f', L'f', 0);
+  fsm_add_single(dst, s11, s12, L'o', L'o', 0);
+  fsm_add_single(dst, s12, s13, L'o', L'o', 0);
 
   // They should work as advertised.
   TEST_ASSERT(fsm_sim_det(src, L"bar"));
@@ -355,9 +355,9 @@ static int test_kleene(void)
   int s02 = fsm_add_state(src, false);
   int s03 = fsm_add_state(src, true);
   src->start = s00;
-  fsm_add_single(src, s00, s01, L'f', L'f', FSM_TRANS_POSITIVE);
-  fsm_add_single(src, s01, s02, L'o', L'o', FSM_TRANS_POSITIVE);
-  fsm_add_single(src, s02, s03, L'o', L'o', FSM_TRANS_POSITIVE);
+  fsm_add_single(src, s00, s01, L'f', L'f', 0);
+  fsm_add_single(src, s01, s02, L'o', L'o', 0);
+  fsm_add_single(src, s02, s03, L'o', L'o', 0);
 
   // Test the original FSM.
   TEST_ASSERT(!fsm_sim_det(src, L""));

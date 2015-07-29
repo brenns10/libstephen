@@ -110,7 +110,7 @@ void fsm_concat(fsm *first, const fsm *second)
     int start = (int)al_get(&first->accepting, i, &status).data_llint;
     // This could be outside the loop, but we need a new one for each instance
     fsm_trans *ft = fsm_trans_create_single(EPSILON, EPSILON,
-                                            FSM_TRANS_POSITIVE,
+                                            0,
                                             second->start + offset);
     fsm_add_trans(first, start, ft);
   }
@@ -152,12 +152,12 @@ void fsm_union(fsm *first, const fsm *second)
   newStart = fsm_add_state(first, false);
 
   // Add epsilon-trans from new start to first start
-  fsTrans = fsm_trans_create_single(EPSILON, EPSILON, FSM_TRANS_POSITIVE,
+  fsTrans = fsm_trans_create_single(EPSILON, EPSILON, 0,
                                     first->start);
   fsm_add_trans(first, newStart, fsTrans);
 
   // Add epsilon-trans from new start to second start
-  ssTrans = fsm_trans_create_single(EPSILON, EPSILON, FSM_TRANS_POSITIVE,
+  ssTrans = fsm_trans_create_single(EPSILON, EPSILON, 0,
                                     second->start + offset);
   fsm_add_trans(first, newStart, ssTrans);
 
@@ -188,13 +188,13 @@ void fsm_kleene(fsm *f)
   DATA d;
 
   // Add epsilon-trans from new start to first start
-  newTrans = fsm_trans_create_single(EPSILON, EPSILON, FSM_TRANS_POSITIVE,
+  newTrans = fsm_trans_create_single(EPSILON, EPSILON, 0,
                                      f->start);
   fsm_add_trans(f, newStart, newTrans);
 
   // For each accepting state, add a epsilon-trans to the new start
   for (i = 0; i < al_length(&f->accepting); i++) {
-    newTrans = fsm_trans_create_single(EPSILON, EPSILON, FSM_TRANS_POSITIVE,
+    newTrans = fsm_trans_create_single(EPSILON, EPSILON, 0,
                                        newStart);
     fsm_add_trans(f, (int) al_get(&f->accepting, i, &status).data_llint,
                   newTrans);

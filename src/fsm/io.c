@@ -97,7 +97,7 @@ static void fsm_parsetrans(wchar_t *line, fsm *f, smb_status *status)
     goto error;
   }
   if (type_char != L'+' && type_char != L'-') goto error;
-  type = type_char == L'+' ? FSM_TRANS_POSITIVE : FSM_TRANS_NEGATIVE;
+  type = type_char == L'+' ? 0 : FSM_TRANS_NEGATIVE;
   length = wcslen(line);
 
   // Now, we initialize some lists to contain the range sources and
@@ -280,7 +280,7 @@ wchar_t *fsm_str(const fsm *f)
       // Print the transition and whether it's positive or negative.
       ft = (fsm_trans *) al_get(list, j, &status).data_ptr;
       wcb_printf(&wc, L"%d-%d:%c", i, ft->dest,
-                 (ft->type == FSM_TRANS_POSITIVE ? '+' : '-'));
+                 (FLAG_CHECK(ft->flags, FSM_TRANS_NEGATIVE) ? '-' : '+'));
 
       // For every range in the transition, print it followed by a space.
       for (start = ft->start, end = ft->end; *start != L'\0'; start++, end++) {
@@ -380,7 +380,7 @@ void fsm_dot(fsm *f, FILE *dest)
 
       // Begin writing the label for the transition
       fprintf(dest, "[label=\"(%c) ",
-              (ft->type == FSM_TRANS_POSITIVE ? '+' : '-'));
+              (FLAG_CHECK(ft->flags, FSM_TRANS_NEGATIVE) ? '-' : '+'));
 
       // For every character range in the transition description.
       for (start = ft->start, end = ft->end; *start != L'\0'; start++, end++) {

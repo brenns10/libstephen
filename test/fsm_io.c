@@ -293,9 +293,9 @@ int test_simple_str(void)
   int s02 = fsm_add_state(src, false);
   int s03 = fsm_add_state(src, true);
   src->start = s00;
-  fsm_add_single(src, s00, s01, L'f', L'f', FSM_TRANS_POSITIVE);
-  fsm_add_single(src, s01, s02, L'o', L'o', FSM_TRANS_POSITIVE);
-  fsm_add_single(src, s02, s03, L'o', L'o', FSM_TRANS_POSITIVE);
+  fsm_add_single(src, s00, s01, L'f', L'f', 0);
+  fsm_add_single(src, s01, s02, L'o', L'o', 0);
+  fsm_add_single(src, s02, s03, L'o', L'o', 0);
 
   out = fsm_str(src);
   TEST_ASSERT(0 == wcscmp(machine, out));

@@ -36,13 +36,13 @@
 
    @param ft The pre-allocated transition
    @param n The number of transition criteria
-   @param type The type of transition (positive or negative)
+   @param flags Transition flags (0 is default)
    @param dest The destination of the transition
  */
-void fsm_trans_init(fsm_trans *ft, int n, int type, int dest)
+void fsm_trans_init(fsm_trans *ft, int n, unsigned int flags, int dest)
 {
   int i;
-  ft->type = type;
+  ft->flags = flags;
 
   // Allocate space for the range plus null terminator
   ft->start = smb_new(wchar_t, n + 1);
@@ -62,13 +62,13 @@ void fsm_trans_init(fsm_trans *ft, int n, int type, int dest)
    @brief Allocate and initialize a fsm_trans object.
 
    @param n The number of ranges
-   @param type The type of transition
+   @param flags Transition flags
    @param dest The destination of the transition
  */
-fsm_trans *fsm_trans_create(int n, int type, int dest)
+fsm_trans *fsm_trans_create(int n, unsigned int flags, int dest)
 {
   fsm_trans *ft = smb_new(fsm_trans, 1);
-  fsm_trans_init(ft, n, type, dest);
+  fsm_trans_init(ft, n, flags, dest);
   return ft;
 }
 
@@ -104,13 +104,13 @@ void fsm_trans_delete(fsm_trans *ft)
    @param ft The object to initialize
    @param start The beginning of the range
    @param end The end of the range
-   @param type The type of the object
+   @param flags The flags of the range
    @param dest The destination of the transition
  */
-void fsm_trans_init_single(fsm_trans *ft, wchar_t start, wchar_t end, int type,
-                           int dest)
+void fsm_trans_init_single(fsm_trans *ft, wchar_t start, wchar_t end,
+                           unsigned int flags, int dest)
 {
-  fsm_trans_init(ft, 1, type, dest);
+  fsm_trans_init(ft, 1, flags, dest);
   ft->start[0] = start;
   ft->end[0] = end;
 }
@@ -120,13 +120,13 @@ void fsm_trans_init_single(fsm_trans *ft, wchar_t start, wchar_t end, int type,
 
    @param start The beginning of the range
    @param end The end of the range
-   @param type The type of the object
+   @param flags The flags of the object
    @param dest The destination of the transition
  */
-fsm_trans *fsm_trans_create_single(wchar_t start, wchar_t end, int type,
-                                   int dest)
+fsm_trans *fsm_trans_create_single(wchar_t start, wchar_t end,
+                                   unsigned int flags, int dest)
 {
-  fsm_trans *ft = fsm_trans_create(1, type, dest);
+  fsm_trans *ft = fsm_trans_create(1, flags, dest);
   ft->start[0] = start;
   ft->end[0] = end;
   return ft;
@@ -144,18 +144,12 @@ bool fsm_trans_check(const fsm_trans *ft, wchar_t c)
 
   while (start && end && *start != '\0' && *end != '\0') {
     if (c >= *start && c <= *end) {
-      if (ft->type == FSM_TRANS_POSITIVE)
-        return true;
-      else
-        return false;
+      return !FLAG_CHECK(ft->flags, FSM_TRANS_NEGATIVE);
     }
     start++; end++;
   }
 
-  if (ft->type == FSM_TRANS_POSITIVE)
-    return false;
-  else
-    return true;
+  return FLAG_CHECK(ft->flags, FSM_TRANS_NEGATIVE);
 }
 
 /**
@@ -166,7 +160,7 @@ bool fsm_trans_check(const fsm_trans *ft, wchar_t c)
 fsm_trans *fsm_trans_copy(const fsm_trans *ft)
 {
   int i, rangeSize = wcslen(ft->start);
-  fsm_trans *new = fsm_trans_create(rangeSize, ft->type, ft->dest);
+  fsm_trans *new = fsm_trans_create(rangeSize, ft->flags, ft->dest);
   for (i = 0; i < rangeSize; i++) {
     new->start[i] = ft->start[i];
     new->end[i] = ft->end[i];
@@ -254,7 +248,7 @@ fsm *fsm_create_single_char(wchar_t character)
   fsm *f = fsm_create();
   int s0 = fsm_add_state(f, false);
   int s1 = fsm_add_state(f, true);
-  fsm_add_single(f, s0, s1, character, character, FSM_TRANS_POSITIVE);
+  fsm_add_single(f, s0, s1, character, character, 0);
   f->start= s0;
   return f;
 }
@@ -311,13 +305,13 @@ void fsm_add_trans(fsm *f, int state, const fsm_trans *ft)
    @param to The state the transition is to
    @param start The character at the start of the range
    @param end The character at the end of the range
-   @param type The type of range (positive or negative)
+   @param flags The flags of range (positive or negative)
    @return Pointer to the fsm_trans created by the function.
  */
 fsm_trans *fsm_add_single(fsm *f, int from, int to, wchar_t start, wchar_t end,
-                          int type)
+                          unsigned int flags)
 {
-  fsm_trans *new = fsm_trans_create_single(start, end, type, to);
+  fsm_trans *new = fsm_trans_create_single(start, end, flags, to);
   fsm_add_trans(f, from, new);
   return new;
 }

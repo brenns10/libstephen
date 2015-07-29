@@ -44,9 +44,9 @@ void regex_hit_delete(regex_hit *obj);
 
 // parse.c
 void regex_parse_check_modifier(fsm *new, const wchar_t **regex);
-fsm *regex_parse_create_whitespace_fsm(int type);
-fsm *regex_parse_create_word_fsm(int type);
-fsm *regex_parse_create_digit_fsm(int type);
+fsm *regex_parse_create_whitespace_fsm(unsigned int flags);
+fsm *regex_parse_create_word_fsm(unsigned int flags);
+fsm *regex_parse_create_digit_fsm(unsigned int flags);
 fsm *regex_parse_outer_escape(const wchar_t **regex);
 fsm *regex_parse_char_class(const wchar_t **regex);
 fsm *regex_parse(const wchar_t *regex);
