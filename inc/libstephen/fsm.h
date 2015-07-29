@@ -254,6 +254,7 @@ bool fsm_sim_nondet(fsm *f, const wchar_t *input);
 fsm *fsm_copy(const fsm *f);
 void fsm_copy_trans(fsm *dest, const fsm *src);
 void fsm_concat(fsm *first, const fsm *second);
+void fsm_concat_capture(fsm *first, const fsm *second);
 void fsm_union(fsm *first, const fsm *second);
 void fsm_kleene(fsm *f);
 
