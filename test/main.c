@@ -16,6 +16,7 @@
 #include <stdio.h>
 
 #include "libstephen/base.h"
+#include "libstephen/log.h"
 #include "tests.h"
 
 /**
@@ -23,6 +24,7 @@
  */
 int main(int argc, char ** argv)
 {
+  sl_set_level(NULL, LEVEL_INFO);
   linked_list_test();
   array_list_test();
   hash_table_test();
@@ -31,11 +33,11 @@ int main(int argc, char ** argv)
   list_test();
   args_test();
   charbuf_test();
-  log_test();
   string_test();
   fsm_test();
   fsm_io_test();
   regex_test();
   regex_search_test();
+  log_test();
   // return args_test_main(argc, argv);
 }
