@@ -329,6 +329,7 @@ fsm *regex_parse_recursive(const wchar_t *regex, const wchar_t **final)
   // Initial FSM is a machine that accepts the empty string.
   fsm *curr = fsm_create();
   fsm *new;
+  bool capture;
   curr->start = fsm_add_state(curr, true);
 
   // ASSUME THAT ALL PARENS, ETC ARE BALANCED!
@@ -337,9 +338,16 @@ fsm *regex_parse_recursive(const wchar_t *regex, const wchar_t **final)
     switch (*regex) {
 
     case L'(':
-      new = regex_parse_recursive(regex + 1, &regex);
+      capture = regex[1] == L'?';
+      if (capture)
+        new = regex_parse_recursive(regex + 2, &regex);
+      else
+        new = regex_parse_recursive(regex + 1, &regex);
       regex_parse_check_modifier(new, &regex);
-      fsm_concat_capture(curr, new);
+      if (capture)
+        fsm_concat_capture(curr, new);
+      else
+        fsm_concat(curr, new);
       fsm_delete(new, true);
       break;
 

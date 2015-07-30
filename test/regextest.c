@@ -289,7 +289,7 @@ static int test_escape(void)
 
 static int test_capture(void)
 {
-  fsm *f = regex_parse(L"number (\\d+)");
+  fsm *f = regex_parse(L"number (?\\d+)");
   smb_al *capture = NULL;
   smb_status status = SMB_SUCCESS;
 
@@ -308,14 +308,14 @@ static int test_capture(void)
 
 static int test_capture_many(void)
 {
-  fsm *f = regex_parse(L"numbers: (\\d+) +(\\d+) +(\\d+)");
+  fsm *f = regex_parse(L"numbers:( +(?\\d+))+");
   smb_al *capture = NULL;
   smb_status status = SMB_SUCCESS;
 
   TEST_ASSERT(fsm_sim_nondet_capture(f, L"numbers: 55 987654321 1", &capture));
   TEST_ASSERT(capture != NULL);
   TEST_ASSERT(al_length(capture) == 6);
-  iter_print(al_get_iter(capture), stdout, data_printer_int);
+  //iter_print(al_get_iter(capture), stdout, data_printer_int);
   TEST_ASSERT(al_get(capture, 0, &status).data_llint == 9);
   TEST_ASSERT(status == SMB_SUCCESS);
   TEST_ASSERT(al_get(capture, 1, &status).data_llint == 11);
