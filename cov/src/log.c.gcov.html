@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2015-07-30 21:17:15</td>
+            <td class="headerValue">2015-07-30 23:44:07</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">11</td>
@@ -95,14 +95,14 @@
 <span class="lineNum">      33 </span>            : {
 <span class="lineNum">      34 </span><span class="lineCov">      10496 :   smb_status status = SMB_SUCCESS;</span>
 <span class="lineNum">      35 </span><span class="lineCov">      10496 :   if (*obj == NULL) {</span>
-<span class="lineNum">      36 </span><span class="lineCov">      10494 :     if (pdefault_logger == NULL) {</span>
+<span class="lineNum">      36 </span><span class="lineCov">         35 :     if (pdefault_logger == NULL) {</span>
 <span class="lineNum">      37 </span><span class="lineCov">          1 :       sl_add_handler(&amp;default_logger,</span>
 <span class="lineNum">      38 </span><span class="lineCov">          1 :                      (smb_loghandler){.level = SMB_DEFAULT_LOGLEVEL,</span>
 <span class="lineNum">      39 </span>            :                                       .dst   = SMB_DEFAULT_LOGDEST},
 <span class="lineNum">      40 </span>            :                      &amp;status);
 <span class="lineNum">      41 </span><span class="lineCov">          1 :       pdefault_logger = &amp;default_logger;</span>
 <span class="lineNum">      42 </span>            :     }
-<span class="lineNum">      43 </span><span class="lineCov">      10494 :     *obj = pdefault_logger;</span>
+<span class="lineNum">      43 </span><span class="lineCov">         35 :     *obj = pdefault_logger;</span>
 <span class="lineNum">      44 </span>            :   }
 <a name="45"><span class="lineNum">      45 </span><span class="lineCov">      10496 : }</span></a>
 <span class="lineNum">      46 </span>            : 
@@ -186,8 +186,8 @@
 <span class="lineNum">     124 </span><span class="lineCov">      10473 :   va_end(va);</span>
 <span class="lineNum">     125 </span>            : 
 <span class="lineNum">     126 </span><span class="lineCov">      10473 :   level_string = sl_level_string(level);</span>
-<span class="lineNum">     127 </span><span class="lineCov">      20974 :   for (i = 0; i &lt; obj-&gt;num; i++) {</span>
-<span class="lineNum">     128 </span><span class="lineCov">      10501 :     if (obj-&gt;handlers[i].level &lt;= level) {</span>
+<span class="lineNum">     127 </span><span class="lineCov">      10515 :   for (i = 0; i &lt; obj-&gt;num; i++) {</span>
+<span class="lineNum">     128 </span><span class="lineCov">         42 :     if (obj-&gt;handlers[i].level &lt;= level) {</span>
 <span class="lineNum">     129 </span><span class="lineCov">         26 :       fprintf(obj-&gt;handlers[i].dst, obj-&gt;format, file_line_buf.buf, function,</span>
 <span class="lineNum">     130 </span>            :               level_string, message_buf.buf);
 <span class="lineNum">     131 </span>            :     }

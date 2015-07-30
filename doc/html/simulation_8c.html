@@ -93,7 +93,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <div id="doc-content">
 <div class="header">
   <div class="summary">
-<a href="#func-members">Functions</a>  </div>
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle">
 <div class="title">src/fsm/simulation.c File Reference</div>  </div>
 </div><!--header-->
@@ -135,6 +136,9 @@ Functions</h2></td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Simulate NDFSM, optionally returning captured groups.  <a href="#a2f1488101dc034dfab6ffeea7ccc90c9"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="simulation_8c.html#ab39350b6a48388414f90cb3d248be612">fsm_sim_nondet</a> (fsm *f, const wchar_t *input)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Simulate a NDFSM without capturing.  <a href="#ab39350b6a48388414f90cb3d248be612"></a><br/></td></tr>
+<tr><td colspan="2"><h2><a name="var-members"></a>
+Variables</h2></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">smb_logger&#160;</td><td class="memItemRight" valign="bottom"><b>fsm_sim_log</b></td></tr>
 </table>
 <hr/><a name="details" id="details"></a><h2>Detailed Description</h2>
 <div class="textblock"><p>Simulation functions for FSMs. </p>
@@ -178,7 +182,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="simulation_8c_source.html#l00033">33</a> of file <a class="el" href="simulation_8c_source.html">simulation.c</a>.</p>
+<p>Definition at line <a class="el" href="simulation_8c_source.html#l00038">38</a> of file <a class="el" href="simulation_8c_source.html">simulation.c</a>.</p>
 
 </div>
 </div>
@@ -219,7 +223,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd>Whether the machine accepts the string or not. </dd></dl>
 
-<p>Definition at line <a class="el" href="simulation_8c_source.html#l00158">158</a> of file <a class="el" href="simulation_8c_source.html">simulation.c</a>.</p>
+<p>Definition at line <a class="el" href="simulation_8c_source.html#l00163">163</a> of file <a class="el" href="simulation_8c_source.html">simulation.c</a>.</p>
 
 </div>
 </div>
@@ -248,7 +252,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd>Reference to list of captures (indexes) which you must free separately from the simulation. </dd></dl>
 
-<p>Definition at line <a class="el" href="simulation_8c_source.html#l00376">376</a> of file <a class="el" href="simulation_8c_source.html">simulation.c</a>.</p>
+<p>Definition at line <a class="el" href="simulation_8c_source.html#l00381">381</a> of file <a class="el" href="simulation_8c_source.html">simulation.c</a>.</p>
 
 </div>
 </div>
@@ -293,7 +297,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="simulation_8c_source.html#l00448">448</a> of file <a class="el" href="simulation_8c_source.html">simulation.c</a>.</p>
+<p>Definition at line <a class="el" href="simulation_8c_source.html#l00453">453</a> of file <a class="el" href="simulation_8c_source.html">simulation.c</a>.</p>
 
 </div>
 </div>
@@ -322,7 +326,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd>A `fsm_sim*` containing all of the simulation state. This must be freed with <a class="el" href="fsm_2datastructs_8c.html#a2525328d01dee0d928da0ae8c498f984" title="Clean up and any resources held by the fsm_sim, and free it.">fsm_sim_delete()</a> when you're done with it. </dd></dl>
 
-<p>Definition at line <a class="el" href="simulation_8c_source.html#l00216">216</a> of file <a class="el" href="simulation_8c_source.html">simulation.c</a>.</p>
+<p>Definition at line <a class="el" href="simulation_8c_source.html#l00221">221</a> of file <a class="el" href="simulation_8c_source.html">simulation.c</a>.</p>
 
 </div>
 </div>
@@ -375,7 +379,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="simulation_8c_source.html#l00416">416</a> of file <a class="el" href="simulation_8c_source.html">simulation.c</a>.</p>
+<p>Definition at line <a class="el" href="simulation_8c_source.html#l00421">421</a> of file <a class="el" href="simulation_8c_source.html">simulation.c</a>.</p>
 
 </div>
 </div>
@@ -429,7 +433,7 @@ FSM_SIM_REJECTED </dd>
 <dd>
 FSM_SIM_ACCEPTED </dd></dl>
 
-<p>Definition at line <a class="el" href="simulation_8c_source.html#l00254">254</a> of file <a class="el" href="simulation_8c_source.html">simulation.c</a>.</p>
+<p>Definition at line <a class="el" href="simulation_8c_source.html#l00259">259</a> of file <a class="el" href="simulation_8c_source.html">simulation.c</a>.</p>
 
 </div>
 </div>
@@ -468,7 +472,27 @@ FSM_SIM_ACCEPTED </dd></dl>
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="simulation_8c_source.html#l00295">295</a> of file <a class="el" href="simulation_8c_source.html">simulation.c</a>.</p>
+<p>Definition at line <a class="el" href="simulation_8c_source.html#l00300">300</a> of file <a class="el" href="simulation_8c_source.html">simulation.c</a>.</p>
+
+</div>
+</div>
+<hr/><h2>Variable Documentation</h2>
+<a class="anchor" id="afb9d0d546b5e4938b3ade7ba94414481"></a><!-- doxytag: member="simulation.c::fsm_sim_log" ref="afb9d0d546b5e4938b3ade7ba94414481" args="" -->
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">smb_logger fsm_sim_log</td>
+        </tr>
+      </table>
+</div>
+<div class="memdoc">
+<b>Initial value:</b><div class="fragment"><pre class="fragment"> {
+  .format = SMB_DEFAULT_LOGFORMAT,
+  .num = 0,
+}
+</pre></div>
+<p>Definition at line <a class="el" href="simulation_8c_source.html#l00024">24</a> of file <a class="el" href="simulation_8c_source.html">simulation.c</a>.</p>
 
 </div>
 </div>
@@ -492,7 +516,7 @@ FSM_SIM_ACCEPTED </dd></dl>
     <ul>
       <li class="navelem"><a class="el" href="simulation_8c.html">simulation.c</a>      </li>
 
-    <li class="footer">Generated on Thu Jul 30 2015 21:17:16 for libstephen by
+    <li class="footer">Generated on Thu Jul 30 2015 23:44:07 for libstephen by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.6.1 </li>
    </ul>

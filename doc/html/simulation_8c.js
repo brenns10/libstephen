@@ -9,5 +9,6 @@ var simulation_8c =
     [ "fsm_sim_nondet_capture", "simulation_8c.html#a2f1488101dc034dfab6ffeea7ccc90c9", null ],
     [ "fsm_sim_nondet_non_empty_intersection", "simulation_8c.html#a3caee01cfe4ac78b50f72d7d9c340470", null ],
     [ "fsm_sim_nondet_state", "simulation_8c.html#a902ccc588c58656c024a043c19a1ec7e", null ],
-    [ "fsm_sim_nondet_step", "simulation_8c.html#a2c51e3c58c4a1e182beaea9b5cbc4101", null ]
+    [ "fsm_sim_nondet_step", "simulation_8c.html#a2c51e3c58c4a1e182beaea9b5cbc4101", null ],
+    [ "fsm_sim_log", "simulation_8c.html#afb9d0d546b5e4938b3ade7ba94414481", null ]
 ];
