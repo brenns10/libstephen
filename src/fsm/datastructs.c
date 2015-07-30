@@ -330,6 +330,8 @@ void fsm_sim_init(fsm_sim *fs, fsm *f, smb_al *curr)
 {
   fs->f = f;
   fs->curr = curr;
+  fs->cap = al_create();
+  al_append(fs->cap, PTR(al_create()));
 }
 
 /**
@@ -352,6 +354,16 @@ fsm_sim *fsm_sim_create(fsm *f, smb_al *curr)
  */
 void fsm_sim_destroy(fsm_sim *fs, bool free_curr)
 {
+  smb_iter it;
+  smb_status status = SMB_SUCCESS;
+  smb_al *cap;
+  it = al_get_iter(fs->cap);
+  while (it.has_next(&it)) {
+    cap = it.next(&it, &status).data_ptr;
+    assert(status == SMB_SUCCESS);
+    al_delete(cap);
+  }
+  al_delete(fs->cap);
   if (free_curr) {
     al_delete(fs->curr);
   }
