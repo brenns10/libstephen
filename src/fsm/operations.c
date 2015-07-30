@@ -138,7 +138,7 @@ void fsm_concat_capture(fsm *first, const fsm *second)
 {
   int new_accept, i;
   smb_status status = SMB_SUCCESS;
-  fsm_concat_flags(first, second, FSM_TRANS_CAPTURE_START);
+  fsm_concat_flags(first, second, FSM_TRANS_CAPTURE);
   new_accept = fsm_add_state(first, false);
 
   // Create a transition from each accepting state into a new accepting state
@@ -146,7 +146,7 @@ void fsm_concat_capture(fsm *first, const fsm *second)
   for (i = 0; i < al_length(&first->accepting); i++) {
     int start = (int)al_get(&first->accepting, i, &status).data_llint;
     fsm_trans *ft = fsm_trans_create_single(EPSILON, EPSILON,
-                                            FSM_TRANS_CAPTURE_END, new_accept);
+                                            FSM_TRANS_CAPTURE, new_accept);
     fsm_add_trans(first, start, ft);
   }
   al_destroy(&first->accepting);

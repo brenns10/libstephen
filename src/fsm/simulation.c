@@ -23,6 +23,65 @@
 // Helper Functions
 ////////////////////////////////////////////////////////////////////////////////
 
+static void add_eps_to_curr(fsm_sim *fs, int state, smb_al *cap)
+{
+  smb_status status = SMB_SUCCESS;
+  smb_al visit_queue;
+  smb_al *trans_list;
+  smb_al *new_cap;
+  fsm_trans *ft;
+  int i;
+  DATA d;
+
+  al_init(&visit_queue);
+  al_push_back(&visit_queue, LLINT(state));
+
+  // THIS IS BREADTH FIRST SEARCH
+  while (al_length(&visit_queue) > 0) {
+
+    // GET THE NEXT ITEM IN THE BFS VISIT QUEUE
+    d = al_pop_front(&visit_queue, &status);
+    assert(status == SMB_SUCCESS);
+
+    // GET THE OUTGOING TRANSITION OF THE ITEM
+    trans_list = al_get(&fs->f->transitions, d.data_llint, &status).data_ptr;
+    assert(status == SMB_SUCCESS);
+
+    // FOR EACH OUTGOING TRANSITION FROM THE STATE
+    for (i = 0; i < al_length(trans_list); i++) {
+
+      // GET THE TRANSITION'S DESTINATION
+      ft = al_get(trans_list, i, &status).data_ptr;
+      assert(status == SMB_SUCCESS);
+      d.data_llint = ft->dest;
+
+      // IF THE DESTINATION STATE IS REACHABLE VIA EPSILON,
+      // AND NOT IN THE VISIT QUEUE,
+      // AND NOT ALREADY IN THE CURRENT STATE LIST...
+      if (fsm_trans_check(ft, EPSILON) &&
+          al_index_of(&visit_queue, d, &data_compare_int) == -1 &&
+          al_index_of(fs->curr, d, &data_compare_int) == -1) {
+
+        // CREATE A NEW CAPTURE LIST WITH THE OLD ITEMS
+        new_cap = al_create();
+        al_copy_all(new_cap, cap);
+
+        // AND THE CURRENT INDEX, IF THERE IS A CAPTURE IN THIS TRANSITION
+        if (FLAG_CHECK(ft->flags, FSM_TRANS_CAPTURE)) {
+          al_append(new_cap, LLINT(fs->index));
+        }
+
+        // FINALLY, ADD THE DESTINATION AND ITS CAPTURE LIST TO THE CURRENT
+        // STATE LIST
+        al_append(fs->curr, d);
+        al_append(fs->cap, new_cap);
+      }
+    }
+  }
+
+  al_destroy(&visit_queue);
+}
+
 /**
    @brief Return the epsilon closure of the state on this FSM.
 
@@ -262,6 +321,8 @@ void fsm_sim_nondet_step(fsm_sim *s, wchar_t input)
   DATA d;
   fsm_trans *t;
   smb_al *next = al_create(&status);
+  smb_al *next_cap = al_create(&status);
+  smb_al *cap;
   smb_al *trans;
 
   // For diagnostics, print out the entire current state set
@@ -283,26 +344,35 @@ void fsm_sim_nondet_step(fsm_sim *s, wchar_t input)
 
       // If the transition contains the current input, and it's not already in
       // the next state list, add it to the next state list.
-      if (fsm_trans_check(t, input) &&
-          al_index_of(next, d, &data_compare_int) == -1) {
-        al_append(next, d);
+      if (fsm_trans_check(t, input)) {
+        assert(!FLAG_CHECK(trans->flags, FSM_TRANS_CAPTURE));
+        if (al_index_of(next, d, &data_compare_int) == -1) {
+          cap = al_create();
+          al_copy_all(cap, al_get(s->cap, i, &status).data_ptr);
+          al_append(next, d);
+          al_append(next_cap, PTR(cap));
+        }
       }
     }
   }
 
-  // For each state in the original next state list, union in all their epsilon
-  // closures.
-  original = al_length(next);
-  for (i = 0; i < original; i++) {
-    state = (int) al_get(next, i, &status).data_llint;
-    fsm_sim_nondet_union_and_delete(next,
-                                    fsm_sim_nondet_epsilon_closure(s->f,
-                                                                   state));
+  // The current state is now the next state!
+  for (i = 0; i < al_length(s->cap); i++) {
+    al_delete(al_get(s->curr, i, &status).data_ptr);
   }
-
-  // Delete the old state, set the new one, and advance the input
   al_delete(s->curr);
+  al_delete(s->cap);
+  s->cap = next_cap;
   s->curr = next;
+
+  // Insert epsilon closure elements!
+  original = al_length(s->curr);
+  for (i = 0; i < original; i++) {
+    smb_al *cap;
+    state = al_get(s->curr, i, &status).data_llint;
+    cap = al_get(s->cap, i, &status).data_ptr;
+    add_eps_to_curr(s, state, cap);
+  }
 
   // For diagnostics, print the new state
   SMB_DP("New state: ");

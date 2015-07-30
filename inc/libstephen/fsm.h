@@ -33,8 +33,7 @@
 /**
    @brief A flag for fsm_trans.flags indicating that a capture starts here.
  */
-#define FSM_TRANS_CAPTURE_START 0x0002
-#define FSM_TRANS_CAPTURE_END 0x0004
+#define FSM_TRANS_CAPTURE 0x0002
 
 /**
    @brief A possible return value for fsm_sim_nondet_state().
@@ -193,6 +192,16 @@ typedef struct {
      @brief The current "state", as a list of FSM states.
    */
   smb_al *curr;
+
+  /**
+     @brief Each current state's list of captures.
+   */
+  smb_al *cap;
+
+  /**
+     @brief The current index!
+   */
+  int index;
 
 } fsm_sim;
 
