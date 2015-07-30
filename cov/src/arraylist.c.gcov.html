@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2015-07-30 18:09:13</td>
+            <td class="headerValue">2015-07-30 19:44:32</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">44</td>
@@ -260,16 +260,16 @@
 <span class="lineNum">     198 </span>            :    @returns The data at the specified index.
 <a name="199"><span class="lineNum">     199 </span>            :    @exception INDEX_ERROR If the specified index was out of range.</a>
 <span class="lineNum">     200 </span>            :  */
-<span class="lineNum">     201 </span><span class="lineCov">     568755 : DATA al_get(const smb_al *list, int index, smb_status *status)</span>
+<span class="lineNum">     201 </span><span class="lineCov">     566957 : DATA al_get(const smb_al *list, int index, smb_status *status)</span>
 <span class="lineNum">     202 </span>            : {
-<span class="lineNum">     203 </span><span class="lineCov">     568755 :   *status = SMB_SUCCESS;</span>
-<span class="lineNum">     204 </span><span class="lineCov">     568755 :   if (index &lt; 0 || index &gt;= list-&gt;length) {</span>
+<span class="lineNum">     203 </span><span class="lineCov">     566957 :   *status = SMB_SUCCESS;</span>
+<span class="lineNum">     204 </span><span class="lineCov">     566957 :   if (index &lt; 0 || index &gt;= list-&gt;length) {</span>
 <span class="lineNum">     205 </span><span class="lineCov">       1005 :     *status = SMB_INDEX_ERROR;</span>
 <span class="lineNum">     206 </span>            :     DATA mockData;
 <span class="lineNum">     207 </span><span class="lineCov">       1005 :     return mockData;</span>
 <span class="lineNum">     208 </span>            :   }
 <span class="lineNum">     209 </span>            : 
-<span class="lineNum">     210 </span><span class="lineCov">     567750 :   return list-&gt;data[index];</span>
+<span class="lineNum">     210 </span><span class="lineCov">     565952 :   return list-&gt;data[index];</span>
 <span class="lineNum">     211 </span>            : }
 <span class="lineNum">     212 </span>            : 
 <span class="lineNum">     213 </span>            : /**
@@ -436,9 +436,9 @@
 <span class="lineNum">     374 </span>            :    @param list A pointer to the list.
 <a name="375"><span class="lineNum">     375 </span>            :    @returns The length of the list.</a>
 <span class="lineNum">     376 </span>            :  */
-<span class="lineNum">     377 </span><span class="lineCov">     576673 : int al_length(const smb_al *list)</span>
+<span class="lineNum">     377 </span><span class="lineCov">     573958 : int al_length(const smb_al *list)</span>
 <span class="lineNum">     378 </span>            : {
-<span class="lineNum">     379 </span><span class="lineCov">     576673 :   return list-&gt;length;</span>
+<span class="lineNum">     379 </span><span class="lineCov">     573958 :   return list-&gt;length;</span>
 <span class="lineNum">     380 </span>            : }
 <span class="lineNum">     381 </span>            : 
 <span class="lineNum">     382 </span>            : /**

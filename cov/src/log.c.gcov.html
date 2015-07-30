@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2015-07-30 18:09:13</td>
+            <td class="headerValue">2015-07-30 19:44:32</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">11</td>
@@ -91,20 +91,20 @@
 <span class="lineNum">      29 </span>            : static char *level_names[] = {&quot;NOTSET&quot;, &quot;DEBUG&quot;, &quot;INFO&quot;,
 <a name="30"><span class="lineNum">      30 </span>            :                               &quot;WARNING&quot;, &quot;ERROR&quot;, &quot;CRITICAL&quot;};</a>
 <span class="lineNum">      31 </span>            : 
-<span class="lineNum">      32 </span><span class="lineCov">      12294 : static void reference_logger(smb_logger **obj)</span>
+<span class="lineNum">      32 </span><span class="lineCov">      10496 : static void reference_logger(smb_logger **obj)</span>
 <span class="lineNum">      33 </span>            : {
-<span class="lineNum">      34 </span><span class="lineCov">      12294 :   smb_status status = SMB_SUCCESS;</span>
-<span class="lineNum">      35 </span><span class="lineCov">      12294 :   if (*obj == NULL) {</span>
-<span class="lineNum">      36 </span><span class="lineCov">      12292 :     if (pdefault_logger == NULL) {</span>
+<span class="lineNum">      34 </span><span class="lineCov">      10496 :   smb_status status = SMB_SUCCESS;</span>
+<span class="lineNum">      35 </span><span class="lineCov">      10496 :   if (*obj == NULL) {</span>
+<span class="lineNum">      36 </span><span class="lineCov">      10494 :     if (pdefault_logger == NULL) {</span>
 <span class="lineNum">      37 </span><span class="lineCov">          1 :       sl_add_handler(&amp;default_logger,</span>
 <span class="lineNum">      38 </span><span class="lineCov">          1 :                      (smb_loghandler){.level = SMB_DEFAULT_LOGLEVEL,</span>
 <span class="lineNum">      39 </span>            :                                       .dst   = SMB_DEFAULT_LOGDEST},
 <span class="lineNum">      40 </span>            :                      &amp;status);
 <span class="lineNum">      41 </span><span class="lineCov">          1 :       pdefault_logger = &amp;default_logger;</span>
 <span class="lineNum">      42 </span>            :     }
-<span class="lineNum">      43 </span><span class="lineCov">      12292 :     *obj = pdefault_logger;</span>
+<span class="lineNum">      43 </span><span class="lineCov">      10494 :     *obj = pdefault_logger;</span>
 <span class="lineNum">      44 </span>            :   }
-<a name="45"><span class="lineNum">      45 </span><span class="lineCov">      12294 : }</span></a>
+<a name="45"><span class="lineNum">      45 </span><span class="lineCov">      10496 : }</span></a>
 <span class="lineNum">      46 </span>            : 
 <span class="lineNum">      47 </span><span class="lineCov">          1 : void sl_init(smb_logger *obj)</span>
 <span class="lineNum">      48 </span>            : {
@@ -158,43 +158,43 @@
 <span class="lineNum">      96 </span><span class="lineCov">          2 :   pdefault_logger = obj;</span>
 <a name="97"><span class="lineNum">      97 </span><span class="lineCov">          2 : }</span></a>
 <span class="lineNum">      98 </span>            : 
-<span class="lineNum">      99 </span><span class="lineCov">      12271 : static char *sl_level_string(int level) {</span>
+<span class="lineNum">      99 </span><span class="lineCov">      10473 : static char *sl_level_string(int level) {</span>
 <span class="lineNum">     100 </span>            :   static char buf[20]; // plenty of space, to be safe.
-<span class="lineNum">     101 </span><span class="lineCov">      12271 :   if (level % 10 == 0 &amp;&amp; level &gt;= LEVEL_NOTSET &amp;&amp; level &lt;= LEVEL_CRITICAL) {</span>
-<span class="lineNum">     102 </span><span class="lineCov">      12270 :     return level_names[level / 10];</span>
+<span class="lineNum">     101 </span><span class="lineCov">      10473 :   if (level % 10 == 0 &amp;&amp; level &gt;= LEVEL_NOTSET &amp;&amp; level &lt;= LEVEL_CRITICAL) {</span>
+<span class="lineNum">     102 </span><span class="lineCov">      10472 :     return level_names[level / 10];</span>
 <span class="lineNum">     103 </span>            :   } else {
 <span class="lineNum">     104 </span><span class="lineCov">          1 :     snprintf(buf, 20, &quot;%d&quot;, level);</span>
 <span class="lineNum">     105 </span><span class="lineCov">          1 :     return buf;</span>
 <span class="lineNum">     106 </span>            :   }
 <a name="107"><span class="lineNum">     107 </span>            : }</a>
 <span class="lineNum">     108 </span>            : 
-<span class="lineNum">     109 </span><span class="lineCov">      12271 : void sl_log(smb_logger *obj, char *file, int line, const char *function, int level, ...) {</span>
+<span class="lineNum">     109 </span><span class="lineCov">      10473 : void sl_log(smb_logger *obj, char *file, int line, const char *function, int level, ...) {</span>
 <span class="lineNum">     110 </span>            :   cbuf file_line_buf, message_buf;
 <span class="lineNum">     111 </span>            :   char *level_string, *format;
 <span class="lineNum">     112 </span>            :   va_list va;
 <span class="lineNum">     113 </span>            :   int i;
 <span class="lineNum">     114 </span>            : 
-<span class="lineNum">     115 </span><span class="lineCov">      12271 :   reference_logger(&amp;obj);</span>
+<span class="lineNum">     115 </span><span class="lineCov">      10473 :   reference_logger(&amp;obj);</span>
 <span class="lineNum">     116 </span>            : 
-<span class="lineNum">     117 </span><span class="lineCov">      12271 :   cb_init(&amp;file_line_buf, 256);</span>
-<span class="lineNum">     118 </span><span class="lineCov">      12271 :   cb_printf(&amp;file_line_buf, &quot;%s:%d&quot;, file, line);</span>
+<span class="lineNum">     117 </span><span class="lineCov">      10473 :   cb_init(&amp;file_line_buf, 256);</span>
+<span class="lineNum">     118 </span><span class="lineCov">      10473 :   cb_printf(&amp;file_line_buf, &quot;%s:%d&quot;, file, line);</span>
 <span class="lineNum">     119 </span>            : 
-<span class="lineNum">     120 </span><span class="lineCov">      12271 :   va_start(va, level);</span>
-<span class="lineNum">     121 </span><span class="lineCov">      12271 :   format = va_arg(va, char*);</span>
-<span class="lineNum">     122 </span><span class="lineCov">      12271 :   cb_init(&amp;message_buf, 1024);</span>
-<span class="lineNum">     123 </span><span class="lineCov">      12271 :   cb_vprintf(&amp;message_buf, format, va);</span>
-<span class="lineNum">     124 </span><span class="lineCov">      12271 :   va_end(va);</span>
+<span class="lineNum">     120 </span><span class="lineCov">      10473 :   va_start(va, level);</span>
+<span class="lineNum">     121 </span><span class="lineCov">      10473 :   format = va_arg(va, char*);</span>
+<span class="lineNum">     122 </span><span class="lineCov">      10473 :   cb_init(&amp;message_buf, 1024);</span>
+<span class="lineNum">     123 </span><span class="lineCov">      10473 :   cb_vprintf(&amp;message_buf, format, va);</span>
+<span class="lineNum">     124 </span><span class="lineCov">      10473 :   va_end(va);</span>
 <span class="lineNum">     125 </span>            : 
-<span class="lineNum">     126 </span><span class="lineCov">      12271 :   level_string = sl_level_string(level);</span>
-<span class="lineNum">     127 </span><span class="lineCov">      24570 :   for (i = 0; i &lt; obj-&gt;num; i++) {</span>
-<span class="lineNum">     128 </span><span class="lineCov">      12299 :     if (obj-&gt;handlers[i].level &lt;= level) {</span>
+<span class="lineNum">     126 </span><span class="lineCov">      10473 :   level_string = sl_level_string(level);</span>
+<span class="lineNum">     127 </span><span class="lineCov">      20974 :   for (i = 0; i &lt; obj-&gt;num; i++) {</span>
+<span class="lineNum">     128 </span><span class="lineCov">      10501 :     if (obj-&gt;handlers[i].level &lt;= level) {</span>
 <span class="lineNum">     129 </span><span class="lineCov">         26 :       fprintf(obj-&gt;handlers[i].dst, obj-&gt;format, file_line_buf.buf, function,</span>
 <span class="lineNum">     130 </span>            :               level_string, message_buf.buf);
 <span class="lineNum">     131 </span>            :     }
 <span class="lineNum">     132 </span>            :   }
-<span class="lineNum">     133 </span><span class="lineCov">      12271 :   cb_destroy(&amp;file_line_buf);</span>
-<span class="lineNum">     134 </span><span class="lineCov">      12271 :   cb_destroy(&amp;message_buf);</span>
-<span class="lineNum">     135 </span><span class="lineCov">      12271 : }</span>
+<span class="lineNum">     133 </span><span class="lineCov">      10473 :   cb_destroy(&amp;file_line_buf);</span>
+<span class="lineNum">     134 </span><span class="lineCov">      10473 :   cb_destroy(&amp;message_buf);</span>
+<span class="lineNum">     135 </span><span class="lineCov">      10473 : }</span>
 </pre>
       </td>
     </tr>
