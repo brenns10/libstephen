@@ -130,13 +130,13 @@ Defines</h2></td></tr>
 Functions</h2></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="parse_8c.html#ac6a448a418b078c44fb0d0d302431eba">regex_parse_check_modifier</a> (fsm *new, const wchar_t **regex)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Adjust the FSM according to its modifier, if any.  <a href="#ac6a448a418b078c44fb0d0d302431eba"></a><br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">fsm *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="parse_8c.html#a2c49189ca53918ba1e644d5c3d0a4fc1">regex_parse_create_whitespace_fsm</a> (int type)</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a FSM that accepts any whitespace.  <a href="#a2c49189ca53918ba1e644d5c3d0a4fc1"></a><br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a2e56e4221f6f7b0abb6dda80395dba08"></a><!-- doxytag: member="parse.c::regex_parse_create_word_fsm" ref="a2e56e4221f6f7b0abb6dda80395dba08" args="(int type)" -->
-fsm *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="parse_8c.html#a2e56e4221f6f7b0abb6dda80395dba08">regex_parse_create_word_fsm</a> (int type)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">fsm *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="parse_8c.html#a7f2161ebfb54d72e515a709fba838108">regex_parse_create_whitespace_fsm</a> (unsigned int flags)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a FSM that accepts any whitespace.  <a href="#a7f2161ebfb54d72e515a709fba838108"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="aa32c0f40ae952517f0e05a0c18c09db3"></a><!-- doxytag: member="parse.c::regex_parse_create_word_fsm" ref="aa32c0f40ae952517f0e05a0c18c09db3" args="(unsigned int flags)" -->
+fsm *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="parse_8c.html#aa32c0f40ae952517f0e05a0c18c09db3">regex_parse_create_word_fsm</a> (unsigned int flags)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a FSM for word characters (letters, numbers, and underscore). <br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a9d29a86b2059e1fb7aa3b05662eb1f88"></a><!-- doxytag: member="parse.c::regex_parse_create_digit_fsm" ref="a9d29a86b2059e1fb7aa3b05662eb1f88" args="(int type)" -->
-fsm *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="parse_8c.html#a9d29a86b2059e1fb7aa3b05662eb1f88">regex_parse_create_digit_fsm</a> (int type)</td></tr>
+<tr><td class="memItemLeft" align="right" valign="top"><a class="anchor" id="a13c095ee910d6775f83b5b294f54c695"></a><!-- doxytag: member="parse.c::regex_parse_create_digit_fsm" ref="a13c095ee910d6775f83b5b294f54c695" args="(unsigned int flags)" -->
+fsm *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="parse_8c.html#a13c095ee910d6775f83b5b294f54c695">regex_parse_create_digit_fsm</a> (unsigned int flags)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a FSM for digits. <br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">fsm *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="parse_8c.html#ac8e9765e663b11f7f6f0d7ab60295b3e">regex_parse_create_dot_fsm</a> (bool newline_accepted)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Create the 'dot' FSM, i.e. the FSM that accepts 'almost' anything.  <a href="#ac8e9765e663b11f7f6f0d7ab60295b3e"></a><br/></td></tr>
@@ -181,7 +181,7 @@ fsm *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="par
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd>A FSM that can be used to decide the language of the regex. </dd></dl>
 
-<p>Definition at line <a class="el" href="parse_8c_source.html#l00399">399</a> of file <a class="el" href="parse_8c_source.html">parse.c</a>.</p>
+<p>Definition at line <a class="el" href="parse_8c_source.html#l00407">407</a> of file <a class="el" href="parse_8c_source.html">parse.c</a>.</p>
 
 </div>
 </div>
@@ -276,15 +276,15 @@ fsm *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="par
 
 </div>
 </div>
-<a class="anchor" id="a2c49189ca53918ba1e644d5c3d0a4fc1"></a><!-- doxytag: member="parse.c::regex_parse_create_whitespace_fsm" ref="a2c49189ca53918ba1e644d5c3d0a4fc1" args="(int type)" -->
+<a class="anchor" id="a7f2161ebfb54d72e515a709fba838108"></a><!-- doxytag: member="parse.c::regex_parse_create_whitespace_fsm" ref="a7f2161ebfb54d72e515a709fba838108" args="(unsigned int flags)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">fsm* <a class="el" href="parse_8c.html#a2c49189ca53918ba1e644d5c3d0a4fc1">regex_parse_create_whitespace_fsm</a> </td>
+          <td class="memname">fsm* <a class="el" href="parse_8c.html#a7f2161ebfb54d72e515a709fba838108">regex_parse_create_whitespace_fsm</a> </td>
           <td>(</td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>type</em></td><td>)</td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>flags</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -294,7 +294,7 @@ fsm *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="par
 <p>Return a FSM that accepts any whitespace. </p>
 <dl class="params"><dt><b>Parameters:</b></dt><dd>
   <table class="params">
-    <tr><td class="paramname">type</td><td>Positive or negative. </td></tr>
+    <tr><td class="paramname">flags</td><td>Positive or negative. </td></tr>
   </table>
   </dd>
 </dl>
@@ -394,7 +394,7 @@ fsm *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="par
     <ul>
       <li class="navelem"><a class="el" href="parse_8c.html">parse.c</a>      </li>
 
-    <li class="footer">Generated on Wed Jul 29 2015 05:03:09 for libstephen by
+    <li class="footer">Generated on Thu Jul 30 2015 18:09:14 for libstephen by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.6.1 </li>
    </ul>

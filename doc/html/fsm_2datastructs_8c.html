@@ -118,18 +118,18 @@ Include dependency graph for datastructs.c:</div>
 <table class="memberdecls">
 <tr><td colspan="2"><h2><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fsm_2datastructs_8c.html#a1ee5d4d7276a5ca86ba5f9f2947a2a57">fsm_trans_init</a> (fsm_trans *ft, int n, int type, int dest)</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize an already-allocated FSM transition unit.  <a href="#a1ee5d4d7276a5ca86ba5f9f2947a2a57"></a><br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">fsm_trans *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fsm_2datastructs_8c.html#a96f9a93d3836ac3b7e60e5d07c8fd953">fsm_trans_create</a> (int n, int type, int dest)</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocate and initialize a fsm_trans object.  <a href="#a96f9a93d3836ac3b7e60e5d07c8fd953"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fsm_2datastructs_8c.html#a62bd52afdd62697248d81f3a265f8c43">fsm_trans_init</a> (fsm_trans *ft, int n, unsigned int flags, int dest)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize an already-allocated FSM transition unit.  <a href="#a62bd52afdd62697248d81f3a265f8c43"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">fsm_trans *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fsm_2datastructs_8c.html#a2dce81553f32dd4a7ccb1311fdac735e">fsm_trans_create</a> (int n, unsigned int flags, int dest)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocate and initialize a fsm_trans object.  <a href="#a2dce81553f32dd4a7ccb1311fdac735e"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fsm_2datastructs_8c.html#add52631c23fe8ff670dcd27799c26a26">fsm_trans_destroy</a> (fsm_trans *ft)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Clean up the fsm_trans object. Do not free it.  <a href="#add52631c23fe8ff670dcd27799c26a26"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fsm_2datastructs_8c.html#aa952e837db3b8257cb84c4e5805d3855">fsm_trans_delete</a> (fsm_trans *ft)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Free the fsm_trans object.  <a href="#aa952e837db3b8257cb84c4e5805d3855"></a><br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fsm_2datastructs_8c.html#a8c0c15842d240af95c7f15219b0db6d2">fsm_trans_init_single</a> (fsm_trans *ft, wchar_t start, wchar_t end, int type, int dest)</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize a fsm_trans object with a single range.  <a href="#a8c0c15842d240af95c7f15219b0db6d2"></a><br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">fsm_trans *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fsm_2datastructs_8c.html#aae38451b4efa993bd9388e19bc1c293a">fsm_trans_create_single</a> (wchar_t start, wchar_t end, int type, int dest)</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocate and initialize a fsm_trans object with a single range.  <a href="#aae38451b4efa993bd9388e19bc1c293a"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fsm_2datastructs_8c.html#a322c79b2b397ecc0b4468aa8d09b58ff">fsm_trans_init_single</a> (fsm_trans *ft, wchar_t start, wchar_t end, unsigned int flags, int dest)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize a fsm_trans object with a single range.  <a href="#a322c79b2b397ecc0b4468aa8d09b58ff"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">fsm_trans *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fsm_2datastructs_8c.html#a523976abc4bad3e87bccb4fffedcd021">fsm_trans_create_single</a> (wchar_t start, wchar_t end, unsigned int flags, int dest)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocate and initialize a fsm_trans object with a single range.  <a href="#a523976abc4bad3e87bccb4fffedcd021"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fsm_2datastructs_8c.html#a1e398044606cf5c1efc9ae5b06215f01">fsm_trans_check</a> (const fsm_trans *ft, wchar_t c)</td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">fsm_trans *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fsm_2datastructs_8c.html#a252a17a203f6510ff008ab9748054326">fsm_trans_copy</a> (const fsm_trans *ft)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocate an entirely new copy of an existing FSM transition.  <a href="#a252a17a203f6510ff008ab9748054326"></a><br/></td></tr>
@@ -148,8 +148,8 @@ fsm *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fsm
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a state to the FSM.  <a href="#aa1917d964efee7185d38a3d03949022c"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fsm_2datastructs_8c.html#ab76ad642dc83c77ae9f458faa8444bf9">fsm_add_trans</a> (fsm *f, int state, const fsm_trans *ft)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a transition to the FSM.  <a href="#ab76ad642dc83c77ae9f458faa8444bf9"></a><br/></td></tr>
-<tr><td class="memItemLeft" align="right" valign="top">fsm_trans *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fsm_2datastructs_8c.html#a91daa87b98f7318c8609b56a09093a01">fsm_add_single</a> (fsm *f, int from, int to, wchar_t start, wchar_t end, int type)</td></tr>
-<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a single range transition to the FSM.  <a href="#a91daa87b98f7318c8609b56a09093a01"></a><br/></td></tr>
+<tr><td class="memItemLeft" align="right" valign="top">fsm_trans *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fsm_2datastructs_8c.html#adaa6dead23e927909200101446c0a3c1">fsm_add_single</a> (fsm *f, int from, int to, wchar_t start, wchar_t end, unsigned int flags)</td></tr>
+<tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Add a single range transition to the FSM.  <a href="#adaa6dead23e927909200101446c0a3c1"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fsm_2datastructs_8c.html#ad8fbae30eba24870045e39e4ac3937e6">fsm_sim_init</a> (fsm_sim *fs, fsm *f, smb_al *curr)</td></tr>
 <tr><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialize an fsm_sim struct.  <a href="#ad8fbae30eba24870045e39e4ac3937e6"></a><br/></td></tr>
 <tr><td class="memItemLeft" align="right" valign="top">fsm_sim *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fsm_2datastructs_8c.html#a0b05dfb3e534ad249f74d2612be9a112">fsm_sim_create</a> (fsm *f, smb_al *curr)</td></tr>
@@ -167,12 +167,12 @@ fsm *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fsm
 
 <p>Definition in file <a class="el" href="fsm_2datastructs_8c_source.html">datastructs.c</a>.</p>
 </div><hr/><h2>Function Documentation</h2>
-<a class="anchor" id="a91daa87b98f7318c8609b56a09093a01"></a><!-- doxytag: member="datastructs.c::fsm_add_single" ref="a91daa87b98f7318c8609b56a09093a01" args="(fsm *f, int from, int to, wchar_t start, wchar_t end, int type)" -->
+<a class="anchor" id="adaa6dead23e927909200101446c0a3c1"></a><!-- doxytag: member="datastructs.c::fsm_add_single" ref="adaa6dead23e927909200101446c0a3c1" args="(fsm *f, int from, int to, wchar_t start, wchar_t end, unsigned int flags)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">fsm_trans* <a class="el" href="fsm_2datastructs_8c.html#a91daa87b98f7318c8609b56a09093a01">fsm_add_single</a> </td>
+          <td class="memname">fsm_trans* <a class="el" href="fsm_2datastructs_8c.html#adaa6dead23e927909200101446c0a3c1">fsm_add_single</a> </td>
           <td>(</td>
           <td class="paramtype">fsm *&#160;</td>
           <td class="paramname"><em>f</em>, </td>
@@ -204,8 +204,8 @@ fsm *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fsm
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>type</em>&#160;</td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>flags</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -225,13 +225,13 @@ fsm *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fsm
     <tr><td class="paramname">to</td><td>The state the transition is to </td></tr>
     <tr><td class="paramname">start</td><td>The character at the start of the range </td></tr>
     <tr><td class="paramname">end</td><td>The character at the end of the range </td></tr>
-    <tr><td class="paramname">type</td><td>The type of range (positive or negative) </td></tr>
+    <tr><td class="paramname">flags</td><td>The flags of range (positive or negative) </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd>Pointer to the fsm_trans created by the function. </dd></dl>
 
-<p>Definition at line <a class="el" href="fsm_2datastructs_8c_source.html#l00317">317</a> of file <a class="el" href="fsm_2datastructs_8c_source.html">datastructs.c</a>.</p>
+<p>Definition at line <a class="el" href="fsm_2datastructs_8c_source.html#l00311">311</a> of file <a class="el" href="fsm_2datastructs_8c_source.html">datastructs.c</a>.</p>
 
 </div>
 </div>
@@ -270,7 +270,7 @@ fsm *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fsm
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd>The index of the state </dd></dl>
 
-<p>Definition at line <a class="el" href="fsm_2datastructs_8c_source.html#l00268">268</a> of file <a class="el" href="fsm_2datastructs_8c_source.html">datastructs.c</a>.</p>
+<p>Definition at line <a class="el" href="fsm_2datastructs_8c_source.html#l00262">262</a> of file <a class="el" href="fsm_2datastructs_8c_source.html">datastructs.c</a>.</p>
 
 </div>
 </div>
@@ -315,7 +315,7 @@ fsm *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fsm
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="fsm_2datastructs_8c_source.html#l00289">289</a> of file <a class="el" href="fsm_2datastructs_8c_source.html">datastructs.c</a>.</p>
+<p>Definition at line <a class="el" href="fsm_2datastructs_8c_source.html#l00283">283</a> of file <a class="el" href="fsm_2datastructs_8c_source.html">datastructs.c</a>.</p>
 
 </div>
 </div>
@@ -343,7 +343,7 @@ fsm *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fsm
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd>FSM for the character. </dd></dl>
 
-<p>Definition at line <a class="el" href="fsm_2datastructs_8c_source.html#l00252">252</a> of file <a class="el" href="fsm_2datastructs_8c_source.html">datastructs.c</a>.</p>
+<p>Definition at line <a class="el" href="fsm_2datastructs_8c_source.html#l00246">246</a> of file <a class="el" href="fsm_2datastructs_8c_source.html">datastructs.c</a>.</p>
 
 </div>
 </div>
@@ -381,7 +381,7 @@ fsm *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fsm
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="fsm_2datastructs_8c_source.html#l00237">237</a> of file <a class="el" href="fsm_2datastructs_8c_source.html">datastructs.c</a>.</p>
+<p>Definition at line <a class="el" href="fsm_2datastructs_8c_source.html#l00231">231</a> of file <a class="el" href="fsm_2datastructs_8c_source.html">datastructs.c</a>.</p>
 
 </div>
 </div>
@@ -419,7 +419,7 @@ fsm *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fsm
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="fsm_2datastructs_8c_source.html#l00209">209</a> of file <a class="el" href="fsm_2datastructs_8c_source.html">datastructs.c</a>.</p>
+<p>Definition at line <a class="el" href="fsm_2datastructs_8c_source.html#l00203">203</a> of file <a class="el" href="fsm_2datastructs_8c_source.html">datastructs.c</a>.</p>
 
 </div>
 </div>
@@ -446,7 +446,7 @@ fsm *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fsm
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="fsm_2datastructs_8c_source.html#l00186">186</a> of file <a class="el" href="fsm_2datastructs_8c_source.html">datastructs.c</a>.</p>
+<p>Definition at line <a class="el" href="fsm_2datastructs_8c_source.html#l00180">180</a> of file <a class="el" href="fsm_2datastructs_8c_source.html">datastructs.c</a>.</p>
 
 </div>
 </div>
@@ -485,7 +485,7 @@ fsm *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fsm
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd>The allocated simulation </dd></dl>
 
-<p>Definition at line <a class="el" href="fsm_2datastructs_8c_source.html#l00347">347</a> of file <a class="el" href="fsm_2datastructs_8c_source.html">datastructs.c</a>.</p>
+<p>Definition at line <a class="el" href="fsm_2datastructs_8c_source.html#l00343">343</a> of file <a class="el" href="fsm_2datastructs_8c_source.html">datastructs.c</a>.</p>
 
 </div>
 </div>
@@ -523,7 +523,7 @@ fsm *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fsm
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="fsm_2datastructs_8c_source.html#l00371">371</a> of file <a class="el" href="fsm_2datastructs_8c_source.html">datastructs.c</a>.</p>
+<p>Definition at line <a class="el" href="fsm_2datastructs_8c_source.html#l00377">377</a> of file <a class="el" href="fsm_2datastructs_8c_source.html">datastructs.c</a>.</p>
 
 </div>
 </div>
@@ -561,7 +561,7 @@ fsm *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fsm
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="fsm_2datastructs_8c_source.html#l00359">359</a> of file <a class="el" href="fsm_2datastructs_8c_source.html">datastructs.c</a>.</p>
+<p>Definition at line <a class="el" href="fsm_2datastructs_8c_source.html#l00355">355</a> of file <a class="el" href="fsm_2datastructs_8c_source.html">datastructs.c</a>.</p>
 
 </div>
 </div>
@@ -606,7 +606,7 @@ fsm *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fsm
   </dd>
 </dl>
 
-<p>Definition at line <a class="el" href="fsm_2datastructs_8c_source.html#l00335">335</a> of file <a class="el" href="fsm_2datastructs_8c_source.html">datastructs.c</a>.</p>
+<p>Definition at line <a class="el" href="fsm_2datastructs_8c_source.html#l00329">329</a> of file <a class="el" href="fsm_2datastructs_8c_source.html">datastructs.c</a>.</p>
 
 </div>
 </div>
@@ -671,16 +671,16 @@ fsm *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fsm
 </dl>
 <dl class="return"><dt><b>Returns:</b></dt><dd>The copy of ft </dd></dl>
 
-<p>Definition at line <a class="el" href="fsm_2datastructs_8c_source.html#l00166">166</a> of file <a class="el" href="fsm_2datastructs_8c_source.html">datastructs.c</a>.</p>
+<p>Definition at line <a class="el" href="fsm_2datastructs_8c_source.html#l00160">160</a> of file <a class="el" href="fsm_2datastructs_8c_source.html">datastructs.c</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="a96f9a93d3836ac3b7e60e5d07c8fd953"></a><!-- doxytag: member="datastructs.c::fsm_trans_create" ref="a96f9a93d3836ac3b7e60e5d07c8fd953" args="(int n, int type, int dest)" -->
+<a class="anchor" id="a2dce81553f32dd4a7ccb1311fdac735e"></a><!-- doxytag: member="datastructs.c::fsm_trans_create" ref="a2dce81553f32dd4a7ccb1311fdac735e" args="(int n, unsigned int flags, int dest)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">fsm_trans* <a class="el" href="fsm_2datastructs_8c.html#a96f9a93d3836ac3b7e60e5d07c8fd953">fsm_trans_create</a> </td>
+          <td class="memname">fsm_trans* <a class="el" href="fsm_2datastructs_8c.html#a2dce81553f32dd4a7ccb1311fdac735e">fsm_trans_create</a> </td>
           <td>(</td>
           <td class="paramtype">int&#160;</td>
           <td class="paramname"><em>n</em>, </td>
@@ -688,8 +688,8 @@ fsm *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fsm
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>type</em>, </td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>flags</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -710,7 +710,7 @@ fsm *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fsm
 <dl class="params"><dt><b>Parameters:</b></dt><dd>
   <table class="params">
     <tr><td class="paramname">n</td><td>The number of ranges </td></tr>
-    <tr><td class="paramname">type</td><td>The type of transition </td></tr>
+    <tr><td class="paramname">flags</td><td>Transition flags </td></tr>
     <tr><td class="paramname">dest</td><td>The destination of the transition </td></tr>
   </table>
   </dd>
@@ -720,12 +720,12 @@ fsm *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fsm
 
 </div>
 </div>
-<a class="anchor" id="aae38451b4efa993bd9388e19bc1c293a"></a><!-- doxytag: member="datastructs.c::fsm_trans_create_single" ref="aae38451b4efa993bd9388e19bc1c293a" args="(wchar_t start, wchar_t end, int type, int dest)" -->
+<a class="anchor" id="a523976abc4bad3e87bccb4fffedcd021"></a><!-- doxytag: member="datastructs.c::fsm_trans_create_single" ref="a523976abc4bad3e87bccb4fffedcd021" args="(wchar_t start, wchar_t end, unsigned int flags, int dest)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">fsm_trans* <a class="el" href="fsm_2datastructs_8c.html#aae38451b4efa993bd9388e19bc1c293a">fsm_trans_create_single</a> </td>
+          <td class="memname">fsm_trans* <a class="el" href="fsm_2datastructs_8c.html#a523976abc4bad3e87bccb4fffedcd021">fsm_trans_create_single</a> </td>
           <td>(</td>
           <td class="paramtype">wchar_t&#160;</td>
           <td class="paramname"><em>start</em>, </td>
@@ -739,8 +739,8 @@ fsm *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fsm
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>type</em>, </td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>flags</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -762,7 +762,7 @@ fsm *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fsm
   <table class="params">
     <tr><td class="paramname">start</td><td>The beginning of the range </td></tr>
     <tr><td class="paramname">end</td><td>The end of the range </td></tr>
-    <tr><td class="paramname">type</td><td>The type of the object </td></tr>
+    <tr><td class="paramname">flags</td><td>The flags of the object </td></tr>
     <tr><td class="paramname">dest</td><td>The destination of the transition </td></tr>
   </table>
   </dd>
@@ -826,12 +826,12 @@ fsm *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fsm
 
 </div>
 </div>
-<a class="anchor" id="a1ee5d4d7276a5ca86ba5f9f2947a2a57"></a><!-- doxytag: member="datastructs.c::fsm_trans_init" ref="a1ee5d4d7276a5ca86ba5f9f2947a2a57" args="(fsm_trans *ft, int n, int type, int dest)" -->
+<a class="anchor" id="a62bd52afdd62697248d81f3a265f8c43"></a><!-- doxytag: member="datastructs.c::fsm_trans_init" ref="a62bd52afdd62697248d81f3a265f8c43" args="(fsm_trans *ft, int n, unsigned int flags, int dest)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="fsm_2datastructs_8c.html#a1ee5d4d7276a5ca86ba5f9f2947a2a57">fsm_trans_init</a> </td>
+          <td class="memname">void <a class="el" href="fsm_2datastructs_8c.html#a62bd52afdd62697248d81f3a265f8c43">fsm_trans_init</a> </td>
           <td>(</td>
           <td class="paramtype">fsm_trans *&#160;</td>
           <td class="paramname"><em>ft</em>, </td>
@@ -845,8 +845,8 @@ fsm *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fsm
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>type</em>, </td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>flags</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -869,7 +869,7 @@ fsm *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fsm
   <table class="params">
     <tr><td class="paramname">ft</td><td>The pre-allocated transition </td></tr>
     <tr><td class="paramname">n</td><td>The number of transition criteria </td></tr>
-    <tr><td class="paramname">type</td><td>The type of transition (positive or negative) </td></tr>
+    <tr><td class="paramname">flags</td><td>Transition flags (0 is default) </td></tr>
     <tr><td class="paramname">dest</td><td>The destination of the transition </td></tr>
   </table>
   </dd>
@@ -879,12 +879,12 @@ fsm *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fsm
 
 </div>
 </div>
-<a class="anchor" id="a8c0c15842d240af95c7f15219b0db6d2"></a><!-- doxytag: member="datastructs.c::fsm_trans_init_single" ref="a8c0c15842d240af95c7f15219b0db6d2" args="(fsm_trans *ft, wchar_t start, wchar_t end, int type, int dest)" -->
+<a class="anchor" id="a322c79b2b397ecc0b4468aa8d09b58ff"></a><!-- doxytag: member="datastructs.c::fsm_trans_init_single" ref="a322c79b2b397ecc0b4468aa8d09b58ff" args="(fsm_trans *ft, wchar_t start, wchar_t end, unsigned int flags, int dest)" -->
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">void <a class="el" href="fsm_2datastructs_8c.html#a8c0c15842d240af95c7f15219b0db6d2">fsm_trans_init_single</a> </td>
+          <td class="memname">void <a class="el" href="fsm_2datastructs_8c.html#a322c79b2b397ecc0b4468aa8d09b58ff">fsm_trans_init_single</a> </td>
           <td>(</td>
           <td class="paramtype">fsm_trans *&#160;</td>
           <td class="paramname"><em>ft</em>, </td>
@@ -904,8 +904,8 @@ fsm *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fsm
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int&#160;</td>
-          <td class="paramname"><em>type</em>, </td>
+          <td class="paramtype">unsigned int&#160;</td>
+          <td class="paramname"><em>flags</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -928,7 +928,7 @@ fsm *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fsm
     <tr><td class="paramname">ft</td><td>The object to initialize </td></tr>
     <tr><td class="paramname">start</td><td>The beginning of the range </td></tr>
     <tr><td class="paramname">end</td><td>The end of the range </td></tr>
-    <tr><td class="paramname">type</td><td>The type of the object </td></tr>
+    <tr><td class="paramname">flags</td><td>The flags of the range </td></tr>
     <tr><td class="paramname">dest</td><td>The destination of the transition </td></tr>
   </table>
   </dd>
@@ -958,7 +958,7 @@ fsm *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="fsm
     <ul>
       <li class="navelem"><a class="el" href="fsm_2datastructs_8c.html">datastructs.c</a>      </li>
 
-    <li class="footer">Generated on Wed Jul 29 2015 05:03:09 for libstephen by
+    <li class="footer">Generated on Thu Jul 30 2015 18:09:14 for libstephen by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.6.1 </li>
    </ul>

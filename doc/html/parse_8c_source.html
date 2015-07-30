@@ -139,12 +139,12 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00066"></a>00066   }
 <a name="l00067"></a>00067 }
 <a name="l00068"></a>00068 
-<a name="l00073"></a><a class="code" href="parse_8c.html#a2c49189ca53918ba1e644d5c3d0a4fc1">00073</a> fsm *<a class="code" href="parse_8c.html#a2c49189ca53918ba1e644d5c3d0a4fc1" title="Return a FSM that accepts any whitespace.">regex_parse_create_whitespace_fsm</a>(<span class="keywordtype">int</span> type)
+<a name="l00073"></a><a class="code" href="parse_8c.html#a7f2161ebfb54d72e515a709fba838108">00073</a> fsm *<a class="code" href="parse_8c.html#a7f2161ebfb54d72e515a709fba838108" title="Return a FSM that accepts any whitespace.">regex_parse_create_whitespace_fsm</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> flags)
 <a name="l00074"></a>00074 {
 <a name="l00075"></a>00075   fsm *f = <a class="code" href="fsm_2datastructs_8c.html#a81bb701b090eeab2a57dd58311b04ddf" title="Allocate and initialize an FSM.">fsm_create</a>();
 <a name="l00076"></a>00076   <span class="keywordtype">int</span> src = <a class="code" href="fsm_2datastructs_8c.html#aa1917d964efee7185d38a3d03949022c" title="Add a state to the FSM.">fsm_add_state</a>(f, <span class="keyword">false</span>);
 <a name="l00077"></a>00077   <span class="keywordtype">int</span> dest = <a class="code" href="fsm_2datastructs_8c.html#aa1917d964efee7185d38a3d03949022c" title="Add a state to the FSM.">fsm_add_state</a>(f, <span class="keyword">true</span>);
-<a name="l00078"></a>00078   fsm_trans *ft = <a class="code" href="fsm_2datastructs_8c.html#a96f9a93d3836ac3b7e60e5d07c8fd953" title="Allocate and initialize a fsm_trans object.">fsm_trans_create</a>(6, type, dest);
+<a name="l00078"></a>00078   fsm_trans *ft = <a class="code" href="fsm_2datastructs_8c.html#a2dce81553f32dd4a7ccb1311fdac735e" title="Allocate and initialize a fsm_trans object.">fsm_trans_create</a>(6, flags, dest);
 <a name="l00079"></a>00079   ft-&gt;start[0] = L<span class="charliteral">&#39; &#39;</span>;
 <a name="l00080"></a>00080   ft-&gt;end[0] = L<span class="charliteral">&#39; &#39;</span>;
 <a name="l00081"></a>00081   ft-&gt;start[1] = L<span class="charliteral">&#39;\f&#39;</span>;
@@ -162,12 +162,12 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00093"></a>00093   <span class="keywordflow">return</span> f;
 <a name="l00094"></a>00094 }
 <a name="l00095"></a>00095 
-<a name="l00099"></a><a class="code" href="parse_8c.html#a2e56e4221f6f7b0abb6dda80395dba08">00099</a> fsm *<a class="code" href="parse_8c.html#a2e56e4221f6f7b0abb6dda80395dba08" title="Return a FSM for word characters (letters, numbers, and underscore).">regex_parse_create_word_fsm</a>(<span class="keywordtype">int</span> type)
+<a name="l00099"></a><a class="code" href="parse_8c.html#aa32c0f40ae952517f0e05a0c18c09db3">00099</a> fsm *<a class="code" href="parse_8c.html#aa32c0f40ae952517f0e05a0c18c09db3" title="Return a FSM for word characters (letters, numbers, and underscore).">regex_parse_create_word_fsm</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> flags)
 <a name="l00100"></a>00100 {
 <a name="l00101"></a>00101   fsm *f = <a class="code" href="fsm_2datastructs_8c.html#a81bb701b090eeab2a57dd58311b04ddf" title="Allocate and initialize an FSM.">fsm_create</a>();
 <a name="l00102"></a>00102   <span class="keywordtype">int</span> src = <a class="code" href="fsm_2datastructs_8c.html#aa1917d964efee7185d38a3d03949022c" title="Add a state to the FSM.">fsm_add_state</a>(f, <span class="keyword">false</span>);
 <a name="l00103"></a>00103   <span class="keywordtype">int</span> dest = <a class="code" href="fsm_2datastructs_8c.html#aa1917d964efee7185d38a3d03949022c" title="Add a state to the FSM.">fsm_add_state</a>(f, <span class="keyword">true</span>);
-<a name="l00104"></a>00104   fsm_trans *ft = <a class="code" href="fsm_2datastructs_8c.html#a96f9a93d3836ac3b7e60e5d07c8fd953" title="Allocate and initialize a fsm_trans object.">fsm_trans_create</a>(4, type, dest);
+<a name="l00104"></a>00104   fsm_trans *ft = <a class="code" href="fsm_2datastructs_8c.html#a2dce81553f32dd4a7ccb1311fdac735e" title="Allocate and initialize a fsm_trans object.">fsm_trans_create</a>(4, flags, dest);
 <a name="l00105"></a>00105   ft-&gt;start[0] = L<span class="charliteral">&#39;a&#39;</span>;
 <a name="l00106"></a>00106   ft-&gt;end[0] = L<span class="charliteral">&#39;z&#39;</span>;
 <a name="l00107"></a>00107   ft-&gt;start[1] = L<span class="charliteral">&#39;A&#39;</span>;
@@ -181,12 +181,12 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00115"></a>00115   <span class="keywordflow">return</span> f;
 <a name="l00116"></a>00116 }
 <a name="l00117"></a>00117 
-<a name="l00121"></a><a class="code" href="parse_8c.html#a9d29a86b2059e1fb7aa3b05662eb1f88">00121</a> fsm *<a class="code" href="parse_8c.html#a9d29a86b2059e1fb7aa3b05662eb1f88" title="Return a FSM for digits.">regex_parse_create_digit_fsm</a>(<span class="keywordtype">int</span> type)
+<a name="l00121"></a><a class="code" href="parse_8c.html#a13c095ee910d6775f83b5b294f54c695">00121</a> fsm *<a class="code" href="parse_8c.html#a13c095ee910d6775f83b5b294f54c695" title="Return a FSM for digits.">regex_parse_create_digit_fsm</a>(<span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> flags)
 <a name="l00122"></a>00122 {
 <a name="l00123"></a>00123   fsm *f = <a class="code" href="fsm_2datastructs_8c.html#a81bb701b090eeab2a57dd58311b04ddf" title="Allocate and initialize an FSM.">fsm_create</a>();
 <a name="l00124"></a>00124   <span class="keywordtype">int</span> src = <a class="code" href="fsm_2datastructs_8c.html#aa1917d964efee7185d38a3d03949022c" title="Add a state to the FSM.">fsm_add_state</a>(f, <span class="keyword">false</span>);
 <a name="l00125"></a>00125   <span class="keywordtype">int</span> dest = <a class="code" href="fsm_2datastructs_8c.html#aa1917d964efee7185d38a3d03949022c" title="Add a state to the FSM.">fsm_add_state</a>(f, <span class="keyword">true</span>);
-<a name="l00126"></a>00126   fsm_trans *ft = <a class="code" href="fsm_2datastructs_8c.html#a96f9a93d3836ac3b7e60e5d07c8fd953" title="Allocate and initialize a fsm_trans object.">fsm_trans_create</a>(1, type, dest);
+<a name="l00126"></a>00126   fsm_trans *ft = <a class="code" href="fsm_2datastructs_8c.html#a2dce81553f32dd4a7ccb1311fdac735e" title="Allocate and initialize a fsm_trans object.">fsm_trans_create</a>(1, flags, dest);
 <a name="l00127"></a>00127   ft-&gt;start[0] = L<span class="charliteral">&#39;0&#39;</span>;
 <a name="l00128"></a>00128   ft-&gt;end[0] = L<span class="charliteral">&#39;9&#39;</span>;
 <a name="l00129"></a>00129   <a class="code" href="fsm_2datastructs_8c.html#ab76ad642dc83c77ae9f458faa8444bf9" title="Add a transition to the FSM.">fsm_add_trans</a>(f, src, ft);
@@ -202,11 +202,11 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00148"></a>00148   <span class="keywordtype">int</span> dest = <a class="code" href="fsm_2datastructs_8c.html#aa1917d964efee7185d38a3d03949022c" title="Add a state to the FSM.">fsm_add_state</a>(f, <span class="keyword">true</span>); <span class="comment">// accepting</span>
 <a name="l00149"></a>00149   f-&gt;start = src;
 <a name="l00150"></a>00150   <span class="keywordflow">if</span> (!newline_accepted) {
-<a name="l00151"></a>00151     ft = <a class="code" href="fsm_2datastructs_8c.html#a96f9a93d3836ac3b7e60e5d07c8fd953" title="Allocate and initialize a fsm_trans object.">fsm_trans_create</a>(2, FSM_TRANS_NEGATIVE, dest);
+<a name="l00151"></a>00151     ft = <a class="code" href="fsm_2datastructs_8c.html#a2dce81553f32dd4a7ccb1311fdac735e" title="Allocate and initialize a fsm_trans object.">fsm_trans_create</a>(2, FSM_TRANS_NEGATIVE, dest);
 <a name="l00152"></a>00152     ft-&gt;start[1] = L<span class="charliteral">&#39;\n&#39;</span>;
 <a name="l00153"></a>00153     ft-&gt;end[1] = L<span class="charliteral">&#39;\n&#39;</span>;
 <a name="l00154"></a>00154   } <span class="keywordflow">else</span> {
-<a name="l00155"></a>00155     ft = <a class="code" href="fsm_2datastructs_8c.html#a96f9a93d3836ac3b7e60e5d07c8fd953" title="Allocate and initialize a fsm_trans object.">fsm_trans_create</a>(1, FSM_TRANS_NEGATIVE, dest);
+<a name="l00155"></a>00155     ft = <a class="code" href="fsm_2datastructs_8c.html#a2dce81553f32dd4a7ccb1311fdac735e" title="Allocate and initialize a fsm_trans object.">fsm_trans_create</a>(1, FSM_TRANS_NEGATIVE, dest);
 <a name="l00156"></a>00156   }
 <a name="l00157"></a>00157 
 <a name="l00158"></a>00158   <span class="comment">// No matter what, we can&#39;t allow EPSILON transitions for a dot.</span>
@@ -224,17 +224,17 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00183"></a>00183   (*regex)++; <span class="comment">// advance to the specifier</span>
 <a name="l00184"></a>00184   <span class="keywordflow">switch</span> (**regex) {
 <a name="l00185"></a>00185   <span class="keywordflow">case</span> L<span class="charliteral">&#39;s&#39;</span>:
-<a name="l00186"></a>00186     <span class="keywordflow">return</span> <a class="code" href="parse_8c.html#a2c49189ca53918ba1e644d5c3d0a4fc1" title="Return a FSM that accepts any whitespace.">regex_parse_create_whitespace_fsm</a>(FSM_TRANS_POSITIVE);
+<a name="l00186"></a>00186     <span class="keywordflow">return</span> <a class="code" href="parse_8c.html#a7f2161ebfb54d72e515a709fba838108" title="Return a FSM that accepts any whitespace.">regex_parse_create_whitespace_fsm</a>(0);
 <a name="l00187"></a>00187   <span class="keywordflow">case</span> L<span class="charliteral">&#39;S&#39;</span>:
-<a name="l00188"></a>00188     <span class="keywordflow">return</span> <a class="code" href="parse_8c.html#a2c49189ca53918ba1e644d5c3d0a4fc1" title="Return a FSM that accepts any whitespace.">regex_parse_create_whitespace_fsm</a>(FSM_TRANS_NEGATIVE);
+<a name="l00188"></a>00188     <span class="keywordflow">return</span> <a class="code" href="parse_8c.html#a7f2161ebfb54d72e515a709fba838108" title="Return a FSM that accepts any whitespace.">regex_parse_create_whitespace_fsm</a>(FSM_TRANS_NEGATIVE);
 <a name="l00189"></a>00189   <span class="keywordflow">case</span> L<span class="charliteral">&#39;w&#39;</span>:
-<a name="l00190"></a>00190     <span class="keywordflow">return</span> <a class="code" href="parse_8c.html#a2e56e4221f6f7b0abb6dda80395dba08" title="Return a FSM for word characters (letters, numbers, and underscore).">regex_parse_create_word_fsm</a>(FSM_TRANS_POSITIVE);
+<a name="l00190"></a>00190     <span class="keywordflow">return</span> <a class="code" href="parse_8c.html#aa32c0f40ae952517f0e05a0c18c09db3" title="Return a FSM for word characters (letters, numbers, and underscore).">regex_parse_create_word_fsm</a>(0);
 <a name="l00191"></a>00191   <span class="keywordflow">case</span> L<span class="charliteral">&#39;W&#39;</span>:
-<a name="l00192"></a>00192     <span class="keywordflow">return</span> <a class="code" href="parse_8c.html#a2e56e4221f6f7b0abb6dda80395dba08" title="Return a FSM for word characters (letters, numbers, and underscore).">regex_parse_create_word_fsm</a>(FSM_TRANS_NEGATIVE);
+<a name="l00192"></a>00192     <span class="keywordflow">return</span> <a class="code" href="parse_8c.html#aa32c0f40ae952517f0e05a0c18c09db3" title="Return a FSM for word characters (letters, numbers, and underscore).">regex_parse_create_word_fsm</a>(FSM_TRANS_NEGATIVE);
 <a name="l00193"></a>00193   <span class="keywordflow">case</span> L<span class="charliteral">&#39;d&#39;</span>:
-<a name="l00194"></a>00194     <span class="keywordflow">return</span> <a class="code" href="parse_8c.html#a9d29a86b2059e1fb7aa3b05662eb1f88" title="Return a FSM for digits.">regex_parse_create_digit_fsm</a>(FSM_TRANS_POSITIVE);
+<a name="l00194"></a>00194     <span class="keywordflow">return</span> <a class="code" href="parse_8c.html#a13c095ee910d6775f83b5b294f54c695" title="Return a FSM for digits.">regex_parse_create_digit_fsm</a>(0);
 <a name="l00195"></a>00195   <span class="keywordflow">case</span> L<span class="charliteral">&#39;D&#39;</span>:
-<a name="l00196"></a>00196     <span class="keywordflow">return</span> <a class="code" href="parse_8c.html#a9d29a86b2059e1fb7aa3b05662eb1f88" title="Return a FSM for digits.">regex_parse_create_digit_fsm</a>(FSM_TRANS_NEGATIVE);
+<a name="l00196"></a>00196     <span class="keywordflow">return</span> <a class="code" href="parse_8c.html#a13c095ee910d6775f83b5b294f54c695" title="Return a FSM for digits.">regex_parse_create_digit_fsm</a>(FSM_TRANS_NEGATIVE);
 <a name="l00197"></a>00197   <span class="keywordflow">default</span>:
 <a name="l00198"></a>00198     c = <a class="code" href="str_8c.html#a40d05018488beaaf81d524413833a682" title="Get an escaped character from the string source.">get_escape</a>(regex);
 <a name="l00199"></a>00199     <span class="comment">// get_escape() leaves the pointer AFTER the last character in the escape.</span>
@@ -253,7 +253,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00227"></a>00227   smb_ll start, end;
 <a name="l00228"></a>00228   smb_status status = SMB_SUCCESS;
 <a name="l00229"></a>00229   DATA d;
-<a name="l00230"></a>00230   <span class="keywordtype">int</span> type = FSM_TRANS_POSITIVE, state = <a class="code" href="parse_8c.html#a1291f416b069313021b519eea62d5bf1" title="State for parsing character classes when not part of a range.">NORMAL</a>;
+<a name="l00230"></a>00230   <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> flags = 0, state = <a class="code" href="parse_8c.html#a1291f416b069313021b519eea62d5bf1" title="State for parsing character classes when not part of a range.">NORMAL</a>;
 <a name="l00231"></a>00231   smb_iter iter;
 <a name="l00232"></a>00232   fsm *f;
 <a name="l00233"></a>00233   <span class="keywordtype">int</span> src, dest;
@@ -265,7 +265,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00239"></a>00239   <span class="comment">// Detect whether the character class is positive or negative</span>
 <a name="l00240"></a>00240   (*regex)++;
 <a name="l00241"></a>00241   <span class="keywordflow">if</span> (**regex == L<span class="charliteral">&#39;^&#39;</span>) {
-<a name="l00242"></a>00242     type = FSM_TRANS_NEGATIVE;
+<a name="l00242"></a>00242     flags = FSM_TRANS_NEGATIVE;
 <a name="l00243"></a>00243     (*regex)++;
 <a name="l00244"></a>00244   }
 <a name="l00245"></a>00245 
@@ -308,8 +308,8 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00282"></a>00282   src = <a class="code" href="fsm_2datastructs_8c.html#aa1917d964efee7185d38a3d03949022c" title="Add a state to the FSM.">fsm_add_state</a>(f, <span class="keyword">false</span>);
 <a name="l00283"></a>00283   dest = <a class="code" href="fsm_2datastructs_8c.html#aa1917d964efee7185d38a3d03949022c" title="Add a state to the FSM.">fsm_add_state</a>(f, <span class="keyword">true</span>);
 <a name="l00284"></a>00284   f-&gt;start = src;
-<a name="l00285"></a>00285   ft = <a class="code" href="fsm_2datastructs_8c.html#a96f9a93d3836ac3b7e60e5d07c8fd953" title="Allocate and initialize a fsm_trans object.">fsm_trans_create</a>(<a class="code" href="linkedlist_8c.html#a14effb264a1e7bbb3c0d4674b5ce6fee" title="Returns the length of the given list.">ll_length</a>(&amp;start) + (type == FSM_TRANS_NEGATIVE ? 1 : 0),
-<a name="l00286"></a>00286                         type, dest);
+<a name="l00285"></a>00285   ft = <a class="code" href="fsm_2datastructs_8c.html#a2dce81553f32dd4a7ccb1311fdac735e" title="Allocate and initialize a fsm_trans object.">fsm_trans_create</a>(<a class="code" href="linkedlist_8c.html#a14effb264a1e7bbb3c0d4674b5ce6fee" title="Returns the length of the given list.">ll_length</a>(&amp;start) + (FLAG_CHECK(flags, FSM_TRANS_NEGATIVE) ? 1 : 0),
+<a name="l00286"></a>00286                         flags, dest);
 <a name="l00287"></a>00287 
 <a name="l00288"></a>00288   iter = <a class="code" href="linkedlist_8c.html#aa0087aed3ec014f4bafd124e2020207e" title="Get an iterator for the linked list.">ll_get_iter</a>(&amp;start);
 <a name="l00289"></a>00289   <span class="keywordflow">while</span> (iter.has_next(&amp;iter)) {
@@ -323,7 +323,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00297"></a>00297     assert(status == SMB_SUCCESS);
 <a name="l00298"></a>00298     ft-&gt;end[iter.index-1] = (wchar_t) d.data_llint;
 <a name="l00299"></a>00299   }
-<a name="l00300"></a>00300   <span class="keywordflow">if</span> (type == FSM_TRANS_NEGATIVE) {
+<a name="l00300"></a>00300   <span class="keywordflow">if</span> (FLAG_CHECK(flags, FSM_TRANS_NEGATIVE)) {
 <a name="l00301"></a>00301     <span class="comment">// We cannot allow epsilon to be matched in an actual character class.</span>
 <a name="l00302"></a>00302     ft-&gt;start[<a class="code" href="linkedlist_8c.html#a14effb264a1e7bbb3c0d4674b5ce6fee" title="Returns the length of the given list.">ll_length</a>(&amp;start)] = EPSILON;
 <a name="l00303"></a>00303     ft-&gt;end[<a class="code" href="linkedlist_8c.html#a14effb264a1e7bbb3c0d4674b5ce6fee" title="Returns the length of the given list.">ll_length</a>(&amp;start)] = EPSILON;
@@ -341,71 +341,79 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00329"></a>00329   <span class="comment">// Initial FSM is a machine that accepts the empty string.</span>
 <a name="l00330"></a>00330   fsm *curr = <a class="code" href="fsm_2datastructs_8c.html#a81bb701b090eeab2a57dd58311b04ddf" title="Allocate and initialize an FSM.">fsm_create</a>();
 <a name="l00331"></a>00331   fsm *<span class="keyword">new</span>;
-<a name="l00332"></a>00332   curr-&gt;start = <a class="code" href="fsm_2datastructs_8c.html#aa1917d964efee7185d38a3d03949022c" title="Add a state to the FSM.">fsm_add_state</a>(curr, <span class="keyword">true</span>);
-<a name="l00333"></a>00333 
-<a name="l00334"></a>00334   <span class="comment">// ASSUME THAT ALL PARENS, ETC ARE BALANCED!</span>
-<a name="l00335"></a>00335 
-<a name="l00336"></a>00336   <span class="keywordflow">for</span> ( ; *regex; regex++) {
-<a name="l00337"></a>00337     <span class="keywordflow">switch</span> (*regex) {
-<a name="l00338"></a>00338 
-<a name="l00339"></a>00339     <span class="keywordflow">case</span> L<span class="charliteral">&#39;(&#39;</span>:
-<a name="l00340"></a>00340       <span class="keyword">new</span> = <a class="code" href="parse_8c.html#a4f016183fc8f0da8ac87bd6f6047708c" title="The workhorse recursive helper to regex_parse().">regex_parse_recursive</a>(regex + 1, &amp;regex);
-<a name="l00341"></a>00341       <a class="code" href="parse_8c.html#ac6a448a418b078c44fb0d0d302431eba" title="Adjust the FSM according to its modifier, if any.">regex_parse_check_modifier</a>(<span class="keyword">new</span>, &amp;regex);
-<a name="l00342"></a>00342       <a class="code" href="operations_8c.html#aa9a8e9bf4de56221564455887ac69adb" title="Concatenate two FSMs into the first FSM object.">fsm_concat</a>(curr, <span class="keyword">new</span>);
-<a name="l00343"></a>00343       <a class="code" href="fsm_2datastructs_8c.html#aaeae4a8cee76a6876cb4e9c13f753cc3" title="Clean up and free an FSM.">fsm_delete</a>(<span class="keyword">new</span>, <span class="keyword">true</span>);
-<a name="l00344"></a>00344       <span class="keywordflow">break</span>;
-<a name="l00345"></a>00345 
-<a name="l00346"></a>00346     <span class="keywordflow">case</span> L<span class="charliteral">&#39;)&#39;</span>:
-<a name="l00347"></a>00347       *<span class="keyword">final</span> = regex;
-<a name="l00348"></a>00348       <span class="keywordflow">return</span> curr;
-<a name="l00349"></a>00349       <span class="keywordflow">break</span>;
-<a name="l00350"></a>00350 
-<a name="l00351"></a>00351     <span class="keywordflow">case</span> L<span class="charliteral">&#39;|&#39;</span>:
-<a name="l00352"></a>00352       <span class="comment">// Need to pass control back up without attempting to check modifiers.</span>
-<a name="l00353"></a>00353       <span class="keyword">new</span> = <a class="code" href="parse_8c.html#a4f016183fc8f0da8ac87bd6f6047708c" title="The workhorse recursive helper to regex_parse().">regex_parse_recursive</a>(regex + 1, &amp;regex);
-<a name="l00354"></a>00354       <a class="code" href="operations_8c.html#a1fe9ede8ddc9e41fcf053d2a789086c9" title="Construct the union of the two FSMs into the first one.">fsm_union</a>(curr, <span class="keyword">new</span>);
-<a name="l00355"></a>00355       <a class="code" href="fsm_2datastructs_8c.html#aaeae4a8cee76a6876cb4e9c13f753cc3" title="Clean up and free an FSM.">fsm_delete</a>(<span class="keyword">new</span>, <span class="keyword">true</span>);
-<a name="l00356"></a>00356       *<span class="keyword">final</span> = regex;
-<a name="l00357"></a>00357       <span class="keywordflow">return</span> curr;
-<a name="l00358"></a>00358       <span class="keywordflow">break</span>;
-<a name="l00359"></a>00359 
-<a name="l00360"></a>00360     <span class="keywordflow">case</span> L<span class="charliteral">&#39;[&#39;</span>:
-<a name="l00361"></a>00361       <span class="keyword">new</span> = <a class="code" href="parse_8c.html#a292a18ffe8a3ffa53aae02a662c04415" title="Create a FSM for a character class.">regex_parse_char_class</a>(&amp;regex);
-<a name="l00362"></a>00362       <a class="code" href="parse_8c.html#ac6a448a418b078c44fb0d0d302431eba" title="Adjust the FSM according to its modifier, if any.">regex_parse_check_modifier</a>(<span class="keyword">new</span>, &amp;regex);
-<a name="l00363"></a>00363       <a class="code" href="operations_8c.html#aa9a8e9bf4de56221564455887ac69adb" title="Concatenate two FSMs into the first FSM object.">fsm_concat</a>(curr, <span class="keyword">new</span>);
-<a name="l00364"></a>00364       <a class="code" href="fsm_2datastructs_8c.html#aaeae4a8cee76a6876cb4e9c13f753cc3" title="Clean up and free an FSM.">fsm_delete</a>(<span class="keyword">new</span>, <span class="keyword">true</span>);
-<a name="l00365"></a>00365       <span class="keywordflow">break</span>;
-<a name="l00366"></a>00366 
-<a name="l00367"></a>00367     <span class="keywordflow">case</span> L<span class="charliteral">&#39;\\&#39;</span>:
-<a name="l00368"></a>00368       <span class="keyword">new</span> = <a class="code" href="parse_8c.html#a2b81fd55b1de3e8405c4e5d17dd7b63d" title="Returns an FSM for an escape sequence, outside of a character class.">regex_parse_outer_escape</a>(&amp;regex);
-<a name="l00369"></a>00369       <a class="code" href="parse_8c.html#ac6a448a418b078c44fb0d0d302431eba" title="Adjust the FSM according to its modifier, if any.">regex_parse_check_modifier</a>(<span class="keyword">new</span>, &amp;regex);
-<a name="l00370"></a>00370       <a class="code" href="operations_8c.html#aa9a8e9bf4de56221564455887ac69adb" title="Concatenate two FSMs into the first FSM object.">fsm_concat</a>(curr, <span class="keyword">new</span>);
-<a name="l00371"></a>00371       <a class="code" href="fsm_2datastructs_8c.html#aaeae4a8cee76a6876cb4e9c13f753cc3" title="Clean up and free an FSM.">fsm_delete</a>(<span class="keyword">new</span>, <span class="keyword">true</span>);
-<a name="l00372"></a>00372       <span class="keywordflow">break</span>;
-<a name="l00373"></a>00373 
-<a name="l00374"></a>00374     <span class="keywordflow">case</span> L<span class="charliteral">&#39;.&#39;</span>:
-<a name="l00375"></a>00375       <span class="keyword">new</span> = <a class="code" href="parse_8c.html#ac8e9765e663b11f7f6f0d7ab60295b3e" title="Create the &#39;dot&#39; FSM, i.e. the FSM that accepts &#39;almost&#39; anything.">regex_parse_create_dot_fsm</a>(<span class="keyword">false</span>);
-<a name="l00376"></a>00376       <a class="code" href="parse_8c.html#ac6a448a418b078c44fb0d0d302431eba" title="Adjust the FSM according to its modifier, if any.">regex_parse_check_modifier</a>(<span class="keyword">new</span>, &amp;regex);
-<a name="l00377"></a>00377       <a class="code" href="operations_8c.html#aa9a8e9bf4de56221564455887ac69adb" title="Concatenate two FSMs into the first FSM object.">fsm_concat</a>(curr, <span class="keyword">new</span>);
-<a name="l00378"></a>00378       <a class="code" href="fsm_2datastructs_8c.html#aaeae4a8cee76a6876cb4e9c13f753cc3" title="Clean up and free an FSM.">fsm_delete</a>(<span class="keyword">new</span>, <span class="keyword">true</span>);
-<a name="l00379"></a>00379       <span class="keywordflow">break</span>;
-<a name="l00380"></a>00380 
-<a name="l00381"></a>00381     <span class="keywordflow">default</span>:
-<a name="l00382"></a>00382       <span class="comment">// A regular letter</span>
-<a name="l00383"></a>00383       <span class="keyword">new</span> = <a class="code" href="fsm_2datastructs_8c.html#ad52421861ddd12fdaadda4681781ce02" title="Creates a FSM for a single character.">fsm_create_single_char</a>(*regex);
+<a name="l00332"></a>00332   <span class="keywordtype">bool</span> capture;
+<a name="l00333"></a>00333   curr-&gt;start = <a class="code" href="fsm_2datastructs_8c.html#aa1917d964efee7185d38a3d03949022c" title="Add a state to the FSM.">fsm_add_state</a>(curr, <span class="keyword">true</span>);
+<a name="l00334"></a>00334 
+<a name="l00335"></a>00335   <span class="comment">// ASSUME THAT ALL PARENS, ETC ARE BALANCED!</span>
+<a name="l00336"></a>00336 
+<a name="l00337"></a>00337   <span class="keywordflow">for</span> ( ; *regex; regex++) {
+<a name="l00338"></a>00338     <span class="keywordflow">switch</span> (*regex) {
+<a name="l00339"></a>00339 
+<a name="l00340"></a>00340     <span class="keywordflow">case</span> L<span class="charliteral">&#39;(&#39;</span>:
+<a name="l00341"></a>00341       capture = regex[1] == L<span class="charliteral">&#39;?&#39;</span>;
+<a name="l00342"></a>00342       <span class="keywordflow">if</span> (capture)
+<a name="l00343"></a>00343         <span class="keyword">new</span> = <a class="code" href="parse_8c.html#a4f016183fc8f0da8ac87bd6f6047708c" title="The workhorse recursive helper to regex_parse().">regex_parse_recursive</a>(regex + 2, &amp;regex);
+<a name="l00344"></a>00344       <span class="keywordflow">else</span>
+<a name="l00345"></a>00345         <span class="keyword">new</span> = <a class="code" href="parse_8c.html#a4f016183fc8f0da8ac87bd6f6047708c" title="The workhorse recursive helper to regex_parse().">regex_parse_recursive</a>(regex + 1, &amp;regex);
+<a name="l00346"></a>00346       <a class="code" href="parse_8c.html#ac6a448a418b078c44fb0d0d302431eba" title="Adjust the FSM according to its modifier, if any.">regex_parse_check_modifier</a>(<span class="keyword">new</span>, &amp;regex);
+<a name="l00347"></a>00347       <span class="keywordflow">if</span> (capture)
+<a name="l00348"></a>00348         <a class="code" href="operations_8c.html#ac8969d07ef22329d58f79b6d0adc8464" title="Concatenate two FSMs into the first, such that the second is captured.">fsm_concat_capture</a>(curr, <span class="keyword">new</span>);
+<a name="l00349"></a>00349       <span class="keywordflow">else</span>
+<a name="l00350"></a>00350         <a class="code" href="operations_8c.html#aa9a8e9bf4de56221564455887ac69adb" title="Concatenate two FSMs into the first FSM object.">fsm_concat</a>(curr, <span class="keyword">new</span>);
+<a name="l00351"></a>00351       <a class="code" href="fsm_2datastructs_8c.html#aaeae4a8cee76a6876cb4e9c13f753cc3" title="Clean up and free an FSM.">fsm_delete</a>(<span class="keyword">new</span>, <span class="keyword">true</span>);
+<a name="l00352"></a>00352       <span class="keywordflow">break</span>;
+<a name="l00353"></a>00353 
+<a name="l00354"></a>00354     <span class="keywordflow">case</span> L<span class="charliteral">&#39;)&#39;</span>:
+<a name="l00355"></a>00355       *<span class="keyword">final</span> = regex;
+<a name="l00356"></a>00356       <span class="keywordflow">return</span> curr;
+<a name="l00357"></a>00357       <span class="keywordflow">break</span>;
+<a name="l00358"></a>00358 
+<a name="l00359"></a>00359     <span class="keywordflow">case</span> L<span class="charliteral">&#39;|&#39;</span>:
+<a name="l00360"></a>00360       <span class="comment">// Need to pass control back up without attempting to check modifiers.</span>
+<a name="l00361"></a>00361       <span class="keyword">new</span> = <a class="code" href="parse_8c.html#a4f016183fc8f0da8ac87bd6f6047708c" title="The workhorse recursive helper to regex_parse().">regex_parse_recursive</a>(regex + 1, &amp;regex);
+<a name="l00362"></a>00362       <a class="code" href="operations_8c.html#a1fe9ede8ddc9e41fcf053d2a789086c9" title="Construct the union of the two FSMs into the first one.">fsm_union</a>(curr, <span class="keyword">new</span>);
+<a name="l00363"></a>00363       <a class="code" href="fsm_2datastructs_8c.html#aaeae4a8cee76a6876cb4e9c13f753cc3" title="Clean up and free an FSM.">fsm_delete</a>(<span class="keyword">new</span>, <span class="keyword">true</span>);
+<a name="l00364"></a>00364       *<span class="keyword">final</span> = regex;
+<a name="l00365"></a>00365       <span class="keywordflow">return</span> curr;
+<a name="l00366"></a>00366       <span class="keywordflow">break</span>;
+<a name="l00367"></a>00367 
+<a name="l00368"></a>00368     <span class="keywordflow">case</span> L<span class="charliteral">&#39;[&#39;</span>:
+<a name="l00369"></a>00369       <span class="keyword">new</span> = <a class="code" href="parse_8c.html#a292a18ffe8a3ffa53aae02a662c04415" title="Create a FSM for a character class.">regex_parse_char_class</a>(&amp;regex);
+<a name="l00370"></a>00370       <a class="code" href="parse_8c.html#ac6a448a418b078c44fb0d0d302431eba" title="Adjust the FSM according to its modifier, if any.">regex_parse_check_modifier</a>(<span class="keyword">new</span>, &amp;regex);
+<a name="l00371"></a>00371       <a class="code" href="operations_8c.html#aa9a8e9bf4de56221564455887ac69adb" title="Concatenate two FSMs into the first FSM object.">fsm_concat</a>(curr, <span class="keyword">new</span>);
+<a name="l00372"></a>00372       <a class="code" href="fsm_2datastructs_8c.html#aaeae4a8cee76a6876cb4e9c13f753cc3" title="Clean up and free an FSM.">fsm_delete</a>(<span class="keyword">new</span>, <span class="keyword">true</span>);
+<a name="l00373"></a>00373       <span class="keywordflow">break</span>;
+<a name="l00374"></a>00374 
+<a name="l00375"></a>00375     <span class="keywordflow">case</span> L<span class="charliteral">&#39;\\&#39;</span>:
+<a name="l00376"></a>00376       <span class="keyword">new</span> = <a class="code" href="parse_8c.html#a2b81fd55b1de3e8405c4e5d17dd7b63d" title="Returns an FSM for an escape sequence, outside of a character class.">regex_parse_outer_escape</a>(&amp;regex);
+<a name="l00377"></a>00377       <a class="code" href="parse_8c.html#ac6a448a418b078c44fb0d0d302431eba" title="Adjust the FSM according to its modifier, if any.">regex_parse_check_modifier</a>(<span class="keyword">new</span>, &amp;regex);
+<a name="l00378"></a>00378       <a class="code" href="operations_8c.html#aa9a8e9bf4de56221564455887ac69adb" title="Concatenate two FSMs into the first FSM object.">fsm_concat</a>(curr, <span class="keyword">new</span>);
+<a name="l00379"></a>00379       <a class="code" href="fsm_2datastructs_8c.html#aaeae4a8cee76a6876cb4e9c13f753cc3" title="Clean up and free an FSM.">fsm_delete</a>(<span class="keyword">new</span>, <span class="keyword">true</span>);
+<a name="l00380"></a>00380       <span class="keywordflow">break</span>;
+<a name="l00381"></a>00381 
+<a name="l00382"></a>00382     <span class="keywordflow">case</span> L<span class="charliteral">&#39;.&#39;</span>:
+<a name="l00383"></a>00383       <span class="keyword">new</span> = <a class="code" href="parse_8c.html#ac8e9765e663b11f7f6f0d7ab60295b3e" title="Create the &#39;dot&#39; FSM, i.e. the FSM that accepts &#39;almost&#39; anything.">regex_parse_create_dot_fsm</a>(<span class="keyword">false</span>);
 <a name="l00384"></a>00384       <a class="code" href="parse_8c.html#ac6a448a418b078c44fb0d0d302431eba" title="Adjust the FSM according to its modifier, if any.">regex_parse_check_modifier</a>(<span class="keyword">new</span>, &amp;regex);
 <a name="l00385"></a>00385       <a class="code" href="operations_8c.html#aa9a8e9bf4de56221564455887ac69adb" title="Concatenate two FSMs into the first FSM object.">fsm_concat</a>(curr, <span class="keyword">new</span>);
 <a name="l00386"></a>00386       <a class="code" href="fsm_2datastructs_8c.html#aaeae4a8cee76a6876cb4e9c13f753cc3" title="Clean up and free an FSM.">fsm_delete</a>(<span class="keyword">new</span>, <span class="keyword">true</span>);
 <a name="l00387"></a>00387       <span class="keywordflow">break</span>;
-<a name="l00388"></a>00388     }
-<a name="l00389"></a>00389   }
-<a name="l00390"></a>00390   *<span class="keyword">final</span> = regex;
-<a name="l00391"></a>00391   <span class="keywordflow">return</span> curr;
-<a name="l00392"></a>00392 }
-<a name="l00393"></a>00393 
-<a name="l00399"></a><a class="code" href="parse_8c.html#a58c440b23a9f0be68aea919a81a5ca00">00399</a> fsm *<a class="code" href="parse_8c.html#a58c440b23a9f0be68aea919a81a5ca00" title="Construct a FSM to accept the given regex.">regex_parse</a>(<span class="keyword">const</span> <span class="keywordtype">wchar_t</span> *regex){
-<a name="l00400"></a>00400   <span class="keywordflow">return</span> <a class="code" href="parse_8c.html#a4f016183fc8f0da8ac87bd6f6047708c" title="The workhorse recursive helper to regex_parse().">regex_parse_recursive</a>(regex, &amp;regex);
-<a name="l00401"></a>00401 }
+<a name="l00388"></a>00388 
+<a name="l00389"></a>00389     <span class="keywordflow">default</span>:
+<a name="l00390"></a>00390       <span class="comment">// A regular letter</span>
+<a name="l00391"></a>00391       <span class="keyword">new</span> = <a class="code" href="fsm_2datastructs_8c.html#ad52421861ddd12fdaadda4681781ce02" title="Creates a FSM for a single character.">fsm_create_single_char</a>(*regex);
+<a name="l00392"></a>00392       <a class="code" href="parse_8c.html#ac6a448a418b078c44fb0d0d302431eba" title="Adjust the FSM according to its modifier, if any.">regex_parse_check_modifier</a>(<span class="keyword">new</span>, &amp;regex);
+<a name="l00393"></a>00393       <a class="code" href="operations_8c.html#aa9a8e9bf4de56221564455887ac69adb" title="Concatenate two FSMs into the first FSM object.">fsm_concat</a>(curr, <span class="keyword">new</span>);
+<a name="l00394"></a>00394       <a class="code" href="fsm_2datastructs_8c.html#aaeae4a8cee76a6876cb4e9c13f753cc3" title="Clean up and free an FSM.">fsm_delete</a>(<span class="keyword">new</span>, <span class="keyword">true</span>);
+<a name="l00395"></a>00395       <span class="keywordflow">break</span>;
+<a name="l00396"></a>00396     }
+<a name="l00397"></a>00397   }
+<a name="l00398"></a>00398   *<span class="keyword">final</span> = regex;
+<a name="l00399"></a>00399   <span class="keywordflow">return</span> curr;
+<a name="l00400"></a>00400 }
+<a name="l00401"></a>00401 
+<a name="l00407"></a><a class="code" href="parse_8c.html#a58c440b23a9f0be68aea919a81a5ca00">00407</a> fsm *<a class="code" href="parse_8c.html#a58c440b23a9f0be68aea919a81a5ca00" title="Construct a FSM to accept the given regex.">regex_parse</a>(<span class="keyword">const</span> <span class="keywordtype">wchar_t</span> *regex){
+<a name="l00408"></a>00408   <span class="keywordflow">return</span> <a class="code" href="parse_8c.html#a4f016183fc8f0da8ac87bd6f6047708c" title="The workhorse recursive helper to regex_parse().">regex_parse_recursive</a>(regex, &amp;regex);
+<a name="l00409"></a>00409 }
 </pre></div></div><!-- contents -->
 </div>
 <!-- window showing the filter options -->
@@ -426,7 +434,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul>
       <li class="navelem"><a class="el" href="parse_8c.html">parse.c</a>      </li>
 
-    <li class="footer">Generated on Wed Jul 29 2015 05:03:09 for libstephen by
+    <li class="footer">Generated on Thu Jul 30 2015 18:09:14 for libstephen by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.6.1 </li>
    </ul>

@@ -31,13 +31,13 @@
             <td class="headerValue">coverage.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">178</td>
-            <td class="headerCovTableEntry">179</td>
-            <td class="headerCovTableEntryHi">99.4 %</td>
+            <td class="headerCovTableEntry">183</td>
+            <td class="headerCovTableEntry">184</td>
+            <td class="headerCovTableEntryHi">99.5 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2015-07-29 05:03:09</td>
+            <td class="headerValue">2015-07-30 18:09:13</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">9</td>
@@ -94,11 +94,11 @@
 <span class="lineNum">      32 </span>            :    @param new The newly read in FSM.
 <a name="33"><span class="lineNum">      33 </span>            :    @param regex The pointer to the pointer to the location in the regex.</a>
 <span class="lineNum">      34 </span>            :  */
-<span class="lineNum">      35 </span><span class="lineCov">         43 : void regex_parse_check_modifier(fsm *new, const wchar_t **regex)</span>
+<span class="lineNum">      35 </span><span class="lineCov">         64 : void regex_parse_check_modifier(fsm *new, const wchar_t **regex)</span>
 <span class="lineNum">      36 </span>            : {
 <span class="lineNum">      37 </span>            :   fsm *f;
 <span class="lineNum">      38 </span>            : 
-<span class="lineNum">      39 </span><span class="lineCov">         43 :   switch ((*regex)[1]) {</span>
+<span class="lineNum">      39 </span><span class="lineCov">         64 :   switch ((*regex)[1]) {</span>
 <span class="lineNum">      40 </span>            : 
 <span class="lineNum">      41 </span>            :   case L'*':
 <span class="lineNum">      42 </span><span class="lineCov">          1 :     fsm_kleene(new);</span>
@@ -106,12 +106,12 @@
 <span class="lineNum">      44 </span><span class="lineCov">          1 :     break;</span>
 <span class="lineNum">      45 </span>            : 
 <span class="lineNum">      46 </span>            :   case L'+':
-<span class="lineNum">      47 </span><span class="lineCov">          9 :     f = fsm_copy(new);</span>
-<span class="lineNum">      48 </span><span class="lineCov">          9 :     fsm_kleene(f);</span>
-<span class="lineNum">      49 </span><span class="lineCov">          9 :     fsm_concat(new, f);</span>
-<span class="lineNum">      50 </span><span class="lineCov">          9 :     fsm_delete(f, true);</span>
-<span class="lineNum">      51 </span><span class="lineCov">          9 :     (*regex)++;</span>
-<span class="lineNum">      52 </span><span class="lineCov">          9 :     break;</span>
+<span class="lineNum">      47 </span><span class="lineCov">         13 :     f = fsm_copy(new);</span>
+<span class="lineNum">      48 </span><span class="lineCov">         13 :     fsm_kleene(f);</span>
+<span class="lineNum">      49 </span><span class="lineCov">         13 :     fsm_concat(new, f);</span>
+<span class="lineNum">      50 </span><span class="lineCov">         13 :     fsm_delete(f, true);</span>
+<span class="lineNum">      51 </span><span class="lineCov">         13 :     (*regex)++;</span>
+<span class="lineNum">      52 </span><span class="lineCov">         13 :     break;</span>
 <span class="lineNum">      53 </span>            : 
 <span class="lineNum">      54 </span>            :   case L'?':
 <span class="lineNum">      55 </span>            :     // Create the machine that accepts the empty string
@@ -126,18 +126,18 @@
 <span class="lineNum">      64 </span>            :   /*   // A  */
 <span class="lineNum">      65 </span>            :   /*   (*regex)++; */
 <span class="lineNum">      66 </span>            :   }
-<span class="lineNum">      67 </span><span class="lineCov">         43 : }</span>
+<span class="lineNum">      67 </span><span class="lineCov">         64 : }</span>
 <span class="lineNum">      68 </span>            : 
 <span class="lineNum">      69 </span>            : /**
 <span class="lineNum">      70 </span>            :    @brief Return a FSM that accepts any whitespace.
-<a name="71"><span class="lineNum">      71 </span>            :    @param type Positive or negative.</a>
+<a name="71"><span class="lineNum">      71 </span>            :    @param flags Positive or negative.</a>
 <span class="lineNum">      72 </span>            :  */
-<span class="lineNum">      73 </span><span class="lineCov">          2 : fsm *regex_parse_create_whitespace_fsm(int type)</span>
+<span class="lineNum">      73 </span><span class="lineCov">          2 : fsm *regex_parse_create_whitespace_fsm(unsigned int flags)</span>
 <span class="lineNum">      74 </span>            : {
 <span class="lineNum">      75 </span><span class="lineCov">          2 :   fsm *f = fsm_create();</span>
 <span class="lineNum">      76 </span><span class="lineCov">          2 :   int src = fsm_add_state(f, false);</span>
 <span class="lineNum">      77 </span><span class="lineCov">          2 :   int dest = fsm_add_state(f, true);</span>
-<span class="lineNum">      78 </span><span class="lineCov">          2 :   fsm_trans *ft = fsm_trans_create(6, type, dest);</span>
+<span class="lineNum">      78 </span><span class="lineCov">          2 :   fsm_trans *ft = fsm_trans_create(6, flags, dest);</span>
 <span class="lineNum">      79 </span><span class="lineCov">          2 :   ft-&gt;start[0] = L' ';</span>
 <span class="lineNum">      80 </span><span class="lineCov">          2 :   ft-&gt;end[0] = L' ';</span>
 <span class="lineNum">      81 </span><span class="lineCov">          2 :   ft-&gt;start[1] = L'\f';</span>
@@ -158,12 +158,12 @@
 <span class="lineNum">      96 </span>            : /**
 <a name="97"><span class="lineNum">      97 </span>            :    @brief Return a FSM for word characters (letters, numbers, and underscore).</a>
 <span class="lineNum">      98 </span>            :  */
-<span class="lineNum">      99 </span><span class="lineCov">          4 : fsm *regex_parse_create_word_fsm(int type)</span>
+<span class="lineNum">      99 </span><span class="lineCov">          4 : fsm *regex_parse_create_word_fsm(unsigned int flags)</span>
 <span class="lineNum">     100 </span>            : {
 <span class="lineNum">     101 </span><span class="lineCov">          4 :   fsm *f = fsm_create();</span>
 <span class="lineNum">     102 </span><span class="lineCov">          4 :   int src = fsm_add_state(f, false);</span>
 <span class="lineNum">     103 </span><span class="lineCov">          4 :   int dest = fsm_add_state(f, true);</span>
-<span class="lineNum">     104 </span><span class="lineCov">          4 :   fsm_trans *ft = fsm_trans_create(4, type, dest);</span>
+<span class="lineNum">     104 </span><span class="lineCov">          4 :   fsm_trans *ft = fsm_trans_create(4, flags, dest);</span>
 <span class="lineNum">     105 </span><span class="lineCov">          4 :   ft-&gt;start[0] = L'a';</span>
 <span class="lineNum">     106 </span><span class="lineCov">          4 :   ft-&gt;end[0] = L'z';</span>
 <span class="lineNum">     107 </span><span class="lineCov">          4 :   ft-&gt;start[1] = L'A';</span>
@@ -180,17 +180,17 @@
 <span class="lineNum">     118 </span>            : /**
 <a name="119"><span class="lineNum">     119 </span>            :    @brief Return a FSM for digits.</a>
 <span class="lineNum">     120 </span>            :  */
-<span class="lineNum">     121 </span><span class="lineCov">         12 : fsm *regex_parse_create_digit_fsm(int type)</span>
+<span class="lineNum">     121 </span><span class="lineCov">         14 : fsm *regex_parse_create_digit_fsm(unsigned int flags)</span>
 <span class="lineNum">     122 </span>            : {
-<span class="lineNum">     123 </span><span class="lineCov">         12 :   fsm *f = fsm_create();</span>
-<span class="lineNum">     124 </span><span class="lineCov">         12 :   int src = fsm_add_state(f, false);</span>
-<span class="lineNum">     125 </span><span class="lineCov">         12 :   int dest = fsm_add_state(f, true);</span>
-<span class="lineNum">     126 </span><span class="lineCov">         12 :   fsm_trans *ft = fsm_trans_create(1, type, dest);</span>
-<span class="lineNum">     127 </span><span class="lineCov">         12 :   ft-&gt;start[0] = L'0';</span>
-<span class="lineNum">     128 </span><span class="lineCov">         12 :   ft-&gt;end[0] = L'9';</span>
-<span class="lineNum">     129 </span><span class="lineCov">         12 :   fsm_add_trans(f, src, ft);</span>
-<span class="lineNum">     130 </span><span class="lineCov">         12 :   f-&gt;start = src;</span>
-<span class="lineNum">     131 </span><span class="lineCov">         12 :   return f;</span>
+<span class="lineNum">     123 </span><span class="lineCov">         14 :   fsm *f = fsm_create();</span>
+<span class="lineNum">     124 </span><span class="lineCov">         14 :   int src = fsm_add_state(f, false);</span>
+<span class="lineNum">     125 </span><span class="lineCov">         14 :   int dest = fsm_add_state(f, true);</span>
+<span class="lineNum">     126 </span><span class="lineCov">         14 :   fsm_trans *ft = fsm_trans_create(1, flags, dest);</span>
+<span class="lineNum">     127 </span><span class="lineCov">         14 :   ft-&gt;start[0] = L'0';</span>
+<span class="lineNum">     128 </span><span class="lineCov">         14 :   ft-&gt;end[0] = L'9';</span>
+<span class="lineNum">     129 </span><span class="lineCov">         14 :   fsm_add_trans(f, src, ft);</span>
+<span class="lineNum">     130 </span><span class="lineCov">         14 :   f-&gt;start = src;</span>
+<span class="lineNum">     131 </span><span class="lineCov">         14 :   return f;</span>
 <span class="lineNum">     132 </span>            : }
 <span class="lineNum">     133 </span>            : 
 <span class="lineNum">     134 </span>            : /**
@@ -238,22 +238,22 @@
 <span class="lineNum">     176 </span>            :    @param regex Pointer to the pointer to the backslash escape.
 <a name="177"><span class="lineNum">     177 </span>            :    @return FSM to accept the backslash escape sequence.</a>
 <span class="lineNum">     178 </span>            :  */
-<span class="lineNum">     179 </span><span class="lineCov">         21 : fsm *regex_parse_outer_escape(const wchar_t **regex)</span>
+<span class="lineNum">     179 </span><span class="lineCov">         23 : fsm *regex_parse_outer_escape(const wchar_t **regex)</span>
 <span class="lineNum">     180 </span>            : {
 <span class="lineNum">     181 </span>            :   char c;
 <span class="lineNum">     182 </span>            : 
-<span class="lineNum">     183 </span><span class="lineCov">         21 :   (*regex)++; // advance to the specifier</span>
-<span class="lineNum">     184 </span><span class="lineCov">         21 :   switch (**regex) {</span>
+<span class="lineNum">     183 </span><span class="lineCov">         23 :   (*regex)++; // advance to the specifier</span>
+<span class="lineNum">     184 </span><span class="lineCov">         23 :   switch (**regex) {</span>
 <span class="lineNum">     185 </span>            :   case L's':
-<span class="lineNum">     186 </span><span class="lineCov">          1 :     return regex_parse_create_whitespace_fsm(FSM_TRANS_POSITIVE);</span>
+<span class="lineNum">     186 </span><span class="lineCov">          1 :     return regex_parse_create_whitespace_fsm(0);</span>
 <span class="lineNum">     187 </span>            :   case L'S':
 <span class="lineNum">     188 </span><span class="lineCov">          1 :     return regex_parse_create_whitespace_fsm(FSM_TRANS_NEGATIVE);</span>
 <span class="lineNum">     189 </span>            :   case L'w':
-<span class="lineNum">     190 </span><span class="lineCov">          3 :     return regex_parse_create_word_fsm(FSM_TRANS_POSITIVE);</span>
+<span class="lineNum">     190 </span><span class="lineCov">          3 :     return regex_parse_create_word_fsm(0);</span>
 <span class="lineNum">     191 </span>            :   case L'W':
 <span class="lineNum">     192 </span><span class="lineCov">          1 :     return regex_parse_create_word_fsm(FSM_TRANS_NEGATIVE);</span>
 <span class="lineNum">     193 </span>            :   case L'd':
-<span class="lineNum">     194 </span><span class="lineCov">         11 :     return regex_parse_create_digit_fsm(FSM_TRANS_POSITIVE);</span>
+<span class="lineNum">     194 </span><span class="lineCov">         13 :     return regex_parse_create_digit_fsm(0);</span>
 <span class="lineNum">     195 </span>            :   case L'D':
 <span class="lineNum">     196 </span><span class="lineCov">          1 :     return regex_parse_create_digit_fsm(FSM_TRANS_NEGATIVE);</span>
 <span class="lineNum">     197 </span>            :   default:
@@ -289,7 +289,7 @@
 <span class="lineNum">     227 </span>            :   smb_ll start, end;
 <span class="lineNum">     228 </span><span class="lineCov">          6 :   smb_status status = SMB_SUCCESS;</span>
 <span class="lineNum">     229 </span>            :   DATA d;
-<span class="lineNum">     230 </span><span class="lineCov">          6 :   int type = FSM_TRANS_POSITIVE, state = NORMAL;</span>
+<span class="lineNum">     230 </span><span class="lineCov">          6 :   unsigned int flags = 0, state = NORMAL;</span>
 <span class="lineNum">     231 </span>            :   smb_iter iter;
 <span class="lineNum">     232 </span>            :   fsm *f;
 <span class="lineNum">     233 </span>            :   int src, dest;
@@ -301,7 +301,7 @@
 <span class="lineNum">     239 </span>            :   // Detect whether the character class is positive or negative
 <span class="lineNum">     240 </span><span class="lineCov">          6 :   (*regex)++;</span>
 <span class="lineNum">     241 </span><span class="lineCov">          6 :   if (**regex == L'^') {</span>
-<span class="lineNum">     242 </span><span class="lineCov">          4 :     type = FSM_TRANS_NEGATIVE;</span>
+<span class="lineNum">     242 </span><span class="lineCov">          4 :     flags = FSM_TRANS_NEGATIVE;</span>
 <span class="lineNum">     243 </span><span class="lineCov">          4 :     (*regex)++;</span>
 <span class="lineNum">     244 </span>            :   }
 <span class="lineNum">     245 </span>            : 
@@ -344,8 +344,8 @@
 <span class="lineNum">     282 </span><span class="lineCov">          6 :   src = fsm_add_state(f, false);</span>
 <span class="lineNum">     283 </span><span class="lineCov">          6 :   dest = fsm_add_state(f, true);</span>
 <span class="lineNum">     284 </span><span class="lineCov">          6 :   f-&gt;start = src;</span>
-<span class="lineNum">     285 </span><span class="lineCov">          6 :   ft = fsm_trans_create(ll_length(&amp;start) + (type == FSM_TRANS_NEGATIVE ? 1 : 0),</span>
-<span class="lineNum">     286 </span>            :                         type, dest);
+<span class="lineNum">     285 </span><span class="lineCov">          6 :   ft = fsm_trans_create(ll_length(&amp;start) + (FLAG_CHECK(flags, FSM_TRANS_NEGATIVE) ? 1 : 0),</span>
+<span class="lineNum">     286 </span>            :                         flags, dest);
 <span class="lineNum">     287 </span>            : 
 <span class="lineNum">     288 </span><span class="lineCov">          6 :   iter = ll_get_iter(&amp;start);</span>
 <span class="lineNum">     289 </span><span class="lineCov">         24 :   while (iter.has_next(&amp;iter)) {</span>
@@ -359,7 +359,7 @@
 <span class="lineNum">     297 </span><span class="lineCov">         12 :     assert(status == SMB_SUCCESS);</span>
 <span class="lineNum">     298 </span><span class="lineCov">         12 :     ft-&gt;end[iter.index-1] = (wchar_t) d.data_llint;</span>
 <span class="lineNum">     299 </span>            :   }
-<span class="lineNum">     300 </span><span class="lineCov">          6 :   if (type == FSM_TRANS_NEGATIVE) {</span>
+<span class="lineNum">     300 </span><span class="lineCov">          6 :   if (FLAG_CHECK(flags, FSM_TRANS_NEGATIVE)) {</span>
 <span class="lineNum">     301 </span>            :     // We cannot allow epsilon to be matched in an actual character class.
 <span class="lineNum">     302 </span><span class="lineCov">          4 :     ft-&gt;start[ll_length(&amp;start)] = EPSILON;</span>
 <span class="lineNum">     303 </span><span class="lineCov">          4 :     ft-&gt;end[ll_length(&amp;start)] = EPSILON;</span>
@@ -386,81 +386,89 @@
 <span class="lineNum">     324 </span>            :    @param final Pointer to the parent's location.
 <a name="325"><span class="lineNum">     325 </span>            :    @return An FSM for the regular expression.</a>
 <span class="lineNum">     326 </span>            :  */
-<span class="lineNum">     327 </span><span class="lineCov">         27 : fsm *regex_parse_recursive(const wchar_t *regex, const wchar_t **final)</span>
+<span class="lineNum">     327 </span><span class="lineCov">         32 : fsm *regex_parse_recursive(const wchar_t *regex, const wchar_t **final)</span>
 <span class="lineNum">     328 </span>            : {
 <span class="lineNum">     329 </span>            :   // Initial FSM is a machine that accepts the empty string.
-<span class="lineNum">     330 </span><span class="lineCov">         27 :   fsm *curr = fsm_create();</span>
+<span class="lineNum">     330 </span><span class="lineCov">         32 :   fsm *curr = fsm_create();</span>
 <span class="lineNum">     331 </span>            :   fsm *new;
-<span class="lineNum">     332 </span><span class="lineCov">         27 :   curr-&gt;start = fsm_add_state(curr, true);</span>
-<span class="lineNum">     333 </span>            : 
-<span class="lineNum">     334 </span>            :   // ASSUME THAT ALL PARENS, ETC ARE BALANCED!
-<span class="lineNum">     335 </span>            : 
-<span class="lineNum">     336 </span><span class="lineCov">         70 :   for ( ; *regex; regex++) {</span>
-<span class="lineNum">     337 </span><span class="lineCov">         47 :     switch (*regex) {</span>
-<span class="lineNum">     338 </span>            : 
-<span class="lineNum">     339 </span>            :     case L'(':
-<span class="lineNum">     340 </span><span class="lineCov">          1 :       new = regex_parse_recursive(regex + 1, &amp;regex);</span>
-<span class="lineNum">     341 </span><span class="lineCov">          1 :       regex_parse_check_modifier(new, &amp;regex);</span>
-<span class="lineNum">     342 </span><span class="lineCov">          1 :       fsm_concat(curr, new);</span>
-<span class="lineNum">     343 </span><span class="lineCov">          1 :       fsm_delete(new, true);</span>
-<span class="lineNum">     344 </span><span class="lineCov">          1 :       break;</span>
-<span class="lineNum">     345 </span>            : 
-<span class="lineNum">     346 </span>            :     case L')':
-<span class="lineNum">     347 </span><span class="lineCov">          1 :       *final = regex;</span>
-<span class="lineNum">     348 </span><span class="lineCov">          1 :       return curr;</span>
-<span class="lineNum">     349 </span>            :       break;
-<span class="lineNum">     350 </span>            : 
-<span class="lineNum">     351 </span>            :     case L'|':
-<span class="lineNum">     352 </span>            :       // Need to pass control back up without attempting to check modifiers.
-<span class="lineNum">     353 </span><span class="lineCov">          3 :       new = regex_parse_recursive(regex + 1, &amp;regex);</span>
-<span class="lineNum">     354 </span><span class="lineCov">          3 :       fsm_union(curr, new);</span>
-<span class="lineNum">     355 </span><span class="lineCov">          3 :       fsm_delete(new, true);</span>
-<span class="lineNum">     356 </span><span class="lineCov">          3 :       *final = regex;</span>
-<span class="lineNum">     357 </span><span class="lineCov">          3 :       return curr;</span>
-<span class="lineNum">     358 </span>            :       break;
-<span class="lineNum">     359 </span>            : 
-<span class="lineNum">     360 </span>            :     case L'[':
-<span class="lineNum">     361 </span><span class="lineCov">          6 :       new = regex_parse_char_class(&amp;regex);</span>
-<span class="lineNum">     362 </span><span class="lineCov">          6 :       regex_parse_check_modifier(new, &amp;regex);</span>
-<span class="lineNum">     363 </span><span class="lineCov">          6 :       fsm_concat(curr, new);</span>
-<span class="lineNum">     364 </span><span class="lineCov">          6 :       fsm_delete(new, true);</span>
-<span class="lineNum">     365 </span><span class="lineCov">          6 :       break;</span>
-<span class="lineNum">     366 </span>            : 
-<span class="lineNum">     367 </span>            :     case L'\\':
-<span class="lineNum">     368 </span><span class="lineCov">         21 :       new = regex_parse_outer_escape(&amp;regex);</span>
-<span class="lineNum">     369 </span><span class="lineCov">         21 :       regex_parse_check_modifier(new, &amp;regex);</span>
-<span class="lineNum">     370 </span><span class="lineCov">         21 :       fsm_concat(curr, new);</span>
-<span class="lineNum">     371 </span><span class="lineCov">         21 :       fsm_delete(new, true);</span>
-<span class="lineNum">     372 </span><span class="lineCov">         21 :       break;</span>
-<span class="lineNum">     373 </span>            : 
-<span class="lineNum">     374 </span>            :     case L'.':
-<span class="lineNum">     375 </span><span class="lineCov">          1 :       new = regex_parse_create_dot_fsm(false);</span>
-<span class="lineNum">     376 </span><span class="lineCov">          1 :       regex_parse_check_modifier(new, &amp;regex);</span>
-<span class="lineNum">     377 </span><span class="lineCov">          1 :       fsm_concat(curr, new);</span>
-<span class="lineNum">     378 </span><span class="lineCov">          1 :       fsm_delete(new, true);</span>
-<span class="lineNum">     379 </span><span class="lineCov">          1 :       break;</span>
-<span class="lineNum">     380 </span>            : 
-<span class="lineNum">     381 </span>            :     default:
-<span class="lineNum">     382 </span>            :       // A regular letter
-<span class="lineNum">     383 </span><span class="lineCov">         14 :       new = fsm_create_single_char(*regex);</span>
-<span class="lineNum">     384 </span><span class="lineCov">         14 :       regex_parse_check_modifier(new, &amp;regex);</span>
-<span class="lineNum">     385 </span><span class="lineCov">         14 :       fsm_concat(curr, new);</span>
-<span class="lineNum">     386 </span><span class="lineCov">         14 :       fsm_delete(new, true);</span>
-<span class="lineNum">     387 </span><span class="lineCov">         14 :       break;</span>
-<span class="lineNum">     388 </span>            :     }
-<span class="lineNum">     389 </span>            :   }
-<span class="lineNum">     390 </span><span class="lineCov">         23 :   *final = regex;</span>
-<span class="lineNum">     391 </span><span class="lineCov">         23 :   return curr;</span>
-<span class="lineNum">     392 </span>            : }
-<span class="lineNum">     393 </span>            : 
-<span class="lineNum">     394 </span>            : /**
-<span class="lineNum">     395 </span>            :    @brief Construct a FSM to accept the given regex.
-<span class="lineNum">     396 </span>            :    @param regex Regular expression string.
-<a name="397"><span class="lineNum">     397 </span>            :    @return A FSM that can be used to decide the language of the regex.</a>
-<span class="lineNum">     398 </span>            :  */
-<span class="lineNum">     399 </span><span class="lineCov">         23 : fsm *regex_parse(const wchar_t *regex){</span>
-<span class="lineNum">     400 </span><span class="lineCov">         23 :   return regex_parse_recursive(regex, &amp;regex);</span>
-<span class="lineNum">     401 </span>            : }
+<span class="lineNum">     332 </span>            :   bool capture;
+<span class="lineNum">     333 </span><span class="lineCov">         32 :   curr-&gt;start = fsm_add_state(curr, true);</span>
+<span class="lineNum">     334 </span>            : 
+<span class="lineNum">     335 </span>            :   // ASSUME THAT ALL PARENS, ETC ARE BALANCED!
+<span class="lineNum">     336 </span>            : 
+<span class="lineNum">     337 </span><span class="lineCov">         96 :   for ( ; *regex; regex++) {</span>
+<span class="lineNum">     338 </span><span class="lineCov">         71 :     switch (*regex) {</span>
+<span class="lineNum">     339 </span>            : 
+<span class="lineNum">     340 </span>            :     case L'(':
+<span class="lineNum">     341 </span><span class="lineCov">          4 :       capture = regex[1] == L'?';</span>
+<span class="lineNum">     342 </span><span class="lineCov">          4 :       if (capture)</span>
+<span class="lineNum">     343 </span><span class="lineCov">          2 :         new = regex_parse_recursive(regex + 2, &amp;regex);</span>
+<span class="lineNum">     344 </span>            :       else
+<span class="lineNum">     345 </span><span class="lineCov">          2 :         new = regex_parse_recursive(regex + 1, &amp;regex);</span>
+<span class="lineNum">     346 </span><span class="lineCov">          4 :       regex_parse_check_modifier(new, &amp;regex);</span>
+<span class="lineNum">     347 </span><span class="lineCov">          4 :       if (capture)</span>
+<span class="lineNum">     348 </span><span class="lineCov">          2 :         fsm_concat_capture(curr, new);</span>
+<span class="lineNum">     349 </span>            :       else
+<span class="lineNum">     350 </span><span class="lineCov">          2 :         fsm_concat(curr, new);</span>
+<span class="lineNum">     351 </span><span class="lineCov">          4 :       fsm_delete(new, true);</span>
+<span class="lineNum">     352 </span><span class="lineCov">          4 :       break;</span>
+<span class="lineNum">     353 </span>            : 
+<span class="lineNum">     354 </span>            :     case L')':
+<span class="lineNum">     355 </span><span class="lineCov">          4 :       *final = regex;</span>
+<span class="lineNum">     356 </span><span class="lineCov">          4 :       return curr;</span>
+<span class="lineNum">     357 </span>            :       break;
+<span class="lineNum">     358 </span>            : 
+<span class="lineNum">     359 </span>            :     case L'|':
+<span class="lineNum">     360 </span>            :       // Need to pass control back up without attempting to check modifiers.
+<span class="lineNum">     361 </span><span class="lineCov">          3 :       new = regex_parse_recursive(regex + 1, &amp;regex);</span>
+<span class="lineNum">     362 </span><span class="lineCov">          3 :       fsm_union(curr, new);</span>
+<span class="lineNum">     363 </span><span class="lineCov">          3 :       fsm_delete(new, true);</span>
+<span class="lineNum">     364 </span><span class="lineCov">          3 :       *final = regex;</span>
+<span class="lineNum">     365 </span><span class="lineCov">          3 :       return curr;</span>
+<span class="lineNum">     366 </span>            :       break;
+<span class="lineNum">     367 </span>            : 
+<span class="lineNum">     368 </span>            :     case L'[':
+<span class="lineNum">     369 </span><span class="lineCov">          6 :       new = regex_parse_char_class(&amp;regex);</span>
+<span class="lineNum">     370 </span><span class="lineCov">          6 :       regex_parse_check_modifier(new, &amp;regex);</span>
+<span class="lineNum">     371 </span><span class="lineCov">          6 :       fsm_concat(curr, new);</span>
+<span class="lineNum">     372 </span><span class="lineCov">          6 :       fsm_delete(new, true);</span>
+<span class="lineNum">     373 </span><span class="lineCov">          6 :       break;</span>
+<span class="lineNum">     374 </span>            : 
+<span class="lineNum">     375 </span>            :     case L'\\':
+<span class="lineNum">     376 </span><span class="lineCov">         23 :       new = regex_parse_outer_escape(&amp;regex);</span>
+<span class="lineNum">     377 </span><span class="lineCov">         23 :       regex_parse_check_modifier(new, &amp;regex);</span>
+<span class="lineNum">     378 </span><span class="lineCov">         23 :       fsm_concat(curr, new);</span>
+<span class="lineNum">     379 </span><span class="lineCov">         23 :       fsm_delete(new, true);</span>
+<span class="lineNum">     380 </span><span class="lineCov">         23 :       break;</span>
+<span class="lineNum">     381 </span>            : 
+<span class="lineNum">     382 </span>            :     case L'.':
+<span class="lineNum">     383 </span><span class="lineCov">          1 :       new = regex_parse_create_dot_fsm(false);</span>
+<span class="lineNum">     384 </span><span class="lineCov">          1 :       regex_parse_check_modifier(new, &amp;regex);</span>
+<span class="lineNum">     385 </span><span class="lineCov">          1 :       fsm_concat(curr, new);</span>
+<span class="lineNum">     386 </span><span class="lineCov">          1 :       fsm_delete(new, true);</span>
+<span class="lineNum">     387 </span><span class="lineCov">          1 :       break;</span>
+<span class="lineNum">     388 </span>            : 
+<span class="lineNum">     389 </span>            :     default:
+<span class="lineNum">     390 </span>            :       // A regular letter
+<span class="lineNum">     391 </span><span class="lineCov">         30 :       new = fsm_create_single_char(*regex);</span>
+<span class="lineNum">     392 </span><span class="lineCov">         30 :       regex_parse_check_modifier(new, &amp;regex);</span>
+<span class="lineNum">     393 </span><span class="lineCov">         30 :       fsm_concat(curr, new);</span>
+<span class="lineNum">     394 </span><span class="lineCov">         30 :       fsm_delete(new, true);</span>
+<span class="lineNum">     395 </span><span class="lineCov">         30 :       break;</span>
+<span class="lineNum">     396 </span>            :     }
+<span class="lineNum">     397 </span>            :   }
+<span class="lineNum">     398 </span><span class="lineCov">         25 :   *final = regex;</span>
+<span class="lineNum">     399 </span><span class="lineCov">         25 :   return curr;</span>
+<span class="lineNum">     400 </span>            : }
+<span class="lineNum">     401 </span>            : 
+<span class="lineNum">     402 </span>            : /**
+<span class="lineNum">     403 </span>            :    @brief Construct a FSM to accept the given regex.
+<span class="lineNum">     404 </span>            :    @param regex Regular expression string.
+<a name="405"><span class="lineNum">     405 </span>            :    @return A FSM that can be used to decide the language of the regex.</a>
+<span class="lineNum">     406 </span>            :  */
+<span class="lineNum">     407 </span><span class="lineCov">         25 : fsm *regex_parse(const wchar_t *regex){</span>
+<span class="lineNum">     408 </span><span class="lineCov">         25 :   return regex_parse_recursive(regex, &amp;regex);</span>
+<span class="lineNum">     409 </span>            : }
 </pre>
       </td>
     </tr>
