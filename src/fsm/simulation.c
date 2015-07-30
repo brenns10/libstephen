@@ -29,6 +29,7 @@ static void add_eps_to_curr(fsm_sim *fs, int state, smb_al *cap)
 {
   smb_status status = SMB_SUCCESS;
   smb_al visit_queue;
+  smb_al cap_queue;
   smb_al *trans_list;
   smb_al *new_cap;
   fsm_trans *ft;
@@ -36,7 +37,9 @@ static void add_eps_to_curr(fsm_sim *fs, int state, smb_al *cap)
   DATA d;
 
   al_init(&visit_queue);
+  al_init(&cap_queue);
   al_push_back(&visit_queue, LLINT(state));
+  al_push_back(&cap_queue, PTR(cap));
 
   // THIS IS BREADTH FIRST SEARCH
   while (al_length(&visit_queue) > 0) {
@@ -44,6 +47,7 @@ static void add_eps_to_curr(fsm_sim *fs, int state, smb_al *cap)
     // GET THE NEXT ITEM IN THE BFS VISIT QUEUE
     d = al_pop_front(&visit_queue, &status);
     assert(status == SMB_SUCCESS);
+    cap = al_pop_front(&cap_queue, &status).data_ptr;
     LDEBUG("expanding state %ld", d.data_llint);
 
     // GET THE OUTGOING TRANSITION OF THE ITEM
@@ -66,7 +70,7 @@ static void add_eps_to_curr(fsm_sim *fs, int state, smb_al *cap)
           al_index_of(&visit_queue, d, &data_compare_int) == -1 &&
           al_index_of(fs->curr, d, &data_compare_int) == -1) {
 
-        LDEBUG(" adding to epsilon closure!");
+        LDEBUG("  adding to epsilon closure!");
         // CREATE A NEW CAPTURE LIST WITH THE OLD ITEMS
         new_cap = al_create();
         al_copy_all(new_cap, cap);
@@ -74,7 +78,7 @@ static void add_eps_to_curr(fsm_sim *fs, int state, smb_al *cap)
         // AND THE CURRENT INDEX, IF THERE IS A CAPTURE IN THIS TRANSITION
         if (FLAG_CHECK(ft->flags, FSM_TRANS_CAPTURE)) {
           al_append(new_cap, LLINT(fs->index));
-          LDEBUG(" adding capture at the current index");
+          LDEBUG("  adding capture at the current index");
         }
 
         // FINALLY, ADD THE DESTINATION AND ITS CAPTURE LIST TO THE CURRENT
@@ -84,11 +88,13 @@ static void add_eps_to_curr(fsm_sim *fs, int state, smb_al *cap)
 
         // ALSO, ADD TO THE VISIT QUEUE SO WE CAN EXPAND ITS NEXT STATES
         al_append(&visit_queue, d);
+        al_append(&cap_queue, PTR(new_cap));
       }
     }
   }
 
   al_destroy(&visit_queue);
+  al_destroy(&cap_queue);
 }
 
 /**
@@ -213,6 +219,7 @@ fsm_sim *fsm_sim_nondet_begin(fsm *f)
     LDEBUG("state[%d] = %Ld ", i, al_get(fs->curr, i, &status).data_llint);
   }
   assert(status == SMB_SUCCESS);
+  fs->index = 0;
   return fs;
 }
 
@@ -320,6 +327,7 @@ void fsm_sim_nondet_step(fsm_sim *s, wchar_t input)
   al_delete(s->cap);
   s->cap = next_cap;
   s->curr = next;
+  s->index++;  // index MUST be incremented here
 
   // Insert epsilon closure elements!
   original = al_length(s->curr);
@@ -336,6 +344,29 @@ void fsm_sim_nondet_step(fsm_sim *s, wchar_t input)
   }
 }
 
+smb_al *fsm_sim_get_captures(fsm_sim *sim)
+{
+  smb_iter it = al_get_iter(sim->cap);
+  smb_status status = SMB_SUCCESS;
+  smb_al *captures, *retval = NULL;
+  int max = -1, max_idx = -1;
+  while (it.has_next(&it)) {
+    captures = it.next(&it, &status).data_ptr;
+    assert(status == SMB_SUCCESS);
+    //iter_print(al_get_iter(captures), stdout, data_printer_int);
+    if (al_length(captures) > max && al_length(captures) % 2 == 0) {
+      max = al_length(captures);
+      max_idx = it.index - 1;
+    }
+  }
+  if (max_idx >= 0 && max > 0) {
+    retval = al_create();
+    al_copy_all(retval, al_get(sim->cap, max_idx, &status).data_ptr);
+    assert(status == SMB_SUCCESS);
+  }
+  return retval;
+}
+
 /**
    @brief Simulate the FSM as a non-deterministic state machine.
 
@@ -345,15 +376,17 @@ void fsm_sim_nondet_step(fsm_sim *s, wchar_t input)
 
    @param f The FSM to simulate
    @param input The input string to run with
+   @param[out] capture Pointer to smb_al* where to store capture list.
    @retval true if the machine accepts
    @retval false if the machine rejects
  */
-bool fsm_sim_nondet(fsm *f, const wchar_t *input)
+bool fsm_sim_nondet_capture(fsm *f, const wchar_t *input, smb_al **capture)
 {
   LDEBUG("STARTING FSM SIMULATION");
   fsm_sim *sim = fsm_sim_nondet_begin(f);
   int i = 0;
   int res = fsm_sim_nondet_state(sim, input[i]);
+  bool accepted;
 
   while (res != FSM_SIM_REJECTED && res != FSM_SIM_ACCEPTED) {
     LDEBUG("PROCESS INPUT '%lc'", input[i]);
@@ -362,7 +395,17 @@ bool fsm_sim_nondet(fsm *f, const wchar_t *input)
     res = fsm_sim_nondet_state(sim, input[i]);
     LDEBUG("Current result: %d\n", res);
   }
+  accepted = res != FSM_SIM_REJECTED;
+
+  if (accepted && capture != NULL) {
+    *capture = fsm_sim_get_captures(sim);
+  }
 
   fsm_sim_delete(sim, true);
-  return res != FSM_SIM_REJECTED;
+  return accepted;
+}
+
+bool fsm_sim_nondet(fsm *f, const wchar_t *input)
+{
+  return fsm_sim_nondet_capture(f, input, NULL);
 }

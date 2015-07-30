@@ -258,6 +258,7 @@ fsm_sim *fsm_sim_nondet_begin(fsm *f);
 int fsm_sim_nondet_state(const fsm_sim *s, wchar_t input);
 void fsm_sim_nondet_step(fsm_sim *s, wchar_t input);
 bool fsm_sim_nondet(fsm *f, const wchar_t *input);
+bool fsm_sim_nondet_capture(fsm *f, const wchar_t *input, smb_al **capture);
 
 // operations.c
 fsm *fsm_copy(const fsm *f);
