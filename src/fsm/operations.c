@@ -82,6 +82,33 @@ void fsm_copy_trans(fsm *dest, const fsm *src)
   }
 }
 
+static void fsm_concat_flags(fsm *first, const fsm *second, unsigned int flags)
+{
+  smb_status status;
+  int i, offset = al_length(&first->transitions);
+  DATA d;
+  // Create a transition from each accepting state into the second machine's
+  // start state.
+  for (i = 0; i < al_length(&first->accepting); i++) {
+    int start = (int)al_get(&first->accepting, i, &status).data_llint;
+    // This could be outside the loop, but we need a new one for each instance
+    fsm_trans *ft = fsm_trans_create_single(EPSILON, EPSILON, flags,
+                                            second->start + offset);
+    fsm_add_trans(first, start, ft);
+  }
+
+  fsm_copy_trans(first, second);
+
+  // Replace the accepting states of the first with the second.
+  al_destroy(&first->accepting);
+  al_init(&first->accepting);
+  for (i = 0; i < al_length(&second->accepting); i++) {
+    d = al_get(&second->accepting, i, &status);
+    d.data_llint += offset;
+    al_append(&first->accepting, d);
+  }
+}
+
 /**
    @brief Concatenate two FSMs into the first FSM object.
 
@@ -101,30 +128,30 @@ void fsm_copy_trans(fsm *dest, const fsm *src)
  */
 void fsm_concat(fsm *first, const fsm *second)
 {
-  smb_status status;
-  int i, offset = al_length(&first->transitions);
-  DATA d;
-  // Create a transition from each accepting state into the second machine's
-  // start state.
+  fsm_concat_flags(first, second, 0);
+}
+
+/**
+   @brief Concatenate two FSMs into the first, such that the second is captured.
+ */
+void fsm_concat_capture(fsm *first, const fsm *second)
+{
+  int new_accept, i;
+  smb_status status = SMB_SUCCESS;
+  fsm_concat_flags(first, second, FSM_TRANS_CAPTURE);
+  new_accept = fsm_add_state(first, false);
+
+  // Create a transition from each accepting state into a new accepting state
+  // that ends the capture.
   for (i = 0; i < al_length(&first->accepting); i++) {
     int start = (int)al_get(&first->accepting, i, &status).data_llint;
-    // This could be outside the loop, but we need a new one for each instance
     fsm_trans *ft = fsm_trans_create_single(EPSILON, EPSILON,
-                                            FSM_TRANS_POSITIVE,
-                                            second->start + offset);
+                                            FSM_TRANS_CAPTURE, new_accept);
     fsm_add_trans(first, start, ft);
   }
-
-  fsm_copy_trans(first, second);
-
-  // Replace the accepting states of the first with the second.
   al_destroy(&first->accepting);
   al_init(&first->accepting);
-  for (i = 0; i < al_length(&second->accepting); i++) {
-    d = al_get(&second->accepting, i, &status);
-    d.data_llint += offset;
-    al_append(&first->accepting, d);
-  }
+  al_append(&first->accepting, LLINT(new_accept));
 }
 
 /**
@@ -152,12 +179,12 @@ void fsm_union(fsm *first, const fsm *second)
   newStart = fsm_add_state(first, false);
 
   // Add epsilon-trans from new start to first start
-  fsTrans = fsm_trans_create_single(EPSILON, EPSILON, FSM_TRANS_POSITIVE,
+  fsTrans = fsm_trans_create_single(EPSILON, EPSILON, 0,
                                     first->start);
   fsm_add_trans(first, newStart, fsTrans);
 
   // Add epsilon-trans from new start to second start
-  ssTrans = fsm_trans_create_single(EPSILON, EPSILON, FSM_TRANS_POSITIVE,
+  ssTrans = fsm_trans_create_single(EPSILON, EPSILON, 0,
                                     second->start + offset);
   fsm_add_trans(first, newStart, ssTrans);
 
@@ -188,13 +215,13 @@ void fsm_kleene(fsm *f)
   DATA d;
 
   // Add epsilon-trans from new start to first start
-  newTrans = fsm_trans_create_single(EPSILON, EPSILON, FSM_TRANS_POSITIVE,
+  newTrans = fsm_trans_create_single(EPSILON, EPSILON, 0,
                                      f->start);
   fsm_add_trans(f, newStart, newTrans);
 
   // For each accepting state, add a epsilon-trans to the new start
   for (i = 0; i < al_length(&f->accepting); i++) {
-    newTrans = fsm_trans_create_single(EPSILON, EPSILON, FSM_TRANS_POSITIVE,
+    newTrans = fsm_trans_create_single(EPSILON, EPSILON, 0,
                                        newStart);
     fsm_add_trans(f, (int) al_get(&f->accepting, i, &status).data_llint,
                   newTrans);

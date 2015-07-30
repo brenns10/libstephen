@@ -16,6 +16,7 @@
 #include "libstephen/ut.h"
 #include "libstephen/fsm.h"
 #include "libstephen/regex.h"
+#include "libstephen/log.h"
 
 static int test_memory(void)
 {
@@ -286,6 +287,53 @@ static int test_escape(void)
   return 0;
 }
 
+static int test_capture(void)
+{
+  fsm *f = regex_parse(L"number (?\\d+)");
+  smb_al *capture = NULL;
+  smb_status status = SMB_SUCCESS;
+
+  TEST_ASSERT(fsm_sim_nondet_capture(f, L"number 55", &capture));
+  TEST_ASSERT(capture != NULL);
+  TEST_ASSERT(al_length(capture) == 2);
+  TEST_ASSERT(al_get(capture, 0, &status).data_llint == 7);
+  TEST_ASSERT(status == SMB_SUCCESS);
+  TEST_ASSERT(al_get(capture, 1, &status).data_llint == 9);
+  TEST_ASSERT(status == SMB_SUCCESS);
+
+  fsm_delete(f, true);
+  al_delete(capture);
+  return 0;
+}
+
+static int test_capture_many(void)
+{
+  fsm *f = regex_parse(L"numbers:( +(?\\d+))+");
+  smb_al *capture = NULL;
+  smb_status status = SMB_SUCCESS;
+
+  TEST_ASSERT(fsm_sim_nondet_capture(f, L"numbers: 55 987654321 1", &capture));
+  TEST_ASSERT(capture != NULL);
+  TEST_ASSERT(al_length(capture) == 6);
+  //iter_print(al_get_iter(capture), stdout, data_printer_int);
+  TEST_ASSERT(al_get(capture, 0, &status).data_llint == 9);
+  TEST_ASSERT(status == SMB_SUCCESS);
+  TEST_ASSERT(al_get(capture, 1, &status).data_llint == 11);
+  TEST_ASSERT(status == SMB_SUCCESS);
+  TEST_ASSERT(al_get(capture, 2, &status).data_llint == 12);
+  TEST_ASSERT(status == SMB_SUCCESS);
+  TEST_ASSERT(al_get(capture, 3, &status).data_llint == 21);
+  TEST_ASSERT(status == SMB_SUCCESS);
+  TEST_ASSERT(al_get(capture, 4, &status).data_llint == 22);
+  TEST_ASSERT(status == SMB_SUCCESS);
+  TEST_ASSERT(al_get(capture, 5, &status).data_llint == 23);
+  TEST_ASSERT(status == SMB_SUCCESS);
+
+  fsm_delete(f, true);
+  al_delete(capture);
+  return 0;
+}
+
 void regex_test(void)
 {
   smb_ut_group *group = su_create_test_group("regex");
@@ -352,6 +400,12 @@ void regex_test(void)
 
   smb_ut_test *escape = su_create_test("escape", test_escape);
   su_add_test(group, escape);
+
+  smb_ut_test *capture = su_create_test("capture", test_capture);
+  su_add_test(group, capture);
+
+  smb_ut_test *capture_many = su_create_test("capture_many", test_capture_many);
+  su_add_test(group, capture_many);
 
   su_run_group(group);
   su_delete_group(group);

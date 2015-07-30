@@ -22,24 +22,18 @@
 #include "libstephen/al.h"
 
 /**
-   @brief A value for fsm_trans.type indicating that the ranges are positive.
-
-   That is, the characters within the ranges are considered valid.
-
-   @see fsm_trans.type
-   @see FSM_TRANS_NEGATIVE
- */
-#define FSM_TRANS_POSITIVE 0
-/**
-   @brief A value for fsm_trans.type indicating that the ranges are negative.
+   @brief A flag for fsm_trans.flags indicating that the ranges are negative.
 
    That is, the characters within the ranges not considered valid (but
    everything else is).
 
-   @see fsm_trans.type
-   @see FSM_TRANS_POSITIVE
+   @see fsm_trans.flags
  */
-#define FSM_TRANS_NEGATIVE 1
+#define FSM_TRANS_NEGATIVE 0x0001
+/**
+   @brief A flag for fsm_trans.flags indicating that a capture starts here.
+ */
+#define FSM_TRANS_CAPTURE 0x0002
 
 /**
    @brief A possible return value for fsm_sim_nondet_state().
@@ -116,7 +110,7 @@ typedef struct {
      @see FSM_TRANS_POSITIVE
      @see FSM_TRANS_NEGATIVE
    */
-  int type;
+  unsigned int flags;
 
   /**
      @brief An array of characters that form the starts of the ranges.
@@ -199,6 +193,16 @@ typedef struct {
    */
   smb_al *curr;
 
+  /**
+     @brief Each current state's list of captures.
+   */
+  smb_al *cap;
+
+  /**
+     @brief The current index!
+   */
+  int index;
+
 } fsm_sim;
 
 // Error constant declarations:
@@ -206,13 +210,13 @@ typedef struct {
 #define CKY_MALFORMED_TRANS (SMB_EXTERNAL_EXCEPTION_START + 1)
 
 // datastructs.c
-void fsm_trans_init(fsm_trans *ft, int n, int type, int dest);
-fsm_trans *fsm_trans_create(int n, int type, int dest);
+void fsm_trans_init(fsm_trans *ft, int n, unsigned int flags, int dest);
+fsm_trans *fsm_trans_create(int n, unsigned int flags, int dest);
 void fsm_trans_destroy(fsm_trans *ft);
 void fsm_trans_delete(fsm_trans *ft);
-void fsm_trans_init_single(fsm_trans *ft, wchar_t start, wchar_t end, int type,
+void fsm_trans_init_single(fsm_trans *ft, wchar_t start, wchar_t end, unsigned int flags,
                            int dest);
-fsm_trans *fsm_trans_create_single(wchar_t start, wchar_t end, int type,
+fsm_trans *fsm_trans_create_single(wchar_t start, wchar_t end, unsigned int flags,
                                    int dest);
 fsm_trans *fsm_trans_copy(const fsm_trans *ft);
 bool fsm_trans_check(const fsm_trans *ft, wchar_t c);
@@ -225,7 +229,7 @@ fsm *fsm_create_single_char(wchar_t character);
 int fsm_add_state(fsm *f, bool accepting);
 void fsm_add_trans(fsm *f, int state, const fsm_trans *ft);
 fsm_trans *fsm_add_single(fsm *f, int from, int to, wchar_t start, wchar_t end,
-                          int type);
+                          unsigned int flags);
 
 void fsm_sim_init(fsm_sim *fs, fsm *f, smb_al *curr);
 fsm_sim *fsm_sim_create(fsm *f, smb_al *curr);
@@ -254,11 +258,13 @@ fsm_sim *fsm_sim_nondet_begin(fsm *f);
 int fsm_sim_nondet_state(const fsm_sim *s, wchar_t input);
 void fsm_sim_nondet_step(fsm_sim *s, wchar_t input);
 bool fsm_sim_nondet(fsm *f, const wchar_t *input);
+bool fsm_sim_nondet_capture(fsm *f, const wchar_t *input, smb_al **capture);
 
 // operations.c
 fsm *fsm_copy(const fsm *f);
 void fsm_copy_trans(fsm *dest, const fsm *src);
 void fsm_concat(fsm *first, const fsm *second);
+void fsm_concat_capture(fsm *first, const fsm *second);
 void fsm_union(fsm *first, const fsm *second);
 void fsm_kleene(fsm *f);
 

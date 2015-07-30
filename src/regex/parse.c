@@ -68,14 +68,14 @@ void regex_parse_check_modifier(fsm *new, const wchar_t **regex)
 
 /**
    @brief Return a FSM that accepts any whitespace.
-   @param type Positive or negative.
+   @param flags Positive or negative.
  */
-fsm *regex_parse_create_whitespace_fsm(int type)
+fsm *regex_parse_create_whitespace_fsm(unsigned int flags)
 {
   fsm *f = fsm_create();
   int src = fsm_add_state(f, false);
   int dest = fsm_add_state(f, true);
-  fsm_trans *ft = fsm_trans_create(6, type, dest);
+  fsm_trans *ft = fsm_trans_create(6, flags, dest);
   ft->start[0] = L' ';
   ft->end[0] = L' ';
   ft->start[1] = L'\f';
@@ -96,12 +96,12 @@ fsm *regex_parse_create_whitespace_fsm(int type)
 /**
    @brief Return a FSM for word characters (letters, numbers, and underscore).
  */
-fsm *regex_parse_create_word_fsm(int type)
+fsm *regex_parse_create_word_fsm(unsigned int flags)
 {
   fsm *f = fsm_create();
   int src = fsm_add_state(f, false);
   int dest = fsm_add_state(f, true);
-  fsm_trans *ft = fsm_trans_create(4, type, dest);
+  fsm_trans *ft = fsm_trans_create(4, flags, dest);
   ft->start[0] = L'a';
   ft->end[0] = L'z';
   ft->start[1] = L'A';
@@ -118,12 +118,12 @@ fsm *regex_parse_create_word_fsm(int type)
 /**
    @brief Return a FSM for digits.
  */
-fsm *regex_parse_create_digit_fsm(int type)
+fsm *regex_parse_create_digit_fsm(unsigned int flags)
 {
   fsm *f = fsm_create();
   int src = fsm_add_state(f, false);
   int dest = fsm_add_state(f, true);
-  fsm_trans *ft = fsm_trans_create(1, type, dest);
+  fsm_trans *ft = fsm_trans_create(1, flags, dest);
   ft->start[0] = L'0';
   ft->end[0] = L'9';
   fsm_add_trans(f, src, ft);
@@ -183,15 +183,15 @@ fsm *regex_parse_outer_escape(const wchar_t **regex)
   (*regex)++; // advance to the specifier
   switch (**regex) {
   case L's':
-    return regex_parse_create_whitespace_fsm(FSM_TRANS_POSITIVE);
+    return regex_parse_create_whitespace_fsm(0);
   case L'S':
     return regex_parse_create_whitespace_fsm(FSM_TRANS_NEGATIVE);
   case L'w':
-    return regex_parse_create_word_fsm(FSM_TRANS_POSITIVE);
+    return regex_parse_create_word_fsm(0);
   case L'W':
     return regex_parse_create_word_fsm(FSM_TRANS_NEGATIVE);
   case L'd':
-    return regex_parse_create_digit_fsm(FSM_TRANS_POSITIVE);
+    return regex_parse_create_digit_fsm(0);
   case L'D':
     return regex_parse_create_digit_fsm(FSM_TRANS_NEGATIVE);
   default:
@@ -227,7 +227,7 @@ fsm *regex_parse_char_class(const wchar_t **regex)
   smb_ll start, end;
   smb_status status = SMB_SUCCESS;
   DATA d;
-  int type = FSM_TRANS_POSITIVE, state = NORMAL;
+  unsigned int flags = 0, state = NORMAL;
   smb_iter iter;
   fsm *f;
   int src, dest;
@@ -239,7 +239,7 @@ fsm *regex_parse_char_class(const wchar_t **regex)
   // Detect whether the character class is positive or negative
   (*regex)++;
   if (**regex == L'^') {
-    type = FSM_TRANS_NEGATIVE;
+    flags = FSM_TRANS_NEGATIVE;
     (*regex)++;
   }
 
@@ -282,8 +282,8 @@ fsm *regex_parse_char_class(const wchar_t **regex)
   src = fsm_add_state(f, false);
   dest = fsm_add_state(f, true);
   f->start = src;
-  ft = fsm_trans_create(ll_length(&start) + (type == FSM_TRANS_NEGATIVE ? 1 : 0),
-                        type, dest);
+  ft = fsm_trans_create(ll_length(&start) + (FLAG_CHECK(flags, FSM_TRANS_NEGATIVE) ? 1 : 0),
+                        flags, dest);
 
   iter = ll_get_iter(&start);
   while (iter.has_next(&iter)) {
@@ -297,7 +297,7 @@ fsm *regex_parse_char_class(const wchar_t **regex)
     assert(status == SMB_SUCCESS);
     ft->end[iter.index-1] = (wchar_t) d.data_llint;
   }
-  if (type == FSM_TRANS_NEGATIVE) {
+  if (FLAG_CHECK(flags, FSM_TRANS_NEGATIVE)) {
     // We cannot allow epsilon to be matched in an actual character class.
     ft->start[ll_length(&start)] = EPSILON;
     ft->end[ll_length(&start)] = EPSILON;
@@ -329,6 +329,7 @@ fsm *regex_parse_recursive(const wchar_t *regex, const wchar_t **final)
   // Initial FSM is a machine that accepts the empty string.
   fsm *curr = fsm_create();
   fsm *new;
+  bool capture;
   curr->start = fsm_add_state(curr, true);
 
   // ASSUME THAT ALL PARENS, ETC ARE BALANCED!
@@ -337,9 +338,16 @@ fsm *regex_parse_recursive(const wchar_t *regex, const wchar_t **final)
     switch (*regex) {
 
     case L'(':
-      new = regex_parse_recursive(regex + 1, &regex);
+      capture = regex[1] == L'?';
+      if (capture)
+        new = regex_parse_recursive(regex + 2, &regex);
+      else
+        new = regex_parse_recursive(regex + 1, &regex);
       regex_parse_check_modifier(new, &regex);
-      fsm_concat(curr, new);
+      if (capture)
+        fsm_concat_capture(curr, new);
+      else
+        fsm_concat(curr, new);
       fsm_delete(new, true);
       break;
 

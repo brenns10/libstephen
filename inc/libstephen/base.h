@@ -193,4 +193,20 @@ char *smb_status_string(smb_status status);
                                 "%s (function %s).\n", __LINE__, __FILE__,\
                                 __func__)
 
+/*******************************************************************************
+
+                                   Utilities
+
+*******************************************************************************/
+
+// For handling integers with flags.
+#define FLAG_CHECK(var,bit) ((var) & (bit))
+#define FLAG_SET(var,bit) var |= (bit)
+#define FLAG_CLEAR(var,bit) var &= (~(bit))
+
+// For creating DATA from values.
+#define LLINT(value) ((DATA){.data_llint=(value)})
+#define PTR(value) ((DATA){.data_ptr=(value)})
+#define DBL(value) ((DATA){.data_dbl=(value)})
+
 #endif // LIBSTEPHEN_BASE_H
