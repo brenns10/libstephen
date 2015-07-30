@@ -25,6 +25,20 @@
 // Helper Functions
 ////////////////////////////////////////////////////////////////////////////////
 
+/**
+   @brief Copy all the values from one array list into another.
+   @param dest The destination array list
+   @param from The source array list
+ */
+void al_copy_all(smb_al *dest, const smb_al *from)
+{
+  smb_status status;
+  int i;
+  for (i = 0; i < al_length(from); i++) {
+    al_append(dest, al_get(from, i, &status));
+  }
+}
+
 static void add_eps_to_curr(fsm_sim *fs, int state, smb_al *cap)
 {
   smb_status status = SMB_SUCCESS;
@@ -104,7 +118,7 @@ static void add_eps_to_curr(fsm_sim *fs, int state, smb_al *cap)
    @retval true when the intersection is NOT empty
    @retval false when the intersection IS empty
  */
-bool fsm_sim_nondet_non_empty_intersection(smb_al *first, smb_al *second)
+static bool fsm_sim_nondet_non_empty_intersection(smb_al *first, smb_al *second)
 {
   smb_status status;
   int i;
@@ -117,20 +131,6 @@ bool fsm_sim_nondet_non_empty_intersection(smb_al *first, smb_al *second)
   return false;
 }
 
-/**
-   @brief Copy all the values from one array list into another.
-   @param dest The destination array list
-   @param from The source array list
- */
-void al_copy_all(smb_al *dest, const smb_al *from)
-{
-  smb_status status;
-  int i;
-  for (i = 0; i < al_length(from); i++) {
-    al_append(dest, al_get(from, i, &status));
-  }
-}
-
 ////////////////////////////////////////////////////////////////////////////////
 // Public Functions
 ////////////////////////////////////////////////////////////////////////////////
@@ -139,11 +139,21 @@ void al_copy_all(smb_al *dest, const smb_al *from)
    @brief Run the finite state machine as a deterministic one.
 
    Simulates a DFSM.  Any possible input at any given state should have exactly
-   one transition.  Zero transitions are allowed (and interpreted as an
-   immediate reject).
+   one transition.  If there are no transitions for an input, this is treated as
+   an implicit transition to a rejecting state, and the simulation rejects
+   immediately.
+
+   You should be aware that this simulation is really not all that useful,
+   unless you constructed the FSM manually, and therefore know that it is
+   deterministic.  Any FSM returned by regex_parse(), for instance, is *very*
+   nondeterministic, and can only be run using fsm_sim_nondet() or its siblings.
+   Also, this simulation completely ignores capture group information in the
+   FSM, since capturing really only works when you nondeterministically
+   simulate.
 
    @param f The FSM to simulate
    @param input The string of input
+   @returns Whether the machine accepts the string or not.
  */
 bool fsm_sim_det(fsm *f, const wchar_t *input)
 {
@@ -200,6 +210,8 @@ bool fsm_sim_det(fsm *f, const wchar_t *input)
    be empty.
 
    @param f The FSM to simulate
+   @returns A `fsm_sim*` containing all of the simulation state.  This must be
+   freed with fsm_sim_delete() when you're done with it.
  */
 fsm_sim *fsm_sim_nondet_begin(fsm *f)
 {
@@ -278,6 +290,7 @@ int fsm_sim_nondet_state(const fsm_sim *s, wchar_t input)
    fsm_sim_nondet_state() to determine the state of the simulation after a step.
 
    @param s The simulation state struct
+   @param input The next input character to the simulation.
  */
 void fsm_sim_nondet_step(fsm_sim *s, wchar_t input)
 {
@@ -290,10 +303,7 @@ void fsm_sim_nondet_step(fsm_sim *s, wchar_t input)
   smb_al *cap;
   smb_al *trans;
 
-  // For diagnostics, print out the entire current state set
-  for (i = 0; i < al_length(s->curr); i++) {
-    LDEBUG("state[%d] = %Ld ", i, al_get(s->curr, i, &status).data_llint);
-  }
+  //// FIRST, we find every matching transition out of any current state.
 
   // For each current state:
   for (i = 0; i < al_length(s->curr); i++) {
@@ -319,6 +329,8 @@ void fsm_sim_nondet_step(fsm_sim *s, wchar_t input)
     }
   }
 
+  //// NEXT, these next states become our new states
+
   // The current state is now the next state!
   for (i = 0; i < al_length(s->cap); i++) {
     al_delete(al_get(s->cap, i, &status).data_ptr);
@@ -329,7 +341,10 @@ void fsm_sim_nondet_step(fsm_sim *s, wchar_t input)
   s->curr = next;
   s->index++;  // index MUST be incremented here
 
-  // Insert epsilon closure elements!
+  //// FINALLY, we expand our current state list to be the "epsilon closure" of
+  //// all its elements (i.e., all states reachable via epsilon-transition from
+  //// any current state).
+
   original = al_length(s->curr);
   for (i = 0; i < original; i++) {
     smb_al *cap;
@@ -344,6 +359,20 @@ void fsm_sim_nondet_step(fsm_sim *s, wchar_t input)
   }
 }
 
+/**
+   @brief Return the "correct" capture list for this simulation.
+
+   Since an NDFSM has a number of possible states it could be in, there is more
+   than one set of possible captures.  This function looks through the list of
+   current states' captures, and selects the one with the most captured groups
+   (also, it will only select even sized lists, since odd ones don't make
+   sense).  It then returns a copy of it (so that you can free the whole
+   simulation and keep the capture list).
+
+   @param sim The simulation to return captures from.
+   @returns Reference to list of captures (indexes) which you must free
+   separately from the simulation.
+ */
 smb_al *fsm_sim_get_captures(fsm_sim *sim)
 {
   smb_iter it = al_get_iter(sim->cap);
@@ -368,15 +397,19 @@ smb_al *fsm_sim_get_captures(fsm_sim *sim)
 }
 
 /**
-   @brief Simulate the FSM as a non-deterministic state machine.
+   @brief Simulate NDFSM, optionally returning captured groups.
 
-   This function is a convenience function that executes the NDFSM to
-   completion.  The other functions, begin, step, and delete, can be used to
-   perform a more customizable simulation.
+   This function is a convenience function that completely simulates the NDFSM.
+   The "sub"-functions, fsm_sim_nondet_begin(), fsm_sim_nondet_step(),
+   fsm_sim_nondet_state(), fsm_sim_get_captures(), and fsm_sim_delete(), can be
+   used together to perform a more customizable simulation.  For an example, you
+   may want to see fsm_search(), which performs a search through a body of text.
 
    @param f The FSM to simulate
    @param input The input string to run with
-   @param[out] capture Pointer to smb_al* where to store capture list.
+   @param[out] capture Pointer to `smb_al*` where to store capture list.
+   Ignored when NULL.  Pointer is set to NULL if there are no matches, and not
+   touched when the simulation rejects.
    @retval true if the machine accepts
    @retval false if the machine rejects
  */
@@ -405,6 +438,13 @@ bool fsm_sim_nondet_capture(fsm *f, const wchar_t *input, smb_al **capture)
   return accepted;
 }
 
+/**
+   @brief Simulate a NDFSM without capturing.
+   @param f The NDFSM to simulate
+   @param input The input string to run with
+   @retval true if the machine accepts
+   @retval false if the machine rejects
+ */
 bool fsm_sim_nondet(fsm *f, const wchar_t *input)
 {
   return fsm_sim_nondet_capture(f, input, NULL);
