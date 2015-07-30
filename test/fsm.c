@@ -366,7 +366,7 @@ static int test_kleene(void)
 
   // Now modify it to accept "(foo)*"
   fsm_kleene(src);
-
+  
   // Test that it now accepts 0 or more instances.
   TEST_ASSERT(fsm_sim_nondet(src, L""));
   TEST_ASSERT(fsm_sim_nondet(src, L"foo"));
@@ -380,7 +380,7 @@ static int test_kleene(void)
 
 void fsm_test(void)
 {
-  smb_ut_group *group = su_create_test_group("fsm");
+  smb_ut_group *group = su_create_test_group("test/fsm.c");
 
   smb_ut_test *test_memory = su_create_test("test_memory", fsm_test_memory);
   su_add_test(group, test_memory);
