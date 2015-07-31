@@ -224,6 +224,7 @@ fsm_sim *fsm_sim_nondet_begin(fsm *f)
   smb_al *curr = al_create();
   fsm_sim *fs = fsm_sim_create(f, curr);
   int i; //delete
+  fs->index = 0;
   al_append(curr, LLINT(f->start));
   // For diagnostics, print out the entire current state set
   for (i = 0; i < al_length(fs->curr); i++) {
@@ -236,7 +237,6 @@ fsm_sim *fsm_sim_nondet_begin(fsm *f)
     LDEBUG(&fsm_sim_log, "state[%d] = %Ld ", i, al_get(fs->curr, i, &status).data_llint);
   }
   assert(status == SMB_SUCCESS);
-  fs->index = 0;
   return fs;
 }
 
