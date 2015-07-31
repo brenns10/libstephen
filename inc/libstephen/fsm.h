@@ -499,6 +499,14 @@ void fsm_sim_nondet_step(fsm_sim *s, wchar_t input);
  */
 smb_al *fsm_sim_get_captures(fsm_sim *sim);
 /**
+   @brief Simulate a NDFSM without capturing.
+   @param f The NDFSM to simulate
+   @param input The input string to run with
+   @retval true if the machine accepts
+   @retval false if the machine rejects
+ */
+bool fsm_sim_nondet(fsm *f, const wchar_t *input);
+/**
    @brief Simulate NDFSM, optionally returning captured groups.
 
    This function is a convenience function that completely simulates the NDFSM.
@@ -511,14 +519,6 @@ smb_al *fsm_sim_get_captures(fsm_sim *sim);
    @param[out] capture Pointer to `smb_al*` where to store capture list.
    Ignored when NULL.  Pointer is set to NULL if there are no matches, and not
    touched when the simulation rejects.
-   @retval true if the machine accepts
-   @retval false if the machine rejects
- */
-bool fsm_sim_nondet(fsm *f, const wchar_t *input);
-/**
-   @brief Simulate a NDFSM without capturing.
-   @param f The NDFSM to simulate
-   @param input The input string to run with
    @retval true if the machine accepts
    @retval false if the machine rejects
  */

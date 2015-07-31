@@ -152,7 +152,6 @@ void smb___free(void *ptr);
    @param type The type of the memory to reallocate.
    @param ptr The memory to reallocate.
    @param newamt The amount of items to allocate.
-   @param oldamt The previous amount of items that were allocated.
    @returns A pointer to the reallocated memory.
  */
 #define smb_renew(type, ptr, newamt) \
@@ -163,10 +162,7 @@ void smb___free(void *ptr);
 
    This macro/function wraps free().  It exits on failure and adjusts the malloc
    counter.
-
-   @param type The type of memory you're freeing.
    @param ptr The memory you're freeing.
-   @param amt The number of items you're freeing.
  */
 #define smb_free(ptr) smb___free(ptr)
 

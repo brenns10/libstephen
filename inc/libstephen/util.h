@@ -23,7 +23,7 @@
    allocated by this function.  It will contain the line, WITHOUT newline or EOF
    characters.  The size of the buffer will not be the same size as the string.
    @param file The stream to read from, typically stdin.
-   @param[out] alloc The number of characters allocated to the buffer.
+   @param[out] status Status variable.
    @returns A buffer containing the line.
  */
 wchar_t *smb_read_linew(FILE *file, smb_status *status);
@@ -34,7 +34,7 @@ wchar_t *smb_read_linew(FILE *file, smb_status *status);
    allocated by this function.  It will contain the line, WITHOUT newline or EOF
    characters.  The size of the buffer will not be the same size as the string.
    @param file The stream to read from, typically stdin.
-   @param[out] alloc The number of characters allocated to the buffer.
+   @param[out] status Status variable.
    @returns A buffer containing the line.
  */
 char *smb_read_line(FILE *file, smb_status *status);

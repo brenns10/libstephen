@@ -54,13 +54,11 @@ typedef struct smb_al
 
    This function is useful if you would like to declare your array list on the
    stack and initialize it, rather than allocating space on the heap.
-   @param[out] status Status variable.
  */
 void al_init(smb_al *list);
 /**
    @brief Allocate and initialize an empty array list.
    @returns A pointer to the new array list.
-   @param[out] status Status variable.
  */
 smb_al *al_create();
 /**
@@ -172,9 +170,9 @@ DATA al_peek_back(smb_al *list, smb_status *status);
    @brief Push the data to the front of the list.  Alias for al_prepend.  See
    ll_push_back() if you don't know what 'push' means.
    @param list A pointer to the list to push to.
-   @param DATA The data to push to the front.
+   @param data The data to push to the front.
  */
-void al_push_front(smb_al *list, DATA newData);
+void al_push_front(smb_al *list, DATA data);
 /**
    @brief Pop the data from the front of the list.  See ll_pop_back() if you
    don't know what 'pop' means.

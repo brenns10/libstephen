@@ -79,7 +79,7 @@ typedef struct smb_ll
    @brief Initializes a new list in memory which has already been allocated.
    @param new_list A pointer to the memory to initialize.
  */
-void ll_init(smb_ll *newList);
+void ll_init(smb_ll *new_list);
 /**
    @brief Allocates and initializes a new, empty linked list.
    @returns A pointer to the new list.
@@ -123,7 +123,6 @@ smb_list ll_cast_to_list(smb_ll *list);
    @brief Append the given data to the end of the list.
    @param list A pointer to the list to append to.
    @param new_data The data to append.
-   @param[out] status Status variable.
  */
 void ll_append(smb_ll *list, DATA new_data);
 /**
@@ -254,7 +253,7 @@ int  ll_index_of(const smb_ll *list, DATA d, DATA_COMPARE comp);
 /**
    @brief Stable sort of linked list.
    @param list List to sort.
-   @param comp Comparator for sorting.
+   @param cmp Comparator for sorting.
    @return Nothing, but the list is sorted in place.
  */
 void ll_sort(smb_ll *list, DATA_COMPARE cmp);
