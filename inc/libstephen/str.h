@@ -1,6 +1,6 @@
 /***************************************************************************//**
 
-  @file         str.h
+  @file         libstephen/str.h
 
   @author       Stephen Brennan
 

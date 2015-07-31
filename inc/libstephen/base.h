@@ -1,6 +1,6 @@
 /***************************************************************************//**
 
-  @file         base.h
+  @file         libstephen/base.h
 
   @author       Stephen Brennan
 

@@ -1,6 +1,6 @@
 /***************************************************************************//**
 
-  @file         regex.h
+  @file         libstephen/regex.h
 
   @author       Stephen Brennan
 

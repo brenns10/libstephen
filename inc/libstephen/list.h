@@ -1,6 +1,6 @@
 /***************************************************************************//**
 
-  @file         list.h
+  @file         libstephen/list.h
 
   @author       Stephen Brennan
 

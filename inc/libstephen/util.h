@@ -1,6 +1,6 @@
 /***************************************************************************//**
 
-  @file         util.h
+  @file         libstephen/util.h
 
   @author       Stephen Brennan
 

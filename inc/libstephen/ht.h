@@ -1,6 +1,6 @@
 /***************************************************************************//**
 
-  @file         ht.h
+  @file         libstephen/ht.h
 
   @author       Stephen Brennan
 

@@ -1,6 +1,6 @@
 /***************************************************************************//**
 
-  @file         cb.h
+  @file         libstephen/cb.h
 
   @author       Stephen Brennan
 

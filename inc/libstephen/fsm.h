@@ -1,6 +1,6 @@
 /***************************************************************************//**
 
-  @file         fsm.h
+  @file         libstephen/fsm.h
 
   @author       Stephen Brennan
 

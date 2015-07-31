@@ -1,6 +1,6 @@
 /***************************************************************************//**
 
-  @file         log.h
+  @file         libstephen/log.h
 
   @author       Stephen Brennan
 
