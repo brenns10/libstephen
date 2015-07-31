@@ -147,7 +147,7 @@ clean:
 clean_all: clean_cov clean_doc
 	rm -rf $(OBJECT_DIR) $(BINARY_DIR) $(DEPENDENCY_DIR) $(SOURCE_DIR)/*.gch
 
-clean_docs:
+clean_doc:
 	rm -rf $(DOCUMENTATION_DIR)
 
 clean_cov:
