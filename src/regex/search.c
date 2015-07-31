@@ -17,26 +17,6 @@
 #include "libstephen/fsm.h"   // for FSM's
 #include "libstephen/al.h"    // for array lists
 
-/**
-   @brief Perform a regex-style search with an FSM on a search text.
-
-   The "regex-style search" runs the FSM starting at each character in the text.
-   If the FSM ever enters an accepting state, then that is a potential match.
-   The last potential match (if any) for every character in the text makes up
-   the list of hits.
-
-   @param regex_fsm The FSM to search with.  Not necessarily generated from a
-   regular expression.
-   @param srchText The text to search the FSM on.
-   @param greedy When set to true, only returns one hit.  Otherwise, returns all
-   hits.
-   @param overlap When set to true, allows overlapping hits.  For instance, a
-   search for "\w+" on "blah" would return blah, lah, ah, and h.  Since this is
-   usually undesirable, the recommended value is false.  When false, the search
-   will skip to the end of each hit and resume searching there.
-   @return An array list (smb_al) of `regex_hit *` full of hits.  Each hit must
-   be individually freed when you're finished, as well as the array list itself.
- */
 smb_al *fsm_search(fsm *regex_fsm, const wchar_t *srchText, bool greedy,
                    bool overlap)
 {
@@ -108,14 +88,6 @@ smb_al *fsm_search(fsm *regex_fsm, const wchar_t *srchText, bool greedy,
   return results;
 }
 
-/**
-   @brief Searches for a regular expression on a search text.
-   @see fsm_search() For full details on the operation of the function.
-   @param regex The regular expression to search for.
-   @param srchText The text to search in.
-   @param greedy Whether to return first result only.
-   @param overlap Whether to allow overlapping matches.
- */
 smb_al *regex_search(const wchar_t *regex, const wchar_t *srchText, bool greedy,
                      bool overlap)
 {
