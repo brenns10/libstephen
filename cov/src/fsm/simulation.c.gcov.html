@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2015-07-30 23:44:07</td>
+            <td class="headerValue">2015-07-31 00:49:27</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">10</td>
@@ -286,19 +286,19 @@
 <span class="lineNum">     224 </span><span class="lineCov">        257 :   smb_al *curr = al_create();</span>
 <span class="lineNum">     225 </span><span class="lineCov">        257 :   fsm_sim *fs = fsm_sim_create(f, curr);</span>
 <span class="lineNum">     226 </span>            :   int i; //delete
-<span class="lineNum">     227 </span><span class="lineCov">        257 :   al_append(curr, LLINT(f-&gt;start));</span>
-<span class="lineNum">     228 </span>            :   // For diagnostics, print out the entire current state set
-<span class="lineNum">     229 </span><span class="lineCov">        514 :   for (i = 0; i &lt; al_length(fs-&gt;curr); i++) {</span>
-<span class="lineNum">     230 </span><span class="lineCov">        257 :     LDEBUG(&amp;fsm_sim_log, &quot;state[%d] = %Ld&quot;, i, al_get(fs-&gt;curr, i, &amp;status).data_llint);</span>
-<span class="lineNum">     231 </span>            :   }
-<span class="lineNum">     232 </span>            : 
-<span class="lineNum">     233 </span><span class="lineCov">        257 :   add_eps_to_curr(fs, f-&gt;start, al_get(fs-&gt;cap, 0, &amp;status).data_ptr);</span>
-<span class="lineNum">     234 </span>            :   // For diagnostics, print out the entire current state set
-<span class="lineNum">     235 </span><span class="lineCov">        859 :   for (i = 0; i &lt; al_length(fs-&gt;curr); i++) {</span>
-<span class="lineNum">     236 </span><span class="lineCov">        602 :     LDEBUG(&amp;fsm_sim_log, &quot;state[%d] = %Ld &quot;, i, al_get(fs-&gt;curr, i, &amp;status).data_llint);</span>
-<span class="lineNum">     237 </span>            :   }
-<span class="lineNum">     238 </span><span class="lineCov">        257 :   assert(status == SMB_SUCCESS);</span>
-<span class="lineNum">     239 </span><span class="lineCov">        257 :   fs-&gt;index = 0;</span>
+<span class="lineNum">     227 </span><span class="lineCov">        257 :   fs-&gt;index = 0;</span>
+<span class="lineNum">     228 </span><span class="lineCov">        257 :   al_append(curr, LLINT(f-&gt;start));</span>
+<span class="lineNum">     229 </span>            :   // For diagnostics, print out the entire current state set
+<span class="lineNum">     230 </span><span class="lineCov">        514 :   for (i = 0; i &lt; al_length(fs-&gt;curr); i++) {</span>
+<span class="lineNum">     231 </span><span class="lineCov">        257 :     LDEBUG(&amp;fsm_sim_log, &quot;state[%d] = %Ld&quot;, i, al_get(fs-&gt;curr, i, &amp;status).data_llint);</span>
+<span class="lineNum">     232 </span>            :   }
+<span class="lineNum">     233 </span>            : 
+<span class="lineNum">     234 </span><span class="lineCov">        257 :   add_eps_to_curr(fs, f-&gt;start, al_get(fs-&gt;cap, 0, &amp;status).data_ptr);</span>
+<span class="lineNum">     235 </span>            :   // For diagnostics, print out the entire current state set
+<span class="lineNum">     236 </span><span class="lineCov">        859 :   for (i = 0; i &lt; al_length(fs-&gt;curr); i++) {</span>
+<span class="lineNum">     237 </span><span class="lineCov">        602 :     LDEBUG(&amp;fsm_sim_log, &quot;state[%d] = %Ld &quot;, i, al_get(fs-&gt;curr, i, &amp;status).data_llint);</span>
+<span class="lineNum">     238 </span>            :   }
+<span class="lineNum">     239 </span><span class="lineCov">        257 :   assert(status == SMB_SUCCESS);</span>
 <span class="lineNum">     240 </span><span class="lineCov">        257 :   return fs;</span>
 <span class="lineNum">     241 </span>            : }
 <span class="lineNum">     242 </span>            : 

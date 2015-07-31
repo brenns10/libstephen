@@ -258,19 +258,19 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
 <a name="l00224"></a>00224   smb_al *curr = <a class="code" href="arraylist_8c.html#a18607711104fad1288e322b03e41c596" title="Allocate and initialize an empty array list.">al_create</a>();
 <a name="l00225"></a>00225   fsm_sim *fs = <a class="code" href="fsm_2datastructs_8c.html#a0b05dfb3e534ad249f74d2612be9a112" title="Allocate and initialize an fsm_sim struct.">fsm_sim_create</a>(f, curr);
 <a name="l00226"></a>00226   <span class="keywordtype">int</span> i; <span class="comment">//delete</span>
-<a name="l00227"></a>00227   <a class="code" href="arraylist_8c.html#af55a49188f7b1a5f0bca96e418585f6e" title="Append an item to the end of a list.">al_append</a>(curr, LLINT(f-&gt;start));
-<a name="l00228"></a>00228   <span class="comment">// For diagnostics, print out the entire current state set</span>
-<a name="l00229"></a>00229   <span class="keywordflow">for</span> (i = 0; i &lt; <a class="code" href="arraylist_8c.html#a46b3b2ea25b02173ecb31d70a680e69b" title="Returns the length of the list.">al_length</a>(fs-&gt;curr); i++) {
-<a name="l00230"></a>00230     LDEBUG(&amp;fsm_sim_log, <span class="stringliteral">&quot;state[%d] = %Ld&quot;</span>, i, <a class="code" href="arraylist_8c.html#ae7575d45f393112c41d4f14da050cfb6" title="Return the data at a specified index.">al_get</a>(fs-&gt;curr, i, &amp;status).data_llint);
-<a name="l00231"></a>00231   }
-<a name="l00232"></a>00232 
-<a name="l00233"></a>00233   add_eps_to_curr(fs, f-&gt;start, <a class="code" href="arraylist_8c.html#ae7575d45f393112c41d4f14da050cfb6" title="Return the data at a specified index.">al_get</a>(fs-&gt;cap, 0, &amp;status).data_ptr);
-<a name="l00234"></a>00234   <span class="comment">// For diagnostics, print out the entire current state set</span>
-<a name="l00235"></a>00235   <span class="keywordflow">for</span> (i = 0; i &lt; <a class="code" href="arraylist_8c.html#a46b3b2ea25b02173ecb31d70a680e69b" title="Returns the length of the list.">al_length</a>(fs-&gt;curr); i++) {
-<a name="l00236"></a>00236     LDEBUG(&amp;fsm_sim_log, <span class="stringliteral">&quot;state[%d] = %Ld &quot;</span>, i, <a class="code" href="arraylist_8c.html#ae7575d45f393112c41d4f14da050cfb6" title="Return the data at a specified index.">al_get</a>(fs-&gt;curr, i, &amp;status).data_llint);
-<a name="l00237"></a>00237   }
-<a name="l00238"></a>00238   assert(status == SMB_SUCCESS);
-<a name="l00239"></a>00239   fs-&gt;index = 0;
+<a name="l00227"></a>00227   fs-&gt;index = 0;
+<a name="l00228"></a>00228   <a class="code" href="arraylist_8c.html#af55a49188f7b1a5f0bca96e418585f6e" title="Append an item to the end of a list.">al_append</a>(curr, LLINT(f-&gt;start));
+<a name="l00229"></a>00229   <span class="comment">// For diagnostics, print out the entire current state set</span>
+<a name="l00230"></a>00230   <span class="keywordflow">for</span> (i = 0; i &lt; <a class="code" href="arraylist_8c.html#a46b3b2ea25b02173ecb31d70a680e69b" title="Returns the length of the list.">al_length</a>(fs-&gt;curr); i++) {
+<a name="l00231"></a>00231     LDEBUG(&amp;fsm_sim_log, <span class="stringliteral">&quot;state[%d] = %Ld&quot;</span>, i, <a class="code" href="arraylist_8c.html#ae7575d45f393112c41d4f14da050cfb6" title="Return the data at a specified index.">al_get</a>(fs-&gt;curr, i, &amp;status).data_llint);
+<a name="l00232"></a>00232   }
+<a name="l00233"></a>00233 
+<a name="l00234"></a>00234   add_eps_to_curr(fs, f-&gt;start, <a class="code" href="arraylist_8c.html#ae7575d45f393112c41d4f14da050cfb6" title="Return the data at a specified index.">al_get</a>(fs-&gt;cap, 0, &amp;status).data_ptr);
+<a name="l00235"></a>00235   <span class="comment">// For diagnostics, print out the entire current state set</span>
+<a name="l00236"></a>00236   <span class="keywordflow">for</span> (i = 0; i &lt; <a class="code" href="arraylist_8c.html#a46b3b2ea25b02173ecb31d70a680e69b" title="Returns the length of the list.">al_length</a>(fs-&gt;curr); i++) {
+<a name="l00237"></a>00237     LDEBUG(&amp;fsm_sim_log, <span class="stringliteral">&quot;state[%d] = %Ld &quot;</span>, i, <a class="code" href="arraylist_8c.html#ae7575d45f393112c41d4f14da050cfb6" title="Return the data at a specified index.">al_get</a>(fs-&gt;curr, i, &amp;status).data_llint);
+<a name="l00238"></a>00238   }
+<a name="l00239"></a>00239   assert(status == SMB_SUCCESS);
 <a name="l00240"></a>00240   <span class="keywordflow">return</span> fs;
 <a name="l00241"></a>00241 }
 <a name="l00242"></a>00242 
@@ -438,7 +438,7 @@ var searchBox = new SearchBox("searchBox", "search",false,'Search');
     <ul>
       <li class="navelem"><a class="el" href="simulation_8c.html">simulation.c</a>      </li>
 
-    <li class="footer">Generated on Thu Jul 30 2015 23:44:07 for libstephen by
+    <li class="footer">Generated on Fri Jul 31 2015 00:49:27 for libstephen by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.7.6.1 </li>
    </ul>
