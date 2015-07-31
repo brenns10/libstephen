@@ -73,17 +73,6 @@ void smb___free(void *ptr)
   free(ptr);
 }
 
-/**
-   @brief Read a line of input from the given file.
-
-   Read a line of input into a dynamically allocated buffer.  The buffer is
-   allocated by this function.  It will contain the line, WITHOUT newline or EOF
-   characters.  The size of the buffer will not be the same size as the string.
-
-   @param file The stream to read from, typically stdin.
-   @param[out] alloc The number of characters allocated to the buffer.
-   @returns A buffer containing the line.
- */
 wchar_t *smb_read_linew(FILE *file, smb_status *status)
 {
   #define SMBRL_BUFSIZE 256
