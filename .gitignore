@@ -4,6 +4,7 @@ bin/*
 doc/*
 cov/*
 dep/*
+sphinx-doc/_build
 *~
 GTAGS
 GRTAGS
