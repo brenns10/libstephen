@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2015-07-31 00:49:27</td>
+            <td class="headerValue">2015-08-03 19:17:26</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">7</td>
@@ -78,224 +78,182 @@
 <span class="lineNum">      16 </span>            : #include &quot;libstephen/fsm.h&quot;// functions we are implementing
 <span class="lineNum">      17 </span>            : #include &quot;libstephen/al.h&quot; // array lists
 <span class="lineNum">      18 </span>            : 
-<span class="lineNum">      19 </span>            : /**
-<span class="lineNum">      20 </span>            :    @brief Allocate an entirely new copy of an existing FSM.
-<span class="lineNum">      21 </span>            : 
-<span class="lineNum">      22 </span>            :    The transitions are completely disjoint, so freeing them in the original will
-<span class="lineNum">      23 </span>            :    not affect the copy.
+<span class="lineNum">      19 </span>            : /*******************************************************************************
+<span class="lineNum">      20 </span>            : 
+<span class="lineNum">      21 </span>            :                                Private Functions
+<span class="lineNum">      22 </span>            : 
+<a name="23"><span class="lineNum">      23 </span>            : *******************************************************************************/</a>
 <span class="lineNum">      24 </span>            : 
-<span class="lineNum">      25 </span>            :    @param f The FSM to copy
-<a name="26"><span class="lineNum">      26 </span>            :    @return A copy of the FSM</a>
-<span class="lineNum">      27 </span>            :  */
-<span class="lineNum">      28 </span><span class="lineCov">         18 : fsm *fsm_copy(const fsm *f)</span>
-<span class="lineNum">      29 </span>            : {
-<span class="lineNum">      30 </span>            :   int i, j;
-<span class="lineNum">      31 </span>            :   smb_al *old;
-<span class="lineNum">      32 </span>            :   fsm_trans *ft;
-<span class="lineNum">      33 </span><span class="lineCov">         18 :   fsm *new = fsm_create();</span>
-<span class="lineNum">      34 </span>            :   smb_status status;
-<span class="lineNum">      35 </span>            : 
-<span class="lineNum">      36 </span>            :   // Copy basic members
-<span class="lineNum">      37 </span><span class="lineCov">         18 :   new-&gt;start = f-&gt;start;</span>
-<span class="lineNum">      38 </span><span class="lineCov">         18 :   al_copy_all(&amp;new-&gt;accepting, &amp;f-&gt;accepting);</span>
+<span class="lineNum">      25 </span><span class="lineCov">         79 : static void fsm_concat_flags(fsm *first, const fsm *second, unsigned int flags)</span>
+<span class="lineNum">      26 </span>            : {
+<span class="lineNum">      27 </span>            :   smb_status status;
+<span class="lineNum">      28 </span><span class="lineCov">         79 :   int i, offset = al_length(&amp;first-&gt;transitions);</span>
+<span class="lineNum">      29 </span>            :   DATA d;
+<span class="lineNum">      30 </span>            :   // Create a transition from each accepting state into the second machine's
+<span class="lineNum">      31 </span>            :   // start state.
+<span class="lineNum">      32 </span><span class="lineCov">        160 :   for (i = 0; i &lt; al_length(&amp;first-&gt;accepting); i++) {</span>
+<span class="lineNum">      33 </span><span class="lineCov">         81 :     int start = (int)al_get(&amp;first-&gt;accepting, i, &amp;status).data_llint;</span>
+<span class="lineNum">      34 </span>            :     // This could be outside the loop, but we need a new one for each instance
+<span class="lineNum">      35 </span><span class="lineCov">         81 :     fsm_trans *ft = fsm_trans_create_single(EPSILON, EPSILON, flags,</span>
+<span class="lineNum">      36 </span><span class="lineCov">         81 :                                             second-&gt;start + offset);</span>
+<span class="lineNum">      37 </span><span class="lineCov">         81 :     fsm_add_trans(first, start, ft);</span>
+<span class="lineNum">      38 </span>            :   }
 <span class="lineNum">      39 </span>            : 
-<span class="lineNum">      40 </span>            :   // Initialise the same number of states
-<span class="lineNum">      41 </span><span class="lineCov">         90 :   for (i = 0; i &lt; al_length(&amp;f-&gt;transitions); i++) {</span>
-<span class="lineNum">      42 </span><span class="lineCov">         72 :     fsm_add_state(new, false);</span>
-<span class="lineNum">      43 </span>            :   }
-<span class="lineNum">      44 </span>            : 
-<span class="lineNum">      45 </span>            :   // Copy all transitions.
-<span class="lineNum">      46 </span><span class="lineCov">         90 :   for (i = 0; i &lt; al_length(&amp;f-&gt;transitions); i++) {</span>
-<span class="lineNum">      47 </span><span class="lineCov">         72 :     old = (smb_al *) al_get(&amp;f-&gt;transitions, i, &amp;status).data_ptr;</span>
-<span class="lineNum">      48 </span><span class="lineCov">        130 :     for (j = 0; j &lt; al_length(old); j++) {</span>
-<span class="lineNum">      49 </span><span class="lineCov">         58 :       ft = (fsm_trans *) al_get(old, j, &amp;status).data_ptr;</span>
-<span class="lineNum">      50 </span><span class="lineCov">         58 :       ft = fsm_trans_copy(ft);</span>
-<span class="lineNum">      51 </span><span class="lineCov">         58 :       fsm_add_trans(new, i, ft);</span>
-<span class="lineNum">      52 </span>            :     }
-<span class="lineNum">      53 </span>            :   }
-<span class="lineNum">      54 </span>            : 
-<span class="lineNum">      55 </span><span class="lineCov">         18 :   return new;</span>
-<span class="lineNum">      56 </span>            : }
+<span class="lineNum">      40 </span><span class="lineCov">         79 :   fsm_copy_trans(first, second);</span>
+<span class="lineNum">      41 </span>            : 
+<span class="lineNum">      42 </span>            :   // Replace the accepting states of the first with the second.
+<span class="lineNum">      43 </span><span class="lineCov">         79 :   al_destroy(&amp;first-&gt;accepting);</span>
+<span class="lineNum">      44 </span><span class="lineCov">         79 :   al_init(&amp;first-&gt;accepting);</span>
+<span class="lineNum">      45 </span><span class="lineCov">        192 :   for (i = 0; i &lt; al_length(&amp;second-&gt;accepting); i++) {</span>
+<span class="lineNum">      46 </span><span class="lineCov">        113 :     d = al_get(&amp;second-&gt;accepting, i, &amp;status);</span>
+<span class="lineNum">      47 </span><span class="lineCov">        113 :     d.data_llint += offset;</span>
+<span class="lineNum">      48 </span><span class="lineCov">        113 :     al_append(&amp;first-&gt;accepting, d);</span>
+<span class="lineNum">      49 </span>            :   }
+<span class="lineNum">      50 </span><span class="lineCov">         79 : }</span>
+<span class="lineNum">      51 </span>            : 
+<span class="lineNum">      52 </span>            : /*******************************************************************************
+<span class="lineNum">      53 </span>            : 
+<span class="lineNum">      54 </span>            :                                 Public Functions
+<span class="lineNum">      55 </span>            : 
+<a name="56"><span class="lineNum">      56 </span>            : *******************************************************************************/</a>
 <span class="lineNum">      57 </span>            : 
-<span class="lineNum">      58 </span>            : /**
-<span class="lineNum">      59 </span>            :    @brief Copy the transitions and states from src into dest.
-<span class="lineNum">      60 </span>            : 
-<span class="lineNum">      61 </span>            :    All the states are added, and the transitions are modified with the offset
-<a name="62"><span class="lineNum">      62 </span>            :    determined from the initial number of states in the destination.</a>
-<span class="lineNum">      63 </span>            :  */
-<span class="lineNum">      64 </span><span class="lineCov">         86 : void fsm_copy_trans(fsm *dest, const fsm *src)</span>
-<span class="lineNum">      65 </span>            : {
-<span class="lineNum">      66 </span>            :   smb_status status;
-<span class="lineNum">      67 </span><span class="lineCov">         86 :   int offset = al_length(&amp;dest-&gt;transitions);</span>
-<span class="lineNum">      68 </span>            :   int i,j;
-<span class="lineNum">      69 </span>            :   // Copy the transitions from the source one, altering their start and
-<span class="lineNum">      70 </span>            :   // destination to fit with the new state numbering.
-<span class="lineNum">      71 </span><span class="lineCov">        398 :   for (i = 0; i &lt; al_length(&amp;src-&gt;transitions); i++) {</span>
-<span class="lineNum">      72 </span>            :     // Add new state corresponding to this one
-<span class="lineNum">      73 </span><span class="lineCov">        312 :     fsm_add_state(dest, false);</span>
-<span class="lineNum">      74 </span>            :     // For each transition out of this state, add a copy to dest.
-<span class="lineNum">      75 </span><span class="lineCov">        312 :     const smb_al *list = al_get(&amp;src-&gt;transitions, i, &amp;status).data_ptr;</span>
-<span class="lineNum">      76 </span><span class="lineCov">        579 :     for (j = 0; j &lt; al_length(list); j++) {</span>
-<span class="lineNum">      77 </span><span class="lineCov">        267 :       const fsm_trans *old = al_get(list, j, &amp;status).data_ptr;</span>
-<span class="lineNum">      78 </span><span class="lineCov">        267 :       fsm_trans *new = fsm_trans_copy(old);</span>
-<span class="lineNum">      79 </span><span class="lineCov">        267 :       new-&gt;dest = new-&gt;dest + offset;</span>
-<span class="lineNum">      80 </span><span class="lineCov">        267 :       fsm_add_trans(dest, i + offset, new);</span>
-<span class="lineNum">      81 </span>            :     }
-<span class="lineNum">      82 </span>            :   }
-<a name="83"><span class="lineNum">      83 </span><span class="lineCov">         86 : }</span></a>
+<span class="lineNum">      58 </span><span class="lineCov">         18 : fsm *fsm_copy(const fsm *f)</span>
+<span class="lineNum">      59 </span>            : {
+<span class="lineNum">      60 </span>            :   int i, j;
+<span class="lineNum">      61 </span>            :   smb_al *old;
+<span class="lineNum">      62 </span>            :   fsm_trans *ft;
+<span class="lineNum">      63 </span><span class="lineCov">         18 :   fsm *new = fsm_create();</span>
+<span class="lineNum">      64 </span>            :   smb_status status;
+<span class="lineNum">      65 </span>            : 
+<span class="lineNum">      66 </span>            :   // Copy basic members
+<span class="lineNum">      67 </span><span class="lineCov">         18 :   new-&gt;start = f-&gt;start;</span>
+<span class="lineNum">      68 </span><span class="lineCov">         18 :   al_copy_all(&amp;new-&gt;accepting, &amp;f-&gt;accepting);</span>
+<span class="lineNum">      69 </span>            : 
+<span class="lineNum">      70 </span>            :   // Initialise the same number of states
+<span class="lineNum">      71 </span><span class="lineCov">         90 :   for (i = 0; i &lt; al_length(&amp;f-&gt;transitions); i++) {</span>
+<span class="lineNum">      72 </span><span class="lineCov">         72 :     fsm_add_state(new, false);</span>
+<span class="lineNum">      73 </span>            :   }
+<span class="lineNum">      74 </span>            : 
+<span class="lineNum">      75 </span>            :   // Copy all transitions.
+<span class="lineNum">      76 </span><span class="lineCov">         90 :   for (i = 0; i &lt; al_length(&amp;f-&gt;transitions); i++) {</span>
+<span class="lineNum">      77 </span><span class="lineCov">         72 :     old = (smb_al *) al_get(&amp;f-&gt;transitions, i, &amp;status).data_ptr;</span>
+<span class="lineNum">      78 </span><span class="lineCov">        130 :     for (j = 0; j &lt; al_length(old); j++) {</span>
+<span class="lineNum">      79 </span><span class="lineCov">         58 :       ft = (fsm_trans *) al_get(old, j, &amp;status).data_ptr;</span>
+<span class="lineNum">      80 </span><span class="lineCov">         58 :       ft = fsm_trans_copy(ft);</span>
+<span class="lineNum">      81 </span><span class="lineCov">         58 :       fsm_add_trans(new, i, ft);</span>
+<span class="lineNum">      82 </span>            :     }
+<span class="lineNum">      83 </span>            :   }
 <span class="lineNum">      84 </span>            : 
-<span class="lineNum">      85 </span><span class="lineCov">         79 : static void fsm_concat_flags(fsm *first, const fsm *second, unsigned int flags)</span>
-<span class="lineNum">      86 </span>            : {
-<span class="lineNum">      87 </span>            :   smb_status status;
-<span class="lineNum">      88 </span><span class="lineCov">         79 :   int i, offset = al_length(&amp;first-&gt;transitions);</span>
-<span class="lineNum">      89 </span>            :   DATA d;
-<span class="lineNum">      90 </span>            :   // Create a transition from each accepting state into the second machine's
-<span class="lineNum">      91 </span>            :   // start state.
-<span class="lineNum">      92 </span><span class="lineCov">        160 :   for (i = 0; i &lt; al_length(&amp;first-&gt;accepting); i++) {</span>
-<span class="lineNum">      93 </span><span class="lineCov">         81 :     int start = (int)al_get(&amp;first-&gt;accepting, i, &amp;status).data_llint;</span>
-<span class="lineNum">      94 </span>            :     // This could be outside the loop, but we need a new one for each instance
-<span class="lineNum">      95 </span><span class="lineCov">         81 :     fsm_trans *ft = fsm_trans_create_single(EPSILON, EPSILON, flags,</span>
-<span class="lineNum">      96 </span><span class="lineCov">         81 :                                             second-&gt;start + offset);</span>
-<span class="lineNum">      97 </span><span class="lineCov">         81 :     fsm_add_trans(first, start, ft);</span>
-<span class="lineNum">      98 </span>            :   }
-<span class="lineNum">      99 </span>            : 
-<span class="lineNum">     100 </span><span class="lineCov">         79 :   fsm_copy_trans(first, second);</span>
-<span class="lineNum">     101 </span>            : 
-<span class="lineNum">     102 </span>            :   // Replace the accepting states of the first with the second.
-<span class="lineNum">     103 </span><span class="lineCov">         79 :   al_destroy(&amp;first-&gt;accepting);</span>
-<span class="lineNum">     104 </span><span class="lineCov">         79 :   al_init(&amp;first-&gt;accepting);</span>
-<span class="lineNum">     105 </span><span class="lineCov">        192 :   for (i = 0; i &lt; al_length(&amp;second-&gt;accepting); i++) {</span>
-<span class="lineNum">     106 </span><span class="lineCov">        113 :     d = al_get(&amp;second-&gt;accepting, i, &amp;status);</span>
-<span class="lineNum">     107 </span><span class="lineCov">        113 :     d.data_llint += offset;</span>
-<span class="lineNum">     108 </span><span class="lineCov">        113 :     al_append(&amp;first-&gt;accepting, d);</span>
-<span class="lineNum">     109 </span>            :   }
-<span class="lineNum">     110 </span><span class="lineCov">         79 : }</span>
-<span class="lineNum">     111 </span>            : 
-<span class="lineNum">     112 </span>            : /**
-<span class="lineNum">     113 </span>            :    @brief Concatenate two FSMs into the first FSM object.
-<span class="lineNum">     114 </span>            : 
-<span class="lineNum">     115 </span>            :    This function concatenates two FSMs.  This means it constructs a machine that
-<span class="lineNum">     116 </span>            :    will accept a string where the first part is accepted by the first machine,
-<span class="lineNum">     117 </span>            :    and the second part is accepted by the second machine.  It is done by hooking
-<span class="lineNum">     118 </span>            :    up the accepting states of the first machine to the start state of the second
-<span class="lineNum">     119 </span>            :    (via epsilon transition).  Then, only the second machines's accepting states
-<span class="lineNum">     120 </span>            :    are used for the final product.
-<span class="lineNum">     121 </span>            : 
-<span class="lineNum">     122 </span>            :    Note that the concatenation is done in-place into the first FSM.  If you
-<span class="lineNum">     123 </span>            :    don't wish for that to happen, use fsm_copy() to copy the first one, and then
-<span class="lineNum">     124 </span>            :    use fsm_concat() to concatenate into the copy.
-<span class="lineNum">     125 </span>            : 
-<span class="lineNum">     126 </span>            :    @param first The first FSM.  Is modified to contain the concatenation.
-<a name="127"><span class="lineNum">     127 </span>            :    @param second The second FSM.  It is not modified.</a>
-<span class="lineNum">     128 </span>            :  */
-<span class="lineNum">     129 </span><span class="lineCov">         77 : void fsm_concat(fsm *first, const fsm *second)</span>
-<span class="lineNum">     130 </span>            : {
-<span class="lineNum">     131 </span><span class="lineCov">         77 :   fsm_concat_flags(first, second, 0);</span>
-<span class="lineNum">     132 </span><span class="lineCov">         77 : }</span>
+<span class="lineNum">      85 </span><span class="lineCov">         18 :   return new;</span>
+<a name="86"><span class="lineNum">      86 </span>            : }</a>
+<span class="lineNum">      87 </span>            : 
+<span class="lineNum">      88 </span><span class="lineCov">         86 : void fsm_copy_trans(fsm *dest, const fsm *src)</span>
+<span class="lineNum">      89 </span>            : {
+<span class="lineNum">      90 </span>            :   smb_status status;
+<span class="lineNum">      91 </span><span class="lineCov">         86 :   int offset = al_length(&amp;dest-&gt;transitions);</span>
+<span class="lineNum">      92 </span>            :   int i,j;
+<span class="lineNum">      93 </span>            :   // Copy the transitions from the source one, altering their start and
+<span class="lineNum">      94 </span>            :   // destination to fit with the new state numbering.
+<span class="lineNum">      95 </span><span class="lineCov">        398 :   for (i = 0; i &lt; al_length(&amp;src-&gt;transitions); i++) {</span>
+<span class="lineNum">      96 </span>            :     // Add new state corresponding to this one
+<span class="lineNum">      97 </span><span class="lineCov">        312 :     fsm_add_state(dest, false);</span>
+<span class="lineNum">      98 </span>            :     // For each transition out of this state, add a copy to dest.
+<span class="lineNum">      99 </span><span class="lineCov">        312 :     const smb_al *list = al_get(&amp;src-&gt;transitions, i, &amp;status).data_ptr;</span>
+<span class="lineNum">     100 </span><span class="lineCov">        579 :     for (j = 0; j &lt; al_length(list); j++) {</span>
+<span class="lineNum">     101 </span><span class="lineCov">        267 :       const fsm_trans *old = al_get(list, j, &amp;status).data_ptr;</span>
+<span class="lineNum">     102 </span><span class="lineCov">        267 :       fsm_trans *new = fsm_trans_copy(old);</span>
+<span class="lineNum">     103 </span><span class="lineCov">        267 :       new-&gt;dest = new-&gt;dest + offset;</span>
+<span class="lineNum">     104 </span><span class="lineCov">        267 :       fsm_add_trans(dest, i + offset, new);</span>
+<span class="lineNum">     105 </span>            :     }
+<span class="lineNum">     106 </span>            :   }
+<a name="107"><span class="lineNum">     107 </span><span class="lineCov">         86 : }</span></a>
+<span class="lineNum">     108 </span>            : 
+<span class="lineNum">     109 </span><span class="lineCov">         77 : void fsm_concat(fsm *first, const fsm *second)</span>
+<span class="lineNum">     110 </span>            : {
+<span class="lineNum">     111 </span><span class="lineCov">         77 :   fsm_concat_flags(first, second, 0);</span>
+<a name="112"><span class="lineNum">     112 </span><span class="lineCov">         77 : }</span></a>
+<span class="lineNum">     113 </span>            : 
+<span class="lineNum">     114 </span><span class="lineCov">          2 : void fsm_concat_capture(fsm *first, const fsm *second)</span>
+<span class="lineNum">     115 </span>            : {
+<span class="lineNum">     116 </span>            :   int new_accept, i;
+<span class="lineNum">     117 </span><span class="lineCov">          2 :   smb_status status = SMB_SUCCESS;</span>
+<span class="lineNum">     118 </span><span class="lineCov">          2 :   fsm_concat_flags(first, second, FSM_TRANS_CAPTURE);</span>
+<span class="lineNum">     119 </span><span class="lineCov">          2 :   new_accept = fsm_add_state(first, false);</span>
+<span class="lineNum">     120 </span>            : 
+<span class="lineNum">     121 </span>            :   // Create a transition from each accepting state into a new accepting state
+<span class="lineNum">     122 </span>            :   // that ends the capture.
+<span class="lineNum">     123 </span><span class="lineCov">          6 :   for (i = 0; i &lt; al_length(&amp;first-&gt;accepting); i++) {</span>
+<span class="lineNum">     124 </span><span class="lineCov">          4 :     int start = (int)al_get(&amp;first-&gt;accepting, i, &amp;status).data_llint;</span>
+<span class="lineNum">     125 </span><span class="lineCov">          4 :     fsm_trans *ft = fsm_trans_create_single(EPSILON, EPSILON,</span>
+<span class="lineNum">     126 </span>            :                                             FSM_TRANS_CAPTURE, new_accept);
+<span class="lineNum">     127 </span><span class="lineCov">          4 :     fsm_add_trans(first, start, ft);</span>
+<span class="lineNum">     128 </span>            :   }
+<span class="lineNum">     129 </span><span class="lineCov">          2 :   al_destroy(&amp;first-&gt;accepting);</span>
+<span class="lineNum">     130 </span><span class="lineCov">          2 :   al_init(&amp;first-&gt;accepting);</span>
+<span class="lineNum">     131 </span><span class="lineCov">          2 :   al_append(&amp;first-&gt;accepting, LLINT(new_accept));</span>
+<a name="132"><span class="lineNum">     132 </span><span class="lineCov">          2 : }</span></a>
 <span class="lineNum">     133 </span>            : 
-<span class="lineNum">     134 </span>            : /**
-<a name="135"><span class="lineNum">     135 </span>            :    @brief Concatenate two FSMs into the first, such that the second is captured.</a>
-<span class="lineNum">     136 </span>            :  */
-<span class="lineNum">     137 </span><span class="lineCov">          2 : void fsm_concat_capture(fsm *first, const fsm *second)</span>
-<span class="lineNum">     138 </span>            : {
-<span class="lineNum">     139 </span>            :   int new_accept, i;
-<span class="lineNum">     140 </span><span class="lineCov">          2 :   smb_status status = SMB_SUCCESS;</span>
-<span class="lineNum">     141 </span><span class="lineCov">          2 :   fsm_concat_flags(first, second, FSM_TRANS_CAPTURE);</span>
-<span class="lineNum">     142 </span><span class="lineCov">          2 :   new_accept = fsm_add_state(first, false);</span>
+<span class="lineNum">     134 </span><span class="lineCov">          7 : void fsm_union(fsm *first, const fsm *second)</span>
+<span class="lineNum">     135 </span>            : {
+<span class="lineNum">     136 </span>            :   smb_status status;
+<span class="lineNum">     137 </span><span class="lineCov">          7 :   int newStart, i, offset = al_length(&amp;first-&gt;transitions);</span>
+<span class="lineNum">     138 </span>            :   fsm_trans *fsTrans, *ssTrans;
+<span class="lineNum">     139 </span>            :   DATA d;
+<span class="lineNum">     140 </span>            : 
+<span class="lineNum">     141 </span>            :   // Add the transitions from the second into the first.
+<span class="lineNum">     142 </span><span class="lineCov">          7 :   fsm_copy_trans(first, second);</span>
 <span class="lineNum">     143 </span>            : 
-<span class="lineNum">     144 </span>            :   // Create a transition from each accepting state into a new accepting state
-<span class="lineNum">     145 </span>            :   // that ends the capture.
-<span class="lineNum">     146 </span><span class="lineCov">          6 :   for (i = 0; i &lt; al_length(&amp;first-&gt;accepting); i++) {</span>
-<span class="lineNum">     147 </span><span class="lineCov">          4 :     int start = (int)al_get(&amp;first-&gt;accepting, i, &amp;status).data_llint;</span>
-<span class="lineNum">     148 </span><span class="lineCov">          4 :     fsm_trans *ft = fsm_trans_create_single(EPSILON, EPSILON,</span>
-<span class="lineNum">     149 </span>            :                                             FSM_TRANS_CAPTURE, new_accept);
-<span class="lineNum">     150 </span><span class="lineCov">          4 :     fsm_add_trans(first, start, ft);</span>
-<span class="lineNum">     151 </span>            :   }
-<span class="lineNum">     152 </span><span class="lineCov">          2 :   al_destroy(&amp;first-&gt;accepting);</span>
-<span class="lineNum">     153 </span><span class="lineCov">          2 :   al_init(&amp;first-&gt;accepting);</span>
-<span class="lineNum">     154 </span><span class="lineCov">          2 :   al_append(&amp;first-&gt;accepting, LLINT(new_accept));</span>
-<span class="lineNum">     155 </span><span class="lineCov">          2 : }</span>
+<span class="lineNum">     144 </span>            :   // Create a new start state!
+<span class="lineNum">     145 </span><span class="lineCov">          7 :   newStart = fsm_add_state(first, false);</span>
+<span class="lineNum">     146 </span>            : 
+<span class="lineNum">     147 </span>            :   // Add epsilon-trans from new start to first start
+<span class="lineNum">     148 </span><span class="lineCov">          7 :   fsTrans = fsm_trans_create_single(EPSILON, EPSILON, 0,</span>
+<span class="lineNum">     149 </span>            :                                     first-&gt;start);
+<span class="lineNum">     150 </span><span class="lineCov">          7 :   fsm_add_trans(first, newStart, fsTrans);</span>
+<span class="lineNum">     151 </span>            : 
+<span class="lineNum">     152 </span>            :   // Add epsilon-trans from new start to second start
+<span class="lineNum">     153 </span><span class="lineCov">          7 :   ssTrans = fsm_trans_create_single(EPSILON, EPSILON, 0,</span>
+<span class="lineNum">     154 </span><span class="lineCov">          7 :                                     second-&gt;start + offset);</span>
+<span class="lineNum">     155 </span><span class="lineCov">          7 :   fsm_add_trans(first, newStart, ssTrans);</span>
 <span class="lineNum">     156 </span>            : 
-<span class="lineNum">     157 </span>            : /**
-<span class="lineNum">     158 </span>            :    @brief Construct the union of the two FSMs into the first one.
-<span class="lineNum">     159 </span>            : 
-<span class="lineNum">     160 </span>            :    This function creates an FSM that will accept any string accepted by the
-<span class="lineNum">     161 </span>            :    first OR the second one.  The FSM is constructed in place of the first
-<span class="lineNum">     162 </span>            :    machine, modifying the parameter.  If this is not what you want, make a copy
-<span class="lineNum">     163 </span>            :    of the first one, and pass the copy instead.
-<span class="lineNum">     164 </span>            : 
-<span class="lineNum">     165 </span>            :    @param first The first FSM to union.  Will be modified with the result.
-<a name="166"><span class="lineNum">     166 </span>            :    @param second The second FSM to union</a>
-<span class="lineNum">     167 </span>            :  */
-<span class="lineNum">     168 </span><span class="lineCov">          7 : void fsm_union(fsm *first, const fsm *second)</span>
+<span class="lineNum">     157 </span>            :   // Accept from either the first or the second
+<span class="lineNum">     158 </span><span class="lineCov">         17 :   for (i = 0; i &lt; al_length(&amp;second-&gt;accepting); i++) {</span>
+<span class="lineNum">     159 </span><span class="lineCov">         10 :     d = al_get(&amp;second-&gt;accepting, i, &amp;status);</span>
+<span class="lineNum">     160 </span><span class="lineCov">         10 :     d.data_llint += offset;</span>
+<span class="lineNum">     161 </span><span class="lineCov">         10 :     al_append(&amp;first-&gt;accepting, d);</span>
+<span class="lineNum">     162 </span>            :   }
+<span class="lineNum">     163 </span>            : 
+<span class="lineNum">     164 </span>            :   // Change the start state
+<span class="lineNum">     165 </span><span class="lineCov">          7 :   first-&gt;start = newStart;</span>
+<a name="166"><span class="lineNum">     166 </span><span class="lineCov">          7 : }</span></a>
+<span class="lineNum">     167 </span>            : 
+<span class="lineNum">     168 </span><span class="lineCov">         17 : void fsm_kleene(fsm *f)</span>
 <span class="lineNum">     169 </span>            : {
 <span class="lineNum">     170 </span>            :   smb_status status;
-<span class="lineNum">     171 </span><span class="lineCov">          7 :   int newStart, i, offset = al_length(&amp;first-&gt;transitions);</span>
-<span class="lineNum">     172 </span>            :   fsm_trans *fsTrans, *ssTrans;
+<span class="lineNum">     171 </span><span class="lineCov">         17 :   int i, newStart = fsm_add_state(f, false); // not accepting yet</span>
+<span class="lineNum">     172 </span>            :   fsm_trans *newTrans;
 <span class="lineNum">     173 </span>            :   DATA d;
 <span class="lineNum">     174 </span>            : 
-<span class="lineNum">     175 </span>            :   // Add the transitions from the second into the first.
-<span class="lineNum">     176 </span><span class="lineCov">          7 :   fsm_copy_trans(first, second);</span>
-<span class="lineNum">     177 </span>            : 
-<span class="lineNum">     178 </span>            :   // Create a new start state!
-<span class="lineNum">     179 </span><span class="lineCov">          7 :   newStart = fsm_add_state(first, false);</span>
-<span class="lineNum">     180 </span>            : 
-<span class="lineNum">     181 </span>            :   // Add epsilon-trans from new start to first start
-<span class="lineNum">     182 </span><span class="lineCov">          7 :   fsTrans = fsm_trans_create_single(EPSILON, EPSILON, 0,</span>
-<span class="lineNum">     183 </span>            :                                     first-&gt;start);
-<span class="lineNum">     184 </span><span class="lineCov">          7 :   fsm_add_trans(first, newStart, fsTrans);</span>
-<span class="lineNum">     185 </span>            : 
-<span class="lineNum">     186 </span>            :   // Add epsilon-trans from new start to second start
-<span class="lineNum">     187 </span><span class="lineCov">          7 :   ssTrans = fsm_trans_create_single(EPSILON, EPSILON, 0,</span>
-<span class="lineNum">     188 </span><span class="lineCov">          7 :                                     second-&gt;start + offset);</span>
-<span class="lineNum">     189 </span><span class="lineCov">          7 :   fsm_add_trans(first, newStart, ssTrans);</span>
-<span class="lineNum">     190 </span>            : 
-<span class="lineNum">     191 </span>            :   // Accept from either the first or the second
-<span class="lineNum">     192 </span><span class="lineCov">         17 :   for (i = 0; i &lt; al_length(&amp;second-&gt;accepting); i++) {</span>
-<span class="lineNum">     193 </span><span class="lineCov">         10 :     d = al_get(&amp;second-&gt;accepting, i, &amp;status);</span>
-<span class="lineNum">     194 </span><span class="lineCov">         10 :     d.data_llint += offset;</span>
-<span class="lineNum">     195 </span><span class="lineCov">         10 :     al_append(&amp;first-&gt;accepting, d);</span>
-<span class="lineNum">     196 </span>            :   }
-<span class="lineNum">     197 </span>            : 
-<span class="lineNum">     198 </span>            :   // Change the start state
-<span class="lineNum">     199 </span><span class="lineCov">          7 :   first-&gt;start = newStart;</span>
-<span class="lineNum">     200 </span><span class="lineCov">          7 : }</span>
-<span class="lineNum">     201 </span>            : 
-<span class="lineNum">     202 </span>            : /**
-<span class="lineNum">     203 </span>            :    @brief Modify an FSM to accept 0 or more occurrences of it.
-<span class="lineNum">     204 </span>            : 
-<span class="lineNum">     205 </span>            :    This modifies the existing FSM to accept L*, where L is the language accepted
-<span class="lineNum">     206 </span>            :    by the machine.
-<span class="lineNum">     207 </span>            : 
-<a name="208"><span class="lineNum">     208 </span>            :    @param f The FSM to perform Kleene star on</a>
-<span class="lineNum">     209 </span>            :  */
-<span class="lineNum">     210 </span><span class="lineCov">         17 : void fsm_kleene(fsm *f)</span>
-<span class="lineNum">     211 </span>            : {
-<span class="lineNum">     212 </span>            :   smb_status status;
-<span class="lineNum">     213 </span><span class="lineCov">         17 :   int i, newStart = fsm_add_state(f, false); // not accepting yet</span>
-<span class="lineNum">     214 </span>            :   fsm_trans *newTrans;
-<span class="lineNum">     215 </span>            :   DATA d;
-<span class="lineNum">     216 </span>            : 
-<span class="lineNum">     217 </span>            :   // Add epsilon-trans from new start to first start
-<span class="lineNum">     218 </span><span class="lineCov">         17 :   newTrans = fsm_trans_create_single(EPSILON, EPSILON, 0,</span>
-<span class="lineNum">     219 </span>            :                                      f-&gt;start);
-<span class="lineNum">     220 </span><span class="lineCov">         17 :   fsm_add_trans(f, newStart, newTrans);</span>
-<span class="lineNum">     221 </span>            : 
-<span class="lineNum">     222 </span>            :   // For each accepting state, add a epsilon-trans to the new start
-<span class="lineNum">     223 </span><span class="lineCov">         34 :   for (i = 0; i &lt; al_length(&amp;f-&gt;accepting); i++) {</span>
-<span class="lineNum">     224 </span><span class="lineCov">         17 :     newTrans = fsm_trans_create_single(EPSILON, EPSILON, 0,</span>
-<span class="lineNum">     225 </span>            :                                        newStart);
-<span class="lineNum">     226 </span><span class="lineCov">         17 :     fsm_add_trans(f, (int) al_get(&amp;f-&gt;accepting, i, &amp;status).data_llint,</span>
-<span class="lineNum">     227 </span>            :                   newTrans);
-<span class="lineNum">     228 </span>            :   }
-<span class="lineNum">     229 </span>            : 
-<span class="lineNum">     230 </span>            :   // Make the new start accepting
-<span class="lineNum">     231 </span><span class="lineCov">         17 :   d.data_llint = newStart;</span>
-<span class="lineNum">     232 </span><span class="lineCov">         17 :   al_append(&amp;f-&gt;accepting, d);</span>
-<span class="lineNum">     233 </span>            : 
-<span class="lineNum">     234 </span>            :   // Change the start state (officially)
-<span class="lineNum">     235 </span><span class="lineCov">         17 :   f-&gt;start = newStart;</span>
-<span class="lineNum">     236 </span><span class="lineCov">         17 : }</span>
+<span class="lineNum">     175 </span>            :   // Add epsilon-trans from new start to first start
+<span class="lineNum">     176 </span><span class="lineCov">         17 :   newTrans = fsm_trans_create_single(EPSILON, EPSILON, 0,</span>
+<span class="lineNum">     177 </span>            :                                      f-&gt;start);
+<span class="lineNum">     178 </span><span class="lineCov">         17 :   fsm_add_trans(f, newStart, newTrans);</span>
+<span class="lineNum">     179 </span>            : 
+<span class="lineNum">     180 </span>            :   // For each accepting state, add a epsilon-trans to the new start
+<span class="lineNum">     181 </span><span class="lineCov">         34 :   for (i = 0; i &lt; al_length(&amp;f-&gt;accepting); i++) {</span>
+<span class="lineNum">     182 </span><span class="lineCov">         17 :     newTrans = fsm_trans_create_single(EPSILON, EPSILON, 0,</span>
+<span class="lineNum">     183 </span>            :                                        newStart);
+<span class="lineNum">     184 </span><span class="lineCov">         17 :     fsm_add_trans(f, (int) al_get(&amp;f-&gt;accepting, i, &amp;status).data_llint,</span>
+<span class="lineNum">     185 </span>            :                   newTrans);
+<span class="lineNum">     186 </span>            :   }
+<span class="lineNum">     187 </span>            : 
+<span class="lineNum">     188 </span>            :   // Make the new start accepting
+<span class="lineNum">     189 </span><span class="lineCov">         17 :   d.data_llint = newStart;</span>
+<span class="lineNum">     190 </span><span class="lineCov">         17 :   al_append(&amp;f-&gt;accepting, d);</span>
+<span class="lineNum">     191 </span>            : 
+<span class="lineNum">     192 </span>            :   // Change the start state (officially)
+<span class="lineNum">     193 </span><span class="lineCov">         17 :   f-&gt;start = newStart;</span>
+<span class="lineNum">     194 </span><span class="lineCov">         17 : }</span>
 </pre>
       </td>
     </tr>

@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2015-07-31 00:49:27</td>
+            <td class="headerValue">2015-08-03 19:17:26</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">4</td>
@@ -76,51 +76,31 @@
 <span class="lineNum">      14 </span>            : *******************************************************************************/
 <span class="lineNum">      15 </span>            : 
 <span class="lineNum">      16 </span>            : #include &quot;libstephen/base.h&quot;
-<span class="lineNum">      17 </span>            : #include &quot;libstephen/regex.h&quot;   // functions we're implementing
+<a name="17"><span class="lineNum">      17 </span>            : #include &quot;libstephen/regex.h&quot;   // functions we're implementing</a>
 <span class="lineNum">      18 </span>            : 
-<span class="lineNum">      19 </span>            : /**
-<span class="lineNum">      20 </span>            :    @brief Initialize a regex_hit.
-<span class="lineNum">      21 </span>            :    @param obj The (pre-allocated) regex_hit.
-<span class="lineNum">      22 </span>            :    @param start The start location of the hit.
-<a name="23"><span class="lineNum">      23 </span>            :    @param length The length of the hit.</a>
-<span class="lineNum">      24 </span>            :  */
-<span class="lineNum">      25 </span><span class="lineCov">         12 : void regex_hit_init(regex_hit *obj, int start, int length)</span>
-<span class="lineNum">      26 </span>            : {
-<span class="lineNum">      27 </span>            :   // Initialization logic
-<span class="lineNum">      28 </span><span class="lineCov">         12 :   obj-&gt;start = start;</span>
-<span class="lineNum">      29 </span><span class="lineCov">         12 :   obj-&gt;length = length;</span>
-<span class="lineNum">      30 </span><span class="lineCov">         12 : }</span>
-<span class="lineNum">      31 </span>            : 
-<span class="lineNum">      32 </span>            : /**
-<span class="lineNum">      33 </span>            :    @brief Allocate a regex_hit.
-<span class="lineNum">      34 </span>            :    @param start The start location of the hit.
-<span class="lineNum">      35 </span>            :    @param length The end location of the hit.
-<a name="36"><span class="lineNum">      36 </span>            :    @return Pointer to the regex_hit.  Must be freed with regex_hit_delete().</a>
-<span class="lineNum">      37 </span>            :  */
-<span class="lineNum">      38 </span><span class="lineCov">         12 : regex_hit *regex_hit_create(int start, int length)</span>
-<span class="lineNum">      39 </span>            : {
-<span class="lineNum">      40 </span><span class="lineCov">         12 :   regex_hit *obj = smb_new(regex_hit, 1);</span>
-<span class="lineNum">      41 </span><span class="lineCov">         12 :   regex_hit_init(obj, start, length);</span>
-<span class="lineNum">      42 </span><span class="lineCov">         12 :   return obj;</span>
-<span class="lineNum">      43 </span>            : }
-<span class="lineNum">      44 </span>            : 
-<span class="lineNum">      45 </span>            : /**
-<span class="lineNum">      46 </span>            :    @brief Clean up a regex_hit object.
-<a name="47"><span class="lineNum">      47 </span>            :    @param obj The regex_hit object to clean up.</a>
-<span class="lineNum">      48 </span>            :  */
-<span class="lineNum">      49 </span><span class="lineCov">         12 : void regex_hit_destroy(regex_hit *obj)</span>
-<span class="lineNum">      50 </span>            : {
-<span class="lineNum">      51 </span>            :   // Cleanup logic (none)
-<span class="lineNum">      52 </span><span class="lineCov">         12 : }</span>
-<span class="lineNum">      53 </span>            : 
-<span class="lineNum">      54 </span>            : /**
-<span class="lineNum">      55 </span>            :    @brief Clean up and free a regex_hit object.
-<a name="56"><span class="lineNum">      56 </span>            :    @param obj The regex_hit to free.</a>
-<span class="lineNum">      57 </span>            :  */
-<span class="lineNum">      58 </span><span class="lineCov">         12 : void regex_hit_delete(regex_hit *obj) {</span>
-<span class="lineNum">      59 </span><span class="lineCov">         12 :   regex_hit_destroy(obj);</span>
-<span class="lineNum">      60 </span><span class="lineCov">         12 :   smb_free(obj);</span>
-<span class="lineNum">      61 </span><span class="lineCov">         12 : }</span>
+<span class="lineNum">      19 </span><span class="lineCov">         12 : void regex_hit_init(regex_hit *obj, int start, int length)</span>
+<span class="lineNum">      20 </span>            : {
+<span class="lineNum">      21 </span>            :   // Initialization logic
+<span class="lineNum">      22 </span><span class="lineCov">         12 :   obj-&gt;start = start;</span>
+<span class="lineNum">      23 </span><span class="lineCov">         12 :   obj-&gt;length = length;</span>
+<a name="24"><span class="lineNum">      24 </span><span class="lineCov">         12 : }</span></a>
+<span class="lineNum">      25 </span>            : 
+<span class="lineNum">      26 </span><span class="lineCov">         12 : regex_hit *regex_hit_create(int start, int length)</span>
+<span class="lineNum">      27 </span>            : {
+<span class="lineNum">      28 </span><span class="lineCov">         12 :   regex_hit *obj = smb_new(regex_hit, 1);</span>
+<span class="lineNum">      29 </span><span class="lineCov">         12 :   regex_hit_init(obj, start, length);</span>
+<span class="lineNum">      30 </span><span class="lineCov">         12 :   return obj;</span>
+<a name="31"><span class="lineNum">      31 </span>            : }</a>
+<span class="lineNum">      32 </span>            : 
+<span class="lineNum">      33 </span><span class="lineCov">         12 : void regex_hit_destroy(regex_hit *obj)</span>
+<span class="lineNum">      34 </span>            : {
+<span class="lineNum">      35 </span>            :   // Cleanup logic (none)
+<a name="36"><span class="lineNum">      36 </span><span class="lineCov">         12 : }</span></a>
+<span class="lineNum">      37 </span>            : 
+<span class="lineNum">      38 </span><span class="lineCov">         12 : void regex_hit_delete(regex_hit *obj) {</span>
+<span class="lineNum">      39 </span><span class="lineCov">         12 :   regex_hit_destroy(obj);</span>
+<span class="lineNum">      40 </span><span class="lineCov">         12 :   smb_free(obj);</span>
+<span class="lineNum">      41 </span><span class="lineCov">         12 : }</span>
 </pre>
       </td>
     </tr>

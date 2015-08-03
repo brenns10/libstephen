@@ -1,0 +1,322 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Utilities &amp; Miscellaneous &mdash; libstephen 0.1 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="libstephen 0.1 documentation" href="../index.html"/>
+        <link rel="up" title="Libstephen API Documentation" href="index.html"/>
+        <link rel="next" title="String Functions" href="str.html"/>
+        <link rel="prev" title="Regular Expressions" href="regex.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+
+        
+          <a href="../index.html" class="icon icon-home"> libstephen
+        
+
+        
+        </a>
+
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+        
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/index.html">Libstephen Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/errors.html">Error Handling</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/errors.html#why-a-pointer-to-a-status-variable">Why a pointer to a status variable?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/errors.html#values">Values</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/errors.html#memory-allocation-errors">Memory allocation errors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/errors.html#assertions">Assertions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/arraylist.html">Array List (smb_al)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/arraylist.html#operations">Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/arraylist.html#sample-usage">Sample Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/arraylist.html#structure">Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/linkedlist.html">Linked List</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/linkedlist.html#operations">Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/linkedlist.html#sample-usage">Sample Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/linkedlist.html#structure">Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/list.html">List Interface</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/list.html#operations">Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/list.html#sample-usage">Sample Usage</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/iterator.html">Iterator</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/iterator.html#structure-function">Structure &amp; Function</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/iterator.html#sample-usage">Sample Usage</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/hashtable.html">Hash Table</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/hashtable.html#infrastructure">Infrastructure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/hashtable.html#operations">Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/hashtable.html#sample-usage">Sample Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/hashtable.html#structure">Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/charbuf.html">Character Buffer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/charbuf.html#functions">Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/charbuf.html#wide-character-version">Wide Character Version</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/charbuf.html#i-o-utilities">I/O Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/args.html">Argument Parsing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/args.html#argument-types">Argument Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/args.html#initialization">Initialization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/args.html#reading-argument-data">Reading Argument Data</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/logging.html">Logging</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/logging.html#history">History</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/logging.html#goals">Goals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/logging.html#concepts">Concepts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/logging.html#functions-macros">Functions &amp; Macros</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/unittest.html">Unit Testing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/unittest.html#history">History</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/unittest.html#operations">Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/unittest.html#sample-use">Sample Use</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/regex.html">Regular Expressions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/regex.html#features">Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/regex.html#functions">Functions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Libstephen API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="base.html">Libstephen Base</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ll.html">Linked List</a></li>
+<li class="toctree-l2"><a class="reference internal" href="al.html">Array List</a></li>
+<li class="toctree-l2"><a class="reference internal" href="list.html">List Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ht.html">Hash Table</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bf.html">Bitfield</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cb.html">Character Buffer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ad.html">Argument Parsing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="log.html">Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ut.html">Unit Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fsm.html">Finite State Machine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="regex.html">Regular Expressions</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">Utilities &amp; Miscellaneous</a></li>
+<li class="toctree-l2"><a class="reference internal" href="str.html">String Functions</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">libstephen</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="index.html">Libstephen API Documentation</a> &raquo;</li>
+      
+    <li>Utilities &amp; Miscellaneous</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/api/util.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="utilities-miscellaneous">
+<h1>Utilities &amp; Miscellaneous<a class="headerlink" href="#utilities-miscellaneous" title="Permalink to this headline">¶</a></h1>
+<p>Utility functions (mostly string). </p>
+<p><dl class="docutils">
+<dt><strong>Author</strong></dt>
+<dd>Stephen Brennan</dd>
+<dt><strong>Date</strong></dt>
+<dd>Created Friday, 10 July 2015</dd>
+<dt><strong>Copyright</strong></dt>
+<dd>Copyright (c) 2015, Stephen Brennan. Released under the Revised BSD License. See LICENSE.txt for details. </dd>
+</dl>
+</p>
+<div class="breathe-sectiondef container">
+<p class="breathe-sectiondef-title rubric">Functions</p>
+<dl class="function">
+<dt id="c.smb_read_linew">
+<span class="target" id="project0util_8h_1a55486cfd6326d1bd4b120fc22de5f79f"></span>wchar_t* <code class="descname">smb_read_linew</code><span class="sig-paren">(</span>FILE *<em>&nbsp;file</em>, <a class="reference internal" href="base.html#c.smb_status" title="smb_status">smb_status</a>  *<em>&nbsp;status</em><span class="sig-paren">)</span><a class="headerlink" href="#c.smb_read_linew" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a line of wide character input from the given file. </p>
+<p>Read a line of input into a dynamically allocated buffer. The buffer is allocated by this function. It will contain the line, WITHOUT newline or EOF characters. The size of the buffer will not be the same size as the string. <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>A buffer containing the line. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">file</span></code> - <p>The stream to read from, typically stdin. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">status</span></code> - <p>Status variable. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.smb_read_line">
+<span class="target" id="project0util_8h_1aaba7c259e6d50d9914f8575ecb4dff74"></span>char* <code class="descname">smb_read_line</code><span class="sig-paren">(</span>FILE *<em>&nbsp;file</em>, <a class="reference internal" href="base.html#c.smb_status" title="smb_status">smb_status</a>  *<em>&nbsp;status</em><span class="sig-paren">)</span><a class="headerlink" href="#c.smb_read_line" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a line of character input from the given file. </p>
+<p>Read a line of input into a dynamically allocated buffer. The buffer is allocated by this function. It will contain the line, WITHOUT newline or EOF characters. The size of the buffer will not be the same size as the string. <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>A buffer containing the line. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">file</span></code> - <p>The stream to read from, typically stdin. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">status</span></code> - <p>Status variable. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="str.html" class="btn btn-neutral float-right" title="String Functions" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="regex.html" class="btn btn-neutral" title="Regular Expressions" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2013-2015, Stephen Brennan.
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

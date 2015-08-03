@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2015-07-31 00:49:27</td>
+            <td class="headerValue">2015-08-03 19:17:26</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">15</td>
@@ -68,388 +68,301 @@
 <span class="lineNum">       6 </span>            : 
 <span class="lineNum">       7 </span>            :   @date         Created Thursday, 31 October 2013
 <span class="lineNum">       8 </span>            : 
-<span class="lineNum">       9 </span>            :   @brief        Contains functions to simplify processing command line args.
+<span class="lineNum">       9 </span>            :   @brief        Implementations of &quot;libstephen/ad.h&quot;.
 <span class="lineNum">      10 </span>            : 
-<span class="lineNum">      11 </span>            :   The args library analyzes args as generally as possible.  It recognizes three
-<span class="lineNum">      12 </span>            :   different types.  First is the 'flag' or 'regular flag', which is simply one
-<span class="lineNum">      13 </span>            :   character.  Their order doesn't matter.  They're placed on the command line
-<span class="lineNum">      14 </span>            :   after a single hyphen.
+<span class="lineNum">      11 </span>            :   @copyright    Copyright (c) 2013-2015, Stephen Brennan.  Released under the
+<span class="lineNum">      12 </span>            :                 Revised BSD License.  See the LICENSE.txt file for details.
+<span class="lineNum">      13 </span>            : 
+<span class="lineNum">      14 </span>            : *******************************************************************************/
 <span class="lineNum">      15 </span>            : 
-<span class="lineNum">      16 </span>            :   Then there are long flags, which are strings that come after two hyphens.
-<span class="lineNum">      17 </span>            :   Both flags and long flags are allowed to have parameters passed with them.
-<span class="lineNum">      18 </span>            : 
-<span class="lineNum">      19 </span>            :   Finally are bare strings, which are things that aren't passed as parameters or
-<span class="lineNum">      20 </span>            :   as flags.
-<span class="lineNum">      21 </span>            : 
-<span class="lineNum">      22 </span>            :   @copyright    Copyright (c) 2013-2015, Stephen Brennan.  Released under the
-<span class="lineNum">      23 </span>            :                 Revised BSD License.  See the LICENSE.txt file for details.
-<span class="lineNum">      24 </span>            : 
-<span class="lineNum">      25 </span>            : *******************************************************************************/
-<span class="lineNum">      26 </span>            : 
-<span class="lineNum">      27 </span>            : #include &lt;stdio.h&gt;
-<span class="lineNum">      28 </span>            : #include &lt;string.h&gt;
-<span class="lineNum">      29 </span>            : #include &lt;assert.h&gt;
-<span class="lineNum">      30 </span>            : #include &lt;inttypes.h&gt;
+<span class="lineNum">      16 </span>            : #include &lt;stdio.h&gt;
+<span class="lineNum">      17 </span>            : #include &lt;string.h&gt;
+<span class="lineNum">      18 </span>            : #include &lt;assert.h&gt;
+<span class="lineNum">      19 </span>            : #include &lt;inttypes.h&gt;
+<span class="lineNum">      20 </span>            : 
+<span class="lineNum">      21 </span>            : #include &quot;libstephen/base.h&quot;
+<span class="lineNum">      22 </span>            : #include &quot;libstephen/list.h&quot;
+<span class="lineNum">      23 </span>            : #include &quot;libstephen/ad.h&quot;
+<span class="lineNum">      24 </span>            : #include &quot;libstephen/ll.h&quot;
+<span class="lineNum">      25 </span>            : 
+<span class="lineNum">      26 </span>            : /*******************************************************************************
+<span class="lineNum">      27 </span>            : 
+<span class="lineNum">      28 </span>            :                                Private Functions
+<span class="lineNum">      29 </span>            : 
+<span class="lineNum">      30 </span>            : *******************************************************************************/
 <span class="lineNum">      31 </span>            : 
-<span class="lineNum">      32 </span>            : #include &quot;libstephen/base.h&quot;
-<span class="lineNum">      33 </span>            : #include &quot;libstephen/list.h&quot;
-<span class="lineNum">      34 </span>            : #include &quot;libstephen/ad.h&quot;
-<span class="lineNum">      35 </span>            : #include &quot;libstephen/ll.h&quot;
-<span class="lineNum">      36 </span>            : 
-<span class="lineNum">      37 </span>            : /*******************************************************************************
-<span class="lineNum">      38 </span>            : 
-<span class="lineNum">      39 </span>            :                                Private Functions
-<span class="lineNum">      40 </span>            : 
-<span class="lineNum">      41 </span>            : *******************************************************************************/
-<span class="lineNum">      42 </span>            : 
-<span class="lineNum">      43 </span>            : /**
-<span class="lineNum">      44 </span>            :    @brief Returns the index of a flag for a specific character.
-<span class="lineNum">      45 </span>            : 
-<span class="lineNum">      46 </span>            :    Currently, only alphabetical characters are allowed.  This could change.  See
-<span class="lineNum">      47 </span>            :    the top of the file for the todo entry on this.
-<span class="lineNum">      48 </span>            : 
-<span class="lineNum">      49 </span>            :    @param c The character to find the index of.
-<a name="50"><span class="lineNum">      50 </span>            :    @returns The index of the flag.</a>
-<span class="lineNum">      51 </span>            :  */
-<span class="lineNum">      52 </span><span class="lineCov">        155 : int flag_index(char c)</span>
-<span class="lineNum">      53 </span>            : {
-<span class="lineNum">      54 </span>            :   int idx;
-<span class="lineNum">      55 </span><span class="lineCov">        155 :   if (c &gt;= 'A' &amp;&amp; c &lt;= 'Z') {</span>
-<span class="lineNum">      56 </span><span class="lineCov">         60 :     idx = 26 + (c - 'A');</span>
-<span class="lineNum">      57 </span><span class="lineCov">         95 :   } else if (c &gt;= 'a' &amp;&amp; c &lt;= 'z') {</span>
-<span class="lineNum">      58 </span><span class="lineCov">         78 :     idx = (c - 'a');</span>
-<span class="lineNum">      59 </span>            :   } else {
-<span class="lineNum">      60 </span><span class="lineCov">         17 :     idx = -1;</span>
-<span class="lineNum">      61 </span>            :   }
-<span class="lineNum">      62 </span><span class="lineCov">        155 :   return idx;</span>
-<span class="lineNum">      63 </span>            : }
-<span class="lineNum">      64 </span>            : 
-<span class="lineNum">      65 </span>            : /**
-<span class="lineNum">      66 </span>            :    @brief Add regular flags (i.e. characters) to the smb_ad structure.
-<span class="lineNum">      67 </span>            : 
-<span class="lineNum">      68 </span>            :    @param pData The structure containing the arg data.
-<span class="lineNum">      69 </span>            :    @param cFlags The string of flags.  Null terminated.
-<a name="70"><span class="lineNum">      70 </span>            :    @returns The last flag in the string (for parameter purposes).</a>
-<span class="lineNum">      71 </span>            :  */
-<span class="lineNum">      72 </span><span class="lineCov">         17 : char process_flag(smb_ad *pData, char *cFlags)</span>
-<span class="lineNum">      73 </span>            : {
-<span class="lineNum">      74 </span>            :   char last;
-<span class="lineNum">      75 </span>            :   int idx;
-<span class="lineNum">      76 </span>            : 
-<span class="lineNum">      77 </span><span class="lineCov">         72 :   while (*cFlags != '\0') {</span>
-<span class="lineNum">      78 </span><span class="lineCov">         38 :     if ((idx = flag_index(*cFlags)) != -1) {</span>
-<span class="lineNum">      79 </span><span class="lineCov">         21 :       last = *cFlags;</span>
-<span class="lineNum">      80 </span><span class="lineCov">         21 :       pData-&gt;flags |= UINT64_C(1) &lt;&lt; idx;</span>
-<span class="lineNum">      81 </span>            :     }
-<span class="lineNum">      82 </span><span class="lineCov">         38 :     cFlags++;</span>
-<span class="lineNum">      83 </span>            :   }
-<span class="lineNum">      84 </span><span class="lineCov">         17 :   return last;</span>
-<span class="lineNum">      85 </span>            : }
-<span class="lineNum">      86 </span>            : 
-<span class="lineNum">      87 </span>            : /**
-<span class="lineNum">      88 </span>            :    @brief Add the long flag to the data structure.
-<span class="lineNum">      89 </span>            : 
-<span class="lineNum">      90 </span>            :    @param pData The structure containing the arg data.
-<span class="lineNum">      91 </span>            :    @param sTitle The title of the long flag, including '--'
-<a name="92"><span class="lineNum">      92 </span>            :    @returns The adjusted pointer to the title, without '--'.</a>
-<span class="lineNum">      93 </span>            :  */
-<span class="lineNum">      94 </span><span class="lineCov">          6 : char *process_long_flag(smb_ad *pData, char *sTitle)</span>
-<span class="lineNum">      95 </span>            : {
-<span class="lineNum">      96 </span>            :   DATA d, e;
-<span class="lineNum">      97 </span><span class="lineCov">          6 :   d.data_ptr = sTitle + 2;</span>
-<span class="lineNum">      98 </span><span class="lineCov">          6 :   ll_append(pData-&gt;long_flags, d); // Add the portion AFTER the &quot;--&quot;</span>
-<span class="lineNum">      99 </span>            : 
-<span class="lineNum">     100 </span><span class="lineCov">          6 :   e.data_ptr = NULL;</span>
-<span class="lineNum">     101 </span><span class="lineCov">          6 :   ll_append(pData-&gt;long_flag_strings, e);</span>
-<span class="lineNum">     102 </span><span class="lineCov">          6 :   return sTitle + 2;</span>
-<span class="lineNum">     103 </span>            : }
-<span class="lineNum">     104 </span>            : 
-<span class="lineNum">     105 </span>            : /**
-<span class="lineNum">     106 </span>            :    @brief Add the bare string to the data structure.
-<span class="lineNum">     107 </span>            : 
-<span class="lineNum">     108 </span>            :    This function will first attempt to add the string as an argument to the
-<span class="lineNum">     109 </span>            :    previous flag, then the previous long flag, and then, finally, it will add
-<span class="lineNum">     110 </span>            :    itself as just a bare string.
-<span class="lineNum">     111 </span>            : 
-<span class="lineNum">     112 </span>            :    @param pData The structure with argument data.
-<span class="lineNum">     113 </span>            :    @param sStr The string to add.
-<span class="lineNum">     114 </span>            :    @param previous_long_flag The last long flag encountered.
-<a name="115"><span class="lineNum">     115 </span>            :    @param previous_flag The last regular (character) flag encountered.</a>
-<span class="lineNum">     116 </span>            :  */
-<span class="lineNum">     117 </span><span class="lineCov">         10 : void process_bare_string(smb_ad *pData, char *sStr, char *previous_long_flag,</span>
-<span class="lineNum">     118 </span>            :                          int previous_flag)
-<span class="lineNum">     119 </span>            : {
-<span class="lineNum">     120 </span><span class="lineCov">         10 :   if (previous_long_flag) {</span>
-<span class="lineNum">     121 </span>            :     DATA d;
-<span class="lineNum">     122 </span><span class="lineCov">          3 :     d.data_ptr = sStr;</span>
-<span class="lineNum">     123 </span>            :     smb_status status;
-<span class="lineNum">     124 </span><span class="lineCov">          3 :     ll_set(pData-&gt;long_flag_strings, ll_length(pData-&gt;long_flag_strings) - 1, d,</span>
-<span class="lineNum">     125 </span>            :            &amp;status);
-<span class="lineNum">     126 </span><span class="lineCov">          3 :     assert(status == SMB_SUCCESS);</span>
-<span class="lineNum">     127 </span><span class="lineCov">          7 :   } else if (previous_flag != EOF) {</span>
-<span class="lineNum">     128 </span><span class="lineCov">          3 :     int idx = flag_index(previous_flag);</span>
-<span class="lineNum">     129 </span>            :     // The flag index would be negative if the previous flag was not a
-<span class="lineNum">     130 </span>            :     // letter.  We'll accept the segfault as an error.
-<span class="lineNum">     131 </span><span class="lineCov">          3 :     pData-&gt;flag_strings[idx] = sStr;</span>
-<span class="lineNum">     132 </span>            :   } else {
-<span class="lineNum">     133 </span>            :     DATA d;
-<span class="lineNum">     134 </span><span class="lineCov">          4 :     d.data_ptr = sStr;</span>
-<span class="lineNum">     135 </span><span class="lineCov">          4 :     ll_append(pData-&gt;bare_strings, d);</span>
-<span class="lineNum">     136 </span>            :   }
-<span class="lineNum">     137 </span><span class="lineCov">         10 : }</span>
-<span class="lineNum">     138 </span>            : 
-<span class="lineNum">     139 </span>            : /**
-<span class="lineNum">     140 </span>            :    @brief Find the string in the list and return its index, or -1.
-<span class="lineNum">     141 </span>            : 
-<span class="lineNum">     142 </span>            :    @param toSearch Pointer to list to search.
-<span class="lineNum">     143 </span>            :    @param toFind String to find.
-<span class="lineNum">     144 </span>            :    @returns Index of the string.
-<a name="145"><span class="lineNum">     145 </span>            :    @retval -1 String is not in the list.</a>
-<span class="lineNum">     146 </span>            :  */
-<span class="lineNum">     147 </span><span class="lineCov">         15 : int find_string(smb_ll *toSearch, char *toFind)</span>
-<span class="lineNum">     148 </span>            : {
-<span class="lineNum">     149 </span>            :   DATA d;
-<span class="lineNum">     150 </span>            :   char *sCurr;
-<span class="lineNum">     151 </span><span class="lineCov">         15 :   smb_iter iter = ll_get_iter(toSearch);</span>
-<span class="lineNum">     152 </span><span class="lineCov">         15 :   int retVal = -1;</span>
-<span class="lineNum">     153 </span>            :   smb_status status;
-<span class="lineNum">     154 </span><span class="lineCov">         45 :   while (iter.has_next(&amp;iter)) {</span>
-<span class="lineNum">     155 </span><span class="lineCov">         29 :     d = iter.next(&amp;iter, &amp;status);</span>
-<span class="lineNum">     156 </span>            :     // We are using 'has_next' to check first!
-<span class="lineNum">     157 </span><span class="lineCov">         29 :     assert(status == SMB_SUCCESS);</span>
-<span class="lineNum">     158 </span><span class="lineCov">         29 :     sCurr = (char *)d.data_ptr;</span>
-<span class="lineNum">     159 </span><span class="lineCov">         29 :     if (strcmp(toFind, sCurr) == 0) {</span>
-<span class="lineNum">     160 </span><span class="lineCov">         14 :       retVal = iter.index-1; // previous index</span>
-<span class="lineNum">     161 </span><span class="lineCov">         14 :       break;</span>
-<span class="lineNum">     162 </span>            :     }
-<span class="lineNum">     163 </span>            :   }
-<span class="lineNum">     164 </span><span class="lineCov">         15 :   iter.destroy(&amp;iter);</span>
-<span class="lineNum">     165 </span><span class="lineCov">         15 :   return retVal;</span>
-<span class="lineNum">     166 </span>            : }
-<span class="lineNum">     167 </span>            : 
-<span class="lineNum">     168 </span>            : /*******************************************************************************
+<span class="lineNum">      32 </span>            : /**
+<span class="lineNum">      33 </span>            :    @brief Returns the index of a flag for a specific character.
+<span class="lineNum">      34 </span>            : 
+<span class="lineNum">      35 </span>            :    Currently, only alphabetical characters are allowed.  This could change.  See
+<span class="lineNum">      36 </span>            :    the top of the file for the todo entry on this.
+<span class="lineNum">      37 </span>            : 
+<span class="lineNum">      38 </span>            :    @param c The character to find the index of.
+<a name="39"><span class="lineNum">      39 </span>            :    @returns The index of the flag.</a>
+<span class="lineNum">      40 </span>            :  */
+<span class="lineNum">      41 </span><span class="lineCov">        155 : int flag_index(char c)</span>
+<span class="lineNum">      42 </span>            : {
+<span class="lineNum">      43 </span>            :   int idx;
+<span class="lineNum">      44 </span><span class="lineCov">        155 :   if (c &gt;= 'A' &amp;&amp; c &lt;= 'Z') {</span>
+<span class="lineNum">      45 </span><span class="lineCov">         60 :     idx = 26 + (c - 'A');</span>
+<span class="lineNum">      46 </span><span class="lineCov">         95 :   } else if (c &gt;= 'a' &amp;&amp; c &lt;= 'z') {</span>
+<span class="lineNum">      47 </span><span class="lineCov">         78 :     idx = (c - 'a');</span>
+<span class="lineNum">      48 </span>            :   } else {
+<span class="lineNum">      49 </span><span class="lineCov">         17 :     idx = -1;</span>
+<span class="lineNum">      50 </span>            :   }
+<span class="lineNum">      51 </span><span class="lineCov">        155 :   return idx;</span>
+<span class="lineNum">      52 </span>            : }
+<span class="lineNum">      53 </span>            : 
+<span class="lineNum">      54 </span>            : /**
+<span class="lineNum">      55 </span>            :    @brief Add regular flags (i.e. characters) to the smb_ad structure.
+<span class="lineNum">      56 </span>            : 
+<span class="lineNum">      57 </span>            :    @param pData The structure containing the arg data.
+<span class="lineNum">      58 </span>            :    @param cFlags The string of flags.  Null terminated.
+<a name="59"><span class="lineNum">      59 </span>            :    @returns The last flag in the string (for parameter purposes).</a>
+<span class="lineNum">      60 </span>            :  */
+<span class="lineNum">      61 </span><span class="lineCov">         17 : char process_flag(smb_ad *pData, char *cFlags)</span>
+<span class="lineNum">      62 </span>            : {
+<span class="lineNum">      63 </span>            :   char last;
+<span class="lineNum">      64 </span>            :   int idx;
+<span class="lineNum">      65 </span>            : 
+<span class="lineNum">      66 </span><span class="lineCov">         72 :   while (*cFlags != '\0') {</span>
+<span class="lineNum">      67 </span><span class="lineCov">         38 :     if ((idx = flag_index(*cFlags)) != -1) {</span>
+<span class="lineNum">      68 </span><span class="lineCov">         21 :       last = *cFlags;</span>
+<span class="lineNum">      69 </span><span class="lineCov">         21 :       pData-&gt;flags |= UINT64_C(1) &lt;&lt; idx;</span>
+<span class="lineNum">      70 </span>            :     }
+<span class="lineNum">      71 </span><span class="lineCov">         38 :     cFlags++;</span>
+<span class="lineNum">      72 </span>            :   }
+<span class="lineNum">      73 </span><span class="lineCov">         17 :   return last;</span>
+<span class="lineNum">      74 </span>            : }
+<span class="lineNum">      75 </span>            : 
+<span class="lineNum">      76 </span>            : /**
+<span class="lineNum">      77 </span>            :    @brief Add the long flag to the data structure.
+<span class="lineNum">      78 </span>            : 
+<span class="lineNum">      79 </span>            :    @param pData The structure containing the arg data.
+<span class="lineNum">      80 </span>            :    @param sTitle The title of the long flag, including '--'
+<a name="81"><span class="lineNum">      81 </span>            :    @returns The adjusted pointer to the title, without '--'.</a>
+<span class="lineNum">      82 </span>            :  */
+<span class="lineNum">      83 </span><span class="lineCov">          6 : char *process_long_flag(smb_ad *pData, char *sTitle)</span>
+<span class="lineNum">      84 </span>            : {
+<span class="lineNum">      85 </span>            :   DATA d, e;
+<span class="lineNum">      86 </span><span class="lineCov">          6 :   d.data_ptr = sTitle + 2;</span>
+<span class="lineNum">      87 </span><span class="lineCov">          6 :   ll_append(pData-&gt;long_flags, d); // Add the portion AFTER the &quot;--&quot;</span>
+<span class="lineNum">      88 </span>            : 
+<span class="lineNum">      89 </span><span class="lineCov">          6 :   e.data_ptr = NULL;</span>
+<span class="lineNum">      90 </span><span class="lineCov">          6 :   ll_append(pData-&gt;long_flag_strings, e);</span>
+<span class="lineNum">      91 </span><span class="lineCov">          6 :   return sTitle + 2;</span>
+<span class="lineNum">      92 </span>            : }
+<span class="lineNum">      93 </span>            : 
+<span class="lineNum">      94 </span>            : /**
+<span class="lineNum">      95 </span>            :    @brief Add the bare string to the data structure.
+<span class="lineNum">      96 </span>            : 
+<span class="lineNum">      97 </span>            :    This function will first attempt to add the string as an argument to the
+<span class="lineNum">      98 </span>            :    previous flag, then the previous long flag, and then, finally, it will add
+<span class="lineNum">      99 </span>            :    itself as just a bare string.
+<span class="lineNum">     100 </span>            : 
+<span class="lineNum">     101 </span>            :    @param pData The structure with argument data.
+<span class="lineNum">     102 </span>            :    @param sStr The string to add.
+<span class="lineNum">     103 </span>            :    @param previous_long_flag The last long flag encountered.
+<a name="104"><span class="lineNum">     104 </span>            :    @param previous_flag The last regular (character) flag encountered.</a>
+<span class="lineNum">     105 </span>            :  */
+<span class="lineNum">     106 </span><span class="lineCov">         10 : void process_bare_string(smb_ad *pData, char *sStr, char *previous_long_flag,</span>
+<span class="lineNum">     107 </span>            :                          int previous_flag)
+<span class="lineNum">     108 </span>            : {
+<span class="lineNum">     109 </span><span class="lineCov">         10 :   if (previous_long_flag) {</span>
+<span class="lineNum">     110 </span>            :     DATA d;
+<span class="lineNum">     111 </span><span class="lineCov">          3 :     d.data_ptr = sStr;</span>
+<span class="lineNum">     112 </span>            :     smb_status status;
+<span class="lineNum">     113 </span><span class="lineCov">          3 :     ll_set(pData-&gt;long_flag_strings, ll_length(pData-&gt;long_flag_strings) - 1, d,</span>
+<span class="lineNum">     114 </span>            :            &amp;status);
+<span class="lineNum">     115 </span><span class="lineCov">          3 :     assert(status == SMB_SUCCESS);</span>
+<span class="lineNum">     116 </span><span class="lineCov">          7 :   } else if (previous_flag != EOF) {</span>
+<span class="lineNum">     117 </span><span class="lineCov">          3 :     int idx = flag_index(previous_flag);</span>
+<span class="lineNum">     118 </span>            :     // The flag index would be negative if the previous flag was not a
+<span class="lineNum">     119 </span>            :     // letter.  We'll accept the segfault as an error.
+<span class="lineNum">     120 </span><span class="lineCov">          3 :     pData-&gt;flag_strings[idx] = sStr;</span>
+<span class="lineNum">     121 </span>            :   } else {
+<span class="lineNum">     122 </span>            :     DATA d;
+<span class="lineNum">     123 </span><span class="lineCov">          4 :     d.data_ptr = sStr;</span>
+<span class="lineNum">     124 </span><span class="lineCov">          4 :     ll_append(pData-&gt;bare_strings, d);</span>
+<span class="lineNum">     125 </span>            :   }
+<span class="lineNum">     126 </span><span class="lineCov">         10 : }</span>
+<span class="lineNum">     127 </span>            : 
+<span class="lineNum">     128 </span>            : /**
+<span class="lineNum">     129 </span>            :    @brief Find the string in the list and return its index, or -1.
+<span class="lineNum">     130 </span>            : 
+<span class="lineNum">     131 </span>            :    @param toSearch Pointer to list to search.
+<span class="lineNum">     132 </span>            :    @param toFind String to find.
+<span class="lineNum">     133 </span>            :    @returns Index of the string.
+<a name="134"><span class="lineNum">     134 </span>            :    @retval -1 String is not in the list.</a>
+<span class="lineNum">     135 </span>            :  */
+<span class="lineNum">     136 </span><span class="lineCov">         15 : int find_string(smb_ll *toSearch, char *toFind)</span>
+<span class="lineNum">     137 </span>            : {
+<span class="lineNum">     138 </span>            :   DATA d;
+<span class="lineNum">     139 </span>            :   char *sCurr;
+<span class="lineNum">     140 </span><span class="lineCov">         15 :   smb_iter iter = ll_get_iter(toSearch);</span>
+<span class="lineNum">     141 </span><span class="lineCov">         15 :   int retVal = -1;</span>
+<span class="lineNum">     142 </span>            :   smb_status status;
+<span class="lineNum">     143 </span><span class="lineCov">         45 :   while (iter.has_next(&amp;iter)) {</span>
+<span class="lineNum">     144 </span><span class="lineCov">         29 :     d = iter.next(&amp;iter, &amp;status);</span>
+<span class="lineNum">     145 </span>            :     // We are using 'has_next' to check first!
+<span class="lineNum">     146 </span><span class="lineCov">         29 :     assert(status == SMB_SUCCESS);</span>
+<span class="lineNum">     147 </span><span class="lineCov">         29 :     sCurr = (char *)d.data_ptr;</span>
+<span class="lineNum">     148 </span><span class="lineCov">         29 :     if (strcmp(toFind, sCurr) == 0) {</span>
+<span class="lineNum">     149 </span><span class="lineCov">         14 :       retVal = iter.index-1; // previous index</span>
+<span class="lineNum">     150 </span><span class="lineCov">         14 :       break;</span>
+<span class="lineNum">     151 </span>            :     }
+<span class="lineNum">     152 </span>            :   }
+<span class="lineNum">     153 </span><span class="lineCov">         15 :   iter.destroy(&amp;iter);</span>
+<span class="lineNum">     154 </span><span class="lineCov">         15 :   return retVal;</span>
+<span class="lineNum">     155 </span>            : }
+<span class="lineNum">     156 </span>            : 
+<span class="lineNum">     157 </span>            : /*******************************************************************************
+<span class="lineNum">     158 </span>            : 
+<span class="lineNum">     159 </span>            :                                 Public Functions
+<span class="lineNum">     160 </span>            : 
+<a name="161"><span class="lineNum">     161 </span>            : *******************************************************************************/</a>
+<span class="lineNum">     162 </span>            : 
+<span class="lineNum">     163 </span><span class="lineCov">          8 : void arg_data_init(smb_ad *data)</span>
+<span class="lineNum">     164 </span>            : {
+<span class="lineNum">     165 </span><span class="lineCov">          8 :   data-&gt;flags = 0;</span>
+<span class="lineNum">     166 </span><span class="lineCov">        424 :   for (int i = 0; i &lt; MAX_FLAGS; i++) {</span>
+<span class="lineNum">     167 </span><span class="lineCov">        416 :     data-&gt;flag_strings[i] = NULL;</span>
+<span class="lineNum">     168 </span>            :   }
 <span class="lineNum">     169 </span>            : 
-<span class="lineNum">     170 </span>            :                                 Public Functions
-<span class="lineNum">     171 </span>            : 
-<span class="lineNum">     172 </span>            : *******************************************************************************/
-<span class="lineNum">     173 </span>            : 
-<span class="lineNum">     174 </span>            : /**
-<span class="lineNum">     175 </span>            :    @brief Initialize an smb_ad structure in memory that has already been
-<span class="lineNum">     176 </span>            :    allocated.
-<span class="lineNum">     177 </span>            : 
-<a name="178"><span class="lineNum">     178 </span>            :    @param data The pointer to the memory to allocate in.</a>
-<span class="lineNum">     179 </span>            :  */
-<span class="lineNum">     180 </span><span class="lineCov">          8 : void arg_data_init(smb_ad *data)</span>
-<span class="lineNum">     181 </span>            : {
-<span class="lineNum">     182 </span><span class="lineCov">          8 :   data-&gt;flags = 0;</span>
-<span class="lineNum">     183 </span><span class="lineCov">        424 :   for (int i = 0; i &lt; MAX_FLAGS; i++) {</span>
-<span class="lineNum">     184 </span><span class="lineCov">        416 :     data-&gt;flag_strings[i] = NULL;</span>
-<span class="lineNum">     185 </span>            :   }
-<span class="lineNum">     186 </span>            : 
-<span class="lineNum">     187 </span><span class="lineCov">          8 :   data-&gt;long_flags = ll_create();</span>
-<span class="lineNum">     188 </span><span class="lineCov">          8 :   data-&gt;long_flag_strings = ll_create();</span>
-<span class="lineNum">     189 </span><span class="lineCov">          8 :   data-&gt;bare_strings = ll_create();</span>
-<span class="lineNum">     190 </span><span class="lineCov">          8 :   return;</span>
-<span class="lineNum">     191 </span>            : }
-<span class="lineNum">     192 </span>            : 
-<span class="lineNum">     193 </span>            : /**
-<span class="lineNum">     194 </span>            :    @brief Allocate and initialize a smb_ad structure for argument parsing.
-<a name="195"><span class="lineNum">     195 </span>            :    @returns A pointer to the structure.</a>
-<span class="lineNum">     196 </span>            :  */
-<span class="lineNum">     197 </span><span class="lineCov">          1 : smb_ad *arg_data_create()</span>
-<span class="lineNum">     198 </span>            : {
-<span class="lineNum">     199 </span><span class="lineCov">          1 :   smb_ad *data = smb_new(smb_ad, 1);</span>
-<span class="lineNum">     200 </span><span class="lineCov">          1 :   arg_data_init(data);</span>
-<span class="lineNum">     201 </span><span class="lineCov">          1 :   return data;</span>
-<span class="lineNum">     202 </span>            : }
-<span class="lineNum">     203 </span>            : 
-<span class="lineNum">     204 </span>            : /**
-<span class="lineNum">     205 </span>            :    @brief Free the resources of an arg_data object, but do not free it.
-<span class="lineNum">     206 </span>            : 
-<a name="207"><span class="lineNum">     207 </span>            :    @param data The arg data to destroy.</a>
-<span class="lineNum">     208 </span>            :  */
-<span class="lineNum">     209 </span><span class="lineCov">          8 : void arg_data_destroy(smb_ad * data)</span>
-<span class="lineNum">     210 </span>            : {
-<span class="lineNum">     211 </span><span class="lineCov">          8 :   ll_delete(data-&gt;long_flags);</span>
-<span class="lineNum">     212 </span><span class="lineCov">          8 :   ll_delete(data-&gt;bare_strings);</span>
-<span class="lineNum">     213 </span><span class="lineCov">          8 :   ll_delete(data-&gt;long_flag_strings);</span>
-<span class="lineNum">     214 </span><span class="lineCov">          8 : }</span>
-<span class="lineNum">     215 </span>            : 
-<span class="lineNum">     216 </span>            : /**
-<span class="lineNum">     217 </span>            :    @brief Free the resources of an arg data object, and then free the object
-<span class="lineNum">     218 </span>            :    itself.
-<span class="lineNum">     219 </span>            : 
-<a name="220"><span class="lineNum">     220 </span>            :    @param data The arg data to delete.</a>
-<span class="lineNum">     221 </span>            :  */
-<span class="lineNum">     222 </span><span class="lineCov">          1 : void arg_data_delete(smb_ad *data)</span>
-<span class="lineNum">     223 </span>            : {
-<span class="lineNum">     224 </span><span class="lineCov">          1 :   arg_data_destroy(data);</span>
-<span class="lineNum">     225 </span><span class="lineCov">          1 :   smb_free(data);</span>
-<span class="lineNum">     226 </span><span class="lineCov">          1 : }</span>
-<span class="lineNum">     227 </span>            : 
-<span class="lineNum">     228 </span>            : /**
-<span class="lineNum">     229 </span>            :    @brief Analyze the argument data passed to the program.
-<span class="lineNum">     230 </span>            : 
-<span class="lineNum">     231 </span>            :    Pass in the argc and argv, but make sure to decrement and increment each
-<span class="lineNum">     232 </span>            :    respective variable so they do not include the name of the program.
-<span class="lineNum">     233 </span>            : 
-<span class="lineNum">     234 </span>            :    @param data A pointer to an smb_ad object.  Use provided functions to query
-<span class="lineNum">     235 </span>            :    the object about every desired flag.
-<span class="lineNum">     236 </span>            :    @param argc The number of arguments (not including program name).
-<a name="237"><span class="lineNum">     237 </span>            :    @param argv The arguments themselves (not including program name).</a>
-<span class="lineNum">     238 </span>            :  */
-<span class="lineNum">     239 </span><span class="lineCov">          6 : void process_args(smb_ad *data, int argc, char **argv)</span>
-<span class="lineNum">     240 </span>            : {
-<span class="lineNum">     241 </span><span class="lineCov">          6 :   char *previous_long_flag = NULL;</span>
-<span class="lineNum">     242 </span><span class="lineCov">          6 :   int previous_flag = EOF;</span>
-<span class="lineNum">     243 </span>            : 
-<span class="lineNum">     244 </span><span class="lineCov">         45 :   while (argc--) {</span>
-<span class="lineNum">     245 </span>            :     // At the beginning of the loop, argc refers to number of remaining args,
-<span class="lineNum">     246 </span>            :     // and argv points at the pointer to the current arg.
-<span class="lineNum">     247 </span><span class="lineCov">         33 :     switch (**argv) {</span>
-<span class="lineNum">     248 </span>            :     case '-':
-<span class="lineNum">     249 </span>            :       // Processing new flag type, so set previous variables to invalid.
-<span class="lineNum">     250 </span><span class="lineCov">         24 :       previous_long_flag = NULL;</span>
-<span class="lineNum">     251 </span><span class="lineCov">         24 :       previous_flag = EOF;</span>
-<span class="lineNum">     252 </span><span class="lineCov">         24 :       switch (*(*argv + 1)) {</span>
-<span class="lineNum">     253 </span>            :       case '-':
-<span class="lineNum">     254 </span>            :         // Long flag
-<span class="lineNum">     255 </span><span class="lineCov">          6 :         previous_long_flag = process_long_flag(data, *argv);</span>
-<span class="lineNum">     256 </span><span class="lineCov">          6 :         previous_flag = EOF;</span>
-<span class="lineNum">     257 </span><span class="lineCov">          6 :         break;</span>
-<span class="lineNum">     258 </span>            :       case '\0':
-<span class="lineNum">     259 </span>            :         // A single '-'...counts as a bare string in my book
-<span class="lineNum">     260 </span><span class="lineCov">          1 :         process_bare_string(data, *argv, previous_long_flag, previous_flag);</span>
-<span class="lineNum">     261 </span>            : 
-<span class="lineNum">     262 </span><span class="lineCov">          1 :         previous_long_flag = NULL;</span>
-<span class="lineNum">     263 </span><span class="lineCov">          1 :         previous_flag = EOF;</span>
-<span class="lineNum">     264 </span><span class="lineCov">          1 :         break;</span>
-<span class="lineNum">     265 </span>            :       default:
-<span class="lineNum">     266 </span>            :         // The input is a short flag
-<span class="lineNum">     267 </span><span class="lineCov">         17 :         previous_flag = process_flag(data, *argv);</span>
-<span class="lineNum">     268 </span><span class="lineCov">         17 :         previous_long_flag = NULL;</span>
-<span class="lineNum">     269 </span><span class="lineCov">         17 :         break;</span>
-<span class="lineNum">     270 </span>            :       }
-<span class="lineNum">     271 </span><span class="lineCov">         24 :       break;</span>
-<span class="lineNum">     272 </span>            : 
-<span class="lineNum">     273 </span>            :     default:
-<span class="lineNum">     274 </span>            :       // This is a raw string.  We first need to check if it belongs to a flag.
-<span class="lineNum">     275 </span><span class="lineCov">          9 :       process_bare_string(data, *argv, previous_long_flag, previous_flag);</span>
-<span class="lineNum">     276 </span><span class="lineCov">          9 :       previous_long_flag = NULL;</span>
-<span class="lineNum">     277 </span><span class="lineCov">          9 :       previous_flag = EOF;</span>
-<span class="lineNum">     278 </span><span class="lineCov">          9 :       break;</span>
-<span class="lineNum">     279 </span>            :     }
-<span class="lineNum">     280 </span>            : 
-<span class="lineNum">     281 </span><span class="lineCov">         33 :     argv++;</span>
-<span class="lineNum">     282 </span>            :   }
-<span class="lineNum">     283 </span><span class="lineCov">          6 : }</span>
-<span class="lineNum">     284 </span>            : 
-<span class="lineNum">     285 </span>            : /**
-<span class="lineNum">     286 </span>            :    @brief Check whether a flag is raised.
-<span class="lineNum">     287 </span>            : 
-<span class="lineNum">     288 </span>            :    @param data The smb_ad returned by process_args().
-<span class="lineNum">     289 </span>            :    @param flag The character flag to check.  Alphabetical only.
-<span class="lineNum">     290 </span>            :    @retval 0 if the flag was not set.
-<a name="291"><span class="lineNum">     291 </span>            :    @retval 1 otherwise.</a>
-<span class="lineNum">     292 </span>            :  */
-<span class="lineNum">     293 </span><span class="lineCov">        109 : int check_flag(smb_ad *pData, char flag)</span>
-<span class="lineNum">     294 </span>            : {
-<span class="lineNum">     295 </span>            :   uint64_t idx;
-<span class="lineNum">     296 </span><span class="lineCov">        109 :   idx = flag_index(flag);</span>
-<span class="lineNum">     297 </span><span class="lineCov">        109 :   if (idx != -1) {</span>
-<span class="lineNum">     298 </span><span class="lineCov">        109 :     idx =  pData-&gt;flags &amp; (UINT64_C(1) &lt;&lt; idx);</span>
-<span class="lineNum">     299 </span><span class="lineCov">        109 :     if (idx) return 1;</span>
-<span class="lineNum">     300 </span>            :   }
-<span class="lineNum">     301 </span><span class="lineCov">         88 :   return 0;</span>
-<span class="lineNum">     302 </span>            : }
-<span class="lineNum">     303 </span>            : 
-<span class="lineNum">     304 </span>            : /**
-<span class="lineNum">     305 </span>            :    @brief Check whether a long flag appeared.  It must occur verbatim.
-<span class="lineNum">     306 </span>            : 
-<span class="lineNum">     307 </span>            :    @param data The smb_ad returned by process_args().
-<span class="lineNum">     308 </span>            :    @param flag The string flag to check for.
-<span class="lineNum">     309 </span>            :    @returns the index of the flag + 1 if it is set.
-<a name="310"><span class="lineNum">     310 </span>            :    @retval 0 if the flag was not set.</a>
-<span class="lineNum">     311 </span>            :  */
-<span class="lineNum">     312 </span><span class="lineCov">          7 : int check_long_flag(smb_ad *data, char *flag)</span>
-<span class="lineNum">     313 </span>            : {
-<span class="lineNum">     314 </span><span class="lineCov">          7 :   return find_string(data-&gt;long_flags, flag) + 1;</span>
-<span class="lineNum">     315 </span>            : }
-<span class="lineNum">     316 </span>            : 
-<span class="lineNum">     317 </span>            : /**
-<span class="lineNum">     318 </span>            :    @brief Check whether a bare string appeared.  It must occur verbatim.
-<span class="lineNum">     319 </span>            : 
-<span class="lineNum">     320 </span>            :    @param data The smb_ad returned by process_args().
-<span class="lineNum">     321 </span>            :    @param string The string to search for.
-<span class="lineNum">     322 </span>            :    @returns the index of the flag + 1 if it is set.
-<a name="323"><span class="lineNum">     323 </span>            :    @retval 0 iff the flag was not set.</a>
-<span class="lineNum">     324 </span>            :  */
-<span class="lineNum">     325 </span><span class="lineCov">          4 : int check_bare_string(smb_ad *data, char *string)</span>
-<span class="lineNum">     326 </span>            : {
-<span class="lineNum">     327 </span><span class="lineCov">          4 :   return find_string(data-&gt;bare_strings, string) + 1;</span>
-<span class="lineNum">     328 </span>            : }
-<span class="lineNum">     329 </span>            : 
-<span class="lineNum">     330 </span>            : /**
-<span class="lineNum">     331 </span>            :    @brief Return the string parameter associated with the flag.
-<span class="lineNum">     332 </span>            : 
-<span class="lineNum">     333 </span>            :    @param data The smb_ad returned by process_args().
-<span class="lineNum">     334 </span>            :    @param flag The flag to find parameters of.
-<a name="335"><span class="lineNum">     335 </span>            :    @returns The parameter of the flag.</a>
-<span class="lineNum">     336 </span>            :  */
-<span class="lineNum">     337 </span><span class="lineCov">          5 : char *get_flag_parameter(smb_ad *data, char flag)</span>
-<span class="lineNum">     338 </span>            : {
-<span class="lineNum">     339 </span><span class="lineCov">          5 :   int index = flag_index(flag);</span>
-<span class="lineNum">     340 </span><span class="lineCov">          5 :   if (index == -1)</span>
-<span class="lineNum">     341 </span><span class="lineNoCov">          0 :     return NULL;</span>
-<span class="lineNum">     342 </span>            :   else
-<span class="lineNum">     343 </span><span class="lineCov">          5 :     return data-&gt;flag_strings[index];</span>
-<span class="lineNum">     344 </span>            : }
-<span class="lineNum">     345 </span>            : 
-<span class="lineNum">     346 </span>            : /**
-<span class="lineNum">     347 </span>            :    @brief Return the string parameter associated with the long string.
-<span class="lineNum">     348 </span>            : 
-<span class="lineNum">     349 </span>            :    @param data The smb_ad returned by process_args().
-<span class="lineNum">     350 </span>            :    @param string The long flag to find parameters of.
-<span class="lineNum">     351 </span>            :    @returns The parameter of the long flag.
-<a name="352"><span class="lineNum">     352 </span>            :    @retval NULL if no parameter or if flag not found.</a>
-<span class="lineNum">     353 </span>            :  */
-<span class="lineNum">     354 </span><span class="lineCov">          4 : char *get_long_flag_parameter(smb_ad *data, char *string)</span>
-<span class="lineNum">     355 </span>            : {
-<span class="lineNum">     356 </span><span class="lineCov">          4 :   int index = find_string(data-&gt;long_flags, string);</span>
-<span class="lineNum">     357 </span><span class="lineCov">          4 :   if (index == -1)</span>
-<span class="lineNum">     358 </span><span class="lineNoCov">          0 :     return NULL;</span>
-<span class="lineNum">     359 </span>            :   else {
-<span class="lineNum">     360 </span>            :     DATA d;
-<span class="lineNum">     361 </span>            :     smb_status status;
-<span class="lineNum">     362 </span><span class="lineCov">          4 :     d = ll_get(data-&gt;long_flag_strings, index, &amp;status);</span>
-<span class="lineNum">     363 </span><span class="lineCov">          4 :     assert(status == SMB_SUCCESS);</span>
-<span class="lineNum">     364 </span><span class="lineCov">          4 :     return (char*)d.data_ptr;</span>
-<span class="lineNum">     365 </span>            :   }
-<span class="lineNum">     366 </span>            : }
-<span class="lineNum">     367 </span>            : 
-<span class="lineNum">     368 </span>            : /**
-<span class="lineNum">     369 </span>            :    @brief Print the contents of the arg data struct to a file for debugging.
-<span class="lineNum">     370 </span>            :    @param data The struct to print.
-<a name="371"><span class="lineNum">     371 </span>            :    @param f The file to print to.</a>
-<span class="lineNum">     372 </span>            :  */
-<span class="lineNum">     373 </span><span class="lineNoCov">          0 : void ad_print(smb_ad *data, FILE *f)</span>
-<span class="lineNum">     374 </span>            : {
-<span class="lineNum">     375 </span><span class="lineNoCov">          0 :   fprintf(f, &quot;Arg Data:\n&quot;);</span>
-<span class="lineNum">     376 </span><span class="lineNoCov">          0 :   fprintf(f, &quot;Flags: 0x%lX\n&quot;, data-&gt;flags);</span>
-<span class="lineNum">     377 </span><span class="lineNoCov">          0 :   for (int i = 0; i &lt; MAX_FLAGS; i++) {</span>
-<span class="lineNum">     378 </span><span class="lineNoCov">          0 :     if (data-&gt;flag_strings[i] != NULL) {</span>
-<span class="lineNum">     379 </span><span class="lineNoCov">          0 :       fprintf(f, &quot;%d: \&quot;%s\&quot;\n&quot;, i, data-&gt;flag_strings[i]);</span>
-<span class="lineNum">     380 </span>            :     }
-<span class="lineNum">     381 </span>            :   }
-<span class="lineNum">     382 </span><span class="lineNoCov">          0 :   fprintf(f, &quot;Long Flags: &quot;);</span>
-<span class="lineNum">     383 </span><span class="lineNoCov">          0 :   iter_print(ll_get_iter(data-&gt;long_flags), f, &amp;data_printer_string);</span>
-<span class="lineNum">     384 </span>            : 
-<span class="lineNum">     385 </span><span class="lineNoCov">          0 :   fprintf(f, &quot;Long Flag Strings: &quot;);</span>
-<span class="lineNum">     386 </span><span class="lineNoCov">          0 :   iter_print(ll_get_iter(data-&gt;long_flag_strings), f, &amp;data_printer_string);</span>
-<span class="lineNum">     387 </span>            : 
-<span class="lineNum">     388 </span><span class="lineNoCov">          0 :   fprintf(f, &quot;Bare Strings: &quot;);</span>
-<span class="lineNum">     389 </span><span class="lineNoCov">          0 :   iter_print(ll_get_iter(data-&gt;bare_strings), f, &amp;data_printer_string);</span>
-<span class="lineNum">     390 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     170 </span><span class="lineCov">          8 :   data-&gt;long_flags = ll_create();</span>
+<span class="lineNum">     171 </span><span class="lineCov">          8 :   data-&gt;long_flag_strings = ll_create();</span>
+<span class="lineNum">     172 </span><span class="lineCov">          8 :   data-&gt;bare_strings = ll_create();</span>
+<span class="lineNum">     173 </span><span class="lineCov">          8 :   return;</span>
+<a name="174"><span class="lineNum">     174 </span>            : }</a>
+<span class="lineNum">     175 </span>            : 
+<span class="lineNum">     176 </span><span class="lineCov">          1 : smb_ad *arg_data_create()</span>
+<span class="lineNum">     177 </span>            : {
+<span class="lineNum">     178 </span><span class="lineCov">          1 :   smb_ad *data = smb_new(smb_ad, 1);</span>
+<span class="lineNum">     179 </span><span class="lineCov">          1 :   arg_data_init(data);</span>
+<span class="lineNum">     180 </span><span class="lineCov">          1 :   return data;</span>
+<a name="181"><span class="lineNum">     181 </span>            : }</a>
+<span class="lineNum">     182 </span>            : 
+<span class="lineNum">     183 </span><span class="lineCov">          8 : void arg_data_destroy(smb_ad * data)</span>
+<span class="lineNum">     184 </span>            : {
+<span class="lineNum">     185 </span><span class="lineCov">          8 :   ll_delete(data-&gt;long_flags);</span>
+<span class="lineNum">     186 </span><span class="lineCov">          8 :   ll_delete(data-&gt;bare_strings);</span>
+<span class="lineNum">     187 </span><span class="lineCov">          8 :   ll_delete(data-&gt;long_flag_strings);</span>
+<a name="188"><span class="lineNum">     188 </span><span class="lineCov">          8 : }</span></a>
+<span class="lineNum">     189 </span>            : 
+<span class="lineNum">     190 </span><span class="lineCov">          1 : void arg_data_delete(smb_ad *data)</span>
+<span class="lineNum">     191 </span>            : {
+<span class="lineNum">     192 </span><span class="lineCov">          1 :   arg_data_destroy(data);</span>
+<span class="lineNum">     193 </span><span class="lineCov">          1 :   smb_free(data);</span>
+<a name="194"><span class="lineNum">     194 </span><span class="lineCov">          1 : }</span></a>
+<span class="lineNum">     195 </span>            : 
+<span class="lineNum">     196 </span><span class="lineCov">          6 : void process_args(smb_ad *data, int argc, char **argv)</span>
+<span class="lineNum">     197 </span>            : {
+<span class="lineNum">     198 </span><span class="lineCov">          6 :   char *previous_long_flag = NULL;</span>
+<span class="lineNum">     199 </span><span class="lineCov">          6 :   int previous_flag = EOF;</span>
+<span class="lineNum">     200 </span>            : 
+<span class="lineNum">     201 </span><span class="lineCov">         45 :   while (argc--) {</span>
+<span class="lineNum">     202 </span>            :     // At the beginning of the loop, argc refers to number of remaining args,
+<span class="lineNum">     203 </span>            :     // and argv points at the pointer to the current arg.
+<span class="lineNum">     204 </span><span class="lineCov">         33 :     switch (**argv) {</span>
+<span class="lineNum">     205 </span>            :     case '-':
+<span class="lineNum">     206 </span>            :       // Processing new flag type, so set previous variables to invalid.
+<span class="lineNum">     207 </span><span class="lineCov">         24 :       previous_long_flag = NULL;</span>
+<span class="lineNum">     208 </span><span class="lineCov">         24 :       previous_flag = EOF;</span>
+<span class="lineNum">     209 </span><span class="lineCov">         24 :       switch (*(*argv + 1)) {</span>
+<span class="lineNum">     210 </span>            :       case '-':
+<span class="lineNum">     211 </span>            :         // Long flag
+<span class="lineNum">     212 </span><span class="lineCov">          6 :         previous_long_flag = process_long_flag(data, *argv);</span>
+<span class="lineNum">     213 </span><span class="lineCov">          6 :         previous_flag = EOF;</span>
+<span class="lineNum">     214 </span><span class="lineCov">          6 :         break;</span>
+<span class="lineNum">     215 </span>            :       case '\0':
+<span class="lineNum">     216 </span>            :         // A single '-'...counts as a bare string in my book
+<span class="lineNum">     217 </span><span class="lineCov">          1 :         process_bare_string(data, *argv, previous_long_flag, previous_flag);</span>
+<span class="lineNum">     218 </span>            : 
+<span class="lineNum">     219 </span><span class="lineCov">          1 :         previous_long_flag = NULL;</span>
+<span class="lineNum">     220 </span><span class="lineCov">          1 :         previous_flag = EOF;</span>
+<span class="lineNum">     221 </span><span class="lineCov">          1 :         break;</span>
+<span class="lineNum">     222 </span>            :       default:
+<span class="lineNum">     223 </span>            :         // The input is a short flag
+<span class="lineNum">     224 </span><span class="lineCov">         17 :         previous_flag = process_flag(data, *argv);</span>
+<span class="lineNum">     225 </span><span class="lineCov">         17 :         previous_long_flag = NULL;</span>
+<span class="lineNum">     226 </span><span class="lineCov">         17 :         break;</span>
+<span class="lineNum">     227 </span>            :       }
+<span class="lineNum">     228 </span><span class="lineCov">         24 :       break;</span>
+<span class="lineNum">     229 </span>            : 
+<span class="lineNum">     230 </span>            :     default:
+<span class="lineNum">     231 </span>            :       // This is a raw string.  We first need to check if it belongs to a flag.
+<span class="lineNum">     232 </span><span class="lineCov">          9 :       process_bare_string(data, *argv, previous_long_flag, previous_flag);</span>
+<span class="lineNum">     233 </span><span class="lineCov">          9 :       previous_long_flag = NULL;</span>
+<span class="lineNum">     234 </span><span class="lineCov">          9 :       previous_flag = EOF;</span>
+<span class="lineNum">     235 </span><span class="lineCov">          9 :       break;</span>
+<span class="lineNum">     236 </span>            :     }
+<span class="lineNum">     237 </span>            : 
+<span class="lineNum">     238 </span><span class="lineCov">         33 :     argv++;</span>
+<span class="lineNum">     239 </span>            :   }
+<a name="240"><span class="lineNum">     240 </span><span class="lineCov">          6 : }</span></a>
+<span class="lineNum">     241 </span>            : 
+<span class="lineNum">     242 </span><span class="lineCov">        109 : int check_flag(smb_ad *pData, char flag)</span>
+<span class="lineNum">     243 </span>            : {
+<span class="lineNum">     244 </span>            :   uint64_t idx;
+<span class="lineNum">     245 </span><span class="lineCov">        109 :   idx = flag_index(flag);</span>
+<span class="lineNum">     246 </span><span class="lineCov">        109 :   if (idx != -1) {</span>
+<span class="lineNum">     247 </span><span class="lineCov">        109 :     idx =  pData-&gt;flags &amp; (UINT64_C(1) &lt;&lt; idx);</span>
+<span class="lineNum">     248 </span><span class="lineCov">        109 :     if (idx) return 1;</span>
+<span class="lineNum">     249 </span>            :   }
+<span class="lineNum">     250 </span><span class="lineCov">         88 :   return 0;</span>
+<a name="251"><span class="lineNum">     251 </span>            : }</a>
+<span class="lineNum">     252 </span>            : 
+<span class="lineNum">     253 </span><span class="lineCov">          7 : int check_long_flag(smb_ad *data, char *flag)</span>
+<span class="lineNum">     254 </span>            : {
+<span class="lineNum">     255 </span><span class="lineCov">          7 :   return find_string(data-&gt;long_flags, flag) + 1;</span>
+<a name="256"><span class="lineNum">     256 </span>            : }</a>
+<span class="lineNum">     257 </span>            : 
+<span class="lineNum">     258 </span><span class="lineCov">          4 : int check_bare_string(smb_ad *data, char *string)</span>
+<span class="lineNum">     259 </span>            : {
+<span class="lineNum">     260 </span><span class="lineCov">          4 :   return find_string(data-&gt;bare_strings, string) + 1;</span>
+<a name="261"><span class="lineNum">     261 </span>            : }</a>
+<span class="lineNum">     262 </span>            : 
+<span class="lineNum">     263 </span><span class="lineCov">          5 : char *get_flag_parameter(smb_ad *data, char flag)</span>
+<span class="lineNum">     264 </span>            : {
+<span class="lineNum">     265 </span><span class="lineCov">          5 :   int index = flag_index(flag);</span>
+<span class="lineNum">     266 </span><span class="lineCov">          5 :   if (index == -1)</span>
+<span class="lineNum">     267 </span><span class="lineNoCov">          0 :     return NULL;</span>
+<span class="lineNum">     268 </span>            :   else
+<span class="lineNum">     269 </span><span class="lineCov">          5 :     return data-&gt;flag_strings[index];</span>
+<a name="270"><span class="lineNum">     270 </span>            : }</a>
+<span class="lineNum">     271 </span>            : 
+<span class="lineNum">     272 </span><span class="lineCov">          4 : char *get_long_flag_parameter(smb_ad *data, char *string)</span>
+<span class="lineNum">     273 </span>            : {
+<span class="lineNum">     274 </span><span class="lineCov">          4 :   int index = find_string(data-&gt;long_flags, string);</span>
+<span class="lineNum">     275 </span><span class="lineCov">          4 :   if (index == -1)</span>
+<span class="lineNum">     276 </span><span class="lineNoCov">          0 :     return NULL;</span>
+<span class="lineNum">     277 </span>            :   else {
+<span class="lineNum">     278 </span>            :     DATA d;
+<span class="lineNum">     279 </span>            :     smb_status status;
+<span class="lineNum">     280 </span><span class="lineCov">          4 :     d = ll_get(data-&gt;long_flag_strings, index, &amp;status);</span>
+<span class="lineNum">     281 </span><span class="lineCov">          4 :     assert(status == SMB_SUCCESS);</span>
+<span class="lineNum">     282 </span><span class="lineCov">          4 :     return (char*)d.data_ptr;</span>
+<span class="lineNum">     283 </span>            :   }
+<a name="284"><span class="lineNum">     284 </span>            : }</a>
+<span class="lineNum">     285 </span>            : 
+<span class="lineNum">     286 </span><span class="lineNoCov">          0 : void ad_print(smb_ad *data, FILE *f)</span>
+<span class="lineNum">     287 </span>            : {
+<span class="lineNum">     288 </span><span class="lineNoCov">          0 :   fprintf(f, &quot;Arg Data:\n&quot;);</span>
+<span class="lineNum">     289 </span><span class="lineNoCov">          0 :   fprintf(f, &quot;Flags: 0x%lX\n&quot;, data-&gt;flags);</span>
+<span class="lineNum">     290 </span><span class="lineNoCov">          0 :   for (int i = 0; i &lt; MAX_FLAGS; i++) {</span>
+<span class="lineNum">     291 </span><span class="lineNoCov">          0 :     if (data-&gt;flag_strings[i] != NULL) {</span>
+<span class="lineNum">     292 </span><span class="lineNoCov">          0 :       fprintf(f, &quot;%d: \&quot;%s\&quot;\n&quot;, i, data-&gt;flag_strings[i]);</span>
+<span class="lineNum">     293 </span>            :     }
+<span class="lineNum">     294 </span>            :   }
+<span class="lineNum">     295 </span><span class="lineNoCov">          0 :   fprintf(f, &quot;Long Flags: &quot;);</span>
+<span class="lineNum">     296 </span><span class="lineNoCov">          0 :   iter_print(ll_get_iter(data-&gt;long_flags), f, &amp;data_printer_string);</span>
+<span class="lineNum">     297 </span>            : 
+<span class="lineNum">     298 </span><span class="lineNoCov">          0 :   fprintf(f, &quot;Long Flag Strings: &quot;);</span>
+<span class="lineNum">     299 </span><span class="lineNoCov">          0 :   iter_print(ll_get_iter(data-&gt;long_flag_strings), f, &amp;data_printer_string);</span>
+<span class="lineNum">     300 </span>            : 
+<span class="lineNum">     301 </span><span class="lineNoCov">          0 :   fprintf(f, &quot;Bare Strings: &quot;);</span>
+<span class="lineNum">     302 </span><span class="lineNoCov">          0 :   iter_print(ll_get_iter(data-&gt;bare_strings), f, &amp;data_printer_string);</span>
+<span class="lineNum">     303 </span><span class="lineNoCov">          0 : }</span>
 </pre>
       </td>
     </tr>
