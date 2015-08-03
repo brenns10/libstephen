@@ -28,7 +28,7 @@ if [ "$1" != "dry" ]; then
 fi
 
 # Copy the docs and coverage results.
-cp -R ../libstephen/doc .
+cp -R ../libstephen/sphinx-doc/_build/html .
 cp -R ../libstephen/cov .
 
 # Add and commit changes.
