@@ -1,0 +1,398 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Unit Testing &mdash; libstephen 0.1 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="libstephen 0.1 documentation" href="../index.html"/>
+        <link rel="up" title="Libstephen Tutorial" href="index.html"/>
+        <link rel="next" title="Regular Expressions" href="regex.html"/>
+        <link rel="prev" title="Logging" href="logging.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+
+        
+          <a href="../index.html" class="icon icon-home"> libstephen
+        
+
+        
+        </a>
+
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+        
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Libstephen Tutorial</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="errors.html">Error Handling</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="errors.html#why-a-pointer-to-a-status-variable">Why a pointer to a status variable?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="errors.html#values">Values</a></li>
+<li class="toctree-l3"><a class="reference internal" href="errors.html#memory-allocation-errors">Memory allocation errors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="errors.html#assertions">Assertions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="arraylist.html">Array List (smb_al)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="arraylist.html#operations">Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="arraylist.html#sample-usage">Sample Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="arraylist.html#structure">Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="linkedlist.html">Linked List</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="linkedlist.html#operations">Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="linkedlist.html#sample-usage">Sample Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="linkedlist.html#structure">Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="list.html">List Interface</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="list.html#operations">Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="list.html#sample-usage">Sample Usage</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="iterator.html">Iterator</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="iterator.html#structure-function">Structure &amp; Function</a></li>
+<li class="toctree-l3"><a class="reference internal" href="iterator.html#sample-usage">Sample Usage</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="hashtable.html">Hash Table</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="hashtable.html#infrastructure">Infrastructure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hashtable.html#operations">Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hashtable.html#sample-usage">Sample Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hashtable.html#structure">Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="charbuf.html">Character Buffer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="charbuf.html#functions">Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="charbuf.html#wide-character-version">Wide Character Version</a></li>
+<li class="toctree-l3"><a class="reference internal" href="charbuf.html#i-o-utilities">I/O Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="args.html">Argument Parsing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="args.html#argument-types">Argument Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="args.html#initialization">Initialization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="args.html#reading-argument-data">Reading Argument Data</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="logging.html">Logging</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="logging.html#history">History</a></li>
+<li class="toctree-l3"><a class="reference internal" href="logging.html#goals">Goals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="logging.html#concepts">Concepts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="logging.html#functions-macros">Functions &amp; Macros</a></li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">Unit Testing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#history">History</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#operations">Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sample-use">Sample Use</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="regex.html">Regular Expressions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="regex.html#features">Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="regex.html#functions">Functions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">Libstephen API Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/base.html">Libstephen Base</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/ll.html">Linked List</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/al.html">Array List</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/list.html">List Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/ht.html">Hash Table</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/bf.html">Bitfield</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/cb.html">Character Buffer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/ad.html">Argument Parsing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/log.html">Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/ut.html">Unit Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/fsm.html">Finite State Machine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/regex.html">Regular Expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/util.html">Utilities &amp; Miscellaneous</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/str.html">String Functions</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">libstephen</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="index.html">Libstephen Tutorial</a> &raquo;</li>
+      
+    <li>Unit Testing</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/tutorial/unittest.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="unit-testing">
+<h1>Unit Testing<a class="headerlink" href="#unit-testing" title="Permalink to this headline">¶</a></h1>
+<div class="code c highlight-c"><div class="highlight"><pre><span class="cp">#include &quot;libstephen/ut.h&quot;</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><a class="reference external" href="https://github.com/brenns10/libstephen/blob/master/inc/libstephen/ut.h">Header
+(master)</a></li>
+<li><a class="reference external" href="https://github.com/brenns10/libstephen/blob/master/src/smbunit.c">Implementation
+(master)</a></li>
+</ul>
+<p>libstephen includes a rather spartan unit testing framework. I once
+nicknamed it &#8220;SmbUnit&#8221;, and thus all the functions begin with <code class="docutils literal"><span class="pre">su_</span></code>.
+Meanwhile, the header file is <code class="docutils literal"><span class="pre">libstephen/ut.h</span></code>. This is a rather
+annoying inconsistency, and I may deal with it before releasing a 1.0.</p>
+<p>Anyway, the unit testing framework defines tests, test groups, and test
+assertions. There&#8217;s really no escape from a good deal of boilerplate to
+get it to work. But I happen to use YaSnippet in Emacs, so I have
+defined auto-expanding snippets for creating tests and groups.</p>
+<div class="section" id="history">
+<h2>History<a class="headerlink" href="#history" title="Permalink to this headline">¶</a></h2>
+<p>One of the motivations behind the unit testing framework is to &#8220;keep it
+simple, stupid.&#8221; I figured it would be horrible if I spent more time
+debugging my unit testing framework than my actual code, so I made two
+decisions:</p>
+<ul class="simple">
+<li>The unit testing framework could not depend on any other part of
+libstephen! No lists!</li>
+<li>The unit testing framework should try to minimize complex operations,
+like allocating and reallocating memory.</li>
+</ul>
+<p>Therefore, the framework has set limits for the size of a test
+description (20 characters), and the number of tests in a group (20
+tests). These are pretty much guaranteed to never go down, and they may
+go up.</p>
+<p>At one point, my entire library had the ability to count bytes
+allocated, and decrement the counter as bytes were freed. I removed this
+feature from the library for three reasons:</p>
+<ul class="simple">
+<li>Tools like Valgrind do this without any change to the code!</li>
+<li>The changes I needed in order to implement this feature were really
+limiting. Namely, I had to specify how many bytes I was freeing when
+I freed them!</li>
+<li>Turning off the feature during release builds got rather tricky,
+especially when you started considering how client code would link
+the library.</li>
+</ul>
+<p>So, I removed the feature, which meant that tests couldn&#8217;t detect memory
+leaks any more. But I didn&#8217;t miss it too much, since it&#8217;s nearly as easy
+to run <code class="docutils literal"><span class="pre">valgrind</span> <span class="pre">bin/release/test</span></code> as it is to run
+<code class="docutils literal"><span class="pre">bin/release/test</span></code>.</p>
+</div>
+<div class="section" id="operations">
+<h2>Operations<a class="headerlink" href="#operations" title="Permalink to this headline">¶</a></h2>
+<div class="code c highlight-c"><div class="highlight"><pre><span class="n">smb_ut_test</span> <span class="o">*</span><span class="nf">su_create_test</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">description</span><span class="p">,</span> <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">run</span><span class="p">)());</span>
+<span class="n">smb_ut_group</span> <span class="o">*</span><span class="nf">su_create_test_group</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">description</span><span class="p">);</span>
+<span class="kt">void</span> <span class="nf">su_add_test</span><span class="p">(</span><span class="n">smb_ut_group</span> <span class="o">*</span><span class="n">group</span><span class="p">,</span> <span class="n">smb_ut_test</span> <span class="o">*</span><span class="n">test</span><span class="p">);</span>
+<span class="kt">int</span> <span class="nf">su_run_test</span><span class="p">(</span><span class="n">smb_ut_test</span> <span class="o">*</span><span class="n">test</span><span class="p">);</span>
+<span class="kt">int</span> <span class="nf">su_run_group</span><span class="p">(</span><span class="n">smb_ut_group</span> <span class="o">*</span><span class="n">group</span><span class="p">);</span>
+<span class="kt">void</span> <span class="nf">su_delete_test</span><span class="p">(</span><span class="n">smb_ut_test</span> <span class="o">*</span><span class="n">test</span><span class="p">);</span>
+<span class="kt">void</span> <span class="nf">su_delete_group</span><span class="p">(</span><span class="n">smb_ut_group</span> <span class="o">*</span><span class="n">group</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>There are no <code class="docutils literal"><span class="pre">init</span></code> or <code class="docutils literal"><span class="pre">destroy</span></code> operations, pretty much in the name
+of keeping it simple. The basic operation is that you create a group,
+create tests, add the tests to the group, and run the group (which runs
+each individual test). Then you delete the group (which deletes each
+individual test).</p>
+<p>Test functions take void, and return an int. The return value should be
+0 on success, or some non-zero value on failure. This value is typically
+the line number of the assertion that failed.</p>
+<p>Test assertions are done with the macro <code class="docutils literal"><span class="pre">TEST_ASSERT(condition);</span></code>. On
+failure, it returns the current line number.</p>
+</div>
+<div class="section" id="sample-use">
+<h2>Sample Use<a class="headerlink" href="#sample-use" title="Permalink to this headline">¶</a></h2>
+<p>Here is a sample from some of libstephen&#8217;s unit tests:</p>
+<div class="code c highlight-c"><div class="highlight"><pre><span class="n">smb_list</span> <span class="p">(</span><span class="o">*</span><span class="n">get_list</span><span class="p">)(</span><span class="kt">void</span><span class="p">);</span>
+
+<span class="kt">int</span> <span class="nf">test_append</span><span class="p">()</span>
+<span class="p">{</span>
+  <span class="cm">/* ... */</span>
+  <span class="n">TEST_ASSERT</span><span class="p">(</span><span class="cm">/* test condition */</span><span class="p">);</span>
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">test_prepend</span><span class="p">()</span>
+<span class="p">{</span> <span class="cm">/* ... */</span> <span class="p">}</span>
+
+<span class="cm">/* ...</span>
+<span class="cm">   ...</span>
+<span class="cm">   ... */</span>
+
+<span class="kt">void</span> <span class="nf">run_list_tests</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">desc</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">smb_ut_group</span> <span class="o">*</span><span class="n">group</span> <span class="o">=</span> <span class="n">su_create_test_group</span><span class="p">(</span><span class="n">desc</span><span class="p">);</span>
+
+  <span class="n">smb_ut_test</span> <span class="o">*</span><span class="n">append</span> <span class="o">=</span> <span class="n">su_create_test</span><span class="p">(</span><span class="s">&quot;append&quot;</span><span class="p">,</span> <span class="n">test_append</span><span class="p">);</span>
+  <span class="n">su_add_test</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">append</span><span class="p">);</span>
+
+  <span class="n">smb_ut_test</span> <span class="o">*</span><span class="n">prepend</span> <span class="o">=</span> <span class="n">su_create_test</span><span class="p">(</span><span class="s">&quot;prepend&quot;</span><span class="p">,</span> <span class="n">test_prepend</span><span class="p">);</span>
+  <span class="n">su_add_test</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">prepend</span><span class="p">);</span>
+
+  <span class="cm">/* ...</span>
+<span class="cm">     ...</span>
+<span class="cm">     ... */</span>
+
+  <span class="n">su_run_group</span><span class="p">(</span><span class="n">group</span><span class="p">);</span>
+  <span class="n">su_delete_group</span><span class="p">(</span><span class="n">group</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="nf">list_test</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">get_list</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">ll_create_list</span><span class="p">;</span>
+  <span class="n">run_list_tests</span><span class="p">(</span><span class="s">&quot;list_ll&quot;</span><span class="p">);</span>
+
+  <span class="n">get_list</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">al_create_list</span><span class="p">;</span>
+  <span class="n">run_list_tests</span><span class="p">(</span><span class="s">&quot;list_al&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>This is a rather advanced example that shows some cool ways to deal with
+lacks of test setup and teardown functions. These tests are designed to
+run on array lists and linked lists. There is a global <code class="docutils literal"><span class="pre">get_list()</span></code>
+function pointer that is initially set to be linked list, and then set
+to be array list. The test functions use this to get a UUT.</p>
+<p>Anyhow, the mean features and uses are demonstrated under the function
+<code class="docutils literal"><span class="pre">run_list_tests()</span></code>.</p>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="regex.html" class="btn btn-neutral float-right" title="Regular Expressions" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="logging.html" class="btn btn-neutral" title="Logging" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2013-2015, Stephen Brennan.
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
