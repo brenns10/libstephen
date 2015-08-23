@@ -1,7 +1,7 @@
 Iterator
 ========
 
-.. code:: c
+.. code:: C
 
     #include "libstephen/list.h"
 
@@ -37,7 +37,7 @@ Structure & Function
 The iterator's structure and function are tied together. It's a bit
 difficult to use one without the other.
 
-.. code:: c
+.. code:: C
 
     typedef struct smb_iter {
       const void *ds;
@@ -70,7 +70,7 @@ Sample Usage
 
 Here is a typical use of an iterator:
 
-.. code:: c
+.. code:: C
 
     smb_iter it = // something returning an iterator to a list of numbers
     DATA d;

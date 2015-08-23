@@ -1,7 +1,7 @@
 Character Buffer
 ================
 
-.. code:: c
+.. code:: C
 
     #include "libstephen/cb.h"
 
@@ -32,7 +32,7 @@ Functions
 
 Here is the struct definition and list of functions:
 
-.. code:: c
+.. code:: C
 
     typedef struct {
       char *buf;
@@ -91,7 +91,7 @@ arguments are always ``wchar_t *`` instead of ``char *``.
 I/O Utilities
 -------------
 
-.. code:: c
+.. code:: C
 
     #include "libstephen/str.h"
 
@@ -103,7 +103,7 @@ I/O Utilities
 Using the character buffer, I've implemented a few simple tasks quite
 easily. Here are some functions you might find useful:
 
-.. code:: c
+.. code:: C
 
     char *read_file(FILE *f);
     wchar_t *read_filew(FILE *f);

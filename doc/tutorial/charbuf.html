@@ -200,7 +200,7 @@
             
   <div class="section" id="character-buffer">
 <h1>Character Buffer<a class="headerlink" href="#character-buffer" title="Permalink to this headline">¶</a></h1>
-<div class="code c highlight-c"><div class="highlight"><pre><span class="cp">#include &quot;libstephen/cb.h&quot;</span>
+<div class="code C highlight-c"><div class="highlight"><pre><span class="cp">#include &quot;libstephen/cb.h&quot;</span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -227,7 +227,7 @@ tackle when you&#8217;re dealing with buffers - especially when reading input!</
 <div class="section" id="functions">
 <h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
 <p>Here is the struct definition and list of functions:</p>
-<div class="code c highlight-c"><div class="highlight"><pre><span class="k">typedef</span> <span class="k">struct</span> <span class="p">{</span>
+<div class="code C highlight-c"><div class="highlight"><pre><span class="k">typedef</span> <span class="k">struct</span> <span class="p">{</span>
   <span class="kt">char</span> <span class="o">*</span><span class="n">buf</span><span class="p">;</span>
   <span class="kt">int</span> <span class="n">capacity</span><span class="p">;</span>
   <span class="kt">int</span> <span class="n">length</span><span class="p">;</span>
@@ -282,7 +282,7 @@ arguments are always <code class="docutils literal"><span class="pre">wchar_t</s
 </div>
 <div class="section" id="i-o-utilities">
 <h2>I/O Utilities<a class="headerlink" href="#i-o-utilities" title="Permalink to this headline">¶</a></h2>
-<div class="code c highlight-c"><div class="highlight"><pre><span class="cp">#include &quot;libstephen/str.h&quot;</span>
+<div class="code C highlight-c"><div class="highlight"><pre><span class="cp">#include &quot;libstephen/str.h&quot;</span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -293,7 +293,7 @@ arguments are always <code class="docutils literal"><span class="pre">wchar_t</s
 </ul>
 <p>Using the character buffer, I&#8217;ve implemented a few simple tasks quite
 easily. Here are some functions you might find useful:</p>
-<div class="code c highlight-c"><div class="highlight"><pre><span class="kt">char</span> <span class="o">*</span><span class="nf">read_file</span><span class="p">(</span><span class="kt">FILE</span> <span class="o">*</span><span class="n">f</span><span class="p">);</span>
+<div class="code C highlight-c"><div class="highlight"><pre><span class="kt">char</span> <span class="o">*</span><span class="nf">read_file</span><span class="p">(</span><span class="kt">FILE</span> <span class="o">*</span><span class="n">f</span><span class="p">);</span>
 <span class="kt">wchar_t</span> <span class="o">*</span><span class="nf">read_filew</span><span class="p">(</span><span class="kt">FILE</span> <span class="o">*</span><span class="n">f</span><span class="p">);</span>
 <span class="kt">char</span> <span class="o">*</span><span class="nf">read_line</span><span class="p">(</span><span class="kt">FILE</span> <span class="o">*</span><span class="n">file</span><span class="p">);</span>
 <span class="kt">wchar_t</span> <span class="o">*</span><span class="nf">read_linew</span><span class="p">(</span><span class="kt">FILE</span> <span class="o">*</span><span class="n">file</span><span class="p">);</span>

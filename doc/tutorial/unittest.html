@@ -200,7 +200,7 @@
             
   <div class="section" id="unit-testing">
 <h1>Unit Testing<a class="headerlink" href="#unit-testing" title="Permalink to this headline">¶</a></h1>
-<div class="code c highlight-c"><div class="highlight"><pre><span class="cp">#include &quot;libstephen/ut.h&quot;</span>
+<div class="code C highlight-c"><div class="highlight"><pre><span class="cp">#include &quot;libstephen/ut.h&quot;</span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -252,7 +252,7 @@ to run <code class="docutils literal"><span class="pre">valgrind</span> <span cl
 </div>
 <div class="section" id="operations">
 <h2>Operations<a class="headerlink" href="#operations" title="Permalink to this headline">¶</a></h2>
-<div class="code c highlight-c"><div class="highlight"><pre><span class="n">smb_ut_test</span> <span class="o">*</span><span class="nf">su_create_test</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">description</span><span class="p">,</span> <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">run</span><span class="p">)());</span>
+<div class="code C highlight-c"><div class="highlight"><pre><span class="n">smb_ut_test</span> <span class="o">*</span><span class="nf">su_create_test</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">description</span><span class="p">,</span> <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">run</span><span class="p">)());</span>
 <span class="n">smb_ut_group</span> <span class="o">*</span><span class="nf">su_create_test_group</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">description</span><span class="p">);</span>
 <span class="kt">void</span> <span class="nf">su_add_test</span><span class="p">(</span><span class="n">smb_ut_group</span> <span class="o">*</span><span class="n">group</span><span class="p">,</span> <span class="n">smb_ut_test</span> <span class="o">*</span><span class="n">test</span><span class="p">);</span>
 <span class="kt">int</span> <span class="nf">su_run_test</span><span class="p">(</span><span class="n">smb_ut_test</span> <span class="o">*</span><span class="n">test</span><span class="p">);</span>
@@ -275,7 +275,7 @@ failure, it returns the current line number.</p>
 <div class="section" id="sample-use">
 <h2>Sample Use<a class="headerlink" href="#sample-use" title="Permalink to this headline">¶</a></h2>
 <p>Here is a sample from some of libstephen&#8217;s unit tests:</p>
-<div class="code c highlight-c"><div class="highlight"><pre><span class="n">smb_list</span> <span class="p">(</span><span class="o">*</span><span class="n">get_list</span><span class="p">)(</span><span class="kt">void</span><span class="p">);</span>
+<div class="code C highlight-c"><div class="highlight"><pre><span class="n">smb_list</span> <span class="p">(</span><span class="o">*</span><span class="n">get_list</span><span class="p">)(</span><span class="kt">void</span><span class="p">);</span>
 
 <span class="kt">int</span> <span class="nf">test_append</span><span class="p">()</span>
 <span class="p">{</span>

@@ -200,7 +200,7 @@
             
   <div class="section" id="array-list-smb-al">
 <h1>Array List (smb_al)<a class="headerlink" href="#array-list-smb-al" title="Permalink to this headline">¶</a></h1>
-<div class="code c highlight-c"><div class="highlight"><pre><span class="cp">#include &quot;libstephen/al.h&quot;</span>
+<div class="code C highlight-c"><div class="highlight"><pre><span class="cp">#include &quot;libstephen/al.h&quot;</span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -217,7 +217,7 @@ lists, but must be copied from time to time as the list expands.</p>
 <h2>Operations<a class="headerlink" href="#operations" title="Permalink to this headline">¶</a></h2>
 <p>The array list supports the four normal creation and deletion functions,
 which create an empty list. Here are some array list operations:</p>
-<div class="code c highlight-c"><div class="highlight"><pre><span class="kt">void</span> <span class="nf">al_append</span><span class="p">(</span><span class="n">smb_al</span> <span class="o">*</span><span class="n">list</span><span class="p">,</span> <span class="n">DATA</span> <span class="n">newData</span><span class="p">);</span>
+<div class="code C highlight-c"><div class="highlight"><pre><span class="kt">void</span> <span class="nf">al_append</span><span class="p">(</span><span class="n">smb_al</span> <span class="o">*</span><span class="n">list</span><span class="p">,</span> <span class="n">DATA</span> <span class="n">newData</span><span class="p">);</span>
 <span class="kt">void</span> <span class="nf">al_prepend</span><span class="p">(</span><span class="n">smb_al</span> <span class="o">*</span><span class="n">list</span><span class="p">,</span> <span class="n">DATA</span> <span class="n">newData</span><span class="p">);</span>
 <span class="n">DATA</span> <span class="nf">al_get</span><span class="p">(</span><span class="k">const</span> <span class="n">smb_al</span> <span class="o">*</span><span class="n">list</span><span class="p">,</span> <span class="kt">int</span> <span class="n">index</span><span class="p">,</span> <span class="n">smb_status</span> <span class="o">*</span><span class="n">status</span><span class="p">);</span>
 <span class="kt">void</span> <span class="nf">al_remove</span><span class="p">(</span><span class="n">smb_al</span> <span class="o">*</span><span class="n">list</span><span class="p">,</span> <span class="kt">int</span> <span class="n">index</span><span class="p">,</span> <span class="n">smb_status</span> <span class="o">*</span><span class="n">status</span><span class="p">);</span>
@@ -238,12 +238,12 @@ list. Appending is done in constant time, except when the array must be
 expanded. Insertions (including prepend) are linear time, while get/set
 operations are constant.</p>
 <p>These will get you a generic list:</p>
-<div class="code c highlight-c"><div class="highlight"><pre><span class="n">smb_list</span> <span class="nf">al_create_list</span><span class="p">();</span>
+<div class="code C highlight-c"><div class="highlight"><pre><span class="n">smb_list</span> <span class="nf">al_create_list</span><span class="p">();</span>
 <span class="n">smb_list</span> <span class="nf">al_cast_to_list</span><span class="p">(</span><span class="n">smb_al</span> <span class="o">*</span><span class="n">list</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>And this will create an iterator:</p>
-<div class="code c highlight-c"><div class="highlight"><pre><span class="n">smb_iter</span> <span class="nf">al_get_iter</span><span class="p">(</span><span class="k">const</span> <span class="n">smb_al</span> <span class="o">*</span><span class="n">list</span><span class="p">);</span>
+<div class="code C highlight-c"><div class="highlight"><pre><span class="n">smb_iter</span> <span class="nf">al_get_iter</span><span class="p">(</span><span class="k">const</span> <span class="n">smb_al</span> <span class="o">*</span><span class="n">list</span><span class="p">);</span>
 </pre></div>
 </div>
 </div>
@@ -251,7 +251,7 @@ operations are constant.</p>
 <h2>Sample Usage<a class="headerlink" href="#sample-usage" title="Permalink to this headline">¶</a></h2>
 <p>This is some sample code identical to the one I used to show the linked
 list:</p>
-<div class="code c highlight-c"><div class="highlight"><pre><span class="n">smb_al</span> <span class="o">*</span><span class="n">list</span> <span class="o">=</span> <span class="n">al_create</span><span class="p">();</span>
+<div class="code C highlight-c"><div class="highlight"><pre><span class="n">smb_al</span> <span class="o">*</span><span class="n">list</span> <span class="o">=</span> <span class="n">al_create</span><span class="p">();</span>
 <span class="n">DATA</span> <span class="n">d</span><span class="p">;</span>
 
 <span class="n">d</span><span class="p">.</span><span class="n">data_llint</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
@@ -267,7 +267,7 @@ list:</p>
 <h2>Structure<a class="headerlink" href="#structure" title="Permalink to this headline">¶</a></h2>
 <p><em>Here be implementation details!</em></p>
 <p>Here is the structure of an <code class="docutils literal"><span class="pre">smb_al</span></code> struct:</p>
-<div class="code c highlight-c"><div class="highlight"><pre><span class="k">typedef</span> <span class="k">struct</span> <span class="n">smb_al</span>
+<div class="code C highlight-c"><div class="highlight"><pre><span class="k">typedef</span> <span class="k">struct</span> <span class="n">smb_al</span>
 <span class="p">{</span>
   <span class="n">DATA</span> <span class="o">*</span><span class="n">data</span><span class="p">;</span>
   <span class="kt">int</span> <span class="n">length</span><span class="p">;</span>

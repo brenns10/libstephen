@@ -200,7 +200,7 @@
             
   <div class="section" id="logging">
 <h1>Logging<a class="headerlink" href="#logging" title="Permalink to this headline">¶</a></h1>
-<div class="code c highlight-c"><div class="highlight"><pre><span class="cp">#include &quot;libstephen/log.h&quot;</span>
+<div class="code C highlight-c"><div class="highlight"><pre><span class="cp">#include &quot;libstephen/log.h&quot;</span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -258,7 +258,7 @@ associated with them. The logging system also has a single &#8220;default&#8221;
 logger, which is used when you don&#8217;t specify a logger. At startup, the
 default logger will report any level message to <code class="docutils literal"><span class="pre">stderr</span></code>.</p>
 <p>The log levels are defined as macros expanding to integers:</p>
-<div class="code c highlight-c"><div class="highlight"><pre><span class="cp">#define LEVEL_NOTSET    0</span>
+<div class="code C highlight-c"><div class="highlight"><pre><span class="cp">#define LEVEL_NOTSET    0</span>
 <span class="cp">#define LEVEL_DEBUG    10</span>
 <span class="cp">#define LEVEL_INFO     20</span>
 <span class="cp">#define LEVEL_WARNING  30</span>
@@ -274,7 +274,7 @@ but they come with nice macros for logging.</p>
 <p>You can create a <code class="docutils literal"><span class="pre">smb_logger</span></code> using the default lifetime functions
 (<code class="docutils literal"><span class="pre">sl_*</span></code>), which take no extra arguments. You can use the following
 functions to adjust loggers:</p>
-<div class="code c highlight-c"><div class="highlight"><pre><span class="kt">void</span> <span class="nf">sl_set_level</span><span class="p">(</span><span class="n">smb_logger</span> <span class="o">*</span><span class="n">l</span><span class="p">,</span> <span class="kt">int</span> <span class="n">level</span><span class="p">);</span>
+<div class="code C highlight-c"><div class="highlight"><pre><span class="kt">void</span> <span class="nf">sl_set_level</span><span class="p">(</span><span class="n">smb_logger</span> <span class="o">*</span><span class="n">l</span><span class="p">,</span> <span class="kt">int</span> <span class="n">level</span><span class="p">);</span>
 <span class="kt">void</span> <span class="nf">sl_add_handler</span><span class="p">(</span><span class="n">smb_logger</span> <span class="o">*</span><span class="n">l</span><span class="p">,</span> <span class="n">smb_loghandler</span> <span class="n">h</span><span class="p">,</span> <span class="n">smb_status</span> <span class="o">*</span><span class="n">status</span><span class="p">);</span>
 <span class="kt">void</span> <span class="nf">sl_clear_handlers</span><span class="p">(</span><span class="n">smb_logger</span> <span class="o">*</span><span class="n">l</span><span class="p">);</span>
 <span class="kt">void</span> <span class="nf">sl_set_default_logger</span><span class="p">(</span><span class="n">smb_logger</span> <span class="o">*</span><span class="n">l</span><span class="p">);</span>
@@ -314,7 +314,7 @@ logger, you have these shortcuts:</p>
 <p>Think of the <code class="docutils literal"><span class="pre">L</span></code> as standing for Logger. You have to specify your
 logger.</p>
 <p>All of these macros expand to call a single function:</p>
-<div class="code c highlight-c"><div class="highlight"><pre><span class="kt">void</span> <span class="nf">sl_log</span><span class="p">(</span><span class="n">smb_logger</span> <span class="o">*</span><span class="n">l</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">file</span><span class="p">,</span> <span class="kt">int</span> <span class="n">line</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">function</span><span class="p">,</span> <span class="kt">int</span> <span class="n">level</span><span class="p">,</span> <span class="p">...);</span>
+<div class="code C highlight-c"><div class="highlight"><pre><span class="kt">void</span> <span class="nf">sl_log</span><span class="p">(</span><span class="n">smb_logger</span> <span class="o">*</span><span class="n">l</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">file</span><span class="p">,</span> <span class="kt">int</span> <span class="n">line</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">function</span><span class="p">,</span> <span class="kt">int</span> <span class="n">level</span><span class="p">,</span> <span class="p">...);</span>
 </pre></div>
 </div>
 <p>You don&#8217;t want to call this function yourself, since most of those

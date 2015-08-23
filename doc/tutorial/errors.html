@@ -246,24 +246,36 @@ to recover from an out of memory error. The code to try to handle them
 clutters up the library and program like none other. So, the standard
 practice is to just exit when memory allocation fails.</p>
 <p>In fact, libstephen provides helper functions for doing exactly this
-when allocating memory. Here they are: *
-<code class="docutils literal"><span class="pre">type</span> <span class="pre">*smb_new(type,</span> <span class="pre">size_t</span> <span class="pre">amount)</span></code>: Allocates <code class="docutils literal"><span class="pre">amount</span></code> of memory
-of size <code class="docutils literal"><span class="pre">size(type)</span></code>. Casts to the right pointer type for you. If
-there is an error, prints a message to standard error and terminates
-with an error value. EG:</p>
-<p><code class="docutils literal"><span class="pre">c</span>&nbsp;&nbsp; <span class="pre">char</span> <span class="pre">*msg</span> <span class="pre">=</span> <span class="pre">&quot;hi&quot;;</span>&nbsp;&nbsp; <span class="pre">char</span> <span class="pre">*string</span> <span class="pre">=</span> <span class="pre">smb_new(char,</span> <span class="pre">3);</span>&nbsp;&nbsp; <span class="pre">strncpy(string,</span> <span class="pre">msg,</span> <span class="pre">3);</span>&nbsp;&nbsp; <span class="pre">printf(&quot;%s\n&quot;,</span> <span class="pre">string);</span>&nbsp;&nbsp; <span class="pre">//STDOUT:</span> <span class="pre">hi</span></code></p>
-<ul class="simple">
-<li><code class="docutils literal"><span class="pre">type</span> <span class="pre">*smb_renew(type,</span> <span class="pre">type</span> <span class="pre">*ptr,</span> <span class="pre">size_t</span> <span class="pre">newamt)</span></code> - Reallocates the
+when allocating memory. Here they are:</p>
+<ul>
+<li><p class="first"><code class="docutils literal"><span class="pre">type</span> <span class="pre">*smb_new(type,</span> <span class="pre">size_t</span> <span class="pre">amount)</span></code>: Allocates <code class="docutils literal"><span class="pre">amount</span></code> of memory of size
+<code class="docutils literal"><span class="pre">size(type)</span></code>. Casts to the right pointer type for you. If there is an error,
+prints a message to standard error and terminates with an error value. EG:</p>
+<div class="code C highlight-c"><div class="highlight"><pre><span class="kt">char</span> <span class="o">*</span><span class="n">msg</span> <span class="o">=</span> <span class="s">&quot;hi&quot;</span><span class="p">;</span>
+<span class="kt">char</span> <span class="o">*</span><span class="n">string</span> <span class="o">=</span> <span class="n">smb_new</span><span class="p">(</span><span class="kt">char</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
+<span class="n">strncpy</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="mi">3</span><span class="p">);</span>
+<span class="n">printf</span><span class="p">(</span><span class="s">&quot;%s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">string</span><span class="p">);</span>   <span class="c1">//STDOUT: hi``</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">type</span> <span class="pre">*smb_renew(type,</span> <span class="pre">type</span> <span class="pre">*ptr,</span> <span class="pre">size_t</span> <span class="pre">newamt)</span></code> - Reallocates the
 buffer to a new size, copying if necessary. Deals with errors for
-you. EG:</li>
-</ul>
-<p><code class="docutils literal"><span class="pre">c</span>&nbsp;&nbsp; <span class="pre">string</span> <span class="pre">=</span> <span class="pre">smb_renew(char,</span> <span class="pre">string,</span> <span class="pre">4);</span>&nbsp;&nbsp; <span class="pre">string[2]</span> <span class="pre">=</span> <span class="pre">'!';</span>&nbsp;&nbsp; <span class="pre">string[3]</span> <span class="pre">=</span> <span class="pre">'\0';</span>&nbsp;&nbsp; <span class="pre">printf(&quot;%s\n&quot;,</span> <span class="pre">string);</span>&nbsp;&nbsp; <span class="pre">//STDOUT:</span> <span class="pre">hi!</span></code></p>
-<ul class="simple">
-<li><code class="docutils literal"><span class="pre">void</span> <span class="pre">smb_free(void</span> <span class="pre">*ptr)</span></code> - This actually doesn&#8217;t do any more than
+you. EG:</p>
+<div class="code C highlight-c"><div class="highlight"><pre><span class="n">string</span> <span class="o">=</span> <span class="n">smb_renew</span><span class="p">(</span><span class="kt">char</span><span class="p">,</span> <span class="n">string</span><span class="p">,</span> <span class="mi">4</span><span class="p">);</span>
+<span class="n">string</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="sc">&#39;!&#39;</span><span class="p">;</span>
+<span class="n">string</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="sc">&#39;\0&#39;</span><span class="p">;</span>
+<span class="n">printf</span><span class="p">(</span><span class="s">&quot;%s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">string</span><span class="p">);</span>   <span class="c1">//STDOUT: hi!``</span>
+</pre></div>
+</div>
+</li>
+<li><p class="first"><code class="docutils literal"><span class="pre">void</span> <span class="pre">smb_free(void</span> <span class="pre">*ptr)</span></code> - This actually doesn&#8217;t do any more than
 <code class="docutils literal"><span class="pre">free()</span></code> does, but it seemed like it was necessary so that
-everything felt aligned. EG:</li>
+everything felt aligned. EG:</p>
+<div class="code C highlight-c"><div class="highlight"><pre><span class="n">smb_free</span><span class="p">(</span><span class="n">string</span><span class="p">);</span>
+</pre></div>
+</div>
+</li>
 </ul>
-<p><code class="docutils literal"><span class="pre">c</span>&nbsp;&nbsp; <span class="pre">smb_free(string);</span></code></p>
 </div>
 <div class="section" id="assertions">
 <h2>Assertions<a class="headerlink" href="#assertions" title="Permalink to this headline">¶</a></h2>

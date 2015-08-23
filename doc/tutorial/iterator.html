@@ -200,7 +200,7 @@
             
   <div class="section" id="iterator">
 <h1>Iterator<a class="headerlink" href="#iterator" title="Permalink to this headline">¶</a></h1>
-<div class="code c highlight-c"><div class="highlight"><pre><span class="cp">#include &quot;libstephen/list.h&quot;</span>
+<div class="code C highlight-c"><div class="highlight"><pre><span class="cp">#include &quot;libstephen/list.h&quot;</span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -230,7 +230,7 @@ data from an iterator into a new list.</p>
 <h2>Structure &amp; Function<a class="headerlink" href="#structure-function" title="Permalink to this headline">¶</a></h2>
 <p>The iterator&#8217;s structure and function are tied together. It&#8217;s a bit
 difficult to use one without the other.</p>
-<div class="code c highlight-c"><div class="highlight"><pre><span class="k">typedef</span> <span class="k">struct</span> <span class="n">smb_iter</span> <span class="p">{</span>
+<div class="code C highlight-c"><div class="highlight"><pre><span class="k">typedef</span> <span class="k">struct</span> <span class="n">smb_iter</span> <span class="p">{</span>
   <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">ds</span><span class="p">;</span>
   <span class="n">DATA</span> <span class="n">state</span><span class="p">;</span>
   <span class="kt">int</span> <span class="n">index</span><span class="p">;</span>
@@ -259,7 +259,7 @@ implementations can have support for freeing up resources if necessary.</p>
 <div class="section" id="sample-usage">
 <h2>Sample Usage<a class="headerlink" href="#sample-usage" title="Permalink to this headline">¶</a></h2>
 <p>Here is a typical use of an iterator:</p>
-<div class="code c highlight-c"><div class="highlight"><pre><span class="n">smb_iter</span> <span class="n">it</span> <span class="o">=</span> <span class="c1">// something returning an iterator to a list of numbers</span>
+<div class="code C highlight-c"><div class="highlight"><pre><span class="n">smb_iter</span> <span class="n">it</span> <span class="o">=</span> <span class="c1">// something returning an iterator to a list of numbers</span>
 <span class="n">DATA</span> <span class="n">d</span><span class="p">;</span>
 
 <span class="k">while</span> <span class="p">(</span><span class="n">it</span><span class="p">.</span><span class="n">has_next</span><span class="p">(</span><span class="o">&amp;</span><span class="n">it</span><span class="p">))</span> <span class="p">{</span>

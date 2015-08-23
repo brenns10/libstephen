@@ -1,7 +1,7 @@
 List Interface
 ==============
 
-.. code:: c
+.. code:: C
 
     #include "libstephen/list.h"
 
@@ -18,7 +18,7 @@ probably inefficient.
 Operations
 ----------
 
-.. code:: c
+.. code:: C
 
     typedef struct smb_list
     {
@@ -51,7 +51,7 @@ It works with linked lists or array lists (but a linked list is created
 here). Each iteration the following code adds a number to the list, and
 then verifies that the list contains the expected values.
 
-.. code:: c
+.. code:: C
 
     smb_status status = SMB_SUCCESS;
     DATA d;

@@ -1,7 +1,7 @@
 Regular Expressions
 ===================
 
-.. code:: c
+.. code:: C
 
     #include "libstephen/regex.h"
     #include "libstephen/fsm.h"
@@ -57,7 +57,7 @@ Functions
 
 Here is the main interface for compiling regular expressions:
 
-.. code:: c
+.. code:: C
 
     fsm *regex_parse(const wchar_t *regex);
 
@@ -76,7 +76,7 @@ machine that can decide to accept or reject an input string. You can
 find out if a string is accepted or rejected by simulating the FSM on
 it. The following functions are provided for that purpose:
 
-.. code:: c
+.. code:: C
 
     bool fsm_sim_det(fsm *f, const wchar_t *input);
     fsm_sim *fsm_sim_nondet_begin(fsm *f);
