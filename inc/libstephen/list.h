@@ -1,12 +1,17 @@
 /***************************************************************************//**
 
-  @file         list.h
+  @file         libstephen/list.h
 
   @author       Stephen Brennan
 
   @date         Created Sunday,  3 August 2014
 
-  @brief        Libstephen: List Interface
+  @brief        List and iterator interface.
+
+  This header contains the declarations for the list interface and the iterator
+  interface.  Both of these structs allow code to use linked lists or array
+  lists without consideration for which list implementation they're using.  The
+  iterator is also the only way to efficiently iterate through the linked list.
 
   @copyright    Copyright (c) 2013-2015, Stephen Brennan.  Released under the
                 Revised BSD License.  See the LICENSE.txt file for details.
@@ -197,6 +202,12 @@ typedef struct smb_iter {
 
 } smb_iter;
 
+/**
+   @brief Prints anything with an iterator.
+   @param it The iterator.  Will be invalidated after this use.
+   @param f The file to print to.
+   @param printer The printer for handling DATA objects.
+ */
 void iter_print(smb_iter it, FILE *f, DATA_PRINTER printer);
 
 #endif // LIBSTEPHEN_LIST_H

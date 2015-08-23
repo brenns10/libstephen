@@ -6,18 +6,7 @@
 
   @date         Created Thursday, 31 October 2013
 
-  @brief        Contains functions to simplify processing command line args.
-
-  The args library analyzes args as generally as possible.  It recognizes three
-  different types.  First is the 'flag' or 'regular flag', which is simply one
-  character.  Their order doesn't matter.  They're placed on the command line
-  after a single hyphen.
-
-  Then there are long flags, which are strings that come after two hyphens.
-  Both flags and long flags are allowed to have parameters passed with them.
-
-  Finally are bare strings, which are things that aren't passed as parameters or
-  as flags.
+  @brief        Implementations of "libstephen/ad.h".
 
   @copyright    Copyright (c) 2013-2015, Stephen Brennan.  Released under the
                 Revised BSD License.  See the LICENSE.txt file for details.
@@ -171,12 +160,6 @@ int find_string(smb_ll *toSearch, char *toFind)
 
 *******************************************************************************/
 
-/**
-   @brief Initialize an smb_ad structure in memory that has already been
-   allocated.
-
-   @param data The pointer to the memory to allocate in.
- */
 void arg_data_init(smb_ad *data)
 {
   data->flags = 0;
@@ -190,10 +173,6 @@ void arg_data_init(smb_ad *data)
   return;
 }
 
-/**
-   @brief Allocate and initialize a smb_ad structure for argument parsing.
-   @returns A pointer to the structure.
- */
 smb_ad *arg_data_create()
 {
   smb_ad *data = smb_new(smb_ad, 1);
@@ -201,11 +180,6 @@ smb_ad *arg_data_create()
   return data;
 }
 
-/**
-   @brief Free the resources of an arg_data object, but do not free it.
-
-   @param data The arg data to destroy.
- */
 void arg_data_destroy(smb_ad * data)
 {
   ll_delete(data->long_flags);
@@ -213,29 +187,12 @@ void arg_data_destroy(smb_ad * data)
   ll_delete(data->long_flag_strings);
 }
 
-/**
-   @brief Free the resources of an arg data object, and then free the object
-   itself.
-
-   @param data The arg data to delete.
- */
 void arg_data_delete(smb_ad *data)
 {
   arg_data_destroy(data);
   smb_free(data);
 }
 
-/**
-   @brief Analyze the argument data passed to the program.
-
-   Pass in the argc and argv, but make sure to decrement and increment each
-   respective variable so they do not include the name of the program.
-
-   @param data A pointer to an smb_ad object.  Use provided functions to query
-   the object about every desired flag.
-   @param argc The number of arguments (not including program name).
-   @param argv The arguments themselves (not including program name).
- */
 void process_args(smb_ad *data, int argc, char **argv)
 {
   char *previous_long_flag = NULL;
@@ -282,14 +239,6 @@ void process_args(smb_ad *data, int argc, char **argv)
   }
 }
 
-/**
-   @brief Check whether a flag is raised.
-
-   @param data The smb_ad returned by process_args().
-   @param flag The character flag to check.  Alphabetical only.
-   @retval 0 if the flag was not set.
-   @retval 1 otherwise.
- */
 int check_flag(smb_ad *pData, char flag)
 {
   uint64_t idx;
@@ -301,39 +250,16 @@ int check_flag(smb_ad *pData, char flag)
   return 0;
 }
 
-/**
-   @brief Check whether a long flag appeared.  It must occur verbatim.
-
-   @param data The smb_ad returned by process_args().
-   @param flag The string flag to check for.
-   @returns the index of the flag + 1 if it is set.
-   @retval 0 if the flag was not set.
- */
 int check_long_flag(smb_ad *data, char *flag)
 {
   return find_string(data->long_flags, flag) + 1;
 }
 
-/**
-   @brief Check whether a bare string appeared.  It must occur verbatim.
-
-   @param data The smb_ad returned by process_args().
-   @param string The string to search for.
-   @returns the index of the flag + 1 if it is set.
-   @retval 0 iff the flag was not set.
- */
 int check_bare_string(smb_ad *data, char *string)
 {
   return find_string(data->bare_strings, string) + 1;
 }
 
-/**
-   @brief Return the string parameter associated with the flag.
-
-   @param data The smb_ad returned by process_args().
-   @param flag The flag to find parameters of.
-   @returns The parameter of the flag.
- */
 char *get_flag_parameter(smb_ad *data, char flag)
 {
   int index = flag_index(flag);
@@ -343,14 +269,6 @@ char *get_flag_parameter(smb_ad *data, char flag)
     return data->flag_strings[index];
 }
 
-/**
-   @brief Return the string parameter associated with the long string.
-
-   @param data The smb_ad returned by process_args().
-   @param string The long flag to find parameters of.
-   @returns The parameter of the long flag.
-   @retval NULL if no parameter or if flag not found.
- */
 char *get_long_flag_parameter(smb_ad *data, char *string)
 {
   int index = find_string(data->long_flags, string);
@@ -365,11 +283,6 @@ char *get_long_flag_parameter(smb_ad *data, char *string)
   }
 }
 
-/**
-   @brief Print the contents of the arg data struct to a file for debugging.
-   @param data The struct to print.
-   @param f The file to print to.
- */
 void ad_print(smb_ad *data, FILE *f)
 {
   fprintf(f, "Arg Data:\n");

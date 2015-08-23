@@ -119,7 +119,7 @@ DEPENDENCIES  = $(patsubst $(SOURCE_DIR)/%.c,$(DEPENDENCY_DIR)/$(SOURCE_DIR)/%.d
 DEPENDENCIES += $(patsubst $(TEST_DIR)/%.c,$(DEPENDENCY_DIR)/$(TEST_DIR)/%.d,$(TEST_SOURCES))
 
 # --- GLOBAL TARGETS: You can probably adjust and augment these if you'd like.
-.PHONY: all test clean clean_all clean_cov clean_doc
+.PHONY: all test doc cov clean clean_all clean_cov clean_doc
 
 all: $(BINARY_DIR)/$(CFG)/$(TARGET)
 
@@ -128,6 +128,7 @@ test: $(BINARY_DIR)/$(CFG)/$(TEST_TARGET)
 
 doc: $(SOURCES) $(TEST_SOURCES) Doxyfile
 	doxygen
+	make -C doc html
 
 cov: $(BINARY_DIR)/$(CFG)/$(TEST_TARGET)
 	@if [ "$(CFG)" != "coverage" ]; then \
@@ -147,8 +148,9 @@ clean:
 clean_all: clean_cov clean_doc
 	rm -rf $(OBJECT_DIR) $(BINARY_DIR) $(DEPENDENCY_DIR) $(SOURCE_DIR)/*.gch
 
-clean_docs:
-	rm -rf $(DOCUMENTATION_DIR)
+clean_doc:
+	rm -rf doc/xml
+	make -C doc clean
 
 clean_cov:
 	rm -rf $(COVERAGE_DIR)

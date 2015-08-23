@@ -6,12 +6,7 @@
 
   @date         Created Thursday, 12 September 2013
 
-  @brief        A linked list data structure.
-
-  This linked list data structure provides most basic features necessary in a
-  linked list, along with some more advanced ones like iterators, stack
-  functionality, and a generic list data structure that can use a different
-  implementation.
+  @brief        Implementation of "libstephen/ll.h".
 
   @copyright    Copyright (c) 2013-2015, Stephen Brennan.  Released under the
                 Revised BSD License.  See the LICENSE.txt file for details.
@@ -117,15 +112,6 @@ smb_ll_node *ll_create_node(DATA data)
 
 *******************************************************************************/
 
-/**
-   @brief Initializes a new list in memory which has already been allocated.
-
-   No errors are defined for ll_init, but the parameter is used to allow for the
-   possibility of future errors.  For now, you may safely `assert(status ==
-   SMB_SUCCESS)`.
-
-   @param new_list A pointer to the memory to initialize.
- */
 void ll_init(smb_ll *new_list)
 {
   new_list->length = 0;
@@ -133,10 +119,6 @@ void ll_init(smb_ll *new_list)
   new_list->tail = NULL;
 }
 
-/**
-   @brief Allocates and initializes a new, empty linked list.
-   @returns A pointer to the new list.
- */
 smb_ll *ll_create()
 {
   smb_ll *new_list = smb_new(smb_ll, 1);
@@ -144,16 +126,6 @@ smb_ll *ll_create()
   return new_list;
 }
 
-/**
-   @brief Frees all the resources held by the linked list without freeing the
-   actual pointer to the list.
-
-   If you create a list on the stack and use ll_init to initialize it, calling
-   ll_delete will attempt to free your stack memory (bad).  Use this to free all
-   the resources of the list without freeing the pointer.
-
-   @param list The list to destroy.
- */
 void ll_destroy(smb_ll *list)
 {
   // Iterate through each node, deleting them as we go
@@ -166,28 +138,12 @@ void ll_destroy(smb_ll *list)
   }
 }
 
-/**
-   @brief Frees the resources held by the linked list, and the memory allocated
-   to the smb_ll object.
-
-   This is equivalent to calling ll_destroy on the pointer, and then calling
-   free() on the pointer.
-
-   @param list A pointer to the list to delete.
- */
 void ll_delete(smb_ll *list)
 {
   ll_destroy(list);
   smb_free(list);
 }
 
-/**
-   @brief Append the given data to the end of the list.
-
-   @param list A pointer to the list to append to.
-   @param new_data The data to append.
-   @param[out] status Status variable.
- */
 void ll_append(smb_ll *list, DATA new_data)
 {
   // Create the new node
@@ -206,14 +162,6 @@ void ll_append(smb_ll *list, DATA new_data)
   list->length++;
 }
 
-/**
-   @brief Prepend the given data to the beginning of the list.  All other data
-   is shifted forward one index.
-
-   @param list A pointer to the list.
-   @param new_data The data to prepend.
-   @param[out] status Status variable.
- */
 void ll_prepend(smb_ll *list, DATA new_data)
 {
   // Create the new smb_ll_node
@@ -228,33 +176,11 @@ void ll_prepend(smb_ll *list, DATA new_data)
   list->length++;
 }
 
-/**
-   @brief Push the data to the back of the list.  An alias for ll_append. @see
-   ll_append
-
-   Push, of course, refers to its usage in the context of stacks.  In other
-   words, the function appends an item at the end fo the list.
-
-   @param list A pointer to the list to push to.
-   @param new_data The data to push.
- */
 void ll_push_back(smb_ll *list, DATA new_data)
 {
   ll_append(list, new_data);
 }
 
-/**
-   @brief Pop data from the back of the list.
-
-   Pop, of course, refers to its usage in the context of stacks.  In other
-   words, the function removes the item at the back/end of the list and returns
-   it.
-
-   @param list A pointer to the list to pop from.
-   @param[out] status Status variable.
-   @returns The item from the back of the list.
-   @exception INDEX_ERROR If the list is empty.
- */
 DATA ll_pop_back(smb_ll *list, smb_status *status)
 {
   *status = SMB_SUCCESS;
@@ -271,17 +197,6 @@ DATA ll_pop_back(smb_ll *list, smb_status *status)
   }
 }
 
-/**
-   @brief Peek at the back of the list.
-
-   Peek, of course, refers to its usage in the context of stacks.  So this
-   returns the item at the end/back of the list without removing it.
-
-   @param list A pointer to the list to peek from.
-   @param[out] status Status variable.
-   @returns The item from the back of the list.
-   @exception INDEX_ERROR If the list is empty.
- */
 DATA ll_peek_back(smb_ll *list, smb_status *status)
 {
   *status = SMB_SUCCESS;
@@ -295,29 +210,11 @@ DATA ll_peek_back(smb_ll *list, smb_status *status)
   }
 }
 
-/**
-   @brief Push the data to the front of the list.  An alias for ll_prepend.
-   @see ll_push_back If the term 'push' is unfamiliar.
-
-   @param list A pointer to the list.
-   @param new_data The data to push.
-   @param[out] status Status variable.
- */
-
 void ll_push_front(smb_ll *list, DATA new_data)
 {
   ll_prepend(list, new_data);
 }
 
-/**
-   @brief Pop the data from the front of the list.
-   @see ll_pop_back If the term 'pop' is unfamiliar.
-
-   @param list A pointer to the list to pop from
-   @param[out] status Status variable.
-   @returns The data from the front of the list.
-   @exception INDEX_ERROR If the list is empty.
- */
 DATA ll_pop_front(smb_ll *list, smb_status *status)
 {
   *status = SMB_SUCCESS;
@@ -334,15 +231,6 @@ DATA ll_pop_front(smb_ll *list, smb_status *status)
   }
 }
 
-/**
-   @brief Peek at the front of the list.
-   @see ll_peek_back If the term 'peek' is unfamiliar.
-
-   @param list A pointer to the list to peek from.
-   @param[out] status Status variable.
-   @return The data from the front of the list.
-   @exception INDEX_ERROR If the list is empty.
- */
 DATA ll_peek_front(smb_ll *list, smb_status *status)
 {
   *status = SMB_SUCCESS;
@@ -356,18 +244,6 @@ DATA ll_peek_front(smb_ll *list, smb_status *status)
   }
 }
 
-/**
-   @brief Gets the data from the given index.
-
-   However, there is no guarantee that the index was valid.  An empty DATA
-   object is returned in that case, and an INDEX_ERROR is raised.
-
-   @param list A pointer to the list to get from.
-   @param index The index to get from the list.
-   @param[out] status Status variable.
-   @return The data at the specified index, if it exists.
-   @exception INDEX_ERROR If the given index is out of range.
- */
 DATA ll_get(const smb_ll *list, int index, smb_status *status)
 {
   *status = SMB_SUCCESS;
@@ -382,17 +258,6 @@ DATA ll_get(const smb_ll *list, int index, smb_status *status)
   }
 }
 
-/**
-   @brief Removes the node at the given index, if the index exists.
-
-   If the item is not at the end of the list, the index of every item after this
-   one will be shifted down one.
-
-   @param list A pointer to the list to remove from.
-   @param index The index to remove from the list.
-   @param[out] status Status variable.
-   @exception INDEX_ERROR If the given index is out of range.
- */
 void ll_remove(smb_ll *list, int index, smb_status *status)
 {
   // Fond the node
@@ -405,19 +270,6 @@ void ll_remove(smb_ll *list, int index, smb_status *status)
   list->length--;
 }
 
-/**
-   @brief Inserts an item at the specified location in the list.
-
-   If the location is not the end of the list, then every item at the given
-   index and after will be shifted up one index.  If the provided location is
-   less than 0, the location will be treated as 0.  If the provided location is
-   greater than the length of the list, the item will be added to the end of the
-   list.
-
-   @param list A pointer to the list to insert into.
-   @param index The index to insert at.
-   @param new_data The data to insert.
- */
 void ll_insert(smb_ll *list, int index, DATA new_data)
 {
   if (index <= 0) {
@@ -441,18 +293,6 @@ void ll_insert(smb_ll *list, int index, DATA new_data)
   }
 }
 
-/**
-   @brief Sets an existing element to a new value.
-
-   It is illegal to call ll_set on an out of bounds index.  You must use
-   ll_insert for that.
-
-   @param list The list to modify.
-   @param index The index of the item to set.
-   @param new_data The data to set the index to.
-   @param[out] status Status variable.
-   @exception INDEX_ERROR If the index is out of bounds
- */
 void ll_set(smb_ll *list, int index, DATA new_data, smb_status *status)
 {
   *status = SMB_SUCCESS;
@@ -464,12 +304,6 @@ void ll_set(smb_ll *list, int index, DATA new_data, smb_status *status)
   }
 }
 
-/**
-   @brief Returns the length of the given list.
-
-   @param list A pointer to the list
-   @returns The length of the list.
- */
 int ll_length(const smb_ll *list)
 {
   return list->length;
@@ -477,7 +311,6 @@ int ll_length(const smb_ll *list)
 
 /**
    @brief Recursive mergesort helper function.
-
    @param head Pointer to the head pointer (will be updated to reflect new list
    after sorting).
    @param length Length of sublist.  Expects the trailing node will not point to
@@ -539,24 +372,11 @@ static smb_ll_node *ll_sort_rec(smb_ll_node **head, int length, DATA_COMPARE cmp
   return tail;
 }
 
-/**
-   @brief Stable sort of linked list.
-   @param list List to sort.
-   @param comp Comparator for sorting.
-   @return Nothing, but the list is sorted in place.
- */
 void ll_sort(smb_ll *list, DATA_COMPARE comp)
 {
   list->tail = ll_sort_rec(&list->head, list->length, comp);
 }
 
-/**
-   @brief Returns whether or not the list contains the item.
-
-   @param list Pointer to the list.
-   @param d The item to search for.
-   @param comp The comparator to use.  NULL for bit comparison.
- */
 int ll_index_of(const smb_ll *list, DATA d, DATA_COMPARE comp)
 {
   int idx = 0;
@@ -644,12 +464,6 @@ void ll_iter_delete(smb_iter *iter)
   smb_free(iter);
 }
 
-/**
-   @brief Get an iterator for the linked list.
-
-   @param list A pointer to the list.
-   @returns an iterator
- */
 smb_iter ll_get_iter(const smb_ll *list)
 {
   smb_iter iter = {
@@ -797,27 +611,12 @@ void ll_fill_functions(smb_list *generic_list)
   generic_list->index_of = ll_index_of_adapter;
 }
 
-/**
-   @brief Creates a new, empty list, and returns it as an instance of the
-   generic smb_list data structure. @see smb_list
-
-   @param[out] status Status variable.
-   @returns A generic list interface object.
- */
 smb_list ll_create_list()
 {
   smb_ll *list = ll_create();
   return ll_cast_to_list(list);
 }
 
-/**
-   @brief Cast a smb_ll pointer to an instance of the smb_list interface.  @see
-   smb_list
-
-   @param list The linked list to cast to a generic list.
-
-   @return A generic list interface object.
- */
 smb_list ll_cast_to_list(smb_ll *list)
 {
   smb_list generic_list;

@@ -26,6 +26,12 @@
 #include "libstephen/str.h"
 #include "libstephen/fsm.h"
 
+/*******************************************************************************
+
+                               Private Functions
+
+*******************************************************************************/
+
 /**
    @brief Expand f to have as many states as referenced in the transition.
 
@@ -206,17 +212,39 @@ static fsm *fsm_parselines(smb_ll *lines, smb_status *status)
 }
 
 /**
-   @brief Read a Finite State Machine from its text representation.
+   @brief Prints a character in an FSM specification to dot format.
 
-   All fsm's can be printed using fsm_print().  This function *should* be able
-   to take any such string representation and convert it back into an equivalent
-   fsm again.
-   @param source The string to read in.
-   @param status Status variable for error reporting.
-   @returns New FSM, or NULL on error.
-   @exception CKY_TOO_FEW_LINES if there isn't at least one line.
-   @exception CKY_MALFORMED_TRANS if there is a problem reading a transition.
+   This function allows for printing out some characters differently than
+   others.  In dot format, quotes should be escaped.  Also, epsilon transitions
+   should be labelled something readable.
+   @param dest Destination file.
+   @param c The character to print
  */
+void fsm_dot_char(FILE * dest, wchar_t c)
+{
+  switch (c) {
+
+  case EPSILON:
+    // Print epsilon as a string, not a non-existant character!
+    fprintf(dest, "eps");
+    break;
+  case L'\"':
+    // Escape quotes.
+    fprintf(dest, "\"");
+    break;
+  default:
+    // Print other characters vebatim.
+    fprintf(dest, "%lc", c);
+    break;
+  }
+}
+
+/*******************************************************************************
+
+                                Public Functions
+
+*******************************************************************************/
+
 fsm *fsm_read(const wchar_t *source, smb_status *status)
 {
   smb_ll *lines;
@@ -238,11 +266,6 @@ fsm *fsm_read(const wchar_t *source, smb_status *status)
   return f;
 }
 
-/**
-   @brief Return a wchar_t* representation of the fsm (suitable for printing).
-   @param f The FSM to print
-   @return The string version of the FSM.
- */
 wchar_t *fsm_str(const fsm *f)
 {
   #define CHARS_PER_DECLARATION 8
@@ -295,11 +318,6 @@ wchar_t *fsm_str(const fsm *f)
   return wc.buf;
 }
 
-/**
-   @brief Print the FSM to the desired output stream.
-   @param f FSM to print.
-   @param dest Output stream/file to print to.
- */
 void fsm_print(const fsm *f, FILE *dest)
 {
   wchar_t *str = fsm_str(f);
@@ -307,45 +325,6 @@ void fsm_print(const fsm *f, FILE *dest)
   smb_free(str);
 }
 
-/**
-   @brief Prints a character in an FSM specification to dot format.
-
-   This function allows for printing out some characters differently than
-   others.  In dot format, quotes should be escaped.  Also, epsilon transitions
-   should be labelled something readable.
-
-   @param dest Destination file.
-   @param c The character to print
- */
-void fsm_dot_char(FILE * dest, wchar_t c)
-{
-  switch (c) {
-
-  case EPSILON:
-    // Print epsilon as a string, not a non-existant character!
-    fprintf(dest, "eps");
-    break;
-  case L'\"':
-    // Escape quotes.
-    fprintf(dest, "\"");
-    break;
-  default:
-    // Print other characters vebatim.
-    fprintf(dest, "%lc", c);
-    break;
-  }
-}
-
-/**
-   @brief Print an FSM to graphviz dot format.
-
-   Graphviz is a neat CLI tool to create diagrams of graphs.  The dot format is
-   an input language for graphs.  This function takes a FSM and prints it to a
-   file as a dot file, so that it can then be converted to a image by graphviz.
-
-   @param f The machine to print.
-   @param dest The destination file.
- */
 void fsm_dot(fsm *f, FILE *dest)
 {
   smb_status status;

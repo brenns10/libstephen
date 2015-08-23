@@ -399,11 +399,6 @@ fsm *regex_parse_recursive(const wchar_t *regex, const wchar_t **final)
   return curr;
 }
 
-/**
-   @brief Construct a FSM to accept the given regex.
-   @param regex Regular expression string.
-   @return A FSM that can be used to decide the language of the regex.
- */
 fsm *regex_parse(const wchar_t *regex){
   return regex_parse_recursive(regex, &regex);
 }

@@ -1,9 +1,10 @@
 syntax: glob
 obj/*
 bin/*
-doc/*
 cov/*
 dep/*
+doc/_build
+doc/xml
 *~
 GTAGS
 GRTAGS

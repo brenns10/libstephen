@@ -16,15 +16,45 @@
 #include "libstephen/fsm.h"// functions we are implementing
 #include "libstephen/al.h" // array lists
 
-/**
-   @brief Allocate an entirely new copy of an existing FSM.
+/*******************************************************************************
 
-   The transitions are completely disjoint, so freeing them in the original will
-   not affect the copy.
+                               Private Functions
 
-   @param f The FSM to copy
-   @return A copy of the FSM
- */
+*******************************************************************************/
+
+static void fsm_concat_flags(fsm *first, const fsm *second, unsigned int flags)
+{
+  smb_status status;
+  int i, offset = al_length(&first->transitions);
+  DATA d;
+  // Create a transition from each accepting state into the second machine's
+  // start state.
+  for (i = 0; i < al_length(&first->accepting); i++) {
+    int start = (int)al_get(&first->accepting, i, &status).data_llint;
+    // This could be outside the loop, but we need a new one for each instance
+    fsm_trans *ft = fsm_trans_create_single(EPSILON, EPSILON, flags,
+                                            second->start + offset);
+    fsm_add_trans(first, start, ft);
+  }
+
+  fsm_copy_trans(first, second);
+
+  // Replace the accepting states of the first with the second.
+  al_destroy(&first->accepting);
+  al_init(&first->accepting);
+  for (i = 0; i < al_length(&second->accepting); i++) {
+    d = al_get(&second->accepting, i, &status);
+    d.data_llint += offset;
+    al_append(&first->accepting, d);
+  }
+}
+
+/*******************************************************************************
+
+                                Public Functions
+
+*******************************************************************************/
+
 fsm *fsm_copy(const fsm *f)
 {
   int i, j;
@@ -55,12 +85,6 @@ fsm *fsm_copy(const fsm *f)
   return new;
 }
 
-/**
-   @brief Copy the transitions and states from src into dest.
-
-   All the states are added, and the transitions are modified with the offset
-   determined from the initial number of states in the destination.
- */
 void fsm_copy_trans(fsm *dest, const fsm *src)
 {
   smb_status status;
@@ -82,58 +106,11 @@ void fsm_copy_trans(fsm *dest, const fsm *src)
   }
 }
 
-static void fsm_concat_flags(fsm *first, const fsm *second, unsigned int flags)
-{
-  smb_status status;
-  int i, offset = al_length(&first->transitions);
-  DATA d;
-  // Create a transition from each accepting state into the second machine's
-  // start state.
-  for (i = 0; i < al_length(&first->accepting); i++) {
-    int start = (int)al_get(&first->accepting, i, &status).data_llint;
-    // This could be outside the loop, but we need a new one for each instance
-    fsm_trans *ft = fsm_trans_create_single(EPSILON, EPSILON, flags,
-                                            second->start + offset);
-    fsm_add_trans(first, start, ft);
-  }
-
-  fsm_copy_trans(first, second);
-
-  // Replace the accepting states of the first with the second.
-  al_destroy(&first->accepting);
-  al_init(&first->accepting);
-  for (i = 0; i < al_length(&second->accepting); i++) {
-    d = al_get(&second->accepting, i, &status);
-    d.data_llint += offset;
-    al_append(&first->accepting, d);
-  }
-}
-
-/**
-   @brief Concatenate two FSMs into the first FSM object.
-
-   This function concatenates two FSMs.  This means it constructs a machine that
-   will accept a string where the first part is accepted by the first machine,
-   and the second part is accepted by the second machine.  It is done by hooking
-   up the accepting states of the first machine to the start state of the second
-   (via epsilon transition).  Then, only the second machines's accepting states
-   are used for the final product.
-
-   Note that the concatenation is done in-place into the first FSM.  If you
-   don't wish for that to happen, use fsm_copy() to copy the first one, and then
-   use fsm_concat() to concatenate into the copy.
-
-   @param first The first FSM.  Is modified to contain the concatenation.
-   @param second The second FSM.  It is not modified.
- */
 void fsm_concat(fsm *first, const fsm *second)
 {
   fsm_concat_flags(first, second, 0);
 }
 
-/**
-   @brief Concatenate two FSMs into the first, such that the second is captured.
- */
 void fsm_concat_capture(fsm *first, const fsm *second)
 {
   int new_accept, i;
@@ -154,17 +131,6 @@ void fsm_concat_capture(fsm *first, const fsm *second)
   al_append(&first->accepting, LLINT(new_accept));
 }
 
-/**
-   @brief Construct the union of the two FSMs into the first one.
-
-   This function creates an FSM that will accept any string accepted by the
-   first OR the second one.  The FSM is constructed in place of the first
-   machine, modifying the parameter.  If this is not what you want, make a copy
-   of the first one, and pass the copy instead.
-
-   @param first The first FSM to union.  Will be modified with the result.
-   @param second The second FSM to union
- */
 void fsm_union(fsm *first, const fsm *second)
 {
   smb_status status;
@@ -199,14 +165,6 @@ void fsm_union(fsm *first, const fsm *second)
   first->start = newStart;
 }
 
-/**
-   @brief Modify an FSM to accept 0 or more occurrences of it.
-
-   This modifies the existing FSM to accept L*, where L is the language accepted
-   by the machine.
-
-   @param f The FSM to perform Kleene star on
- */
 void fsm_kleene(fsm *f)
 {
   smb_status status;

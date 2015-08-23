@@ -26,23 +26,11 @@ smb_logger fsm_sim_log = {
   .num = 0,
 };
 
-////////////////////////////////////////////////////////////////////////////////
-// Helper Functions
-////////////////////////////////////////////////////////////////////////////////
+/*******************************************************************************
 
-/**
-   @brief Copy all the values from one array list into another.
-   @param dest The destination array list
-   @param from The source array list
- */
-void al_copy_all(smb_al *dest, const smb_al *from)
-{
-  smb_status status;
-  int i;
-  for (i = 0; i < al_length(from); i++) {
-    al_append(dest, al_get(from, i, &status));
-  }
-}
+                               Private Functions
+
+******************************************************************************/
 
 static void add_eps_to_curr(fsm_sim *fs, int state, smb_al *cap)
 {
@@ -136,30 +124,21 @@ static bool fsm_sim_nondet_non_empty_intersection(smb_al *first, smb_al *second)
   return false;
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// Public Functions
-////////////////////////////////////////////////////////////////////////////////
+/*******************************************************************************
 
-/**
-   @brief Run the finite state machine as a deterministic one.
+                                Public Functions
 
-   Simulates a DFSM.  Any possible input at any given state should have exactly
-   one transition.  If there are no transitions for an input, this is treated as
-   an implicit transition to a rejecting state, and the simulation rejects
-   immediately.
+*******************************************************************************/
 
-   You should be aware that this simulation is really not all that useful,
-   unless you constructed the FSM manually, and therefore know that it is
-   deterministic.  Any FSM returned by regex_parse(), for instance, is *very*
-   nondeterministic, and can only be run using fsm_sim_nondet() or its siblings.
-   Also, this simulation completely ignores capture group information in the
-   FSM, since capturing really only works when you nondeterministically
-   simulate.
+void al_copy_all(smb_al *dest, const smb_al *from)
+{
+  smb_status status;
+  int i;
+  for (i = 0; i < al_length(from); i++) {
+    al_append(dest, al_get(from, i, &status));
+  }
+}
 
-   @param f The FSM to simulate
-   @param input The string of input
-   @returns Whether the machine accepts the string or not.
- */
 bool fsm_sim_det(fsm *f, const wchar_t *input)
 {
   smb_status status;
@@ -204,20 +183,6 @@ bool fsm_sim_det(fsm *f, const wchar_t *input)
   return al_index_of(&f->accepting, d, &data_compare_int) != -1;
 }
 
-/**
-   @brief Begin a non-deterministic simulation of this finite state machine.
-
-   This simulation is designed to be run in steps.  First, call this function.
-   Then, loop through many calls to fsm_sim_nondet_step().  When
-   fsm_sim_nondet_state() returns a value indicating that the simulation is
-   complete, you will have your answer.  Note that you should also call
-   fsm_sim_nondet_state() after a call to this function, because the input may
-   be empty.
-
-   @param f The FSM to simulate
-   @returns A `fsm_sim*` containing all of the simulation state.  This must be
-   freed with fsm_sim_delete() when you're done with it.
- */
 fsm_sim *fsm_sim_nondet_begin(fsm *f)
 {
   smb_status status = SMB_SUCCESS;
@@ -240,22 +205,6 @@ fsm_sim *fsm_sim_nondet_begin(fsm *f)
   return fs;
 }
 
-/**
-   @brief Check the state of the simulation.
-   @param s The simulation to check.
-   @param input The character that will be the next input.  This is used to
-   determine whether or not the decision is final (ACCEPTED/REJECTED), or may
-   change if you continue the simulation.
-   @retval FSM_SIM_ACCEPTING when the simulation has not ended, but is accepting
-   @retval FSM_SIM_NOT_ACCEPTING when the simulation has not ended, and is not
-   accepting
-   @retval FSM_SIM_REJECTED when the simulation has ended and rejected
-   @retval FSM_SIM_ACCEPTED when the simulation has ended and accepted
-   @see FSM_SIM_ACCEPTING
-   @see FSM_SIM_NOT_ACCEPTING
-   @see FSM_SIM_REJECTED
-   @see FSM_SIM_ACCEPTED
- */
 int fsm_sim_nondet_state(const fsm_sim *s, wchar_t input)
 {
   // If the current state is empty, REJECT
@@ -286,17 +235,6 @@ int fsm_sim_nondet_state(const fsm_sim *s, wchar_t input)
   }
 }
 
-/**
-   @brief Perform a single step in the non-deterministic simulation.
-
-   This function performs a single iteration of the simulation algorithm.  It
-   takes the current states, finds next states with the input character, and
-   then adds in the epsilon closures of all the states.  You should use
-   fsm_sim_nondet_state() to determine the state of the simulation after a step.
-
-   @param s The simulation state struct
-   @param input The next input character to the simulation.
- */
 void fsm_sim_nondet_step(fsm_sim *s, wchar_t input)
 {
   smb_status status;
@@ -364,20 +302,6 @@ void fsm_sim_nondet_step(fsm_sim *s, wchar_t input)
   }
 }
 
-/**
-   @brief Return the "correct" capture list for this simulation.
-
-   Since an NDFSM has a number of possible states it could be in, there is more
-   than one set of possible captures.  This function looks through the list of
-   current states' captures, and selects the one with the most captured groups
-   (also, it will only select even sized lists, since odd ones don't make
-   sense).  It then returns a copy of it (so that you can free the whole
-   simulation and keep the capture list).
-
-   @param sim The simulation to return captures from.
-   @returns Reference to list of captures (indexes) which you must free
-   separately from the simulation.
- */
 smb_al *fsm_sim_get_captures(fsm_sim *sim)
 {
   smb_iter it = al_get_iter(sim->cap);
@@ -401,23 +325,6 @@ smb_al *fsm_sim_get_captures(fsm_sim *sim)
   return retval;
 }
 
-/**
-   @brief Simulate NDFSM, optionally returning captured groups.
-
-   This function is a convenience function that completely simulates the NDFSM.
-   The "sub"-functions, fsm_sim_nondet_begin(), fsm_sim_nondet_step(),
-   fsm_sim_nondet_state(), fsm_sim_get_captures(), and fsm_sim_delete(), can be
-   used together to perform a more customizable simulation.  For an example, you
-   may want to see fsm_search(), which performs a search through a body of text.
-
-   @param f The FSM to simulate
-   @param input The input string to run with
-   @param[out] capture Pointer to `smb_al*` where to store capture list.
-   Ignored when NULL.  Pointer is set to NULL if there are no matches, and not
-   touched when the simulation rejects.
-   @retval true if the machine accepts
-   @retval false if the machine rejects
- */
 bool fsm_sim_nondet_capture(fsm *f, const wchar_t *input, smb_al **capture)
 {
   LDEBUG(&fsm_sim_log, "STARTING FSM SIMULATION");
@@ -443,13 +350,6 @@ bool fsm_sim_nondet_capture(fsm *f, const wchar_t *input, smb_al **capture)
   return accepted;
 }
 
-/**
-   @brief Simulate a NDFSM without capturing.
-   @param f The NDFSM to simulate
-   @param input The input string to run with
-   @retval true if the machine accepts
-   @retval false if the machine rejects
- */
 bool fsm_sim_nondet(fsm *f, const wchar_t *input)
 {
   return fsm_sim_nondet_capture(f, input, NULL);

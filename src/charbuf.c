@@ -6,7 +6,7 @@
 
   @date         Saturday, 23 May 2015
 
-  @brief        Character buffer data structure, for simpler string handling.
+  @brief        Implementation of "libstephen/cb.h".
 
   @copyright    Copyright (c) 2015, Stephen Brennan.  Released under the Revised
                 BSD License.  See the LICENSE.txt file for details.
