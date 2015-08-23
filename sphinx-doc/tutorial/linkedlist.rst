@@ -1,7 +1,7 @@
 Linked List
 ===========
 
-.. code:: c
+.. code:: C
 
     #include "libstephen/ll.h"
 
@@ -24,7 +24,7 @@ pointers contained in DATA, naturally.
 
 Here are some operations supported by ``smb_ll``
 
-.. code:: c
+.. code:: C
 
     void ll_append(smb_ll *list, DATA newData);
     void ll_prepend(smb_ll *list, DATA newData);
@@ -54,14 +54,14 @@ linear search.
 
 You can create generic lists with the following functions:
 
-.. code:: c
+.. code:: C
 
     smb_list ll_create_list();
     smb_list ll_cast_to_list(smb_ll *list);
 
 And you can get an iterator for a list with this function:
 
-.. code:: c
+.. code:: C
 
     smb_iter ll_get_iter(const smb_ll *list);
 
@@ -71,7 +71,7 @@ Sample Usage
 Using the linked list is pretty simple. Here, I create a list, add some
 numbers to it, and then free it.
 
-.. code:: c
+.. code:: C
 
     smb_ll *list = ll_create();
     DATA d;
@@ -89,7 +89,7 @@ Structure
 The following items are implementation details, and not really necessary
 to use the linked list. Here is the structure of a node:
 
-.. code:: c
+.. code:: C
 
     typedef struct smb_ll_node
     {
@@ -100,7 +100,7 @@ to use the linked list. Here is the structure of a node:
 
 And here is the actual linked list struct:
 
-.. code:: c
+.. code:: C
 
     typedef struct smb_ll
     {

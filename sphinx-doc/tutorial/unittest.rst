@@ -1,7 +1,7 @@
 Unit Testing
 ============
 
-.. code:: c
+.. code:: C
 
     #include "libstephen/ut.h"
 
@@ -58,7 +58,7 @@ to run ``valgrind bin/release/test`` as it is to run
 Operations
 ----------
 
-.. code:: c
+.. code:: C
 
     smb_ut_test *su_create_test(char *description, int (*run)());
     smb_ut_group *su_create_test_group(char *description);
@@ -86,7 +86,7 @@ Sample Use
 
 Here is a sample from some of libstephen's unit tests:
 
-.. code:: c
+.. code:: C
 
     smb_list (*get_list)(void);
 

@@ -57,7 +57,7 @@ when allocating memory. Here they are:
   ``size(type)``. Casts to the right pointer type for you. If there is an error,
   prints a message to standard error and terminates with an error value. EG:
 
-  .. code:: c
+  .. code:: C
 
      char *msg = "hi";
      char *string = smb_new(char, 3);
@@ -68,7 +68,7 @@ when allocating memory. Here they are:
    buffer to a new size, copying if necessary. Deals with errors for
    you. EG:
 
-   .. code:: c
+   .. code:: C
 
       string = smb_renew(char, string, 4);
       string[2] = '!';
@@ -79,7 +79,7 @@ when allocating memory. Here they are:
    ``free()`` does, but it seemed like it was necessary so that
    everything felt aligned. EG:
 
-   .. code:: c
+   .. code:: C
 
       smb_free(string);
 

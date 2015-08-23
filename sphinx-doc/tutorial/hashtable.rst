@@ -1,7 +1,7 @@
 Hash Table
 ==========
 
-.. code:: c
+.. code:: C
 
     #include "libstephen/ht.h"
 
@@ -32,7 +32,7 @@ that means knowing the type of the keys.
 To handle this, the hash table takes function pointers of two different
 types. The first is called ``HASH_FUNCTION``:
 
-.. code:: c
+.. code:: C
 
     typedef unsigned int (*HASH_FUNCTION)(DATA toHash);
     unsigned int my_hash(DATA toHash) {
@@ -48,7 +48,7 @@ function below that is a hash function that implements the
 
 The other type of function pointer that is defined is ``DATA_COMPARE``:
 
-.. code:: c
+.. code:: C
 
     typedef int (*DATA_COMPARE)(DATA d1, DATA d2);
     int compare_int(DATA d1, DATA d2)
@@ -70,7 +70,7 @@ Instead, I've made a function pointer type that will act on a DATA,
 allowing you to specify an action to happen before removing an item from
 the table!
 
-.. code:: c
+.. code:: C
 
     typedef void (*DATA_ACTION)(DATA d);
     void freer(DATA d)
@@ -84,7 +84,7 @@ Operations
 With those function pointer types in hand, we can do a lot of fun hash
 table stuff. Here is a list of operations, straight from the header:
 
-.. code:: c
+.. code:: C
 
     void ht_init(smb_ht *pTable, HASH_FUNCTION hash_func, DATA_COMPARE equal);
     smb_ht *ht_create(HASH_FUNCTION hash_func, DATA_COMPARE equal);
@@ -114,7 +114,7 @@ Sample Usage
 
 Here's an example of a using a hash table:
 
-.. code:: c
+.. code:: C
 
     DATA d1, d2;
     smb_status status = SMB_SUCCESS;
@@ -138,7 +138,7 @@ method for resolving collisions: chaining. Basically, each bucket is a
 linked list. In the future, I might change to quadratic probing. Anyhow,
 here is the hash table itself:
 
-.. code:: c
+.. code:: C
 
     typedef struct smb_ht
     {
@@ -151,7 +151,7 @@ here is the hash table itself:
 
 And here is the structure of the hash table bucket:
 
-.. code:: c
+.. code:: C
 
     typedef struct smb_ht_bckt
     {

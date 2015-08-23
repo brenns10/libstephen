@@ -1,7 +1,7 @@
 Array List (smb_al)
 ===================
 
-.. code:: c
+.. code:: C
 
     #include "libstephen/al.h"
 
@@ -21,7 +21,7 @@ Operations
 The array list supports the four normal creation and deletion functions,
 which create an empty list. Here are some array list operations:
 
-.. code:: c
+.. code:: C
 
     void al_append(smb_al *list, DATA newData);
     void al_prepend(smb_al *list, DATA newData);
@@ -45,14 +45,14 @@ operations are constant.
 
 These will get you a generic list:
 
-.. code:: c
+.. code:: C
 
     smb_list al_create_list();
     smb_list al_cast_to_list(smb_al *list);
 
 And this will create an iterator:
 
-.. code:: c
+.. code:: C
 
     smb_iter al_get_iter(const smb_al *list);
 
@@ -62,7 +62,7 @@ Sample Usage
 This is some sample code identical to the one I used to show the linked
 list:
 
-.. code:: c
+.. code:: C
 
     smb_al *list = al_create();
     DATA d;
@@ -81,7 +81,7 @@ Structure
 
 Here is the structure of an ``smb_al`` struct:
 
-.. code:: c
+.. code:: C
 
     typedef struct smb_al
     {

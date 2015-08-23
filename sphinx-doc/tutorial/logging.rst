@@ -1,7 +1,7 @@
 Logging
 =======
 
-.. code:: c
+.. code:: C
 
     #include "libstephen/log.h"
 
@@ -65,7 +65,7 @@ default logger will report any level message to ``stderr``.
 
 The log levels are defined as macros expanding to integers:
 
-.. code:: c
+.. code:: C
 
     #define LEVEL_NOTSET    0
     #define LEVEL_DEBUG    10
@@ -84,7 +84,7 @@ You can create a ``smb_logger`` using the default lifetime functions
 (``sl_*``), which take no extra arguments. You can use the following
 functions to adjust loggers:
 
-.. code:: c
+.. code:: C
 
     void sl_set_level(smb_logger *l, int level);
     void sl_add_handler(smb_logger *l, smb_loghandler h, smb_status *status);
@@ -135,7 +135,7 @@ logger.
 
 All of these macros expand to call a single function:
 
-.. code:: c
+.. code:: C
 
     void sl_log(smb_logger *l, char *file, int line, const char *function, int level, ...);
 

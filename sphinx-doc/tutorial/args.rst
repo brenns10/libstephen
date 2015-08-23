@@ -1,7 +1,7 @@
 Argument Parsing
 ================
 
-.. code:: c
+.. code:: C
 
     #include "libstephen/ad.h"
 
@@ -42,7 +42,7 @@ My argument processor is based on four different types of arguments:
 Initialization
 --------------
 
-.. code:: c
+.. code:: C
 
     void arg_data_init(smb_ad *data);
     smb_ad *arg_data_create();
@@ -63,7 +63,7 @@ parsed as an argument).
 So, something like this would be the basic structure of your main
 function:
 
-.. code:: c
+.. code:: C
 
     int main(int argc, char *argv[])
     {
@@ -82,7 +82,7 @@ function:
 Reading Argument Data
 ---------------------
 
-.. code:: c
+.. code:: C
 
     int check_flag(smb_ad *data, char flag);
     int check_long_flag(smb_ad *data, char *flag);
@@ -105,7 +105,7 @@ in the ``bare_strings`` field of the ``smb_ad`` struct.
 Here's a typical example of how you might use ``smb_ad`` to parse
 arguments. It continues from the outline earlier.
 
-.. code:: c
+.. code:: C
 
     if (check_flag(&args, 'h') || check_long_flag(&args, "help")) {
       help();

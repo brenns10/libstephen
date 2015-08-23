@@ -62,7 +62,7 @@ to create a ``DATA`` on the stack, assign a value to it, and then send that to
 my functions. So, I created a set of macros which expand to ``DATA`` literals,
 so you don't have to do that:
 
-.. code:: c
+.. code:: C
 
     DATA an_integer = LLINT(12);
     DATA a_pointer = PTR(NULL);
