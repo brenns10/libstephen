@@ -51,25 +51,37 @@ clutters up the library and program like none other. So, the standard
 practice is to just exit when memory allocation fails.
 
 In fact, libstephen provides helper functions for doing exactly this
-when allocating memory. Here they are: \*
-``type *smb_new(type, size_t amount)``: Allocates ``amount`` of memory
-of size ``size(type)``. Casts to the right pointer type for you. If
-there is an error, prints a message to standard error and terminates
-with an error value. EG:
+when allocating memory. Here they are:
 
-``c   char *msg = "hi";   char *string = smb_new(char, 3);   strncpy(string, msg, 3);   printf("%s\n", string);   //STDOUT: hi``
+- ``type *smb_new(type, size_t amount)``: Allocates ``amount`` of memory of size
+  ``size(type)``. Casts to the right pointer type for you. If there is an error,
+  prints a message to standard error and terminates with an error value. EG:
+
+  .. code:: c
+
+     char *msg = "hi";
+     char *string = smb_new(char, 3);
+     strncpy(string, msg, 3);
+     printf("%s\n", string);   //STDOUT: hi``
 
 -  ``type *smb_renew(type, type *ptr, size_t newamt)`` - Reallocates the
    buffer to a new size, copying if necessary. Deals with errors for
    you. EG:
 
-``c   string = smb_renew(char, string, 4);   string[2] = '!';   string[3] = '\0';   printf("%s\n", string);   //STDOUT: hi!``
+   .. code:: c
+
+      string = smb_renew(char, string, 4);
+      string[2] = '!';
+      string[3] = '\0';
+      printf("%s\n", string);   //STDOUT: hi!``
 
 -  ``void smb_free(void *ptr)`` - This actually doesn't do any more than
    ``free()`` does, but it seemed like it was necessary so that
    everything felt aligned. EG:
 
-``c   smb_free(string);``
+   .. code:: c
+
+      smb_free(string);
 
 Assertions
 ----------
