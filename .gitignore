@@ -1,10 +1,10 @@
 syntax: glob
 obj/*
 bin/*
-doc/*
 cov/*
 dep/*
-sphinx-doc/_build
+doc/_build
+doc/xml
 *~
 GTAGS
 GRTAGS
