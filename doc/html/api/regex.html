@@ -1,0 +1,436 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Regular Expressions &mdash; libstephen 0.1 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="libstephen 0.1 documentation" href="../index.html"/>
+        <link rel="up" title="Libstephen API Documentation" href="index.html"/>
+        <link rel="next" title="Utilities &amp; Miscellaneous" href="util.html"/>
+        <link rel="prev" title="Finite State Machine" href="fsm.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+
+        
+          <a href="../index.html" class="icon icon-home"> libstephen
+        
+
+        
+        </a>
+
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+        
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/index.html">Libstephen Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/errors.html">Error Handling</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/errors.html#why-a-pointer-to-a-status-variable">Why a pointer to a status variable?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/errors.html#values">Values</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/errors.html#memory-allocation-errors">Memory allocation errors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/errors.html#assertions">Assertions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/arraylist.html">Array List (smb_al)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/arraylist.html#operations">Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/arraylist.html#sample-usage">Sample Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/arraylist.html#structure">Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/linkedlist.html">Linked List</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/linkedlist.html#operations">Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/linkedlist.html#sample-usage">Sample Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/linkedlist.html#structure">Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/list.html">List Interface</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/list.html#operations">Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/list.html#sample-usage">Sample Usage</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/iterator.html">Iterator</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/iterator.html#structure-function">Structure &amp; Function</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/iterator.html#sample-usage">Sample Usage</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/hashtable.html">Hash Table</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/hashtable.html#infrastructure">Infrastructure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/hashtable.html#operations">Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/hashtable.html#sample-usage">Sample Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/hashtable.html#structure">Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/charbuf.html">Character Buffer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/charbuf.html#functions">Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/charbuf.html#wide-character-version">Wide Character Version</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/charbuf.html#i-o-utilities">I/O Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/args.html">Argument Parsing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/args.html#argument-types">Argument Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/args.html#initialization">Initialization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/args.html#reading-argument-data">Reading Argument Data</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/logging.html">Logging</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/logging.html#history">History</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/logging.html#goals">Goals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/logging.html#concepts">Concepts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/logging.html#functions-macros">Functions &amp; Macros</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/unittest.html">Unit Testing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/unittest.html#history">History</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/unittest.html#operations">Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/unittest.html#sample-use">Sample Use</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/regex.html">Regular Expressions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/regex.html#features">Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/regex.html#functions">Functions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Libstephen API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="base.html">Libstephen Base</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ll.html">Linked List</a></li>
+<li class="toctree-l2"><a class="reference internal" href="al.html">Array List</a></li>
+<li class="toctree-l2"><a class="reference internal" href="list.html">List Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ht.html">Hash Table</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bf.html">Bitfield</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cb.html">Character Buffer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ad.html">Argument Parsing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="log.html">Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ut.html">Unit Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fsm.html">Finite State Machine</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">Regular Expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="util.html">Utilities &amp; Miscellaneous</a></li>
+<li class="toctree-l2"><a class="reference internal" href="str.html">String Functions</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">libstephen</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="index.html">Libstephen API Documentation</a> &raquo;</li>
+      
+    <li>Regular Expressions</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/api/regex.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="regular-expressions">
+<h1>Regular Expressions<a class="headerlink" href="#regular-expressions" title="Permalink to this headline">¶</a></h1>
+<p>Declarations for regular expression routines. </p>
+<p><dl class="docutils">
+<dt><strong>Author</strong></dt>
+<dd>Stephen Brennan</dd>
+<dt><strong>Date</strong></dt>
+<dd>Created Sunday, 18 May 2014</dd>
+<dt><strong>Copyright</strong></dt>
+<dd>Copyright (c) 2015, Stephen Brennan. Released under the Revised BSD License. See the LICENSE.txt file for details. </dd>
+</dl>
+</p>
+<div class="breathe-sectiondef container">
+<p class="breathe-sectiondef-title rubric">Functions</p>
+<dl class="function">
+<dt id="c.regex_hit_init">
+<span class="target" id="project0regex_8h_1a620b076c4e97fc7c6e95600bd9f6fc39"></span>void <code class="descname">regex_hit_init</code><span class="sig-paren">(</span><a class="reference internal" href="#c.regex_hit" title="regex_hit">regex_hit</a>  *<em>&nbsp;obj</em>, int<em>&nbsp;start</em>, int<em>&nbsp;length</em><span class="sig-paren">)</span><a class="headerlink" href="#c.regex_hit_init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize a <a class="reference internal" href="#project0structregex__hit"><span>regex_hit</span></a>. </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">obj</span></code> - <p>The (pre-allocated) <a class="reference internal" href="#project0structregex__hit"><span>regex_hit</span></a>. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">start</span></code> - <p>The start location of the hit. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">length</span></code> - <p>The length of the hit. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.regex_hit_create">
+<span class="target" id="project0regex_8h_1af780fe7ad3fe1abdc77113d94cd85aa2"></span><a class="reference internal" href="#c.regex_hit" title="regex_hit">regex_hit</a>* <code class="descname">regex_hit_create</code><span class="sig-paren">(</span>int<em>&nbsp;start</em>, int<em>&nbsp;length</em><span class="sig-paren">)</span><a class="headerlink" href="#c.regex_hit_create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Allocate a <a class="reference internal" href="#project0structregex__hit"><span>regex_hit</span></a>. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>Pointer to the <a class="reference internal" href="#project0structregex__hit"><span>regex_hit</span></a>. Must be freed with <a class="reference internal" href="#project0regex_8h_1abc7bd85bcf94515c25ecc6fd3c4508f4"><span>regex_hit_delete()</span></a>. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">start</span></code> - <p>The start location of the hit. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">length</span></code> - <p>The end location of the hit. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.regex_hit_destroy">
+<span class="target" id="project0regex_8h_1a38c12ce2ebc264d6b371e83396d45b02"></span>void <code class="descname">regex_hit_destroy</code><span class="sig-paren">(</span><a class="reference internal" href="#c.regex_hit" title="regex_hit">regex_hit</a>  *<em>&nbsp;obj</em><span class="sig-paren">)</span><a class="headerlink" href="#c.regex_hit_destroy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clean up a <a class="reference internal" href="#project0structregex__hit"><span>regex_hit</span></a> object. </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">obj</span></code> - <p>The <a class="reference internal" href="#project0structregex__hit"><span>regex_hit</span></a> object to clean up. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.regex_hit_delete">
+<span class="target" id="project0regex_8h_1abc7bd85bcf94515c25ecc6fd3c4508f4"></span>void <code class="descname">regex_hit_delete</code><span class="sig-paren">(</span><a class="reference internal" href="#c.regex_hit" title="regex_hit">regex_hit</a>  *<em>&nbsp;obj</em><span class="sig-paren">)</span><a class="headerlink" href="#c.regex_hit_delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clean up and free a <a class="reference internal" href="#project0structregex__hit"><span>regex_hit</span></a> object. </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">obj</span></code> - <p>The <a class="reference internal" href="#project0structregex__hit"><span>regex_hit</span></a> to free. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.regex_parse">
+<span class="target" id="project0regex_8h_1a58c440b23a9f0be68aea919a81a5ca00"></span><a class="reference internal" href="fsm.html#c.fsm" title="fsm">fsm</a>* <code class="descname">regex_parse</code><span class="sig-paren">(</span>const wchar_t *<em>&nbsp;regex</em><span class="sig-paren">)</span><a class="headerlink" href="#c.regex_parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct a FSM to accept the given regex. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>A FSM that can be used to decide the language of the regex. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">regex</span></code> - <p>Regular expression string. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.fsm_search">
+<span class="target" id="project0regex_8h_1a20107415f6769b987e6d7beee78ed478"></span><a class="reference internal" href="al.html#c.smb_al" title="smb_al">smb_al</a>* <code class="descname">fsm_search</code><span class="sig-paren">(</span><a class="reference internal" href="fsm.html#c.fsm" title="fsm">fsm</a>  *<em>&nbsp;regex_fsm</em>, const wchar_t *<em>&nbsp;srchText</em>, bool<em>&nbsp;greedy</em>, bool<em>&nbsp;overlap</em><span class="sig-paren">)</span><a class="headerlink" href="#c.fsm_search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform a regex-style search with an FSM on a search text. </p>
+<p>The &#8220;regex-style search&#8221; runs the FSM starting at each character in the text. If the FSM ever enters an accepting state, then that is a potential match. The last potential match (if any) for every character in the text makes up the list of hits. <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>An array list (<a class="reference internal" href="al.html#project0structsmb__al"><span>smb_al</span></a>) of `regex_hit *` full of hits. Each hit must be individually freed when you&#8217;re finished, as well as the array list itself. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">regex_fsm</span></code> - <p>The FSM to search with. Not necessarily generated from a regular expression. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">srchText</span></code> - <p>The text to search the FSM on. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">greedy</span></code> - <p>When set to true, only returns one hit. Otherwise, returns all hits. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">overlap</span></code> - <p>When set to true, allows overlapping hits. For instance, a search for &#8220;\w+&#8221; on &#8220;blah&#8221; would return blah, lah, ah, and h. Since this is usually undesirable, the recommended value is false. When false, the search will skip to the end of each hit and resume searching there. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.regex_search">
+<span class="target" id="project0regex_8h_1ac5ffd8988768ff06b05465eda3025753"></span><a class="reference internal" href="al.html#c.smb_al" title="smb_al">smb_al</a>* <code class="descname">regex_search</code><span class="sig-paren">(</span>const wchar_t *<em>&nbsp;regex</em>, const wchar_t *<em>&nbsp;srchText</em>, bool<em>&nbsp;greedy</em>, bool<em>&nbsp;overlap</em><span class="sig-paren">)</span><a class="headerlink" href="#c.regex_search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Searches for a regular expression on a search text. </p>
+<p><dl class="docutils">
+<dt><strong>See</strong></dt>
+<dd><a class="reference internal" href="#project0regex_8h_1a20107415f6769b987e6d7beee78ed478"><span>fsm_search()</span></a> For full details on the operation of the function. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">regex</span></code> - <p>The regular expression to search for. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">srchText</span></code> - <p>The text to search in. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">greedy</span></code> - <p>Whether to return first result only. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">overlap</span></code> - <p>Whether to allow overlapping matches. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<dl class="struct">
+<dt id="c.regex_hit">
+<span class="target" id="project0structregex__hit"></span><em class="property">struct </em><code class="descname">regex_hit</code><a class="headerlink" href="#c.regex_hit" title="Permalink to this definition">¶</a></dt>
+<dd><em>#include &lt;regex.h&gt;</em><p>A struct to hold regular expression search hits. </p>
+<div class="breathe-sectiondef container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt id="c.start">
+<span class="target" id="project0structregex__hit_1a37722a150250e2a5a98e5e0d11e53449"></span>int <code class="descname">start</code><a class="headerlink" href="#c.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>The location the hit starts at. This is inclusive. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.length">
+<span class="target" id="project0structregex__hit_1a9f59b34b1f25fe00023291b678246bcc"></span>int <code class="descname">length</code><a class="headerlink" href="#c.length" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of characters in the hit. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="util.html" class="btn btn-neutral float-right" title="Utilities &amp; Miscellaneous" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="fsm.html" class="btn btn-neutral" title="Finite State Machine" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2013-2015, Stephen Brennan.
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

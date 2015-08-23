@@ -1,0 +1,735 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Logging &mdash; libstephen 0.1 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="libstephen 0.1 documentation" href="../index.html"/>
+        <link rel="up" title="Libstephen API Documentation" href="index.html"/>
+        <link rel="next" title="Unit Testing" href="ut.html"/>
+        <link rel="prev" title="Argument Parsing" href="ad.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+
+        
+          <a href="../index.html" class="icon icon-home"> libstephen
+        
+
+        
+        </a>
+
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+        
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/index.html">Libstephen Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/errors.html">Error Handling</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/errors.html#why-a-pointer-to-a-status-variable">Why a pointer to a status variable?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/errors.html#values">Values</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/errors.html#memory-allocation-errors">Memory allocation errors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/errors.html#assertions">Assertions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/arraylist.html">Array List (smb_al)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/arraylist.html#operations">Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/arraylist.html#sample-usage">Sample Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/arraylist.html#structure">Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/linkedlist.html">Linked List</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/linkedlist.html#operations">Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/linkedlist.html#sample-usage">Sample Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/linkedlist.html#structure">Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/list.html">List Interface</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/list.html#operations">Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/list.html#sample-usage">Sample Usage</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/iterator.html">Iterator</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/iterator.html#structure-function">Structure &amp; Function</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/iterator.html#sample-usage">Sample Usage</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/hashtable.html">Hash Table</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/hashtable.html#infrastructure">Infrastructure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/hashtable.html#operations">Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/hashtable.html#sample-usage">Sample Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/hashtable.html#structure">Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/charbuf.html">Character Buffer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/charbuf.html#functions">Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/charbuf.html#wide-character-version">Wide Character Version</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/charbuf.html#i-o-utilities">I/O Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/args.html">Argument Parsing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/args.html#argument-types">Argument Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/args.html#initialization">Initialization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/args.html#reading-argument-data">Reading Argument Data</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/logging.html">Logging</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/logging.html#history">History</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/logging.html#goals">Goals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/logging.html#concepts">Concepts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/logging.html#functions-macros">Functions &amp; Macros</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/unittest.html">Unit Testing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/unittest.html#history">History</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/unittest.html#operations">Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/unittest.html#sample-use">Sample Use</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorial/regex.html">Regular Expressions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/regex.html#features">Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/regex.html#functions">Functions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Libstephen API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="base.html">Libstephen Base</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ll.html">Linked List</a></li>
+<li class="toctree-l2"><a class="reference internal" href="al.html">Array List</a></li>
+<li class="toctree-l2"><a class="reference internal" href="list.html">List Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ht.html">Hash Table</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bf.html">Bitfield</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cb.html">Character Buffer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ad.html">Argument Parsing</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ut.html">Unit Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fsm.html">Finite State Machine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="regex.html">Regular Expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="util.html">Utilities &amp; Miscellaneous</a></li>
+<li class="toctree-l2"><a class="reference internal" href="str.html">String Functions</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">libstephen</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="index.html">Libstephen API Documentation</a> &raquo;</li>
+      
+    <li>Logging</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/api/log.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="logging">
+<h1>Logging<a class="headerlink" href="#logging" title="Permalink to this headline">¶</a></h1>
+<p>Logging facilities for libstephen. </p>
+<p><dl class="docutils">
+<dt><strong>Author</strong></dt>
+<dd>Stephen Brennan</dd>
+<dt><strong>Date</strong></dt>
+<dd>Created Sunday, 24 May 2015</dd>
+<dt><strong>Copyright</strong></dt>
+<dd>Copyright (c) 2015, Stephen Brennan. Released under the Revised BSD License. See LICENSE.txt for details. </dd>
+</dl>
+</p>
+<div class="breathe-sectiondef container">
+<p class="breathe-sectiondef-title rubric">Defines</p>
+<dl class="define">
+<dt id="c.LEVEL_NOTSET">
+<span class="target" id="project0log_8h_1a583ae0ac089ab3cc3f08aee3c414c14c"></span><code class="descname">LEVEL_NOTSET</code><a class="headerlink" href="#c.LEVEL_NOTSET" title="Permalink to this definition">¶</a></dt>
+<dd><p>Most fine grained log level &#8211; loggers will report everything. </p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.LEVEL_DEBUG">
+<span class="target" id="project0log_8h_1a70c3bf85b85e1eeac0b8aae6f557565e"></span><code class="descname">LEVEL_DEBUG</code><a class="headerlink" href="#c.LEVEL_DEBUG" title="Permalink to this definition">¶</a></dt>
+<dd><p>Suggested log level for messages useful for debugging. </p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.LEVEL_INFO">
+<span class="target" id="project0log_8h_1a3d180faf3ef7ae097b000712909b0e7a"></span><code class="descname">LEVEL_INFO</code><a class="headerlink" href="#c.LEVEL_INFO" title="Permalink to this definition">¶</a></dt>
+<dd><p>Suggested log level for informational messages. </p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.LEVEL_WARNING">
+<span class="target" id="project0log_8h_1a3f6db1f02052b3afed24f77d5c3bd61d"></span><code class="descname">LEVEL_WARNING</code><a class="headerlink" href="#c.LEVEL_WARNING" title="Permalink to this definition">¶</a></dt>
+<dd><p>Suggested log level for warning messages. </p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.LEVEL_ERROR">
+<span class="target" id="project0log_8h_1a2019547e7f5bf5d56a09e5cfa98d0598"></span><code class="descname">LEVEL_ERROR</code><a class="headerlink" href="#c.LEVEL_ERROR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Suggested log level for error messages. </p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.LEVEL_CRITICAL">
+<span class="target" id="project0log_8h_1ada33b0333730657934850fc104f0ef11"></span><code class="descname">LEVEL_CRITICAL</code><a class="headerlink" href="#c.LEVEL_CRITICAL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Suggested log level for critical, non-recoverable error messages. </p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.SMB_MAX_LOGHANDLERS">
+<span class="target" id="project0log_8h_1a650497a5973f4daf2c7c956d57d4a760"></span><code class="descname">SMB_MAX_LOGHANDLERS</code><a class="headerlink" href="#c.SMB_MAX_LOGHANDLERS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Max number of log handlers to be held by a logger. </p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.SMB_DEFAULT_LOGLEVEL">
+<span class="target" id="project0log_8h_1a2b220ee16bad46d2d1fa197ce9213d8e"></span><code class="descname">SMB_DEFAULT_LOGLEVEL</code><a class="headerlink" href="#c.SMB_DEFAULT_LOGLEVEL" title="Permalink to this definition">¶</a></dt>
+<dd><p>The level that the default logger starts at. </p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.SMB_DEFAULT_LOGDEST">
+<span class="target" id="project0log_8h_1af4923fa2cff2bede6d4d1e9aae7a6c6f"></span><code class="descname">SMB_DEFAULT_LOGDEST</code><a class="headerlink" href="#c.SMB_DEFAULT_LOGDEST" title="Permalink to this definition">¶</a></dt>
+<dd><p>The file that the default logger points at. </p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.SMB_DEFAULT_LOGFORMAT">
+<span class="target" id="project0log_8h_1a1bb60e49081f41dff3649800bd78e820"></span><code class="descname">SMB_DEFAULT_LOGFORMAT</code><a class="headerlink" href="#c.SMB_DEFAULT_LOGFORMAT" title="Permalink to this definition">¶</a></dt>
+<dd><p>The format string for default loggers. </p>
+<p>This is kinda obnoxious because you can only change the formatting characters. The order of the arguments is set in stone, and you can&#8217;t change that with a format string. The order is filename:line, function, level, message. </p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.LOG">
+<span class="target" id="project0log_8h_1a81a1621b7dded1c367ce967a299e4442"></span><code class="descname">LOG</code><span class="sig-paren">(</span>logger, <a class="reference internal" href="#c.level" title="level">level</a>, ...<span class="sig-paren">)</span><a class="headerlink" href="#c.LOG" title="Permalink to this definition">¶</a></dt>
+<dd><p>Log a message. </p>
+<p>This macro fills out the file, line, and function parameters of <a class="reference internal" href="#project0log_8h_1a34e4f88b97b95c7fc598afbe05836438"><span>sl_log()</span></a> so that you only need to figure out the logger, level, and message. <dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">logger</span></code> - <p>Logger to log to. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">level</span></code> - <p>Level the message is at. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">...</span></code> - <p>Format string and format arguments. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.DDEBUG">
+<span class="target" id="project0log_8h_1ac8b0c8b2bc0a2beb6e6d3a1b8d0c19bd"></span><code class="descname">DDEBUG</code><span class="sig-paren">(</span>...<span class="sig-paren">)</span><a class="headerlink" href="#c.DDEBUG" title="Permalink to this definition">¶</a></dt>
+<dd><p>Log to default logger at LEVEL_DEBUG. </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">...</span></code> - <p>Format string and format arguments. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.DINFO">
+<span class="target" id="project0log_8h_1a36678f8d781e72a104947b439a153b37"></span><code class="descname">DINFO</code><span class="sig-paren">(</span>...<span class="sig-paren">)</span><a class="headerlink" href="#c.DINFO" title="Permalink to this definition">¶</a></dt>
+<dd><p>Log to default logger at LEVEL_INFO. </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">...</span></code> - <p>Format string and format arguments. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.DWARNING">
+<span class="target" id="project0log_8h_1a377a6a7439b19d27bb91bb068af604c4"></span><code class="descname">DWARNING</code><span class="sig-paren">(</span>...<span class="sig-paren">)</span><a class="headerlink" href="#c.DWARNING" title="Permalink to this definition">¶</a></dt>
+<dd><p>Log to default logger at LEVEL_WARNING. </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">...</span></code> - <p>Format string and format arguments. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.DERROR">
+<span class="target" id="project0log_8h_1a61284607ada6b41aa41e31e9a2f7ba5d"></span><code class="descname">DERROR</code><span class="sig-paren">(</span>...<span class="sig-paren">)</span><a class="headerlink" href="#c.DERROR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Log to default logger at LEVEL_ERROR. </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">...</span></code> - <p>Format string and format arguments. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.DCRITICAL">
+<span class="target" id="project0log_8h_1ae6de371a5ac8490dd946137fec4eac4f"></span><code class="descname">DCRITICAL</code><span class="sig-paren">(</span>...<span class="sig-paren">)</span><a class="headerlink" href="#c.DCRITICAL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Log to default logger at LEVEL_CRITICAL. </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">...</span></code> - <p>Format string and format arguments. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.LDEBUG">
+<span class="target" id="project0log_8h_1a902c1d4e55816e7cf28d5a0478280b80"></span><code class="descname">LDEBUG</code><span class="sig-paren">(</span>logger, ...<span class="sig-paren">)</span><a class="headerlink" href="#c.LDEBUG" title="Permalink to this definition">¶</a></dt>
+<dd><p>Log to any logger at LEVEL_DEBUG. </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">logger</span></code> - <p>Logger to log to. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">...</span></code> - <p>Format string and format arguments. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.LINFO">
+<span class="target" id="project0log_8h_1a9460a2daff1e6560e590201719c1c32d"></span><code class="descname">LINFO</code><span class="sig-paren">(</span>logger, ...<span class="sig-paren">)</span><a class="headerlink" href="#c.LINFO" title="Permalink to this definition">¶</a></dt>
+<dd><p>Log to any logger at LEVEL_INFO. </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">logger</span></code> - <p>Logger to log to. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">...</span></code> - <p>Format string and format arguments. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.LWARNING">
+<span class="target" id="project0log_8h_1a52fb25c8c711cef39ae1abab26ce3ed4"></span><code class="descname">LWARNING</code><span class="sig-paren">(</span>logger, ...<span class="sig-paren">)</span><a class="headerlink" href="#c.LWARNING" title="Permalink to this definition">¶</a></dt>
+<dd><p>Log to any logger at LEVEL_WARNING. </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">logger</span></code> - <p>Logger to log to. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">...</span></code> - <p>Format string and format arguments. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.LERROR">
+<span class="target" id="project0log_8h_1a46862db2e2ed7352d6dafc23304d2f97"></span><code class="descname">LERROR</code><span class="sig-paren">(</span>logger, ...<span class="sig-paren">)</span><a class="headerlink" href="#c.LERROR" title="Permalink to this definition">¶</a></dt>
+<dd><p>Log to any logger at LEVEL_ERROR. </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">logger</span></code> - <p>Logger to log to. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">...</span></code> - <p>Format string and format arguments. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.LCRITICAL">
+<span class="target" id="project0log_8h_1ad754510c3081ff7c51d415a31679a737"></span><code class="descname">LCRITICAL</code><span class="sig-paren">(</span>logger, ...<span class="sig-paren">)</span><a class="headerlink" href="#c.LCRITICAL" title="Permalink to this definition">¶</a></dt>
+<dd><p>Log to any logger at LEVEL_CRITICAL. </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">logger</span></code> - <p>Logger to log to. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">...</span></code> - <p>Format string and format arguments. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef container">
+<p class="breathe-sectiondef-title rubric">Functions</p>
+<dl class="function">
+<dt id="c.sl_init">
+<span class="target" id="project0log_8h_1acdbb828ec41252dc29d2589f98350525"></span>void <code class="descname">sl_init</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_logger" title="smb_logger">smb_logger</a>  *<em>&nbsp;obj</em><span class="sig-paren">)</span><a class="headerlink" href="#c.sl_init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize a logger object. </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">obj</span></code> - <p>Logger to initialize. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.sl_create">
+<span class="target" id="project0log_8h_1a0425b3c83e700d007b5e3ebffb1f47a8"></span><a class="reference internal" href="#c.smb_logger" title="smb_logger">smb_logger</a>* <code class="descname">sl_create</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#c.sl_create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Allocate and return a logger object. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>New logger. </dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.sl_destroy">
+<span class="target" id="project0log_8h_1a42bc4e51abf0442cb458bfd46830f426"></span>void <code class="descname">sl_destroy</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_logger" title="smb_logger">smb_logger</a>  *<em>&nbsp;obj</em><span class="sig-paren">)</span><a class="headerlink" href="#c.sl_destroy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Free resources held by a logger object. </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">obj</span></code> - <p>Logger to deinitialize. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.sl_delete">
+<span class="target" id="project0log_8h_1a8d0e3e01b9c965432dc3513cbd60ef94"></span>void <code class="descname">sl_delete</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_logger" title="smb_logger">smb_logger</a>  *<em>&nbsp;obj</em><span class="sig-paren">)</span><a class="headerlink" href="#c.sl_delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Free resources and deallocate a logger object. </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">obj</span></code> - <p>Logger to deallocate. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.sl_set_level">
+<span class="target" id="project0log_8h_1af84ed176214650083657d74b9e25190c"></span>void <code class="descname">sl_set_level</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_logger" title="smb_logger">smb_logger</a>  *<em>&nbsp;l</em>, int<em>&nbsp;level</em><span class="sig-paren">)</span><a class="headerlink" href="#c.sl_set_level" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the minimum level this logger will report. </p>
+<p>All loghandlers have levels, but log messages are first filtered by the log level of the logger. If the logger is set to have a higher level, then messages won&#8217;t even get sent to the handler. The level is inclusive. <dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">l</span></code> - <p>The logger to set the level of. (NULL for default) </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">level</span></code> - <p>The level to set. Can be any integer, but specifically one of the `LEVEL_*` constants would be good. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.sl_add_handler">
+<span class="target" id="project0log_8h_1a692894e77c11885999c4d9849411e303"></span>void <code class="descname">sl_add_handler</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_logger" title="smb_logger">smb_logger</a>  *<em>&nbsp;l</em>, <a class="reference internal" href="#c.smb_loghandler" title="smb_loghandler">smb_loghandler</a><em>&nbsp;h</em>, <a class="reference internal" href="base.html#c.smb_status" title="smb_status">smb_status</a>  *<em>&nbsp;status</em><span class="sig-paren">)</span><a class="headerlink" href="#c.sl_add_handler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a log handler to the logger. </p>
+<p>Loggers have limited space for loghandlers, so this could fail. Loggers are not intended to be array lists containing arbitrary amounts of handlers, and they&#8217;re not intended to provide convenient access, update, or removal. <dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">l</span></code> - <p>Logger to add to. (NULL for default) </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">h</span></code> - <p>Handler to add to the logger. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">status</span></code> - <p>For error reporting. </p>
+</li>
+</ul>
+</dd>
+<dt><strong>Exceptions</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">SMB_INDEX_ERROR</span></code> - <p>If there is no more space for any more handlers. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.sl_clear_handlers">
+<span class="target" id="project0log_8h_1a59245b8128aa82917c72cf089a35bae3"></span>void <code class="descname">sl_clear_handlers</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_logger" title="smb_logger">smb_logger</a>  *<em>&nbsp;l</em><span class="sig-paren">)</span><a class="headerlink" href="#c.sl_clear_handlers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove all handlers from the logger. </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">l</span></code> - <p>Logger to clear out. (NULL for default) </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.sl_set_default_logger">
+<span class="target" id="project0log_8h_1a95292ff088fc132ff0d303c9b448f12c"></span>void <code class="descname">sl_set_default_logger</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_logger" title="smb_logger">smb_logger</a>  *<em>&nbsp;l</em><span class="sig-paren">)</span><a class="headerlink" href="#c.sl_set_default_logger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the static default logger to be your own. </p>
+<p>When you use the `D*` logger macros, the default logger is the one you log to. The default logger will report everything to stderr, unless you modify it or set the default logger to a new one. <dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">l</span></code> - <p>New logger. NULL to reset it to the original one. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.sl_log">
+<span class="target" id="project0log_8h_1a34e4f88b97b95c7fc598afbe05836438"></span>void <code class="descname">sl_log</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_logger" title="smb_logger">smb_logger</a>  *<em>&nbsp;l</em>, char *<em>&nbsp;file</em>, int<em>&nbsp;line</em>, const char *<em>&nbsp;function</em>, int<em>&nbsp;level</em>, ...<span class="sig-paren">)</span><a class="headerlink" href="#c.sl_log" title="Permalink to this definition">¶</a></dt>
+<dd><p>Log a message. </p>
+<p>This is the function that actually carries out any logging operation. All the logging macros expand to a call to this function. You really don&#8217;t want to call this function directly, cause you have to provide a ton of information that you can&#8217;t keep up to date in code, and it can all be provided by preprocessor macros. <dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">l</span></code> - <p>Logger to send log message to. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">file</span></code> - <p>Name of the code file the message originated from. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">line</span></code> - <p>Line number of the log message. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">function</span></code> - <p>Name of the function the message came from. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">level</span></code> - <p>The log level of this message. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">...</span></code> - <p>Format string and format arguments, forming the actual message. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<dl class="struct">
+<dt id="c.smb_loghandler">
+<span class="target" id="project0structsmb__loghandler"></span><em class="property">struct </em><code class="descname">smb_loghandler</code><a class="headerlink" href="#c.smb_loghandler" title="Permalink to this definition">¶</a></dt>
+<dd><em>#include &lt;log.h&gt;</em><p>Specifies a log handler. </p>
+<p>This struct contains the information necessary to deliver a log message to its destination. It has no memory management functions, since you should just pass it by value. </p>
+<div class="breathe-sectiondef container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt id="c.level">
+<span class="target" id="project0structsmb__loghandler_1acf4d33ee4cff36f69b924471174dcb11"></span>int <code class="descname">level</code><a class="headerlink" href="#c.level" title="Permalink to this definition">¶</a></dt>
+<dd><p>The minimum level this log handler accepts. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.dst">
+<span class="target" id="project0structsmb__loghandler_1a62ffc91cc785ffcda5f12c4859d7f9a0"></span>FILE* <code class="descname">dst</code><a class="headerlink" href="#c.dst" title="Permalink to this definition">¶</a></dt>
+<dd><p>The destination file to send to. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="struct">
+<dt id="c.smb_logger">
+<span class="target" id="project0structsmb__logger"></span><em class="property">struct </em><code class="descname">smb_logger</code><a class="headerlink" href="#c.smb_logger" title="Permalink to this definition">¶</a></dt>
+<dd><em>#include &lt;log.h&gt;</em><p>Specifies a logger. </p>
+<p>This struct represents a logger. You can create it dynamically, but it is entirely possible to create a &#8220;literal&#8221; for it and declare it statically. </p>
+<div class="breathe-sectiondef container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt>
+<span class="target" id="project0structsmb__logger_1a6f5e0b0245e1c373a71d9c0b306f2c12"></span><code class="descname">smb_loghandler handlers[SMB_MAX_LOGHANDLERS]</code></dt>
+<dd><p>List of log handlers. </p>
+<p><dl class="docutils">
+<dt><strong>See</strong></dt>
+<dd><a class="reference internal" href="#project0log_8h_1a650497a5973f4daf2c7c956d57d4a760"><span>SMB_MAX_LOGHANDLERS</span></a> </dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.format">
+<span class="target" id="project0structsmb__logger_1a5407a229a5e1a319d75fb29542c83eae"></span>char* <code class="descname">format</code><a class="headerlink" href="#c.format" title="Permalink to this definition">¶</a></dt>
+<dd><p>Format string to use for this logger. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.num">
+<span class="target" id="project0structsmb__logger_1a86cf672daa4e0ad11ad10efc894d19c8"></span>int <code class="descname">num</code><a class="headerlink" href="#c.num" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of handlers actually contained in the handlers array. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="ut.html" class="btn btn-neutral float-right" title="Unit Testing" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="ad.html" class="btn btn-neutral" title="Argument Parsing" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2013-2015, Stephen Brennan.
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

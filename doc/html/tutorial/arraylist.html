@@ -1,0 +1,351 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Array List (smb_al) &mdash; libstephen 0.1 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="libstephen 0.1 documentation" href="../index.html"/>
+        <link rel="up" title="Libstephen Tutorial" href="index.html"/>
+        <link rel="next" title="Linked List" href="linkedlist.html"/>
+        <link rel="prev" title="Error Handling" href="errors.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+
+        
+          <a href="../index.html" class="icon icon-home"> libstephen
+        
+
+        
+        </a>
+
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+        
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Libstephen Tutorial</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="errors.html">Error Handling</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="errors.html#why-a-pointer-to-a-status-variable">Why a pointer to a status variable?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="errors.html#values">Values</a></li>
+<li class="toctree-l3"><a class="reference internal" href="errors.html#memory-allocation-errors">Memory allocation errors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="errors.html#assertions">Assertions</a></li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">Array List (smb_al)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#operations">Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sample-usage">Sample Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#structure">Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="linkedlist.html">Linked List</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="linkedlist.html#operations">Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="linkedlist.html#sample-usage">Sample Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="linkedlist.html#structure">Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="list.html">List Interface</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="list.html#operations">Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="list.html#sample-usage">Sample Usage</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="iterator.html">Iterator</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="iterator.html#structure-function">Structure &amp; Function</a></li>
+<li class="toctree-l3"><a class="reference internal" href="iterator.html#sample-usage">Sample Usage</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="hashtable.html">Hash Table</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="hashtable.html#infrastructure">Infrastructure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hashtable.html#operations">Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hashtable.html#sample-usage">Sample Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hashtable.html#structure">Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="charbuf.html">Character Buffer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="charbuf.html#functions">Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="charbuf.html#wide-character-version">Wide Character Version</a></li>
+<li class="toctree-l3"><a class="reference internal" href="charbuf.html#i-o-utilities">I/O Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="args.html">Argument Parsing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="args.html#argument-types">Argument Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="args.html#initialization">Initialization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="args.html#reading-argument-data">Reading Argument Data</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="logging.html">Logging</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="logging.html#history">History</a></li>
+<li class="toctree-l3"><a class="reference internal" href="logging.html#goals">Goals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="logging.html#concepts">Concepts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="logging.html#functions-macros">Functions &amp; Macros</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="unittest.html">Unit Testing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="unittest.html#history">History</a></li>
+<li class="toctree-l3"><a class="reference internal" href="unittest.html#operations">Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="unittest.html#sample-use">Sample Use</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="regex.html">Regular Expressions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="regex.html#features">Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="regex.html#functions">Functions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">Libstephen API Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/base.html">Libstephen Base</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/ll.html">Linked List</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/al.html">Array List</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/list.html">List Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/ht.html">Hash Table</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/bf.html">Bitfield</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/cb.html">Character Buffer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/ad.html">Argument Parsing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/log.html">Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/ut.html">Unit Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/fsm.html">Finite State Machine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/regex.html">Regular Expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/util.html">Utilities &amp; Miscellaneous</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/str.html">String Functions</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">libstephen</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="index.html">Libstephen Tutorial</a> &raquo;</li>
+      
+    <li>Array List (smb_al)</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/tutorial/arraylist.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="array-list-smb-al">
+<h1>Array List (smb_al)<a class="headerlink" href="#array-list-smb-al" title="Permalink to this headline">¶</a></h1>
+<div class="code C highlight-c"><div class="highlight"><pre><span class="cp">#include &quot;libstephen/al.h&quot;</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><a class="reference external" href="https://github.com/brenns10/libstephen/blob/master/inc/libstephen/al.h">Header
+(master)</a></li>
+<li><a class="reference external" href="https://github.com/brenns10/libstephen/blob/master/src/arraylist.c">Implementation
+(master)</a></li>
+</ul>
+<p>The array list (<code class="docutils literal"><span class="pre">smb_al</span></code>) is a dynamically expanding array of
+<code class="docutils literal"><span class="pre">DATA</span></code>. Its benefits over a linked list are constant time access, with
+the drawback of linear time insertion. Data is more localized in array
+lists, but must be copied from time to time as the list expands.</p>
+<div class="section" id="operations">
+<h2>Operations<a class="headerlink" href="#operations" title="Permalink to this headline">¶</a></h2>
+<p>The array list supports the four normal creation and deletion functions,
+which create an empty list. Here are some array list operations:</p>
+<div class="code C highlight-c"><div class="highlight"><pre><span class="kt">void</span> <span class="nf">al_append</span><span class="p">(</span><span class="n">smb_al</span> <span class="o">*</span><span class="n">list</span><span class="p">,</span> <span class="n">DATA</span> <span class="n">newData</span><span class="p">);</span>
+<span class="kt">void</span> <span class="nf">al_prepend</span><span class="p">(</span><span class="n">smb_al</span> <span class="o">*</span><span class="n">list</span><span class="p">,</span> <span class="n">DATA</span> <span class="n">newData</span><span class="p">);</span>
+<span class="n">DATA</span> <span class="nf">al_get</span><span class="p">(</span><span class="k">const</span> <span class="n">smb_al</span> <span class="o">*</span><span class="n">list</span><span class="p">,</span> <span class="kt">int</span> <span class="n">index</span><span class="p">,</span> <span class="n">smb_status</span> <span class="o">*</span><span class="n">status</span><span class="p">);</span>
+<span class="kt">void</span> <span class="nf">al_remove</span><span class="p">(</span><span class="n">smb_al</span> <span class="o">*</span><span class="n">list</span><span class="p">,</span> <span class="kt">int</span> <span class="n">index</span><span class="p">,</span> <span class="n">smb_status</span> <span class="o">*</span><span class="n">status</span><span class="p">);</span>
+<span class="kt">void</span> <span class="nf">al_insert</span><span class="p">(</span><span class="n">smb_al</span> <span class="o">*</span><span class="n">list</span><span class="p">,</span> <span class="kt">int</span> <span class="n">index</span><span class="p">,</span> <span class="n">DATA</span> <span class="n">newData</span><span class="p">);</span>
+<span class="kt">void</span> <span class="nf">al_set</span><span class="p">(</span><span class="n">smb_al</span> <span class="o">*</span><span class="n">list</span><span class="p">,</span> <span class="kt">int</span> <span class="n">index</span><span class="p">,</span> <span class="n">DATA</span> <span class="n">newData</span><span class="p">,</span> <span class="n">smb_status</span> <span class="o">*</span><span class="n">status</span><span class="p">);</span>
+<span class="kt">void</span> <span class="nf">al_push_back</span><span class="p">(</span><span class="n">smb_al</span> <span class="o">*</span><span class="n">list</span><span class="p">,</span> <span class="n">DATA</span> <span class="n">newData</span><span class="p">);</span>
+<span class="n">DATA</span> <span class="nf">al_pop_back</span><span class="p">(</span><span class="n">smb_al</span> <span class="o">*</span><span class="n">list</span><span class="p">,</span> <span class="n">smb_status</span> <span class="o">*</span><span class="n">status</span><span class="p">);</span>
+<span class="n">DATA</span> <span class="nf">al_peek_back</span><span class="p">(</span><span class="n">smb_al</span> <span class="o">*</span><span class="n">list</span><span class="p">,</span> <span class="n">smb_status</span> <span class="o">*</span><span class="n">status</span><span class="p">);</span>
+<span class="kt">void</span> <span class="nf">al_push_front</span><span class="p">(</span><span class="n">smb_al</span> <span class="o">*</span><span class="n">list</span><span class="p">,</span> <span class="n">DATA</span> <span class="n">newData</span><span class="p">);</span>
+<span class="n">DATA</span> <span class="nf">al_pop_front</span><span class="p">(</span><span class="n">smb_al</span> <span class="o">*</span><span class="n">list</span><span class="p">,</span> <span class="n">smb_status</span> <span class="o">*</span><span class="n">status</span><span class="p">);</span>
+<span class="n">DATA</span> <span class="nf">al_peek_front</span><span class="p">(</span><span class="n">smb_al</span> <span class="o">*</span><span class="n">list</span><span class="p">,</span> <span class="n">smb_status</span> <span class="o">*</span><span class="n">status</span><span class="p">);</span>
+<span class="kt">int</span> <span class="nf">al_length</span><span class="p">(</span><span class="k">const</span> <span class="n">smb_al</span> <span class="o">*</span><span class="n">list</span><span class="p">);</span>
+<span class="kt">int</span> <span class="nf">al_index_of</span><span class="p">(</span><span class="k">const</span> <span class="n">smb_al</span> <span class="o">*</span><span class="n">list</span><span class="p">,</span> <span class="n">DATA</span> <span class="n">d</span><span class="p">,</span> <span class="n">DATA_COMPARE</span> <span class="n">comp</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>These operations are identical to the corresponding ones on the linked
+list. Appending is done in constant time, except when the array must be
+expanded. Insertions (including prepend) are linear time, while get/set
+operations are constant.</p>
+<p>These will get you a generic list:</p>
+<div class="code C highlight-c"><div class="highlight"><pre><span class="n">smb_list</span> <span class="nf">al_create_list</span><span class="p">();</span>
+<span class="n">smb_list</span> <span class="nf">al_cast_to_list</span><span class="p">(</span><span class="n">smb_al</span> <span class="o">*</span><span class="n">list</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>And this will create an iterator:</p>
+<div class="code C highlight-c"><div class="highlight"><pre><span class="n">smb_iter</span> <span class="nf">al_get_iter</span><span class="p">(</span><span class="k">const</span> <span class="n">smb_al</span> <span class="o">*</span><span class="n">list</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="sample-usage">
+<h2>Sample Usage<a class="headerlink" href="#sample-usage" title="Permalink to this headline">¶</a></h2>
+<p>This is some sample code identical to the one I used to show the linked
+list:</p>
+<div class="code C highlight-c"><div class="highlight"><pre><span class="n">smb_al</span> <span class="o">*</span><span class="n">list</span> <span class="o">=</span> <span class="n">al_create</span><span class="p">();</span>
+<span class="n">DATA</span> <span class="n">d</span><span class="p">;</span>
+
+<span class="n">d</span><span class="p">.</span><span class="n">data_llint</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+<span class="n">al_append</span><span class="p">(</span><span class="n">list</span><span class="p">,</span> <span class="n">d</span><span class="p">);</span>
+<span class="n">d</span><span class="p">.</span><span class="n">data_llint</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+<span class="n">al_append</span><span class="p">(</span><span class="n">list</span><span class="p">,</span> <span class="n">d</span><span class="p">);</span>
+
+<span class="n">al_delete</span><span class="p">(</span><span class="n">list</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="structure">
+<h2>Structure<a class="headerlink" href="#structure" title="Permalink to this headline">¶</a></h2>
+<p><em>Here be implementation details!</em></p>
+<p>Here is the structure of an <code class="docutils literal"><span class="pre">smb_al</span></code> struct:</p>
+<div class="code C highlight-c"><div class="highlight"><pre><span class="k">typedef</span> <span class="k">struct</span> <span class="n">smb_al</span>
+<span class="p">{</span>
+  <span class="n">DATA</span> <span class="o">*</span><span class="n">data</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">length</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">allocated</span><span class="p">;</span>
+<span class="p">}</span> <span class="n">smb_al</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal"><span class="pre">data</span></code> pointer points to the dynamically-allocated array of
+<code class="docutils literal"><span class="pre">DATA</span></code>. <code class="docutils literal"><span class="pre">length</span></code> contains the number of items in the list, while
+<code class="docutils literal"><span class="pre">allocated</span></code> indicates how many <code class="docutils literal"><span class="pre">DATA</span></code> are currently allocated in the
+block pointed by <code class="docutils literal"><span class="pre">data</span></code>.</p>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="linkedlist.html" class="btn btn-neutral float-right" title="Linked List" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="errors.html" class="btn btn-neutral" title="Error Handling" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2013-2015, Stephen Brennan.
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

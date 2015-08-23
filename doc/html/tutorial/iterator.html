@@ -1,0 +1,341 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Iterator &mdash; libstephen 0.1 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="libstephen 0.1 documentation" href="../index.html"/>
+        <link rel="up" title="Libstephen Tutorial" href="index.html"/>
+        <link rel="next" title="Hash Table" href="hashtable.html"/>
+        <link rel="prev" title="List Interface" href="list.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+
+        
+          <a href="../index.html" class="icon icon-home"> libstephen
+        
+
+        
+        </a>
+
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+        
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Libstephen Tutorial</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="errors.html">Error Handling</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="errors.html#why-a-pointer-to-a-status-variable">Why a pointer to a status variable?</a></li>
+<li class="toctree-l3"><a class="reference internal" href="errors.html#values">Values</a></li>
+<li class="toctree-l3"><a class="reference internal" href="errors.html#memory-allocation-errors">Memory allocation errors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="errors.html#assertions">Assertions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="arraylist.html">Array List (smb_al)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="arraylist.html#operations">Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="arraylist.html#sample-usage">Sample Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="arraylist.html#structure">Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="linkedlist.html">Linked List</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="linkedlist.html#operations">Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="linkedlist.html#sample-usage">Sample Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="linkedlist.html#structure">Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="list.html">List Interface</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="list.html#operations">Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="list.html#sample-usage">Sample Usage</a></li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">Iterator</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#structure-function">Structure &amp; Function</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sample-usage">Sample Usage</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="hashtable.html">Hash Table</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="hashtable.html#infrastructure">Infrastructure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hashtable.html#operations">Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hashtable.html#sample-usage">Sample Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="hashtable.html#structure">Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="charbuf.html">Character Buffer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="charbuf.html#functions">Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="charbuf.html#wide-character-version">Wide Character Version</a></li>
+<li class="toctree-l3"><a class="reference internal" href="charbuf.html#i-o-utilities">I/O Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="args.html">Argument Parsing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="args.html#argument-types">Argument Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="args.html#initialization">Initialization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="args.html#reading-argument-data">Reading Argument Data</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="logging.html">Logging</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="logging.html#history">History</a></li>
+<li class="toctree-l3"><a class="reference internal" href="logging.html#goals">Goals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="logging.html#concepts">Concepts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="logging.html#functions-macros">Functions &amp; Macros</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="unittest.html">Unit Testing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="unittest.html#history">History</a></li>
+<li class="toctree-l3"><a class="reference internal" href="unittest.html#operations">Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="unittest.html#sample-use">Sample Use</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="regex.html">Regular Expressions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="regex.html#features">Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="regex.html#functions">Functions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">Libstephen API Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/base.html">Libstephen Base</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/ll.html">Linked List</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/al.html">Array List</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/list.html">List Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/ht.html">Hash Table</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/bf.html">Bitfield</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/cb.html">Character Buffer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/ad.html">Argument Parsing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/log.html">Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/ut.html">Unit Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/fsm.html">Finite State Machine</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/regex.html">Regular Expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/util.html">Utilities &amp; Miscellaneous</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api/str.html">String Functions</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">libstephen</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="index.html">Libstephen Tutorial</a> &raquo;</li>
+      
+    <li>Iterator</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/tutorial/iterator.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="iterator">
+<h1>Iterator<a class="headerlink" href="#iterator" title="Permalink to this headline">¶</a></h1>
+<div class="code C highlight-c"><div class="highlight"><pre><span class="cp">#include &quot;libstephen/list.h&quot;</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><a class="reference external" href="https://github.com/brenns10/libstephen/blob/master/inc/libstephen/list.h">Header
+(master)</a></li>
+</ul>
+<p>The iterator struct (<code class="docutils literal"><span class="pre">smb_iter</span></code>) is my reaction to the high overhead
+of the list interface. The list interface allows for some powerful
+testing and more generic code, but it is frequently more than you really
+need. Even more importantly, the list interface doesn&#8217;t provide linear
+time iteration on linked lists (iterating via <code class="docutils literal"><span class="pre">get</span></code> is <code class="docutils literal"><span class="pre">O(N^2)</span></code>).</p>
+<p>So, the iterator aims to provide a read-only, iterate-once interface to
+getting data from a data structure. It has a drastically reduced set of
+features, making it much more space efficient. Additionally, iterators
+can be implemented for anything, not just data structures. They can be
+used to implement generators, and use them just like lists (this is
+<em>heavily</em> influenced by Python).</p>
+<p>Here are some of my future ideas for iterator/generator implementations:
+* Character iterators. They can be used to iterate over a string or
+file. They can be used to automatically convert a UTF-8 input stream to
+a sequence of Unicode <code class="docutils literal"><span class="pre">wchar_t</span></code> characters. * Mathematically inspired
+generators could be useful.</p>
+<p>Plus, functions operating on iterators are very generic: * Printer
+function would print the items of a list. * Copy functions could copy
+data from an iterator into a new list.</p>
+<div class="section" id="structure-function">
+<h2>Structure &amp; Function<a class="headerlink" href="#structure-function" title="Permalink to this headline">¶</a></h2>
+<p>The iterator&#8217;s structure and function are tied together. It&#8217;s a bit
+difficult to use one without the other.</p>
+<div class="code C highlight-c"><div class="highlight"><pre><span class="k">typedef</span> <span class="k">struct</span> <span class="n">smb_iter</span> <span class="p">{</span>
+  <span class="k">const</span> <span class="kt">void</span> <span class="o">*</span><span class="n">ds</span><span class="p">;</span>
+  <span class="n">DATA</span> <span class="n">state</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">index</span><span class="p">;</span>
+  <span class="n">DATA</span> <span class="p">(</span><span class="o">*</span><span class="n">next</span><span class="p">)(</span><span class="k">struct</span> <span class="n">smb_iter</span> <span class="o">*</span><span class="n">iter</span><span class="p">,</span> <span class="n">smb_status</span> <span class="o">*</span><span class="n">status</span><span class="p">);</span>
+  <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">has_next</span><span class="p">)(</span><span class="k">struct</span> <span class="n">smb_iter</span> <span class="o">*</span><span class="n">iter</span><span class="p">);</span>
+  <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">destroy</span><span class="p">)(</span><span class="k">struct</span> <span class="n">smb_iter</span> <span class="o">*</span><span class="n">iter</span><span class="p">);</span>
+  <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">delete</span><span class="p">)(</span><span class="k">struct</span> <span class="n">smb_iter</span> <span class="o">*</span><span class="n">iter</span><span class="p">);</span>
+<span class="p">}</span> <span class="n">smb_iter</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>There are three data fields, which have roughly defined purposes. The
+<code class="docutils literal"><span class="pre">ds</span></code> field should hold a pointer to the data structure. The <code class="docutils literal"><span class="pre">state</span></code>
+field can hold a number or a pointer as part of the iterator&#8217;s state.
+The <code class="docutils literal"><span class="pre">index</span></code> field can also hold a number, that is usually the index of
+the iteration (but doesn&#8217;t have to be).</p>
+<p>The <code class="docutils literal"><span class="pre">next</span></code> and <code class="docutils literal"><span class="pre">has_next</span></code> functions are pretty obvious. The <code class="docutils literal"><span class="pre">next</span></code>
+function might raise a <code class="docutils literal"><span class="pre">SMB_STOP_ITERATION</span></code> error if you don&#8217;t call
+<code class="docutils literal"><span class="pre">has_next</span></code> first. The <code class="docutils literal"><span class="pre">destroy</span></code> and <code class="docutils literal"><span class="pre">delete</span></code> functions are a bit
+more difficult. Since an iterator is a read-only view on a data
+structure, it doesn&#8217;t really make sense to free the underlying data
+structure when you destroy an iterator. So, <code class="docutils literal"><span class="pre">destroy</span></code> doesn&#8217;t usually
+do anything, and <code class="docutils literal"><span class="pre">delete</span></code> just <code class="docutils literal"><span class="pre">destroy</span></code>s the iterator, and then
+frees it. The reason they do exist is so that new and exciting iterator
+implementations can have support for freeing up resources if necessary.</p>
+</div>
+<div class="section" id="sample-usage">
+<h2>Sample Usage<a class="headerlink" href="#sample-usage" title="Permalink to this headline">¶</a></h2>
+<p>Here is a typical use of an iterator:</p>
+<div class="code C highlight-c"><div class="highlight"><pre><span class="n">smb_iter</span> <span class="n">it</span> <span class="o">=</span> <span class="c1">// something returning an iterator to a list of numbers</span>
+<span class="n">DATA</span> <span class="n">d</span><span class="p">;</span>
+
+<span class="k">while</span> <span class="p">(</span><span class="n">it</span><span class="p">.</span><span class="n">has_next</span><span class="p">(</span><span class="o">&amp;</span><span class="n">it</span><span class="p">))</span> <span class="p">{</span>
+  <span class="n">d</span> <span class="o">=</span> <span class="n">it</span><span class="p">.</span><span class="n">next</span><span class="p">(</span><span class="o">&amp;</span><span class="n">it</span><span class="p">);</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;List element: %ld</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">d</span><span class="p">.</span><span class="n">data_llint</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="n">it</span><span class="p">.</span><span class="n">destroy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">it</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="hashtable.html" class="btn btn-neutral float-right" title="Hash Table" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="list.html" class="btn btn-neutral" title="List Interface" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2013-2015, Stephen Brennan.
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
