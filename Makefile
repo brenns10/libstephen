@@ -119,15 +119,14 @@ DEPENDENCIES  = $(patsubst $(SOURCE_DIR)/%.c,$(DEPENDENCY_DIR)/$(SOURCE_DIR)/%.d
 DEPENDENCIES += $(patsubst $(TEST_DIR)/%.c,$(DEPENDENCY_DIR)/$(TEST_DIR)/%.d,$(TEST_SOURCES))
 
 # --- GLOBAL TARGETS: You can probably adjust and augment these if you'd like.
-.PHONY: all test clean clean_all clean_cov clean_doc
+.PHONY: all test doc cov clean clean_all clean_cov clean_doc
 
 all: $(BINARY_DIR)/$(CFG)/$(TARGET)
 
 test: $(BINARY_DIR)/$(CFG)/$(TEST_TARGET)
 	valgrind $(BINARY_DIR)/$(CFG)/$(TEST_TARGET)
 
-doc: $(SOURCES) $(TEST_SOURCES) Doxyfile
-	doxygen
+doc: $(SOURCES) $(TEST_SOURCES)
 	make -C sphinx-doc html
 
 cov: $(BINARY_DIR)/$(CFG)/$(TEST_TARGET)
