@@ -252,17 +252,16 @@ some of the structure of the hash table, which is good for debugging.</p>
 <div class="section" id="sample-usage">
 <h2>Sample Usage<a class="headerlink" href="#sample-usage" title="Permalink to this headline">¶</a></h2>
 <p>Here&#8217;s an example of a using a hash table:</p>
-<div class="code C highlight-c"><div class="highlight"><pre><span class="n">DATA</span> <span class="n">d1</span><span class="p">,</span> <span class="n">d2</span><span class="p">;</span>
-<span class="n">smb_status</span> <span class="n">status</span> <span class="o">=</span> <span class="n">SMB_SUCCESS</span><span class="p">;</span>
+<div class="code C highlight-c"><div class="highlight"><pre><span class="n">smb_status</span> <span class="n">status</span> <span class="o">=</span> <span class="n">SMB_SUCCESS</span><span class="p">;</span>
 <span class="n">smb_ht</span> <span class="o">*</span><span class="n">ht</span> <span class="o">=</span> <span class="n">ht_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ht_string_hash</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">data_compare_string</span><span class="p">);</span>
 
-<span class="n">d1</span><span class="p">.</span><span class="n">data_ptr</span> <span class="o">=</span> <span class="s">&quot;stephen&quot;</span><span class="p">;</span>
-<span class="n">d2</span><span class="p">.</span><span class="n">data_ptr</span> <span class="o">=</span> <span class="s">&quot;brennan&quot;</span><span class="p">;</span>
-<span class="n">ht_insert</span><span class="p">(</span><span class="n">ht</span><span class="p">,</span> <span class="n">d1</span><span class="p">,</span> <span class="n">d2</span><span class="p">);</span>
-<span class="n">d2</span> <span class="o">=</span> <span class="n">ht_get</span><span class="p">(</span><span class="n">ht</span><span class="p">,</span> <span class="n">d1</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">status</span><span class="p">);</span>
+<span class="kt">char</span> <span class="o">*</span><span class="n">key</span> <span class="o">=</span> <span class="s">&quot;stephen&quot;</span><span class="p">;</span>
+<span class="kt">char</span> <span class="o">*</span><span class="n">value</span> <span class="o">=</span> <span class="s">&quot;brennan&quot;</span><span class="p">;</span>
+<span class="n">ht_insert</span><span class="p">(</span><span class="n">ht</span><span class="p">,</span> <span class="n">PTR</span><span class="p">(</span><span class="n">key</span><span class="p">),</span> <span class="n">PTR</span><span class="p">(</span><span class="n">value</span><span class="p">));</span>
+<span class="n">brennan</span> <span class="o">=</span> <span class="n">ht_get</span><span class="p">(</span><span class="n">ht</span><span class="p">,</span> <span class="n">PTR</span><span class="p">(</span><span class="n">key</span><span class="p">),</span> <span class="o">&amp;</span><span class="n">status</span><span class="p">).</span><span class="n">data_ptr</span><span class="p">;</span>
 <span class="n">assert</span><span class="p">(</span><span class="n">status</span> <span class="o">==</span> <span class="n">SMB_SUCCESS</span><span class="p">);</span>
 
-<span class="n">printf</span><span class="p">(</span><span class="s">&quot;%s: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">d1</span><span class="p">.</span><span class="n">data_ptr</span><span class="p">,</span> <span class="n">d2</span><span class="p">.</span><span class="n">data_ptr</span><span class="p">);</span>
+<span class="n">printf</span><span class="p">(</span><span class="s">&quot;%s: %s</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">);</span>
 <span class="c1">//STDOUT: stephen: brennan</span>
 </pre></div>
 </div>

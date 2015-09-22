@@ -168,14 +168,18 @@ features, making it much more space efficient. Additionally, iterators
 can be implemented for anything, not just data structures. They can be
 used to implement generators, and use them just like lists (this is
 <em>heavily</em> influenced by Python).</p>
-<p>Here are some of my future ideas for iterator/generator implementations:
-* Character iterators. They can be used to iterate over a string or
-file. They can be used to automatically convert a UTF-8 input stream to
-a sequence of Unicode <code class="docutils literal"><span class="pre">wchar_t</span></code> characters. * Mathematically inspired
-generators could be useful.</p>
-<p>Plus, functions operating on iterators are very generic: * Printer
-function would print the items of a list. * Copy functions could copy
-data from an iterator into a new list.</p>
+<p>Here are some of my future ideas for iterator/generator implementations:</p>
+<ul class="simple">
+<li>Character iterators. They can be used to iterate over a string or file. They
+can be used to automatically convert a UTF-8 input stream to a sequence of
+Unicode <code class="docutils literal"><span class="pre">wchar_t</span></code> characters.</li>
+<li>Mathematically inspired generators could be useful.</li>
+</ul>
+<p>Plus, functions operating on iterators are very generic:</p>
+<ul class="simple">
+<li>Printer function would print the items of a list.</li>
+<li>Copy functions could copy data from an iterator into a new list.</li>
+</ul>
 <div class="section" id="structure-function">
 <h2>Structure &amp; Function<a class="headerlink" href="#structure-function" title="Permalink to this headline">¶</a></h2>
 <p>The iterator&#8217;s structure and function are tied together. It&#8217;s a bit

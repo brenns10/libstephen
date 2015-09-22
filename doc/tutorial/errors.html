@@ -153,10 +153,12 @@
   <div class="section" id="error-handling">
 <h1>Error Handling<a class="headerlink" href="#error-handling" title="Permalink to this headline">¶</a></h1>
 <p>libstephen has a standard way to deal with errors in code. Typically,
-errors are reported in one of two ways in C code: * A status value is
-returned, indicating the success of the function. * A pointer to a
-status variable is provided, and is set to indicate the success of the
-function.</p>
+errors are reported in one of two ways in C code:</p>
+<ul class="simple">
+<li>A status value is returned, indicating the success of the function.</li>
+<li>A pointer to a status variable is provided, and is set to indicate the success
+of the function.</li>
+</ul>
 <p>libstephen takes the second approach.</p>
 <div class="section" id="why-a-pointer-to-a-status-variable">
 <h2>Why a pointer to a status variable?<a class="headerlink" href="#why-a-pointer-to-a-status-variable" title="Permalink to this headline">¶</a></h2>

@@ -203,12 +203,9 @@ operations are constant.</p>
 <p>This is some sample code identical to the one I used to show the linked
 list:</p>
 <div class="code C highlight-c"><div class="highlight"><pre><span class="n">smb_al</span> <span class="o">*</span><span class="n">list</span> <span class="o">=</span> <span class="n">al_create</span><span class="p">();</span>
-<span class="n">DATA</span> <span class="n">d</span><span class="p">;</span>
 
-<span class="n">d</span><span class="p">.</span><span class="n">data_llint</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-<span class="n">al_append</span><span class="p">(</span><span class="n">list</span><span class="p">,</span> <span class="n">d</span><span class="p">);</span>
-<span class="n">d</span><span class="p">.</span><span class="n">data_llint</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-<span class="n">al_append</span><span class="p">(</span><span class="n">list</span><span class="p">,</span> <span class="n">d</span><span class="p">);</span>
+<span class="n">al_append</span><span class="p">(</span><span class="n">list</span><span class="p">,</span> <span class="n">LLINT</span><span class="p">(</span><span class="mi">0</span><span class="p">));</span>
+<span class="n">al_append</span><span class="p">(</span><span class="n">list</span><span class="p">,</span> <span class="n">LLINT</span><span class="p">(</span><span class="mi">1</span><span class="p">));</span>
 
 <span class="n">al_delete</span><span class="p">(</span><span class="n">list</span><span class="p">);</span>
 </pre></div>
