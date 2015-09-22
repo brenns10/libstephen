@@ -65,12 +65,9 @@ list:
 .. code:: C
 
     smb_al *list = al_create();
-    DATA d;
 
-    d.data_llint = 0;
-    al_append(list, d);
-    d.data_llint = 1;
-    al_append(list, d);
+    al_append(list, LLINT(0));
+    al_append(list, LLINT(1));
 
     al_delete(list);
 

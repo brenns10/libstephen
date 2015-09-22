@@ -118,17 +118,16 @@ Here's an example of a using a hash table:
 
 .. code:: C
 
-    DATA d1, d2;
     smb_status status = SMB_SUCCESS;
     smb_ht *ht = ht_create(&ht_string_hash, &data_compare_string);
 
-    d1.data_ptr = "stephen";
-    d2.data_ptr = "brennan";
-    ht_insert(ht, d1, d2);
-    d2 = ht_get(ht, d1, &status);
+    char *key = "stephen";
+    char *value = "brennan";
+    ht_insert(ht, PTR(key), PTR(value));
+    brennan = ht_get(ht, PTR(key), &status).data_ptr;
     assert(status == SMB_SUCCESS);
 
-    printf("%s: %s\n", d1.data_ptr, d2.data_ptr);
+    printf("%s: %s\n", key, value);
     //STDOUT: stephen: brennan
 
 Structure

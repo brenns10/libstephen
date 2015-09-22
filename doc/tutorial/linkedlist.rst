@@ -74,12 +74,9 @@ numbers to it, and then free it.
 .. code:: C
 
     smb_ll *list = ll_create();
-    DATA d;
 
-    d.data_llint = 0;
-    ll_append(list, d);
-    d.data_llint = 1;
-    ll_append(list, d);
+    ll_append(list, LLINT(0));
+    ll_append(list, LLINT(1));
 
     ll_free(list);
 
