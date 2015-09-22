@@ -2,10 +2,11 @@ Error Handling
 ==============
 
 libstephen has a standard way to deal with errors in code. Typically,
-errors are reported in one of two ways in C code: \* A status value is
-returned, indicating the success of the function. \* A pointer to a
-status variable is provided, and is set to indicate the success of the
-function.
+errors are reported in one of two ways in C code:
+
+- A status value is returned, indicating the success of the function.
+- A pointer to a status variable is provided, and is set to indicate the success
+  of the function.
 
 libstephen takes the second approach.
 
