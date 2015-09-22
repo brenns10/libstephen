@@ -22,12 +22,14 @@ Infrastructure
 Hash tables need a good deal more infrastructure than a simple list
 needs. A list can store values without knowing or caring about their
 type. On the other hand, a hash table needs to know the data type of its
-keys for these reasons: \* Hashing! A hash function takes a key and
-produces a number, which can hopefully be used to index into the table.
-You need to know the data type in order to come up with a good hash
-table. \* Equality testing! A hash function is bound to have collisions.
-So, a hash table needs to be able to check whether keys are equal, and
-that means knowing the type of the keys.
+keys for these reasons:
+
+- Hashing! A hash function takes a key and produces a number, which can
+  hopefully be used to index into the table.  You need to know the data type in
+  order to come up with a good hash table.
+- Equality testing! A hash function is bound to have collisions.  So, a hash
+  table needs to be able to check whether keys are equal, and that means knowing
+  the type of the keys.
 
 To handle this, the hash table takes function pointers of two different
 types. The first is called ``HASH_FUNCTION``:
