@@ -19,16 +19,37 @@
 #include "libstephen/cb.h"
 #include "libstephen/log.h"
 
+/*
+  This is the "permanent" default logger.  Even when you set your own default
+  logger, this one still hangs around, waiting for you to call
+  sl_set_default_logger(NULL).  It's declared here, but the default logger
+  should go to standard out.  Unfortunately, you can't statically declare an
+  instance of a struct that uses the variable stdout, so this is declared
+  without any handlers, and the first time the default logger is referenced, the
+  default log handler is added.
+ */
 static smb_logger default_logger = {
   .format = SMB_DEFAULT_LOGFORMAT,
   .num = 0
 };
 
-static smb_logger *pdefault_logger;
+/*
+  The only reason this pointer exists is so that reference_logger() knows
+  whether or not the default logger has been set up yet.  This variable remains
+  NULL until the first time the default logger is used, at which point the
+  default handler is added to it, and then pdefault_logger is set to
+  &default_logger.
+ */
+static smb_logger *pdefault_logger = NULL;
 
 static char *level_names[] = {"NOTSET", "DEBUG", "INFO",
                               "WARNING", "ERROR", "CRITICAL"};
 
+/*
+  This function is used by most sl_ functions to initialize their `obj` pointer.
+  Essentially, if obj=NULL, it replaces obj with a pointer to the default
+  logger.  If the default logger hasn't been set up, it sets it up.
+ */
 static void reference_logger(smb_logger **obj)
 {
   smb_status status = SMB_SUCCESS;
@@ -99,6 +120,11 @@ void sl_set_default_logger(smb_logger *obj)
   pdefault_logger = obj;
 }
 
+/*
+  Returns a string representing a log level.  Very much not thread safe (but in
+  reality, I don't think anything about this logger library is thread safe, so
+  whatever ¯\_(ツ)_/¯ ).
+ */
 static char *sl_level_string(int level) {
   static char buf[20]; // plenty of space, to be safe.
   if (level % 10 == 0 && level >= LEVEL_NOTSET && level <= LEVEL_CRITICAL) {

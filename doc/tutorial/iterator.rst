@@ -22,14 +22,16 @@ used to implement generators, and use them just like lists (this is
 *heavily* influenced by Python).
 
 Here are some of my future ideas for iterator/generator implementations:
-\* Character iterators. They can be used to iterate over a string or
-file. They can be used to automatically convert a UTF-8 input stream to
-a sequence of Unicode ``wchar_t`` characters. \* Mathematically inspired
-generators could be useful.
 
-Plus, functions operating on iterators are very generic: \* Printer
-function would print the items of a list. \* Copy functions could copy
-data from an iterator into a new list.
+- Character iterators. They can be used to iterate over a string or file. They
+  can be used to automatically convert a UTF-8 input stream to a sequence of
+  Unicode ``wchar_t`` characters.
+- Mathematically inspired generators could be useful.
+
+Plus, functions operating on iterators are very generic:
+
+- Printer function would print the items of a list.
+- Copy functions could copy data from an iterator into a new list.
 
 Structure & Function
 --------------------
