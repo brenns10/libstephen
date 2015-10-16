@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2015-09-22 17:43:53</td>
+            <td class="headerValue">2015-10-16 19:44:54</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">4</td>
@@ -94,13 +94,14 @@
 <span class="lineNum">      32 </span>            : 
 <span class="lineNum">      33 </span><span class="lineCov">         12 : void regex_hit_destroy(regex_hit *obj)</span>
 <span class="lineNum">      34 </span>            : {
-<span class="lineNum">      35 </span>            :   // Cleanup logic (none)
-<a name="36"><span class="lineNum">      36 </span><span class="lineCov">         12 : }</span></a>
-<span class="lineNum">      37 </span>            : 
-<span class="lineNum">      38 </span><span class="lineCov">         12 : void regex_hit_delete(regex_hit *obj) {</span>
-<span class="lineNum">      39 </span><span class="lineCov">         12 :   regex_hit_destroy(obj);</span>
-<span class="lineNum">      40 </span><span class="lineCov">         12 :   smb_free(obj);</span>
-<span class="lineNum">      41 </span><span class="lineCov">         12 : }</span>
+<span class="lineNum">      35 </span>            :   (void)obj; // unused
+<span class="lineNum">      36 </span>            :   // Cleanup logic (none)
+<a name="37"><span class="lineNum">      37 </span><span class="lineCov">         12 : }</span></a>
+<span class="lineNum">      38 </span>            : 
+<span class="lineNum">      39 </span><span class="lineCov">         12 : void regex_hit_delete(regex_hit *obj) {</span>
+<span class="lineNum">      40 </span><span class="lineCov">         12 :   regex_hit_destroy(obj);</span>
+<span class="lineNum">      41 </span><span class="lineCov">         12 :   smb_free(obj);</span>
+<span class="lineNum">      42 </span><span class="lineCov">         12 : }</span>
 </pre>
       </td>
     </tr>

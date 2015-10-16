@@ -613,6 +613,23 @@ This linked list data structure provides most basic features necessary in a link
 </p>
 </dd></dl>
 
+<dl class="function">
+<dt id="c.ll_filter">
+<span class="target" id="project0ll_8h_1a4e56811858e9d872523e5ce233faeca5"></span>void <code class="descname">ll_filter</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_ll" title="smb_ll">smb_ll</a>  *<em>&nbsp;list</em>, bool(<em>*test_function</em>)( <a class="reference internal" href="base.html#c.DATA" title="DATA">DATA</a> )<span class="sig-paren">)</span><a class="headerlink" href="#c.ll_filter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove every element for which test_function returns true. </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>List to remove from. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">test_function</span></code> - <p>Returns true if an element should be removed. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
 </div>
 <dl class="struct">
 <dt>
