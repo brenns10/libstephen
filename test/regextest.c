@@ -336,7 +336,7 @@ static int test_capture_many(void)
 
 void regex_test(void)
 {
-  smb_ut_group *group = su_create_test_group("regex");
+  smb_ut_group *group = su_create_test_group("test/regextest.c");
 
   smb_ut_test *memory = su_create_test("memory", test_memory);
   su_add_test(group, memory);

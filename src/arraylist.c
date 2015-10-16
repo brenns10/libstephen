@@ -281,7 +281,7 @@ bool al_iter_has_next(smb_iter *iter)
  */
 void al_iter_destroy(smb_iter *iter)
 {
-  // Nothing to destroy ...
+  (void)iter; // unused
 }
 
 /**

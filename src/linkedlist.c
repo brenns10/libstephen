@@ -451,6 +451,7 @@ bool ll_iter_has_next(smb_iter *iter)
  */
 void ll_iter_destroy(smb_iter *iter)
 {
+  (void)iter; // unused
   // Nothing to destroy
 }
 

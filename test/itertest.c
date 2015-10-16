@@ -222,9 +222,9 @@ void iter_test(void)
 {
   get_iter = &get_al_iter;
   cleanup = &al_cleanup;
-  run_tests("al_iter");
+  run_tests("al: test/itertest.c");
 
   get_iter = &get_ll_iter;
   cleanup = &ll_cleanup;
-  run_tests("ll_iter");
+  run_tests("ll: test/itertest.c");
 }

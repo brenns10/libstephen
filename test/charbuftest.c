@@ -251,7 +251,7 @@ int test_wcbuf_clear(void)
 
 void charbuf_test(void)
 {
-  smb_ut_group *group = su_create_test_group("charbuf");
+  smb_ut_group *group = su_create_test_group("test/charbuftest.c");
 
   smb_ut_test *cbuf_memory = su_create_test("cbuf_memory", test_cbuf_memory);
   su_add_test(group, cbuf_memory);

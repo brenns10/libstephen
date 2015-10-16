@@ -51,7 +51,7 @@ static int test_read_fsm(void) {
 
   fsm *f = fsm_read(machine, &status);
   TEST_ASSERT(status == SMB_SUCCESS);
-  for (i = 0; i < sizeof(inputs)/sizeof(wchar_t*); i++) {
+  for (i = 0; (unsigned) i < sizeof(inputs)/sizeof(wchar_t*); i++) {
     TEST_ASSERT(fsm_sim_nondet(f, inputs[i]) == results[i]);
   }
   fsm_delete(f, true);
@@ -99,7 +99,7 @@ static int test_escape(void)
 
   fsm *f = fsm_read(machine, &status);
   TEST_ASSERT(status == SMB_SUCCESS);
-  for (i = 0; i < sizeof(inputs)/sizeof(wchar_t*); i++) {
+  for (i = 0; (unsigned) i < sizeof(inputs)/sizeof(wchar_t*); i++) {
     TEST_ASSERT(fsm_sim_nondet(f, inputs[i]) == results[i]);
   }
   fsm_delete(f, true);
@@ -171,7 +171,7 @@ int test_read_combine(void)
   fsm_kleene(m1S);
   fsm_kleene(m2S);
 
-  for (i = 0; i < sizeof(inputs)/sizeof(wchar_t *); i++) {
+  for (i = 0; (unsigned) i < sizeof(inputs)/sizeof(wchar_t *); i++) {
     TEST_ASSERT(results[i][0] == fsm_sim_nondet(m1, inputs[i]));
     TEST_ASSERT(results[i][1] == fsm_sim_nondet(m2, inputs[i]));
     TEST_ASSERT(results[i][2] == fsm_sim_nondet(m1Um2, inputs[i]));
@@ -306,7 +306,7 @@ int test_simple_str(void)
 
 void fsm_io_test(void)
 {
-  smb_ut_group *group = su_create_test_group("fsm_io");
+  smb_ut_group *group = su_create_test_group("test/fsm_io.c");
 
   smb_ut_test *read_fsm = su_create_test("read_fsm", test_read_fsm);
   su_add_test(group, read_fsm);

@@ -241,9 +241,11 @@ void process_args(smb_ad *data, int argc, char **argv)
 
 int check_flag(smb_ad *pData, char flag)
 {
+  int signed_idx;
   uint64_t idx;
-  idx = flag_index(flag);
-  if (idx != -1) {
+  signed_idx = flag_index(flag);
+  idx = (uint64_t) signed_idx;
+  if (signed_idx != -1) {
     idx =  pData->flags & (UINT64_C(1) << idx);
     if (idx) return 1;
   }

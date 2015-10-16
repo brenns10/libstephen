@@ -88,7 +88,7 @@ int test_too_many_levels(void)
 
 void log_test(void)
 {
-  smb_ut_group *group = su_create_test_group("log");
+  smb_ut_group *group = su_create_test_group("test/logtest.c");
 
   smb_ut_test *levels = su_create_test("levels", test_levels);
   su_add_test(group, levels);

@@ -32,6 +32,7 @@ regex_hit *regex_hit_create(int start, int length)
 
 void regex_hit_destroy(regex_hit *obj)
 {
+  (void)obj; // unused
   // Cleanup logic (none)
 }
 

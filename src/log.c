@@ -57,7 +57,10 @@ smb_logger *sl_create(void)
   return obj;
 }
 
-void sl_destroy(smb_logger *obj) {} // nothing to delete
+void sl_destroy(smb_logger *obj) {
+  (void)obj; // unused
+  // nothing to delete
+}
 
 void sl_delete(smb_logger *obj) {
   sl_destroy(obj);

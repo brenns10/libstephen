@@ -413,8 +413,8 @@ void run_list_tests(char *desc)
 void list_test(void)
 {
   get_list = &ll_create_list;
-  run_list_tests("list_ll");
+  run_list_tests("ll: test/listtest.c");
 
   get_list = &al_create_list;
-  run_list_tests("list_al");
+  run_list_tests("al: test/listtest.c");
 }

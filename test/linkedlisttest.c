@@ -52,11 +52,11 @@ int ll_test_sort()
   int values[] = {8, 1, 3, 5, 12, 4, 7, 9};
   int results[] = {1, 3, 4, 5, 7, 8, 9, 12};
   int i;
-  for (i = 0; i < sizeof(values)/sizeof(int); i++) {
+  for (i = 0; (unsigned) i < sizeof(values)/sizeof(int); i++) {
     ll_append(list, (DATA){.data_llint=values[i]});
   }
   ll_sort(list, &data_compare_int);
-  for (i = 0; i < sizeof(results)/sizeof(int); i++) {
+  for (i = 0; (unsigned) i < sizeof(results)/sizeof(int); i++) {
     TEST_ASSERT(ll_get(list, i, &status).data_llint == results[i]);
     TEST_ASSERT(status == SMB_SUCCESS);
   }

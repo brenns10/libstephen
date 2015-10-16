@@ -77,7 +77,7 @@ int test_overlap(void)
 
 void regex_search_test(void)
 {
-  smb_ut_group *group = su_create_test_group("regex_search");
+  smb_ut_group *group = su_create_test_group("test/regexsearchtest.c");
 
   smb_ut_test *simple_search = su_create_test("simple_search", test_simple_search);
   su_add_test(group, simple_search);
