@@ -265,4 +265,11 @@ void ll_sort(smb_ll *list, DATA_COMPARE cmp);
  */
 smb_iter ll_get_iter(const smb_ll *list);
 
+/**
+   @brief Remove every element for which test_function returns true.
+   @param list List to remove from.
+   @param test_function Returns true if an element should be removed.
+ */
+void ll_filter(smb_ll *list, bool (*test_function)(DATA));
+
 #endif // LIBSTEPHEN_LL_H
