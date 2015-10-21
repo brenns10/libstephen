@@ -80,6 +80,22 @@ numbers to it, and then free it.
 
     ll_free(list);
 
+Functional Programming!
+-----------------------
+
+One of the more recent additions to my linked list API is some high-level
+functions for lists - namely, map, filter, and fold.  My implementations are all
+in-place for efficiency.  Here they are:
+
+.. code:: C
+
+   void ll_filter(smb_ll *list, bool (*test_function)(DATA));
+   void ll_map(smb_ll *list, DATA (*map_function)(DATA));
+   DATA ll_foldl(smb_ll *list, DATA start_value, DATA (*reduction)(DATA,DATA));
+   DATA ll_foldr(smb_ll *list, DATA start_value, DATA (*reduction)(DATA,DATA));
+
+Check the API documentation for full details.
+
 Structure
 ---------
 

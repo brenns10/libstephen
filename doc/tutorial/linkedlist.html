@@ -89,6 +89,7 @@
 <li class="toctree-l2 current"><a class="current reference internal" href="">Linked List</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#operations">Operations</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#sample-usage">Sample Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#functional-programming">Functional Programming!</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#structure">Structure</a></li>
 </ul>
 </li>
@@ -218,6 +219,19 @@ numbers to it, and then free it.</p>
 <span class="n">ll_free</span><span class="p">(</span><span class="n">list</span><span class="p">);</span>
 </pre></div>
 </div>
+</div>
+<div class="section" id="functional-programming">
+<h2>Functional Programming!<a class="headerlink" href="#functional-programming" title="Permalink to this headline">¶</a></h2>
+<p>One of the more recent additions to my linked list API is some high-level
+functions for lists - namely, map, filter, and fold.  My implementations are all
+in-place for efficiency.  Here they are:</p>
+<div class="code C highlight-c"><div class="highlight"><pre><span class="kt">void</span> <span class="nf">ll_filter</span><span class="p">(</span><span class="n">smb_ll</span> <span class="o">*</span><span class="n">list</span><span class="p">,</span> <span class="kt">bool</span> <span class="p">(</span><span class="o">*</span><span class="n">test_function</span><span class="p">)(</span><span class="n">DATA</span><span class="p">));</span>
+<span class="kt">void</span> <span class="nf">ll_map</span><span class="p">(</span><span class="n">smb_ll</span> <span class="o">*</span><span class="n">list</span><span class="p">,</span> <span class="n">DATA</span> <span class="p">(</span><span class="o">*</span><span class="n">map_function</span><span class="p">)(</span><span class="n">DATA</span><span class="p">));</span>
+<span class="n">DATA</span> <span class="nf">ll_foldl</span><span class="p">(</span><span class="n">smb_ll</span> <span class="o">*</span><span class="n">list</span><span class="p">,</span> <span class="n">DATA</span> <span class="n">start_value</span><span class="p">,</span> <span class="n">DATA</span> <span class="p">(</span><span class="o">*</span><span class="n">reduction</span><span class="p">)(</span><span class="n">DATA</span><span class="p">,</span><span class="n">DATA</span><span class="p">));</span>
+<span class="n">DATA</span> <span class="nf">ll_foldr</span><span class="p">(</span><span class="n">smb_ll</span> <span class="o">*</span><span class="n">list</span><span class="p">,</span> <span class="n">DATA</span> <span class="n">start_value</span><span class="p">,</span> <span class="n">DATA</span> <span class="p">(</span><span class="o">*</span><span class="n">reduction</span><span class="p">)(</span><span class="n">DATA</span><span class="p">,</span><span class="n">DATA</span><span class="p">));</span>
+</pre></div>
+</div>
+<p>Check the API documentation for full details.</p>
 </div>
 <div class="section" id="structure">
 <h2>Structure<a class="headerlink" href="#structure" title="Permalink to this headline">¶</a></h2>

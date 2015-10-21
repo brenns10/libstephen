@@ -630,6 +630,67 @@ This linked list data structure provides most basic features necessary in a link
 </p>
 </dd></dl>
 
+<dl class="function">
+<dt id="c.ll_map">
+<span class="target" id="project0ll_8h_1aba945d6fb710f14702e3dc6a961ce57a"></span>void <code class="descname">ll_map</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_ll" title="smb_ll">smb_ll</a>  *<em>&nbsp;list</em>, <a class="reference internal" href="base.html#c.DATA" title="DATA">DATA</a> (<em>*map_function</em>)( <a class="reference internal" href="base.html#c.DATA" title="DATA">DATA</a> )<span class="sig-paren">)</span><a class="headerlink" href="#c.ll_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply a function to every item in the list. </p>
+<p>Calls the function (with one argument) with each element of the list. Then, puts the return value back into the list at the same location. This is all IN PLACE, and thus pretty bad if you need to keep the references for the future. <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>nothing - the list is modified! </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>The list to map over. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">map_function</span></code> - <p>Function to apply. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.ll_foldl">
+<span class="target" id="project0ll_8h_1a899e8b114c4cd75d0938738a41adc111"></span><a class="reference internal" href="base.html#c.DATA" title="DATA">DATA</a> <code class="descname">ll_foldl</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_ll" title="smb_ll">smb_ll</a>  *<em>&nbsp;list</em>, <a class="reference internal" href="base.html#c.DATA" title="DATA">DATA</a><em>&nbsp;start_value</em>, <a class="reference internal" href="base.html#c.DATA" title="DATA">DATA</a> (<em>*reduction</em>)( <a class="reference internal" href="base.html#c.DATA" title="DATA">DATA</a> ,  <a class="reference internal" href="base.html#c.DATA" title="DATA">DATA</a> )<span class="sig-paren">)</span><a class="headerlink" href="#c.ll_foldl" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fold a function starting on the left. </p>
+<p>Applies `reduction(start_value, list[0])`, then `reduction(result, list[1])`, etc. Returns the final result. <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the final result </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>List to reduce the function along. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">start_value</span></code> - <p>Initial value to give to the reduction. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">reduction</span></code> - <p>Function to reduce. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.ll_foldr">
+<span class="target" id="project0ll_8h_1ab741272cb267a1dfa2af9b93e3869a42"></span><a class="reference internal" href="base.html#c.DATA" title="DATA">DATA</a> <code class="descname">ll_foldr</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_ll" title="smb_ll">smb_ll</a>  *<em>&nbsp;list</em>, <a class="reference internal" href="base.html#c.DATA" title="DATA">DATA</a><em>&nbsp;start_value</em>, <a class="reference internal" href="base.html#c.DATA" title="DATA">DATA</a> (<em>*reduction</em>)( <a class="reference internal" href="base.html#c.DATA" title="DATA">DATA</a> ,  <a class="reference internal" href="base.html#c.DATA" title="DATA">DATA</a> )<span class="sig-paren">)</span><a class="headerlink" href="#c.ll_foldr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fold a function starting on the right. </p>
+<p>Applies `reduction(start_value, list[n-1])`, then `reduction(result, list[n-2])`, etc. Returns the final result. <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>the final result </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>List to reduce the function along. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">start_value</span></code> - <p>Initial value to give to the reduction. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">reduction</span></code> - <p>Function to reduce. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
 </div>
 <dl class="struct">
 <dt>
