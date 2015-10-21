@@ -497,6 +497,35 @@ void ll_filter(smb_ll *list, bool (*test_function)(DATA))
   }
 }
 
+void ll_map(smb_ll *list, DATA (*map_function)(DATA))
+{
+  smb_ll_node *curr = list->head;
+  while (curr) {
+    curr->data = map_function(curr->data);
+    curr = curr->next;
+  }
+}
+
+DATA ll_foldl(smb_ll *list, DATA start_value, DATA (*reduction)(DATA,DATA))
+{
+  smb_ll_node *curr = list->head;
+  while (curr) {
+    start_value = reduction(start_value, curr->data);
+    curr = curr->next;
+  }
+  return start_value;
+}
+
+DATA ll_foldr(smb_ll *list, DATA start_value, DATA (*reduction)(DATA,DATA))
+{
+  smb_ll_node *curr = list->tail;
+  while (curr) {
+    start_value = reduction(curr->data, start_value);
+    curr = curr->prev;
+  }
+  return start_value;
+}
+
 /*******************************************************************************
 
                          Linked List Adapter Functions

@@ -272,4 +272,41 @@ smb_iter ll_get_iter(const smb_ll *list);
  */
 void ll_filter(smb_ll *list, bool (*test_function)(DATA));
 
+/**
+   @brief Apply a function to every item in the list.
+
+   Calls the function (with one argument) with each element of the list.  Then,
+   puts the return value back into the list at the same location.  This is all
+   IN PLACE, and thus pretty bad if you need to keep the references for the
+   future.
+   @param list The list to map over.
+   @param map_function Function to apply.
+   @returns nothing - the list is modified!
+ */
+void ll_map(smb_ll *list, DATA (*map_function)(DATA));
+
+/**
+   @brief Fold a function starting on the left.
+
+   Applies `reduction(start_value, list[0])`, then `reduction(result, list[1])`,
+   etc.  Returns the final result.
+   @param list List to reduce the function along.
+   @param start_value Initial value to give to the reduction.
+   @param reduction Function to reduce.
+   @returns the final result
+ */
+DATA ll_foldl(smb_ll *list, DATA start_value, DATA (*reduction)(DATA,DATA));
+
+/**
+   @brief Fold a function starting on the right.
+
+   Applies `reduction(start_value, list[n-1])`, then `reduction(result,
+   list[n-2])`, etc.  Returns the final result.
+   @param list List to reduce the function along.
+   @param start_value Initial value to give to the reduction.
+   @param reduction Function to reduce.
+   @returns the final result
+ */
+DATA ll_foldr(smb_ll *list, DATA start_value, DATA (*reduction)(DATA,DATA));
+
 #endif // LIBSTEPHEN_LL_H

@@ -125,6 +125,112 @@ int ll_test_filter(void)
   return 0;
 }
 
+static DATA increment(DATA d) {
+  d.data_llint++;
+  return d;
+}
+
+int ll_test_map_empty()
+{
+  smb_ll *list = ll_create();
+  ll_map(list, &increment);
+  TEST_ASSERT(ll_length(list) == 0);
+  ll_delete(list);
+  return 0;
+}
+
+int ll_test_map(void)
+{
+  smb_status status = SMB_SUCCESS;
+  smb_ll *list = ll_create();
+  ll_append(list, LLINT(1));
+  ll_append(list, LLINT(2));
+  ll_append(list, LLINT(3));
+  ll_append(list, LLINT(4));
+  ll_map(list, &increment);
+  TEST_ASSERT(ll_length(list) == 4);
+  TEST_ASSERT(ll_get(list, 0, &status).data_llint == 2);
+  TEST_ASSERT(status == SMB_SUCCESS);
+  TEST_ASSERT(ll_get(list, 1, &status).data_llint == 3);
+  TEST_ASSERT(status == SMB_SUCCESS);
+  TEST_ASSERT(ll_get(list, 2, &status).data_llint == 4);
+  TEST_ASSERT(status == SMB_SUCCESS);
+  TEST_ASSERT(ll_get(list, 3, &status).data_llint == 5);
+  TEST_ASSERT(status == SMB_SUCCESS);
+  ll_delete(list);
+  return 0;
+}
+
+static DATA subtract(DATA d1, DATA d2) {
+  return LLINT(d1.data_llint - d2.data_llint);
+}
+
+int ll_test_foldl_empty(void)
+{
+  smb_ll *list = ll_create();
+  DATA result = ll_foldl(list, LLINT(0), &subtract);
+  TEST_ASSERT(result.data_llint == 0);
+  TEST_ASSERT(ll_length(list) == 0);
+  ll_delete(list);
+  return 0;
+}
+
+int ll_test_foldl(void)
+{
+  smb_status status = SMB_SUCCESS;
+  smb_ll *list = ll_create();
+  ll_append(list, LLINT(1));
+  ll_append(list, LLINT(2));
+  ll_append(list, LLINT(3));
+  ll_append(list, LLINT(4));
+  DATA result = ll_foldl(list, LLINT(0), &subtract);
+  TEST_ASSERT(result.data_llint == -10);
+  TEST_ASSERT(ll_length(list) == 4);
+  TEST_ASSERT(ll_get(list, 0, &status).data_llint == 1);
+  TEST_ASSERT(status == SMB_SUCCESS);
+  TEST_ASSERT(ll_get(list, 1, &status).data_llint == 2);
+  TEST_ASSERT(status == SMB_SUCCESS);
+  TEST_ASSERT(ll_get(list, 2, &status).data_llint == 3);
+  TEST_ASSERT(status == SMB_SUCCESS);
+  TEST_ASSERT(ll_get(list, 3, &status).data_llint == 4);
+  TEST_ASSERT(status == SMB_SUCCESS);
+  ll_delete(list);
+  return 0;
+}
+
+int ll_test_foldr_empty(void)
+{
+  smb_ll *list = ll_create();
+  DATA result = ll_foldr(list, LLINT(0), &subtract);
+  TEST_ASSERT(result.data_llint == 0);
+  TEST_ASSERT(ll_length(list) == 0);
+  ll_delete(list);
+  return 0;
+}
+
+int ll_test_foldr(void)
+{
+  smb_status status = SMB_SUCCESS;
+  smb_ll *list = ll_create();
+  ll_append(list, LLINT(1));
+  ll_append(list, LLINT(2));
+  ll_append(list, LLINT(3));
+  ll_append(list, LLINT(4));
+  DATA result = ll_foldr(list, LLINT(0), &subtract);
+  TEST_ASSERT(result.data_llint == -2);
+  TEST_ASSERT(ll_length(list) == 4);
+  TEST_ASSERT(ll_get(list, 0, &status).data_llint == 1);
+  TEST_ASSERT(status == SMB_SUCCESS);
+  TEST_ASSERT(ll_get(list, 1, &status).data_llint == 2);
+  TEST_ASSERT(status == SMB_SUCCESS);
+  TEST_ASSERT(ll_get(list, 2, &status).data_llint == 3);
+  TEST_ASSERT(status == SMB_SUCCESS);
+  TEST_ASSERT(ll_get(list, 3, &status).data_llint == 4);
+  TEST_ASSERT(status == SMB_SUCCESS);
+  ll_delete(list);
+  return 0;
+}
+
 void linked_list_test()
 {
   // Use the smbunit test framework.  Load tests and run them.
@@ -150,6 +256,24 @@ void linked_list_test()
 
   smb_ut_test *filter = su_create_test("filter", ll_test_filter);
   su_add_test(group, filter);
+
+  smb_ut_test *map = su_create_test("map", ll_test_map);
+  su_add_test(group, map);
+
+  smb_ut_test *map_empty = su_create_test("map_empty", ll_test_map_empty);
+  su_add_test(group, map_empty);
+
+  smb_ut_test *foldl_empty = su_create_test("foldl_empty", ll_test_foldl_empty);
+  su_add_test(group, foldl_empty);
+
+  smb_ut_test *foldl = su_create_test("foldl", ll_test_foldl);
+  su_add_test(group, foldl);
+
+  smb_ut_test *foldr_empty = su_create_test("foldr_empty", ll_test_foldr_empty);
+  su_add_test(group, foldr_empty);
+
+  smb_ut_test *foldr = su_create_test("foldr", ll_test_foldr);
+  su_add_test(group, foldr);
 
   su_run_group(group);
   su_delete_group(group);
