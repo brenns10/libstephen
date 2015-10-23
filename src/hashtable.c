@@ -229,6 +229,8 @@ void ht_destroy_act(smb_ht *table, DATA_ACTION deleter)
     }
     table->table[i] = NULL;
   }
+
+  smb_free(table->table);
 }
 
 void ht_destroy(smb_ht *table)
@@ -243,7 +245,6 @@ void ht_delete_act(smb_ht *table, DATA_ACTION deleter)
   }
 
   ht_destroy_act(table, deleter);
-  smb_free(table->table);
   smb_free(table);
 }
 
