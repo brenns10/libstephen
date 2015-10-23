@@ -75,6 +75,7 @@ void smb___free(void *ptr)
 
 wchar_t *smb_read_linew(FILE *file, smb_status *status)
 {
+  (void)status; // unused;
   #define SMBRL_BUFSIZE 256
   int bufsize = SMBRL_BUFSIZE;
   int position = 0;
@@ -104,6 +105,7 @@ wchar_t *smb_read_linew(FILE *file, smb_status *status)
 
 char *smb_read_line(FILE *file, smb_status *status)
 {
+  (void) status; // unused
   int bufsize = SMBRL_BUFSIZE;
   int position = 0;
   char *buffer = smb_new(char, bufsize);

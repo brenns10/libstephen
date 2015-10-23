@@ -143,7 +143,7 @@ int bf_test_flip()
 // TEST LOADER AND RUNNER
 
 void bit_field_test() {
-  smb_ut_group *group = su_create_test_group("bit field");
+  smb_ut_group *group = su_create_test_group("test/bitfieldtest.c");
 
   smb_ut_test *init = su_create_test("init", bf_test_init);
   su_add_test(group, init);

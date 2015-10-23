@@ -52,7 +52,7 @@ int al_test_create_empty()
 
 void array_list_test()
 {
-  smb_ut_group *group = su_create_test_group("array list");
+  smb_ut_group *group = su_create_test_group("test/arraylisttest.c");
 
   smb_ut_test *create = su_create_test("create", al_test_create);
   su_add_test(group, create);

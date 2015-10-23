@@ -366,7 +366,7 @@ static int test_kleene(void)
 
   // Now modify it to accept "(foo)*"
   fsm_kleene(src);
-  
+
   // Test that it now accepts 0 or more instances.
   TEST_ASSERT(fsm_sim_nondet(src, L""));
   TEST_ASSERT(fsm_sim_nondet(src, L"foo"));

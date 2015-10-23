@@ -41,12 +41,13 @@ int ht_test_deletions = 0;
 
 void ht_test_deleter(DATA dValue)
 {
+  (void) dValue; // unused
   ht_test_deletions++;
 }
 
 unsigned int ht_test_constant_hash(DATA dKey)
 {
-  // return random_die_roll();
+  (void) dKey; // unused
   return 4;
 }
 
@@ -277,7 +278,7 @@ int ht_test_duplicate()
 
 void hash_table_test()
 {
-  smb_ut_group *group = su_create_test_group("hash table");
+  smb_ut_group *group = su_create_test_group("test/hashtabletest.c");
 
   smb_ut_test *insert = su_create_test("insert", ht_test_insert);
   su_add_test(group, insert);

@@ -54,16 +54,16 @@ then verifies that the list contains the expected values.
 .. code:: C
 
     smb_status status = SMB_SUCCESS;
-    DATA d;
     smb_list list = ll_create_list();
+    int i, j;
 
-    for (d.data_llint = 0; d.data_llint < 200; d.data_llint++) {
-      list.append(&list, d);
-      TEST_ASSERT(list.length(&list) == d.data_llint + 1);
+    for (i = 0; i < 200; i++) {
+      list.append(&list, LLINT(i));
+      assert(list.length(&list) == i + 1);
 
-      for (int i = 0; i < list.length(&list); i++) {
-        TEST_ASSERT(list.get(&list, i, &status).data_llint == i);
-        TEST_ASSERT(status == SMB_SUCCESS);
+      for (j = 0; j < list.length(&list); j++) {
+        assert(list.get(&list, j, &status).data_llint == j);
+        assert(status == SMB_SUCCESS);
       }
     }
 

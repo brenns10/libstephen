@@ -24,6 +24,8 @@
  */
 int main(int argc, char ** argv)
 {
+  (void) argc; // unused
+  (void) argv; // unused
   sl_set_level(NULL, LEVEL_INFO);
   linked_list_test();
   array_list_test();

@@ -257,7 +257,7 @@ int ad_test_bare_strings(void)
 
 void args_test(void)
 {
-  smb_ut_group *group = su_create_test_group("args");
+  smb_ut_group *group = su_create_test_group("test/argstest.c");
 
   smb_ut_test *heap = su_create_test("heap", &ad_test_heap);
   su_add_test(group, heap);

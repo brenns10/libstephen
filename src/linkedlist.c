@@ -30,7 +30,8 @@
    @brief Removes the given node, reassigning the links to and from it.
 
    Frees the node, in addition no reassigning links.  Once this function is
-   called, the_node is invlidated.
+   called, the_node is invlidated.  Please note that this function *does not*
+   decrement the list's length!
 
    This function is a *private* function, not declared in libstephen.h for a
    reason.  It is only necessary for the implementation functions within this
@@ -450,6 +451,7 @@ bool ll_iter_has_next(smb_iter *iter)
  */
 void ll_iter_destroy(smb_iter *iter)
 {
+  (void)iter; // unused
   // Nothing to destroy
 }
 
@@ -480,6 +482,48 @@ smb_iter ll_get_iter(const smb_ll *list)
   };
 
   return iter;
+}
+
+void ll_filter(smb_ll *list, bool (*test_function)(DATA))
+{
+  smb_ll_node *curr = list->head, *next;
+  while (curr) {
+    next = curr->next;
+    if (test_function(curr->data)) {
+      ll_remove_node(list, curr);
+      list->length--;
+    }
+    curr = next;
+  }
+}
+
+void ll_map(smb_ll *list, DATA (*map_function)(DATA))
+{
+  smb_ll_node *curr = list->head;
+  while (curr) {
+    curr->data = map_function(curr->data);
+    curr = curr->next;
+  }
+}
+
+DATA ll_foldl(smb_ll *list, DATA start_value, DATA (*reduction)(DATA,DATA))
+{
+  smb_ll_node *curr = list->head;
+  while (curr) {
+    start_value = reduction(start_value, curr->data);
+    curr = curr->next;
+  }
+  return start_value;
+}
+
+DATA ll_foldr(smb_ll *list, DATA start_value, DATA (*reduction)(DATA,DATA))
+{
+  smb_ll_node *curr = list->tail;
+  while (curr) {
+    start_value = reduction(curr->data, start_value);
+    curr = curr->prev;
+  }
+  return start_value;
 }
 
 /*******************************************************************************

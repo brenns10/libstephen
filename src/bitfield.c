@@ -35,6 +35,7 @@ unsigned char *bf_create(int num_bools) {
 }
 
 void bf_delete(unsigned char *data, int num_bools) {
+  (void) num_bools; // unused
   smb_free(data);
 }
 
