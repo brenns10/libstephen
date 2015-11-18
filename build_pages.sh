@@ -24,7 +24,7 @@ cd gh-pages
 if [ "$1" != "dry" ]; then
     # Update git config.
     git config user.name "Travis Builder"
-    git config user.email "smb196@case.edu"
+    git config user.email "nobody@example.com"
 fi
 
 # Copy the docs and coverage results.
