@@ -286,8 +286,8 @@ void ht_print(smb_ht const *table, int full_mode)
   for (i = 0; i < table->allocated; i++) {
     if (full_mode || table->table[i].mark == HT_FULL) {
       printf("[%04d|%s]: key=0x%llx, value=0x%llx\n", i,
-             MARKS[table->table[i].mark], table->table[i].key,
-             table->table[i].value);
+             MARKS[table->table[i].mark], table->table[i].key.data_llint,
+             table->table[i].value.data_llint);
     }
   }
 }
