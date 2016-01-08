@@ -194,6 +194,13 @@
 </dd></dl>
 
 <dl class="typedef">
+<dt>
+<span class="target" id="project0ht_8h_1ab6ccc586b3d40b05dfe1d741d29960ad"></span><em class="property">typedef </em><code class="descname">smb_ht_mark</code></dt>
+<dd><p>This mark goes in each table cell. </p>
+<p>In order for probing to work properly, you need to be able to tell whether or not a cell is empty because something was deleted out of it, or whether it has always been empty. So, the &#8220;GRAVE&#8221; mark is a grave stone. When you delete a key from a cell, you mark it with a grave stone. And when you&#8217;re searching for a key, you continue when you find a grave marker. </p>
+</dd></dl>
+
+<dl class="typedef">
 <dt id="c.smb_ht_bckt">
 <span class="target" id="project0ht_8h_1a87c7b0aa5793b547164cb361c2457c4a"></span><em class="property">typedef </em><code class="descname">smb_ht_bckt</code><a class="headerlink" href="#c.smb_ht_bckt" title="Permalink to this definition">¶</a></dt>
 <dd><p>The bucket of a hash table. Contains key,value pairs, and is a singly linked list. </p>
@@ -203,6 +210,32 @@
 <dt id="c.smb_ht">
 <span class="target" id="project0ht_8h_1a8e3f30adf428f90c80a0c5775550c2b2"></span><em class="property">typedef </em><code class="descname">smb_ht</code><a class="headerlink" href="#c.smb_ht" title="Permalink to this definition">¶</a></dt>
 <dd><p>A hash table data structure. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef container">
+<p class="breathe-sectiondef-title rubric">Enums</p>
+<dl class="enum">
+<dt id="c.smb_ht_mark">
+<span class="target" id="project0ht_8h_1a0a96165a9a8ebe59f2aaaec9049e9443"></span><em class="property">enum </em><code class="descname">smb_ht_mark</code><a class="headerlink" href="#c.smb_ht_mark" title="Permalink to this definition">¶</a></dt>
+<dd><p>This mark goes in each table cell. </p>
+<p>In order for probing to work properly, you need to be able to tell whether or not a cell is empty because something was deleted out of it, or whether it has always been empty. So, the &#8220;GRAVE&#8221; mark is a grave stone. When you delete a key from a cell, you mark it with a grave stone. And when you&#8217;re searching for a key, you continue when you find a grave marker. </p>
+<p><em>Values:</em></p>
+<dl class="enumvalue">
+<dt id="c.HT_EMPTY">
+<span class="target" id="project0ht_8h_1a0a96165a9a8ebe59f2aaaec9049e9443a0d1bef9ba062fe3fa38dd20fbb93c02f"></span><code class="descname">HT_EMPTY</code> = 0<a class="headerlink" href="#c.HT_EMPTY" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="enumvalue">
+<dt id="c.HT_FULL">
+<span class="target" id="project0ht_8h_1a0a96165a9a8ebe59f2aaaec9049e9443a30ab608595348190813254221ccb6d27"></span><code class="descname">HT_FULL</code><a class="headerlink" href="#c.HT_FULL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="enumvalue">
+<dt id="c.HT_GRAVE">
+<span class="target" id="project0ht_8h_1a0a96165a9a8ebe59f2aaaec9049e9443a7d1be735021aad0636f64d8265ff823e"></span><code class="descname">HT_GRAVE</code><a class="headerlink" href="#c.HT_GRAVE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 </div>
@@ -462,9 +495,9 @@
 </dd></dl>
 
 <dl class="variable">
-<dt id="c.next">
-<span class="target" id="project0structsmb__ht__bckt_1a1c9d880a37256e555b322fa308305b36"></span>struct <a class="reference internal" href="#c.smb_ht_bckt" title="smb_ht_bckt">smb_ht_bckt</a>* <code class="descname">next</code><a class="headerlink" href="#c.next" title="Permalink to this definition">¶</a></dt>
-<dd><p>The next item in the linked list. </p>
+<dt id="c.mark">
+<span class="target" id="project0structsmb__ht__bckt_1a2b39b57e47be4efb3e1f184ec6fd6c15"></span><a class="reference internal" href="#c.smb_ht_mark" title="smb_ht_mark">smb_ht_mark</a> <code class="descname">mark</code><a class="headerlink" href="#c.mark" title="Permalink to this definition">¶</a></dt>
+<dd><p>Marker for whether or not the table is full or empty. </p>
 </dd></dl>
 
 </div>
@@ -478,13 +511,13 @@
 <p class="breathe-sectiondef-title rubric">Public Members</p>
 <dl class="variable">
 <dt id="c.length">
-<span class="target" id="project0structsmb__ht_1a9f59b34b1f25fe00023291b678246bcc"></span>int <code class="descname">length</code><a class="headerlink" href="#c.length" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="project0structsmb__ht_1ac8d42bcd4a44e078047ccd7291059238"></span>unsigned int <code class="descname">length</code><a class="headerlink" href="#c.length" title="Permalink to this definition">¶</a></dt>
 <dd><p>The number of items in the hash table. </p>
 </dd></dl>
 
 <dl class="variable">
 <dt id="c.allocated">
-<span class="target" id="project0structsmb__ht_1a115235fc25fdf1c03d856bd072b6cead"></span>int <code class="descname">allocated</code><a class="headerlink" href="#c.allocated" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="project0structsmb__ht_1a44ac4c6a3693f3d2fa34a50428e42237"></span>unsigned int <code class="descname">allocated</code><a class="headerlink" href="#c.allocated" title="Permalink to this definition">¶</a></dt>
 <dd><p>The number of slots allocated in the hash table. </p>
 </dd></dl>
 
@@ -502,7 +535,7 @@
 
 <dl class="variable">
 <dt id="c.table">
-<span class="target" id="project0structsmb__ht_1a27f30cce622baacebea1a12f1e6d9e5f"></span>struct <a class="reference internal" href="#c.smb_ht_bckt" title="smb_ht_bckt">smb_ht_bckt</a>** <code class="descname">table</code><a class="headerlink" href="#c.table" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="project0structsmb__ht_1a0d0d15e96e22e7131182abd6a834c0e4"></span>struct <a class="reference internal" href="#c.smb_ht_bckt" title="smb_ht_bckt">smb_ht_bckt</a>* <code class="descname">table</code><a class="headerlink" href="#c.table" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pointer to the data of the table. </p>
 </dd></dl>
 
