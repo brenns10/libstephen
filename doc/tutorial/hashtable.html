@@ -126,7 +126,7 @@
         <div class="rst-content">
           
 
-
+ 
 
 
 
@@ -152,7 +152,7 @@
             
   <div class="section" id="hash-table">
 <h1>Hash Table<a class="headerlink" href="#hash-table" title="Permalink to this headline">¶</a></h1>
-<div class="code C highlight-c"><div class="highlight"><pre><span class="cp">#include &quot;libstephen/ht.h&quot;</span>
+<div class="code C highlight-c"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;libstephen/ht.h&quot;</span><span class="cp"></span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -182,7 +182,7 @@ the type of the keys.</li>
 </ul>
 <p>To handle this, the hash table takes function pointers of two different
 types. The first is called <code class="docutils literal"><span class="pre">HASH_FUNCTION</span></code>:</p>
-<div class="code C highlight-c"><div class="highlight"><pre><span class="k">typedef</span> <span class="kt">unsigned</span> <span class="nf">int</span> <span class="p">(</span><span class="o">*</span><span class="n">HASH_FUNCTION</span><span class="p">)(</span><span class="n">DATA</span> <span class="n">toHash</span><span class="p">);</span>
+<div class="code C highlight-c"><div class="highlight"><pre><span></span><span class="k">typedef</span> <span class="kt">unsigned</span> <span class="nf">int</span> <span class="p">(</span><span class="o">*</span><span class="n">HASH_FUNCTION</span><span class="p">)(</span><span class="n">DATA</span> <span class="n">toHash</span><span class="p">);</span>
 <span class="kt">unsigned</span> <span class="kt">int</span> <span class="nf">my_hash</span><span class="p">(</span><span class="n">DATA</span> <span class="n">toHash</span><span class="p">)</span> <span class="p">{</span>
   <span class="c1">//compute hash value</span>
   <span class="k">return</span> <span class="n">hash_value</span><span class="p">;</span>
@@ -195,7 +195,7 @@ function below that is a hash function that implements the
 <code class="docutils literal"><span class="pre">HASH_FUNCTION</span></code> signature. The only hash functions in libstephen are
 <code class="docutils literal"><span class="pre">ht_string_hash</span></code> for strings.</p>
 <p>The other type of function pointer that is defined is <code class="docutils literal"><span class="pre">DATA_COMPARE</span></code>:</p>
-<div class="code C highlight-c"><div class="highlight"><pre><span class="k">typedef</span> <span class="nf">int</span> <span class="p">(</span><span class="o">*</span><span class="n">DATA_COMPARE</span><span class="p">)(</span><span class="n">DATA</span> <span class="n">d1</span><span class="p">,</span> <span class="n">DATA</span> <span class="n">d2</span><span class="p">);</span>
+<div class="code C highlight-c"><div class="highlight"><pre><span></span><span class="k">typedef</span> <span class="nf">int</span> <span class="p">(</span><span class="o">*</span><span class="n">DATA_COMPARE</span><span class="p">)(</span><span class="n">DATA</span> <span class="n">d1</span><span class="p">,</span> <span class="n">DATA</span> <span class="n">d2</span><span class="p">);</span>
 <span class="kt">int</span> <span class="nf">compare_int</span><span class="p">(</span><span class="n">DATA</span> <span class="n">d1</span><span class="p">,</span> <span class="n">DATA</span> <span class="n">d2</span><span class="p">)</span>
 <span class="p">{</span>
   <span class="k">return</span> <span class="n">d1</span><span class="p">.</span><span class="n">data_llint</span> <span class="o">-</span> <span class="n">d2</span><span class="p">.</span><span class="n">data_llint</span><span class="p">;</span>
@@ -214,7 +214,7 @@ looking up the value, freeing it, then removing it from the table.
 Instead, I&#8217;ve made a function pointer type that will act on a DATA,
 allowing you to specify an action to happen before removing an item from
 the table!</p>
-<div class="code C highlight-c"><div class="highlight"><pre><span class="k">typedef</span> <span class="nf">void</span> <span class="p">(</span><span class="o">*</span><span class="n">DATA_ACTION</span><span class="p">)(</span><span class="n">DATA</span> <span class="n">d</span><span class="p">);</span>
+<div class="code C highlight-c"><div class="highlight"><pre><span></span><span class="k">typedef</span> <span class="nf">void</span> <span class="p">(</span><span class="o">*</span><span class="n">DATA_ACTION</span><span class="p">)(</span><span class="n">DATA</span> <span class="n">d</span><span class="p">);</span>
 <span class="kt">void</span> <span class="nf">freer</span><span class="p">(</span><span class="n">DATA</span> <span class="n">d</span><span class="p">)</span>
 <span class="p">{</span>
   <span class="n">free</span><span class="p">(</span><span class="n">d</span><span class="p">.</span><span class="n">data_ptr</span><span class="p">);</span>
@@ -226,7 +226,7 @@ the table!</p>
 <h2>Operations<a class="headerlink" href="#operations" title="Permalink to this headline">¶</a></h2>
 <p>With those function pointer types in hand, we can do a lot of fun hash
 table stuff. Here is a list of operations, straight from the header:</p>
-<div class="code C highlight-c"><div class="highlight"><pre><span class="kt">void</span> <span class="nf">ht_init</span><span class="p">(</span><span class="n">smb_ht</span> <span class="o">*</span><span class="n">pTable</span><span class="p">,</span> <span class="n">HASH_FUNCTION</span> <span class="n">hash_func</span><span class="p">,</span> <span class="n">DATA_COMPARE</span> <span class="n">equal</span><span class="p">);</span>
+<div class="code C highlight-c"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">ht_init</span><span class="p">(</span><span class="n">smb_ht</span> <span class="o">*</span><span class="n">pTable</span><span class="p">,</span> <span class="n">HASH_FUNCTION</span> <span class="n">hash_func</span><span class="p">,</span> <span class="n">DATA_COMPARE</span> <span class="n">equal</span><span class="p">);</span>
 <span class="n">smb_ht</span> <span class="o">*</span><span class="nf">ht_create</span><span class="p">(</span><span class="n">HASH_FUNCTION</span> <span class="n">hash_func</span><span class="p">,</span> <span class="n">DATA_COMPARE</span> <span class="n">equal</span><span class="p">);</span>
 <span class="kt">void</span> <span class="nf">ht_destroy_act</span><span class="p">(</span><span class="n">smb_ht</span> <span class="o">*</span><span class="n">pTable</span><span class="p">,</span> <span class="n">DATA_ACTION</span> <span class="n">deleter</span><span class="p">);</span>
 <span class="kt">void</span> <span class="nf">ht_destroy</span><span class="p">(</span><span class="n">smb_ht</span> <span class="o">*</span><span class="n">pTable</span><span class="p">);</span>
@@ -252,7 +252,7 @@ some of the structure of the hash table, which is good for debugging.</p>
 <div class="section" id="sample-usage">
 <h2>Sample Usage<a class="headerlink" href="#sample-usage" title="Permalink to this headline">¶</a></h2>
 <p>Here&#8217;s an example of a using a hash table:</p>
-<div class="code C highlight-c"><div class="highlight"><pre><span class="n">smb_status</span> <span class="n">status</span> <span class="o">=</span> <span class="n">SMB_SUCCESS</span><span class="p">;</span>
+<div class="code C highlight-c"><div class="highlight"><pre><span></span><span class="n">smb_status</span> <span class="n">status</span> <span class="o">=</span> <span class="n">SMB_SUCCESS</span><span class="p">;</span>
 <span class="n">smb_ht</span> <span class="o">*</span><span class="n">ht</span> <span class="o">=</span> <span class="n">ht_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">ht_string_hash</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">data_compare_string</span><span class="p">);</span>
 
 <span class="kt">char</span> <span class="o">*</span><span class="n">key</span> <span class="o">=</span> <span class="s">&quot;stephen&quot;</span><span class="p">;</span>
@@ -273,7 +273,7 @@ improve it in the future. Currently, it uses the simplest possible
 method for resolving collisions: chaining. Basically, each bucket is a
 linked list. In the future, I might change to quadratic probing. Anyhow,
 here is the hash table itself:</p>
-<div class="code C highlight-c"><div class="highlight"><pre><span class="k">typedef</span> <span class="k">struct</span> <span class="n">smb_ht</span>
+<div class="code C highlight-c"><div class="highlight"><pre><span></span><span class="k">typedef</span> <span class="k">struct</span> <span class="n">smb_ht</span>
 <span class="p">{</span>
   <span class="kt">int</span> <span class="n">length</span><span class="p">;</span>
   <span class="kt">int</span> <span class="n">allocated</span><span class="p">;</span>
@@ -284,7 +284,7 @@ here is the hash table itself:</p>
 </pre></div>
 </div>
 <p>And here is the structure of the hash table bucket:</p>
-<div class="code C highlight-c"><div class="highlight"><pre><span class="k">typedef</span> <span class="k">struct</span> <span class="n">smb_ht_bckt</span>
+<div class="code C highlight-c"><div class="highlight"><pre><span></span><span class="k">typedef</span> <span class="k">struct</span> <span class="n">smb_ht_bckt</span>
 <span class="p">{</span>
   <span class="n">DATA</span> <span class="n">key</span><span class="p">;</span>
   <span class="n">DATA</span> <span class="n">value</span><span class="p">;</span>

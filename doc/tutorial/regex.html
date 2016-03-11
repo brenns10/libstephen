@@ -124,7 +124,7 @@
         <div class="rst-content">
           
 
-
+ 
 
 
 
@@ -150,8 +150,8 @@
             
   <div class="section" id="regular-expressions">
 <h1>Regular Expressions<a class="headerlink" href="#regular-expressions" title="Permalink to this headline">¶</a></h1>
-<div class="code C highlight-c"><div class="highlight"><pre><span class="cp">#include &quot;libstephen/regex.h&quot;</span>
-<span class="cp">#include &quot;libstephen/fsm.h&quot;</span>
+<div class="code C highlight-c"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;libstephen/regex.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;libstephen/fsm.h&quot;</span><span class="cp"></span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -203,7 +203,7 @@ returned will almost certainly be junk.</li>
 <div class="section" id="functions">
 <h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
 <p>Here is the main interface for compiling regular expressions:</p>
-<div class="code C highlight-c"><div class="highlight"><pre><span class="n">fsm</span> <span class="o">*</span><span class="nf">regex_parse</span><span class="p">(</span><span class="k">const</span> <span class="kt">wchar_t</span> <span class="o">*</span><span class="n">regex</span><span class="p">);</span>
+<div class="code C highlight-c"><div class="highlight"><pre><span></span><span class="n">fsm</span> <span class="o">*</span><span class="nf">regex_parse</span><span class="p">(</span><span class="k">const</span> <span class="kt">wchar_t</span> <span class="o">*</span><span class="n">regex</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>I can almost guarantee that this interface will change. I spent a lot of
@@ -219,7 +219,7 @@ really relevant, but the short of it is this: a FSM is a theoretical
 machine that can decide to accept or reject an input string. You can
 find out if a string is accepted or rejected by simulating the FSM on
 it. The following functions are provided for that purpose:</p>
-<div class="code C highlight-c"><div class="highlight"><pre><span class="kt">bool</span> <span class="nf">fsm_sim_det</span><span class="p">(</span><span class="n">fsm</span> <span class="o">*</span><span class="n">f</span><span class="p">,</span> <span class="k">const</span> <span class="kt">wchar_t</span> <span class="o">*</span><span class="n">input</span><span class="p">);</span>
+<div class="code C highlight-c"><div class="highlight"><pre><span></span><span class="kt">bool</span> <span class="nf">fsm_sim_det</span><span class="p">(</span><span class="n">fsm</span> <span class="o">*</span><span class="n">f</span><span class="p">,</span> <span class="k">const</span> <span class="kt">wchar_t</span> <span class="o">*</span><span class="n">input</span><span class="p">);</span>
 <span class="n">fsm_sim</span> <span class="o">*</span><span class="nf">fsm_sim_nondet_begin</span><span class="p">(</span><span class="n">fsm</span> <span class="o">*</span><span class="n">f</span><span class="p">);</span>
 <span class="kt">int</span> <span class="nf">fsm_sim_nondet_state</span><span class="p">(</span><span class="k">const</span> <span class="n">fsm_sim</span> <span class="o">*</span><span class="n">s</span><span class="p">,</span> <span class="kt">wchar_t</span> <span class="n">input</span><span class="p">);</span>
 <span class="kt">void</span> <span class="nf">fsm_sim_nondet_step</span><span class="p">(</span><span class="n">fsm_sim</span> <span class="o">*</span><span class="n">s</span><span class="p">,</span> <span class="kt">wchar_t</span> <span class="n">input</span><span class="p">);</span>

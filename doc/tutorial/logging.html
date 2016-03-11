@@ -126,7 +126,7 @@
         <div class="rst-content">
           
 
-
+ 
 
 
 
@@ -152,7 +152,7 @@
             
   <div class="section" id="logging">
 <h1>Logging<a class="headerlink" href="#logging" title="Permalink to this headline">¶</a></h1>
-<div class="code C highlight-c"><div class="highlight"><pre><span class="cp">#include &quot;libstephen/log.h&quot;</span>
+<div class="code C highlight-c"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;libstephen/log.h&quot;</span><span class="cp"></span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -210,7 +210,7 @@ associated with them. The logging system also has a single &#8220;default&#8221;
 logger, which is used when you don&#8217;t specify a logger. At startup, the
 default logger will report any level message to <code class="docutils literal"><span class="pre">stderr</span></code>.</p>
 <p>The log levels are defined as macros expanding to integers:</p>
-<div class="code C highlight-c"><div class="highlight"><pre><span class="cp">#define LEVEL_NOTSET    0</span>
+<div class="code C highlight-c"><div class="highlight"><pre><span></span><span class="cp">#define LEVEL_NOTSET    0</span>
 <span class="cp">#define LEVEL_DEBUG    10</span>
 <span class="cp">#define LEVEL_INFO     20</span>
 <span class="cp">#define LEVEL_WARNING  30</span>
@@ -226,7 +226,7 @@ but they come with nice macros for logging.</p>
 <p>You can create a <code class="docutils literal"><span class="pre">smb_logger</span></code> using the default lifetime functions
 (<code class="docutils literal"><span class="pre">sl_*</span></code>), which take no extra arguments. You can use the following
 functions to adjust loggers:</p>
-<div class="code C highlight-c"><div class="highlight"><pre><span class="kt">void</span> <span class="nf">sl_set_level</span><span class="p">(</span><span class="n">smb_logger</span> <span class="o">*</span><span class="n">l</span><span class="p">,</span> <span class="kt">int</span> <span class="n">level</span><span class="p">);</span>
+<div class="code C highlight-c"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">sl_set_level</span><span class="p">(</span><span class="n">smb_logger</span> <span class="o">*</span><span class="n">l</span><span class="p">,</span> <span class="kt">int</span> <span class="n">level</span><span class="p">);</span>
 <span class="kt">void</span> <span class="nf">sl_add_handler</span><span class="p">(</span><span class="n">smb_logger</span> <span class="o">*</span><span class="n">l</span><span class="p">,</span> <span class="n">smb_loghandler</span> <span class="n">h</span><span class="p">,</span> <span class="n">smb_status</span> <span class="o">*</span><span class="n">status</span><span class="p">);</span>
 <span class="kt">void</span> <span class="nf">sl_clear_handlers</span><span class="p">(</span><span class="n">smb_logger</span> <span class="o">*</span><span class="n">l</span><span class="p">);</span>
 <span class="kt">void</span> <span class="nf">sl_set_default_logger</span><span class="p">(</span><span class="n">smb_logger</span> <span class="o">*</span><span class="n">l</span><span class="p">);</span>
@@ -240,14 +240,14 @@ completely reset to defaults.</p>
 <p>Once you have your loggers (which you don&#8217;t have to do immediately,
 since you could just use the default logger), you can use the <code class="docutils literal"><span class="pre">LOG</span></code>
 macro to begin logging:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="n">LOG</span><span class="p">(</span><span class="n">pointer</span> <span class="n">to</span> <span class="n">logger</span><span class="p">,</span> <span class="n">log</span> <span class="n">level</span><span class="p">,</span> <span class="s">&quot;format string&quot;</span><span class="p">,</span> <span class="n">format</span> <span class="n">args</span><span class="p">...)</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="n">LOG</span><span class="p">(</span><span class="n">pointer</span> <span class="n">to</span> <span class="n">logger</span><span class="p">,</span> <span class="n">log</span> <span class="n">level</span><span class="p">,</span> <span class="s">&quot;format string&quot;</span><span class="p">,</span> <span class="n">format</span> <span class="n">args</span><span class="p">...)</span>
 </pre></div>
 </div>
 <p>This is a macro, so in general avoid using side effects within the
 arguments. The current implementation will not evaluate expressions more
 than once, but I make no guarantee about that.</p>
 <p>If you&#8217;re using the default logger, you have the following shortcuts:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="n">DDEBUG</span><span class="p">(</span><span class="s">&quot;format string&quot;</span><span class="p">,</span> <span class="n">format</span> <span class="n">args</span> <span class="p">...)</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="n">DDEBUG</span><span class="p">(</span><span class="s">&quot;format string&quot;</span><span class="p">,</span> <span class="n">format</span> <span class="n">args</span> <span class="p">...)</span>
 <span class="n">DINFO</span><span class="p">(</span><span class="s">&quot;format string&quot;</span><span class="p">,</span> <span class="n">format</span> <span class="n">args</span> <span class="p">...)</span>
 <span class="n">DWARNING</span><span class="p">(</span><span class="s">&quot;format string&quot;</span><span class="p">,</span> <span class="n">format</span> <span class="n">args</span> <span class="p">...)</span>
 <span class="n">DERROR</span><span class="p">(</span><span class="s">&quot;format string&quot;</span><span class="p">,</span> <span class="n">format</span> <span class="n">args</span> <span class="p">...)</span>
@@ -256,7 +256,7 @@ than once, but I make no guarantee about that.</p>
 </div>
 <p>Think of the <code class="docutils literal"><span class="pre">D</span></code> as standing for Default. If you are using any other
 logger, you have these shortcuts:</p>
-<div class="highlight-c"><div class="highlight"><pre><span class="n">LDEBUG</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="s">&quot;format string&quot;</span><span class="p">,</span> <span class="n">format</span> <span class="n">args</span> <span class="p">...)</span>
+<div class="highlight-c"><div class="highlight"><pre><span></span><span class="n">LDEBUG</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="s">&quot;format string&quot;</span><span class="p">,</span> <span class="n">format</span> <span class="n">args</span> <span class="p">...)</span>
 <span class="n">LINFO</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="s">&quot;format string&quot;</span><span class="p">,</span> <span class="n">format</span> <span class="n">args</span> <span class="p">...)</span>
 <span class="n">LWARNING</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="s">&quot;format string&quot;</span><span class="p">,</span> <span class="n">format</span> <span class="n">args</span> <span class="p">...)</span>
 <span class="n">LERROR</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="s">&quot;format string&quot;</span><span class="p">,</span> <span class="n">format</span> <span class="n">args</span> <span class="p">...)</span>
@@ -266,7 +266,7 @@ logger, you have these shortcuts:</p>
 <p>Think of the <code class="docutils literal"><span class="pre">L</span></code> as standing for Logger. You have to specify your
 logger.</p>
 <p>All of these macros expand to call a single function:</p>
-<div class="code C highlight-c"><div class="highlight"><pre><span class="kt">void</span> <span class="nf">sl_log</span><span class="p">(</span><span class="n">smb_logger</span> <span class="o">*</span><span class="n">l</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">file</span><span class="p">,</span> <span class="kt">int</span> <span class="n">line</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">function</span><span class="p">,</span> <span class="kt">int</span> <span class="n">level</span><span class="p">,</span> <span class="p">...);</span>
+<div class="code C highlight-c"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">sl_log</span><span class="p">(</span><span class="n">smb_logger</span> <span class="o">*</span><span class="n">l</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">file</span><span class="p">,</span> <span class="kt">int</span> <span class="n">line</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">function</span><span class="p">,</span> <span class="kt">int</span> <span class="n">level</span><span class="p">,</span> <span class="p">...);</span>
 </pre></div>
 </div>
 <p>You don&#8217;t want to call this function yourself, since most of those

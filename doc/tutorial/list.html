@@ -124,7 +124,7 @@
         <div class="rst-content">
           
 
-
+ 
 
 
 
@@ -150,7 +150,7 @@
             
   <div class="section" id="list-interface">
 <h1>List Interface<a class="headerlink" href="#list-interface" title="Permalink to this headline">¶</a></h1>
-<div class="code C highlight-c"><div class="highlight"><pre><span class="cp">#include &quot;libstephen/list.h&quot;</span>
+<div class="code C highlight-c"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;libstephen/list.h&quot;</span><span class="cp"></span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -165,7 +165,7 @@ interface to the list. However, frequently using this interface is
 probably inefficient.</p>
 <div class="section" id="operations">
 <h2>Operations<a class="headerlink" href="#operations" title="Permalink to this headline">¶</a></h2>
-<div class="code C highlight-c"><div class="highlight"><pre><span class="k">typedef</span> <span class="k">struct</span> <span class="n">smb_list</span>
+<div class="code C highlight-c"><div class="highlight"><pre><span></span><span class="k">typedef</span> <span class="k">struct</span> <span class="n">smb_list</span>
 <span class="p">{</span>
   <span class="kt">void</span> <span class="o">*</span><span class="n">data</span><span class="p">;</span>
   <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">append</span><span class="p">)(</span><span class="k">struct</span> <span class="n">smb_list</span> <span class="o">*</span><span class="n">l</span><span class="p">,</span> <span class="n">DATA</span> <span class="n">newData</span><span class="p">);</span>
@@ -195,7 +195,7 @@ lists.</p>
 It works with linked lists or array lists (but a linked list is created
 here). Each iteration the following code adds a number to the list, and
 then verifies that the list contains the expected values.</p>
-<div class="code C highlight-c"><div class="highlight"><pre><span class="n">smb_status</span> <span class="n">status</span> <span class="o">=</span> <span class="n">SMB_SUCCESS</span><span class="p">;</span>
+<div class="code C highlight-c"><div class="highlight"><pre><span></span><span class="n">smb_status</span> <span class="n">status</span> <span class="o">=</span> <span class="n">SMB_SUCCESS</span><span class="p">;</span>
 <span class="n">smb_list</span> <span class="n">list</span> <span class="o">=</span> <span class="n">ll_create_list</span><span class="p">();</span>
 <span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">;</span>
 

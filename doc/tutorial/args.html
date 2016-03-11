@@ -125,7 +125,7 @@
         <div class="rst-content">
           
 
-
+ 
 
 
 
@@ -151,7 +151,7 @@
             
   <div class="section" id="argument-parsing">
 <h1>Argument Parsing<a class="headerlink" href="#argument-parsing" title="Permalink to this headline">¶</a></h1>
-<div class="code C highlight-c"><div class="highlight"><pre><span class="cp">#include &quot;libstephen/ad.h&quot;</span>
+<div class="code C highlight-c"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;libstephen/ad.h&quot;</span><span class="cp"></span>
 </pre></div>
 </div>
 <ul class="simple">
@@ -190,7 +190,7 @@ text). For instance, <code class="docutils literal"><span class="pre">gcc</span>
 </div>
 <div class="section" id="initialization">
 <h2>Initialization<a class="headerlink" href="#initialization" title="Permalink to this headline">¶</a></h2>
-<div class="code C highlight-c"><div class="highlight"><pre><span class="kt">void</span> <span class="nf">arg_data_init</span><span class="p">(</span><span class="n">smb_ad</span> <span class="o">*</span><span class="n">data</span><span class="p">);</span>
+<div class="code C highlight-c"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">arg_data_init</span><span class="p">(</span><span class="n">smb_ad</span> <span class="o">*</span><span class="n">data</span><span class="p">);</span>
 <span class="n">smb_ad</span> <span class="o">*</span><span class="nf">arg_data_create</span><span class="p">();</span>
 <span class="kt">void</span> <span class="nf">arg_data_destroy</span><span class="p">(</span><span class="n">smb_ad</span> <span class="o">*</span><span class="n">data</span><span class="p">);</span>
 <span class="kt">void</span> <span class="nf">arg_data_delete</span><span class="p">(</span><span class="n">smb_ad</span> <span class="o">*</span><span class="n">data</span><span class="p">);</span>
@@ -208,7 +208,7 @@ the program name in <code class="docutils literal"><span class="pre">argc</span>
 parsed as an argument).</p>
 <p>So, something like this would be the basic structure of your main
 function:</p>
-<div class="code C highlight-c"><div class="highlight"><pre><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span>
+<div class="code C highlight-c"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span>
 <span class="p">{</span>
   <span class="n">smb_ad</span> <span class="n">args</span><span class="p">;</span>
   <span class="n">arg_data_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">args</span><span class="p">);</span>
@@ -226,7 +226,7 @@ function:</p>
 </div>
 <div class="section" id="reading-argument-data">
 <h2>Reading Argument Data<a class="headerlink" href="#reading-argument-data" title="Permalink to this headline">¶</a></h2>
-<div class="code C highlight-c"><div class="highlight"><pre><span class="kt">int</span> <span class="nf">check_flag</span><span class="p">(</span><span class="n">smb_ad</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="kt">char</span> <span class="n">flag</span><span class="p">);</span>
+<div class="code C highlight-c"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="nf">check_flag</span><span class="p">(</span><span class="n">smb_ad</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="kt">char</span> <span class="n">flag</span><span class="p">);</span>
 <span class="kt">int</span> <span class="nf">check_long_flag</span><span class="p">(</span><span class="n">smb_ad</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">flag</span><span class="p">);</span>
 <span class="kt">int</span> <span class="nf">check_bare_string</span><span class="p">(</span><span class="n">smb_ad</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">string</span><span class="p">);</span>
 <span class="kt">char</span> <span class="o">*</span><span class="nf">get_flag_parameter</span><span class="p">(</span><span class="n">smb_ad</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="kt">char</span> <span class="n">flag</span><span class="p">);</span>
@@ -246,7 +246,7 @@ before it&#8217;s provided). So, you can also access the linked list directly
 in the <code class="docutils literal"><span class="pre">bare_strings</span></code> field of the <code class="docutils literal"><span class="pre">smb_ad</span></code> struct.</p>
 <p>Here&#8217;s a typical example of how you might use <code class="docutils literal"><span class="pre">smb_ad</span></code> to parse
 arguments. It continues from the outline earlier.</p>
-<div class="code C highlight-c"><div class="highlight"><pre><span class="k">if</span> <span class="p">(</span><span class="n">check_flag</span><span class="p">(</span><span class="o">&amp;</span><span class="n">args</span><span class="p">,</span> <span class="sc">&#39;h&#39;</span><span class="p">)</span> <span class="o">||</span> <span class="n">check_long_flag</span><span class="p">(</span><span class="o">&amp;</span><span class="n">args</span><span class="p">,</span> <span class="s">&quot;help&quot;</span><span class="p">))</span> <span class="p">{</span>
+<div class="code C highlight-c"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="p">(</span><span class="n">check_flag</span><span class="p">(</span><span class="o">&amp;</span><span class="n">args</span><span class="p">,</span> <span class="sc">&#39;h&#39;</span><span class="p">)</span> <span class="o">||</span> <span class="n">check_long_flag</span><span class="p">(</span><span class="o">&amp;</span><span class="n">args</span><span class="p">,</span> <span class="s">&quot;help&quot;</span><span class="p">))</span> <span class="p">{</span>
   <span class="n">help</span><span class="p">();</span>
 <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">check_flag</span><span class="p">(</span><span class="o">&amp;</span><span class="n">args</span><span class="p">,</span> <span class="sc">&#39;o&#39;</span><span class="p">)</span> <span class="o">||</span> <span class="n">check_long_flag</span><span class="p">(</span><span class="o">&amp;</span><span class="n">args</span><span class="p">,</span> <span class="s">&quot;output&quot;</span><span class="p">))</span> <span class="p">{</span>
   <span class="n">output</span> <span class="o">=</span> <span class="n">get_flag_parameter</span><span class="p">(</span><span class="o">&amp;</span><span class="n">args</span><span class="p">,</span> <span class="sc">&#39;o&#39;</span><span class="p">);</span>
