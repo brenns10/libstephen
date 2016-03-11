@@ -39,94 +39,55 @@ int ht_next_size(int current)
 }
 
 /**
-   @brief Allocate and initialize a hash table bucket.
-
-   @param key The key stored
-   @param value The value stored
-   @param next The next bucket pointer
-   @param[out] status Status variable.
-   @returns A pointer to a new hash table bucket.
+   @brief Find the proper index for insertion into the table.
+   @param obj Hash table object.
+   @param key Key we're inserting.
  */
-smb_ht_bckt *ht_bucket_create(DATA key, DATA value, smb_ht_bckt *next)
+unsigned int ht_find_insert(const smb_ht *obj, DATA key)
 {
-  smb_ht_bckt *pBucket;
-  pBucket = smb_new(smb_ht_bckt, 1);
-  pBucket->key = key;
-  pBucket->value = value;
-  pBucket->next = next;
-  return pBucket;
-}
+  unsigned int index = obj->hash(key) % obj->allocated;
+  unsigned int j = 1;
 
-/**
-   @brief Free a hash table bucket.
-
-   @param pToDelete The bucket to delete.
- */
-void ht_bucket_delete(smb_ht_bckt *pToDelete)
-{
-  smb_free(pToDelete);
-}
-
-/**
-  @brief Finds a value within a singly linked hash table bucket list.
-
-  This function actually performs a lot of tasks rolled into one.  First, if you
-  pass NULL as the pBucket, it will return NULL.  More interestingly, it will
-  return the pointer to the bucket that equals key if it exists, or the last
-  bucket in the list if there is none equalling key.  This way, you can just
-  check the return value, and if key == pBucket->key, you have the pre-xisting
-  spot for key.  Otherwise, you can just create the next item in the list.
-
-  @param pBucket The bucket to search within.
-  @param key The key to search for.
-  @returns The bucket containing key.
- */
-smb_ht_bckt *ht_find_in_bucket(smb_ht_bckt *pBucket, DATA key,
-                               DATA_COMPARE equal)
-{
-  if (pBucket == NULL) return NULL;
-
-  while (pBucket->next && equal(pBucket->key, key) != 0)
-    pBucket = pBucket->next;
-
-  return pBucket;
-}
-
-/**
-   @brief Insert a bucket with data into the hash table.  If the key already
-   exists in the table, overwrites with a new value.
-
-   This function is at a lower lever than ht_insert.  In order to properly
-   implement a hash table, the table must expand as you add to it, which is the
-   part that ht_insert takes care of.
-
-   @param table The table to insert into.
-   @param pBucket The bucket containing the data to insert.  Note that this
-   bucket may not be the final bucket containing the data.
- */
-void ht_insert_bucket(smb_ht *table, smb_ht_bckt *pBucket)
-{
-  smb_ht_bckt *curr;
-  unsigned int index = table->hash(pBucket->key) % table->allocated;
-
-  if (table->table[index]) {
-    // A linked list already exists here.
-    curr = ht_find_in_bucket(table->table[index], pBucket->key, table->equal);
-    if (table->equal(curr->key, pBucket->key) == 0) {
-      // Key already exists in table
-      curr->value = pBucket->value;
-      ht_bucket_delete(pBucket);
-    } else {
-      // assert curr->next == NULL
-      curr->next = pBucket;
-      table->length++;
-    }
-  } else {
-    // No linked list exists yet
-    table->table[index] = pBucket;
-    table->length++;
+  // Continue searching until we either find a non-full slot, or we find the key
+  // we're trying to insert.
+  // until (cell.mark != full || cell.key == key)
+  // while (cell.mark == full && cell.key != key)
+  while (obj->table[index].mark == HT_FULL &&
+         obj->equal(key, obj->table[index].key) != 0) {
+    // This is quadratic probing, but I'm avoiding squaring numbers:
+    // j:     1, 3, 5, 7,  9, 11, ..
+    // index: 0, 1, 4, 9, 16, 25, 36
+    index = (index + j) % obj->allocated;
+    j += 2;
   }
 
+  return index;
+}
+
+/**
+   @brief Find the proper index for retrieval from the table.
+   @param obj Hash table object.
+   @param key Key we're looking up.
+ */
+unsigned int ht_find_retrieve(const smb_ht *obj, DATA key)
+{
+  unsigned int index = obj->hash(key) % obj->allocated;
+  unsigned int j = 1;
+
+  // Continue searching until we either find an empty slot, or we find the key
+  // we're trying to insert.
+  // until (cell.mark == empty || cell.key == key)
+  // while (cell.mark != empty && cell.key != key)
+  while (obj->table[index].mark != HT_EMPTY &&
+         obj->equal(key, obj->table[index].key) != 0) {
+    // This is quadratic probing, but I'm avoiding squaring numbers:
+    // j:     1, 3, 5, 7,  9, 11, ..
+    // index: 0, 1, 4, 9, 16, 25, 36
+    index = (index + j) % obj->allocated;
+    j += 2;
+  }
+
+  return index;
 }
 
 /**
@@ -136,37 +97,28 @@ void ht_insert_bucket(smb_ht *table, smb_ht_bckt *pBucket)
  */
 void ht_resize(smb_ht *table)
 {
-  smb_ht_bckt **pOldBuffer;
-  smb_ht_bckt *curr, *temp;
-  int index, oldAllocated;
+  smb_ht_bckt *old_table;
+  unsigned int index, old_allocated;
 
   // Step one: allocate new space for the table
-  pOldBuffer = table->table;
-  oldAllocated = table->allocated;
+  old_table = table->table;
+  old_allocated = table->allocated;
   table->length = 0;
-  table->allocated = ht_next_size(oldAllocated);
-  table->table = smb_new(smb_ht_bckt*, table->allocated);
+  table->allocated = ht_next_size(old_allocated);
+  table->table = smb_new(smb_ht_bckt, table->allocated);
 
   // Zero out the new block too.
-  memset((void*)table->table, 0, table->allocated * sizeof(smb_ht_bckt*));
+  memset((void*)table->table, 0, table->allocated * sizeof(smb_ht_bckt));
 
-  // Step two, add the old items to the new table (no freeing, please)
-  for (index = 0; index < oldAllocated; index++) {
-    if (pOldBuffer[index]) {
-      // a bucket exists here
-      curr = pOldBuffer[index];
-      while (curr) {
-        temp = curr->next; // Hang on to the next pointer...it could be changed
-                           // once added to the "new" hash table
-        curr->next = NULL;
-        ht_insert_bucket(table, curr);
-        curr = temp;
-      }
+  // Step two, add the old items to the new table.
+  for (index = 0; index < old_allocated; index++) {
+    if (old_table[index].mark == HT_FULL) {
+      ht_insert(table, old_table[index].key, old_table[index].value);
     }
   }
 
   // Step three: free old data.
-  smb_free(pOldBuffer);
+  smb_free(old_table);
 }
 
 /**
@@ -195,10 +147,10 @@ void ht_init(smb_ht *table, HASH_FUNCTION hash_func, DATA_COMPARE equal)
   table->equal = equal;
 
   // Create the bucket list
-  table->table = smb_new(smb_ht_bckt*, HASH_TABLE_INITIAL_SIZE);
+  table->table = smb_new(smb_ht_bckt, HASH_TABLE_INITIAL_SIZE);
 
   // Zero out the entries in the table so we don't get segmentation faults.
-  memset((void*)table->table, 0, HASH_TABLE_INITIAL_SIZE * sizeof(smb_ht_bckt*));
+  memset((void*)table->table, 0, HASH_TABLE_INITIAL_SIZE * sizeof(smb_ht_bckt));
 }
 
 smb_ht *ht_create(HASH_FUNCTION hash_func, DATA_COMPARE equal)
@@ -212,24 +164,18 @@ smb_ht *ht_create(HASH_FUNCTION hash_func, DATA_COMPARE equal)
 
 void ht_destroy_act(smb_ht *table, DATA_ACTION deleter)
 {
-  int i;
-  smb_ht_bckt *curr, *temp;
+  unsigned int i;
 
-  if (!table) return;
-
-  // Free all smb_ht_bckt's in the table
-  for (i = 0; i < table->allocated; i++) {
-    curr = table->table[i];
-    while (curr) {
-      temp = curr->next;
-      if (deleter)
-        deleter(curr->value);
-      ht_bucket_delete(curr);
-      curr = temp;
+  // Do the action on all the items in the table, if provided.
+  if (deleter) {
+    for (i = 0; i < table->allocated; i++) {
+      if (table->table[i].mark == HT_FULL) {
+        deleter(table->table[i].value);
+      }
     }
-    table->table[i] = NULL;
   }
 
+  // Delete the table.
   smb_free(table->table);
 }
 
@@ -255,54 +201,47 @@ void ht_delete(smb_ht *table)
 
 void ht_insert(smb_ht *table, DATA key, DATA value)
 {
+  unsigned int index;
   if (ht_load_factor(table) > HASH_TABLE_MAX_LOAD_FACTOR) {
     ht_resize(table);
   }
 
-  smb_ht_bckt *pBucket = ht_bucket_create(key, value, NULL);
-  ht_insert_bucket(table, pBucket);
+  // First, probe for the key as if we're trying to return it.  If we find it,
+  // we update the existing key.
+  index = ht_find_retrieve(table, key);
+  if (table->table[index].mark == HT_FULL) {
+    table->table[index].value = value;
+    return;
+  }
+
+  // If we don't find the key, then we find the first open slot or gravestone.
+  index = ht_find_insert(table, key);
+  table->table[index].key = key;
+  table->table[index].value = value;
+  table->table[index].mark = HT_FULL;
+  table->length++;
 }
 
 void ht_remove_act(smb_ht *table, DATA key, DATA_ACTION deleter,
                    smb_status *status)
 {
   *status = SMB_SUCCESS;
+  unsigned int index = ht_find_retrieve(table, key);
 
-  smb_ht_bckt *curr, *prev;
-  int index = table->hash(key) % table->allocated;
-
-  // Stop if the key doesn't exist in the table.
-  if (!table->table[index]) {
+  // If the returned slot isn't full, that means we couldn't find it.
+  if (table->table[index].mark != HT_FULL) {
     *status = SMB_NOT_FOUND_ERROR;
     return;
   }
 
-  curr = table->table[index];
-  prev = NULL;
-
-  while (curr && table->equal(curr->key, key) != 0) {
-    prev = curr;
-    curr = curr->next;
+  // Perform the action if there is one.
+  if (deleter) {
+    deleter(table->table[index].value);
   }
 
-  if (curr && prev) {
-    // Found a match, and there is something before it in the linked list.
-    prev->next = curr->next;
-    if (deleter)
-      deleter(curr->value); // Perform user requested action
-    ht_bucket_delete(curr);
-    table->length--;
-  } else if (curr && !prev) {
-    // Found a match, and it is the first in the linked list
-    table->table[index] = curr->next;
-    if (deleter)
-      deleter(curr->value); // Perform user requested action
-    ht_bucket_delete(curr);
-    table->length--;
-  } else {
-    // Didn't find a match in this bucket list
-    *status = SMB_NOT_FOUND_ERROR;
-  }
+  // Mark the slot with a "grave stone", indicating it is deleted.
+  table->table[index].mark = HT_GRAVE;
+  table->length--;
 }
 
 void ht_remove(smb_ht *table, DATA key, smb_status *status)
@@ -313,20 +252,16 @@ void ht_remove(smb_ht *table, DATA key, smb_status *status)
 DATA ht_get(smb_ht const *table, DATA key, smb_status *status)
 {
   *status = SMB_SUCCESS;
+  unsigned int index = ht_find_retrieve(table, key);
 
-  smb_ht_bckt *pBucket;
-  DATA d;
-  int index = table->hash(key) % table->allocated;
-
-  if (table->table[index]) {
-    pBucket = ht_find_in_bucket(table->table[index], key, table->equal);
-    if (table->equal(pBucket->key, key) == 0){
-      return pBucket->value;
-    }
+  // If the slot is not marked full, we didn't find the key.
+  if (table->table[index].mark != HT_FULL) {
+    *status = SMB_NOT_FOUND_ERROR;
+    return PTR(NULL);
   }
-  // ELSE: Not found
-  *status = SMB_NOT_FOUND_ERROR;
-  return d;
+
+  // Otherwise, return the key.
+  return table->table[index].value;
 }
 
 unsigned int ht_string_hash(DATA data)
@@ -345,24 +280,14 @@ unsigned int ht_string_hash(DATA data)
 
 void ht_print(smb_ht const *table, int full_mode)
 {
-  smb_ht_bckt *curr = NULL;
-  int i;
-  int printed = 0;
+  unsigned int i;
+  char *MARKS[] = {"EMPTY", " FULL", "GRAVE"};
 
   for (i = 0; i < table->allocated; i++) {
-    curr = table->table[i];
-    if (table->table[i] || full_mode)
-      printf("[%d]: ", i);
-    while (curr) {
-      printf("0x%llx|0x%llx, ", curr->key.data_llint, curr->value.data_llint);
-      curr = curr->next;
-      printed++;
+    if (full_mode || table->table[i].mark == HT_FULL) {
+      printf("[%04d|%s]: key=0x%llx, value=0x%llx\n", i,
+             MARKS[table->table[i].mark], table->table[i].key.data_llint,
+             table->table[i].value.data_llint);
     }
-    if (table->table[i] || full_mode)
-      printf("\n");
   }
-
-  if (printed != table->length)
-    printf("Error: %d items printed, but %d items are recorded by hash table.\n",
-           printed, table->length);
 }

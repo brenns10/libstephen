@@ -37,7 +37,7 @@ char *test_values[] = {
   "fifth value"
 };
 
-int ht_test_deletions = 0;
+unsigned int ht_test_deletions = 0;
 
 void ht_test_deleter(DATA dValue)
 {
@@ -63,7 +63,7 @@ unsigned int ht_test_linear_hash(DATA dKey)
 int ht_test_insert()
 {
   smb_status status = SMB_SUCCESS;
-  DATA key, value;
+  DATA key, value, rv;
   int i;
   smb_ht *table = ht_create(&ht_string_hash, &data_compare_string);
 
@@ -75,8 +75,9 @@ int ht_test_insert()
 
   for (i = 0; i < TEST_PAIRS; i++) {
     key.data_ptr = test_keys[i];
-    TEST_ASSERT(test_values[i] == ht_get(table, key, &status).data_ptr);
+    rv = ht_get(table, key, &status);
     TEST_ASSERT(status == SMB_SUCCESS);
+    TEST_ASSERT(test_values[i] == rv.data_ptr);
   }
 
   ht_delete(table);
@@ -87,7 +88,7 @@ int ht_test_remove()
 {
   smb_status status= SMB_SUCCESS;
   DATA key, value;
-  int i;
+  unsigned int i;
   smb_ht *table = ht_create(&ht_string_hash, &data_compare_string);
   ht_test_deletions = 0;
 
@@ -140,7 +141,7 @@ int ht_test_buckets()
 {
   smb_status status = SMB_SUCCESS;
   DATA key, value;
-  int i;
+  unsigned int i;
   smb_ht *table = ht_create(&ht_test_constant_hash, &data_compare_int);
   ht_test_deletions = 0;
 
@@ -202,9 +203,9 @@ int ht_test_resize()
 {
   smb_status status = SMB_SUCCESS;
   DATA key, value;
-  int i;
+  unsigned int i;
   // Truncating addition will trim this to the number just before expanding.
-  int last_stable = 1 + (int) (HASH_TABLE_INITIAL_SIZE * HASH_TABLE_MAX_LOAD_FACTOR);
+  unsigned int last_stable = 1 + (int) (HASH_TABLE_INITIAL_SIZE * HASH_TABLE_MAX_LOAD_FACTOR);
   smb_ht *table = ht_create(ht_test_linear_hash, &data_compare_int);
   ht_test_deletions = 0;
 

@@ -38,6 +38,19 @@
 typedef unsigned int (*HASH_FUNCTION)(DATA toHash);
 
 /**
+   @brief This mark goes in each table cell.
+
+   In order for probing to work properly, you need to be able to tell whether or
+   not a cell is empty because something was deleted out of it, or whether it
+   has always been empty.  So, the "GRAVE" mark is a grave stone.  When you
+   delete a key from a cell, you mark it with a grave stone.  And when you're
+   searching for a key, you continue when you find a grave marker.
+ */
+typedef enum smb_ht_mark {
+  HT_EMPTY=0, HT_FULL, HT_GRAVE
+} smb_ht_mark;
+
+/**
    @brief The bucket of a hash table.  Contains key,value pairs, and is a singly
    linked list.
  */
@@ -54,9 +67,9 @@ typedef struct smb_ht_bckt
   DATA value;
 
   /**
-     @brief The next item in the linked list.
+     @brief Marker for whether or not the table is full or empty.
    */
-  struct smb_ht_bckt *next;
+  enum smb_ht_mark mark;
 
 } smb_ht_bckt;
 
@@ -68,12 +81,12 @@ typedef struct smb_ht
   /**
      @brief The number of items in the hash table.
    */
-  int length;
+  unsigned int length;
 
   /**
      @brief The number of slots allocated in the hash table.
    */
-  int allocated;
+  unsigned int allocated;
 
   /**
      @brief The hash function for this hash table.
@@ -88,7 +101,7 @@ typedef struct smb_ht
   /**
      @brief Pointer to the data of the table.
    */
-  struct smb_ht_bckt **table;
+  struct smb_ht_bckt *table;
 
 } smb_ht;
 
