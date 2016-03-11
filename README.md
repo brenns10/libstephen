@@ -1,9 +1,9 @@
 # libstephen ![Build Status](https://travis-ci.org/brenns10/libstephen.svg?branch=master)
 
-- Author: [Stephen Brennan](http://stephen-brennan.com)
+- Author: [Stephen Brennan](http://brennan.io)
 - Version: Prerelease
 - Homepage: https://github.com/brenns10/libstephen
-- Tool site: http://stephen-brennan.com/libstephen
+- Tool site: http://brennan.io/libstephen
 - License: Revised BSD
 
 ## Description
@@ -30,18 +30,16 @@ features include:
 
 ## Documentation
 
-The [GitHub Wiki][] is currently the best source for user friendly
-documentation.  It's a good place to go to get a handle on how you should use
-the library.
+If you want documentation on this library, well you're in luck!  One of the
+things I have experimented with is automatically producing and publishing
+up-to-date documentation.  You can find documentation up-to-date with master in
+the [documentation section][doc] of the tool site.  This includes both
+tutorial/commentary style documentation, as well as function-level documentation
+generated from the code.
 
-Documentation on individual functions is provided inline in Doxygen style.  This
-is used to generate an API documentation site.  This is automatically done by
-Travis and published at the [libstephen tool site][].
-
-You can generate documentation yourself by running the command "make docs" in
-the project root directory.  Reference materials will be produced in the doc/
-folder.  Please note that the tools Doxygen and Graphviz are required to produce
-this documentation.
+You can generate this documentation yourself by running the command "make docs"
+in the project root directory.  This requires Doxygen, as well as Python,
+Sphinx, and the sphinx-rtd-theme to be installed.
 
 ## Test Coverage
 
@@ -63,10 +61,11 @@ My most up-to-date ideas are now maintained on the [GitHub Issues][]
 
 ## License
 
-Copyright (c) 2013-2015, Stephen Brennan.  All rights reserved.  Released under
+Copyright (c) 2013-2016, Stephen Brennan.  All rights reserved.  Released under
 the Revised BSD license.  See [LICENSE.txt][] for details.
 
-[libstephen tool site]: http://stephen-brennan.com/libstephen
+[libstephen tool site]: http://brennan.io/libstephen
+[doc]: http://brennan.io/libstephen/doc/
 [GitHub Issues]: https://github.com/brenns10/libstephen/issues
 [GitHub Wiki]: https://github.com/brenns10/libstephen/wiki
 [LICENSE.txt]: LICENSE.txt
