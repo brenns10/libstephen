@@ -64,12 +64,12 @@ void log_test(void);
 void string_test(void);
 
 /**
-   Tests from cky.
+   Regex tests.
  */
-void fsm_test(void);
-void fsm_io_test(void);
-void regex_test(void);
-void regex_search_test(void);
+void parse_test(void);
+void lex_test(void);
+void codegen_test(void);
+void pike_test(void);
 
 
 /**

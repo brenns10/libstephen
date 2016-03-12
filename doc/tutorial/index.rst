@@ -1,33 +1,9 @@
 Libstephen Tutorial
 ===================
 
-Welcome to the Libstephen Tutorial! Here you will find documentation about the
-major features libstephen has to offer, for general purpose C programming. The
-documentation here is not exhaustive. If you really want to know the full
-interface of libstephen, there is no substitute for diving into the headers or
-the implementations.
-
-The `Libstephen Tool Site <http://stephen-brennan.com/libstephen>`__ has links
-to code coverage reports, automatically generated documentation, and the
-Wiki. Check it out!.
-
 **Introductory Notes**
 
-libstephen is a personal creation. It's an experiment on the best way to write
-an API (for the implementer, and the user -- I am both). That means that the API
-could frequently change. I feel like I'm getting close to an implementation that
-can stand the test of time, but before I tag a release as 1.0, I don't want to
-commit to a steady interface.
-
-Since libstephen is a personal creation, I wouldn't expect that its
-implementations are the most efficient ones out there (or bug free). I try to
-test the code pretty well, and I use it in other projects, but that doesn't make
-it perfect (or even good). There are plenty of libraries out there that provide
-basic data structures, which are many times better than mine. I'm doing this for
-the pleasure of doing it myself, not for the superiority of my implementations.
-
-If you're still reading, you must be dead set on using libstephen. Here are the
-basic ideas of the library:
+Here are some basic ideas in the design of the library.
 
 - A single "generic" type, called ``DATA``. This is an 8-byte union. It can
   contain a very big integer, or a pointer, or a double. You can access these
@@ -54,6 +30,43 @@ basic ideas of the library:
     structures.
   - A generic "iterator" for iterating over any data structure. Can also be used
     to make generators!
+
+**Tutorial**
+
+So, now that you know a little bit about the ideas behind my library, how do you
+get it up and running in your project?  Well, there are quite a few ways, but
+the best way currently is to use a Git submodule.
+
+I'll assume you already have a Git repository with some C code.  Then, to add in
+libstephen, you'll want to do:
+
+.. code:: bash
+   git submodule add https://github.com/brenns10/libstephen.git libstephen
+
+This will add a ``libstephen`` directory to your project, and check out the
+current version of libstephen.  Next, you'll want to add
+``libstephen/bin/release/libstephen.a`` as a dependency for your main executable
+in your Makefile.  You'll also want to create a rule that will build libstephen.
+Imagine you had an existing makefile that looked like this:
+
+.. code:: Makefile
+
+   bin/release/main: $(OBJECTS)
+       gcc -o bin/release/main $(OBJECTS)
+
+Then, you could add in libstephen to the build process as simply as this:
+
+.. code:: Makefile
+
+   libstephen/bin/release/libstephen.a:
+       make -C libstephen
+
+   bin/release/main: $(OBJECTS) libstephen/bin/release/libstephen.a
+       gcc -o bin/release/main $(OBJECTS) libstephen/bin/release/libstephen.a
+
+The only other thing is you'll want to make sure that ``libstephen/inc`` is in
+your include path.  This is as simple as providing that path in the ``-I``
+option to GCC.
 
 **Miscellaneous**
 

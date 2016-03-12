@@ -17,7 +17,6 @@
 #include <wctype.h>
 
 #include "libstephen/ll.h"
-#include "libstephen/fsm.h"
 #include "str.h"
 
 int hexit_val(wchar_t digit)
@@ -91,9 +90,6 @@ int read_escape(const wchar_t *source, int len, wchar_t *out)
   case L'b':
     *out = L'\b';
     return 2;
-  case L'e':
-    *out = EPSILON;
-    return 2;
   case L'f':
     *out = L'\f';
     return 2;
@@ -144,8 +140,6 @@ wchar_t *escape_wchar(wchar_t input)
     return L"\\a";
   case L'\b':
     return L"\\b";
-  case EPSILON:
-    return L"\\e";
   case L'\f':
     return L"\\f";
   case L'\n':

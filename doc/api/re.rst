@@ -1,4 +1,4 @@
 Regular Expressions
 ===================
 
-.. doxygenfile:: libstephen/regex.h
+.. doxygenfile:: libstephen/re.h
