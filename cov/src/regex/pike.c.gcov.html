@@ -1,0 +1,323 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage.info - src/regex/pike.c</title>
+  <link rel="stylesheet" type="text/css" href="../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../index.html">top level</a> - <a href="index.html">src/regex</a> - pike.c<span style="font-size: 80%;"> (source / <a href="pike.c.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">89</td>
+            <td class="headerCovTableEntry">99</td>
+            <td class="headerCovTableEntryMed">89.9 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2016-03-12 20:37:58</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">6</td>
+            <td class="headerCovTableEntry">7</td>
+            <td class="headerCovTableEntryMed">85.7 %</td>
+          </tr>
+          <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /***************************************************************************//**</a>
+<span class="lineNum">       2 </span>            : 
+<span class="lineNum">       3 </span>            :   @file         pike.c
+<span class="lineNum">       4 </span>            : 
+<span class="lineNum">       5 </span>            :   @author       Stephen Brennan, based on code by Russ Cox:
+<span class="lineNum">       6 </span>            :                 https://swtch.com/~rsc/regexp/regexp2.html
+<span class="lineNum">       7 </span>            : 
+<span class="lineNum">       8 </span>            :   @date         Created Wednesday, 20 January 2016
+<span class="lineNum">       9 </span>            : 
+<span class="lineNum">      10 </span>            :   @brief        Regex implementation using virtual machines.
+<span class="lineNum">      11 </span>            : 
+<span class="lineNum">      12 </span>            :   @copyright    Copyright (c) 2016, Stephen Brennan.  Released under the Revised
+<span class="lineNum">      13 </span>            :                 BSD License.  See LICENSE.txt for details.
+<span class="lineNum">      14 </span>            : 
+<span class="lineNum">      15 </span>            :                 Portions of this code are based on code by Russ Cox, Copyright
+<span class="lineNum">      16 </span>            :                 2007-2009.
+<span class="lineNum">      17 </span>            : 
+<span class="lineNum">      18 </span>            : *******************************************************************************/
+<span class="lineNum">      19 </span>            : 
+<span class="lineNum">      20 </span>            : #include &lt;assert.h&gt;
+<span class="lineNum">      21 </span>            : #include &lt;stdlib.h&gt;
+<span class="lineNum">      22 </span>            : #include &lt;stdio.h&gt;
+<span class="lineNum">      23 </span>            : #include &lt;stdbool.h&gt;
+<span class="lineNum">      24 </span>            : #include &lt;string.h&gt;
+<span class="lineNum">      25 </span>            : #include &lt;stdint.h&gt;
+<span class="lineNum">      26 </span>            : #include &lt;unistd.h&gt;
+<span class="lineNum">      27 </span>            : 
+<span class="lineNum">      28 </span>            : #include &quot;libstephen/re.h&quot;
+<span class="lineNum">      29 </span>            : #include &quot;libstephen/re_internals.h&quot;
+<span class="lineNum">      30 </span>            : 
+<span class="lineNum">      31 </span>            : // Declarations:
+<span class="lineNum">      32 </span>            : 
+<span class="lineNum">      33 </span>            : typedef struct thread thread;
+<span class="lineNum">      34 </span>            : struct thread {
+<span class="lineNum">      35 </span>            :   Instr *pc;
+<span class="lineNum">      36 </span>            :   size_t *saved;
+<span class="lineNum">      37 </span>            : };
+<span class="lineNum">      38 </span>            : 
+<span class="lineNum">      39 </span>            : typedef struct thread_list thread_list;
+<span class="lineNum">      40 </span>            : struct thread_list {
+<span class="lineNum">      41 </span>            :   thread *t;
+<span class="lineNum">      42 </span>            :   size_t n;
+<span class="lineNum">      43 </span>            : };
+<span class="lineNum">      44 </span>            : 
+<a name="45"><span class="lineNum">      45 </span>            : // Printing, for diagnostics</a>
+<span class="lineNum">      46 </span>            : 
+<span class="lineNum">      47 </span><span class="lineNoCov">          0 : void printthreads(thread_list *tl, Instr *prog, size_t nsave) {</span>
+<span class="lineNum">      48 </span><span class="lineNoCov">          0 :   for (size_t i = 0; i &lt; tl-&gt;n; i++) {</span>
+<span class="lineNum">      49 </span><span class="lineNoCov">          0 :     printf(&quot;T%zu@pc=%lu{&quot;, i, (intptr_t) (tl-&gt;t[i].pc - prog));</span>
+<span class="lineNum">      50 </span><span class="lineNoCov">          0 :     for (size_t j = 0; j &lt; nsave; j++) {</span>
+<span class="lineNum">      51 </span><span class="lineNoCov">          0 :       printf(&quot;%lu,&quot;, tl-&gt;t[i].saved[j]);</span>
+<span class="lineNum">      52 </span>            :     }
+<span class="lineNum">      53 </span><span class="lineNoCov">          0 :     printf(&quot;} &quot;);</span>
+<span class="lineNum">      54 </span>            :   }
+<span class="lineNum">      55 </span><span class="lineNoCov">          0 :   printf(&quot;\n&quot;);</span>
+<span class="lineNum">      56 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">      57 </span>            : 
+<a name="58"><span class="lineNum">      58 </span>            : // Helper evaluation functions for instructions</a>
+<span class="lineNum">      59 </span>            : 
+<span class="lineNum">      60 </span><span class="lineCov">         16 : bool range(Instr in, char test) {</span>
+<span class="lineNum">      61 </span><span class="lineCov">         16 :   if (test == '\0') {</span>
+<span class="lineNum">      62 </span><span class="lineNoCov">          0 :     return false;</span>
+<span class="lineNum">      63 </span>            :   }
+<span class="lineNum">      64 </span><span class="lineCov">         16 :   bool result = false;</span>
+<span class="lineNum">      65 </span><span class="lineCov">         16 :   char *block = (char *) in.x;</span>
+<span class="lineNum">      66 </span>            : 
+<span class="lineNum">      67 </span>            :   // use in.s for number of ranges, in.x as char* for ranges.
+<span class="lineNum">      68 </span><span class="lineCov">         40 :   for (size_t i = 0; i &lt; in.s; i++) {</span>
+<span class="lineNum">      69 </span><span class="lineCov">         34 :     if (block[i*2] &lt;= test &amp;&amp; test &lt;= block [i*2 + 1]) {</span>
+<span class="lineNum">      70 </span><span class="lineCov">         10 :       result = true;</span>
+<span class="lineNum">      71 </span><span class="lineCov">         10 :       break; // short circuit yo!</span>
+<span class="lineNum">      72 </span>            :     }
+<span class="lineNum">      73 </span>            :   }
+<span class="lineNum">      74 </span>            : 
+<span class="lineNum">      75 </span>            :   // negate result for negative ranges
+<span class="lineNum">      76 </span><span class="lineCov">         16 :   if (in.code == Range) {</span>
+<span class="lineNum">      77 </span><span class="lineCov">          8 :     return result;</span>
+<span class="lineNum">      78 </span>            :   } else {
+<span class="lineNum">      79 </span><span class="lineCov">          8 :     return !result;</span>
+<span class="lineNum">      80 </span>            :   }
+<span class="lineNum">      81 </span>            : }
+<span class="lineNum">      82 </span>            : 
+<a name="83"><span class="lineNum">      83 </span>            : // Pike VM functions:</a>
+<span class="lineNum">      84 </span>            : 
+<span class="lineNum">      85 </span><span class="lineCov">         94 : thread_list newthread_list(size_t n)</span>
+<span class="lineNum">      86 </span>            : {
+<span class="lineNum">      87 </span>            :   thread_list tl;
+<span class="lineNum">      88 </span><span class="lineCov">         94 :   tl.t = calloc(n, sizeof(thread));</span>
+<span class="lineNum">      89 </span><span class="lineCov">         94 :   tl.n = 0;</span>
+<span class="lineNum">      90 </span><span class="lineCov">         94 :   return tl;</span>
+<a name="91"><span class="lineNum">      91 </span>            : }</a>
+<span class="lineNum">      92 </span>            : 
+<span class="lineNum">      93 </span><span class="lineCov">        341 : void addthread(thread_list *threads, Instr *pc, size_t *saved, size_t nsave,</span>
+<span class="lineNum">      94 </span>            :                size_t sp)
+<span class="lineNum">      95 </span>            : {
+<span class="lineNum">      96 </span>            :   //printf(&quot;addthread(): pc=%d, saved={%u, %u}, sp=%u, lastidx=%u\n&quot;, pc - extprog,
+<span class="lineNum">      97 </span>            :   //       saved[0], saved[1], sp, pc-&gt;lastidx);
+<span class="lineNum">      98 </span><span class="lineCov">        341 :   if (pc-&gt;lastidx == sp) {</span>
+<span class="lineNum">      99 </span>            :     // we've executed this instruction on this string index already
+<span class="lineNum">     100 </span><span class="lineCov">         10 :     free(saved);</span>
+<span class="lineNum">     101 </span><span class="lineCov">        351 :     return;</span>
+<span class="lineNum">     102 </span>            :   }
+<span class="lineNum">     103 </span><span class="lineCov">        331 :   pc-&gt;lastidx = sp;</span>
+<span class="lineNum">     104 </span>            : 
+<span class="lineNum">     105 </span>            :   size_t *newsaved;
+<span class="lineNum">     106 </span><span class="lineCov">        331 :   switch (pc-&gt;code) {</span>
+<span class="lineNum">     107 </span>            :   case Jump:
+<span class="lineNum">     108 </span><span class="lineCov">         44 :     addthread(threads, pc-&gt;x, saved, nsave, sp);</span>
+<span class="lineNum">     109 </span><span class="lineCov">         44 :     break;</span>
+<span class="lineNum">     110 </span>            :   case Split:
+<span class="lineNum">     111 </span><span class="lineCov">         74 :     newsaved = calloc(nsave, sizeof(size_t));</span>
+<span class="lineNum">     112 </span><span class="lineCov">         74 :     memcpy(newsaved, saved, nsave * sizeof(size_t));</span>
+<span class="lineNum">     113 </span><span class="lineCov">         74 :     addthread(threads, pc-&gt;x, saved, nsave, sp);</span>
+<span class="lineNum">     114 </span><span class="lineCov">         74 :     addthread(threads, pc-&gt;y, newsaved, nsave, sp);</span>
+<span class="lineNum">     115 </span><span class="lineCov">         74 :     break;</span>
+<span class="lineNum">     116 </span>            :   case Save:
+<span class="lineNum">     117 </span><span class="lineCov">         32 :     saved[pc-&gt;s] = sp;</span>
+<span class="lineNum">     118 </span><span class="lineCov">         32 :     addthread(threads, pc + 1, saved, nsave, sp);</span>
+<span class="lineNum">     119 </span><span class="lineCov">         32 :     break;</span>
+<span class="lineNum">     120 </span>            :   default:
+<span class="lineNum">     121 </span><span class="lineCov">        181 :     threads-&gt;t[threads-&gt;n].pc = pc;</span>
+<span class="lineNum">     122 </span><span class="lineCov">        181 :     threads-&gt;t[threads-&gt;n].saved = saved;</span>
+<span class="lineNum">     123 </span><span class="lineCov">        181 :     threads-&gt;n++;</span>
+<span class="lineNum">     124 </span><span class="lineCov">        181 :     break;</span>
+<span class="lineNum">     125 </span>            :   }
+<span class="lineNum">     126 </span>            : }
+<span class="lineNum">     127 </span>            : 
+<span class="lineNum">     128 </span>            : /**
+<span class="lineNum">     129 </span>            :    @brief &quot;Stash&quot; a list of captures into the &quot;out&quot; pointer.
+<span class="lineNum">     130 </span>            :    @param new The new list of captures encountered by the Match instruction.
+<a name="131"><span class="lineNum">     131 </span>            :    @param destination The out pointer where the caller wants the captures.</a>
+<span class="lineNum">     132 </span>            :  */
+<span class="lineNum">     133 </span><span class="lineCov">         58 : void stash(size_t *new, size_t **destination)</span>
+<span class="lineNum">     134 </span>            : {
+<span class="lineNum">     135 </span><span class="lineCov">         58 :   if (!destination) {</span>
+<span class="lineNum">     136 </span>            :     /* If the user wants to discard the captures, they'll pass NULL.  This means
+<span class="lineNum">     137 </span>            :        we need to get rid of the capture list, or we'll leak the memory. */
+<span class="lineNum">     138 </span><span class="lineCov">         51 :     free(new);</span>
+<span class="lineNum">     139 </span><span class="lineCov">        109 :     return;</span>
+<span class="lineNum">     140 </span>            :   }
+<span class="lineNum">     141 </span><span class="lineCov">          7 :   if (*destination) {</span>
+<span class="lineNum">     142 </span>            :     /* If we have already stored a capture list, we should free that. */
+<span class="lineNum">     143 </span><span class="lineCov">          2 :     free(*destination);</span>
+<span class="lineNum">     144 </span>            :   }
+<span class="lineNum">     145 </span>            :   /* Finally, stash the pointer away. */
+<span class="lineNum">     146 </span><span class="lineCov">          7 :   *destination = new;</span>
+<a name="147"><span class="lineNum">     147 </span>            : }</a>
+<span class="lineNum">     148 </span>            : 
+<span class="lineNum">     149 </span><span class="lineCov">         47 : ssize_t execute(Regex r, char *input, size_t **saved)</span>
+<span class="lineNum">     150 </span>            : {
+<span class="lineNum">     151 </span>            :   // Can have at most n threads, where n is the length of the program.  This is
+<span class="lineNum">     152 </span>            :   // because (as it is now) the thread state is simply a program counter.
+<span class="lineNum">     153 </span><span class="lineCov">         47 :   thread_list curr = newthread_list(r.n);</span>
+<span class="lineNum">     154 </span><span class="lineCov">         47 :   thread_list next = newthread_list(r.n);</span>
+<span class="lineNum">     155 </span>            :   thread_list temp;
+<span class="lineNum">     156 </span><span class="lineCov">         47 :   size_t nsave = 0;</span>
+<span class="lineNum">     157 </span><span class="lineCov">         47 :   ssize_t match = -1;</span>
+<span class="lineNum">     158 </span>            : 
+<span class="lineNum">     159 </span>            :   // Set the out pointer to NULL so that stash() knows whether we've already
+<span class="lineNum">     160 </span>            :   // stashed away a capture list.
+<span class="lineNum">     161 </span><span class="lineCov">         47 :   if (saved) {</span>
+<span class="lineNum">     162 </span><span class="lineCov">          5 :     *saved = NULL;</span>
+<span class="lineNum">     163 </span>            :   }
+<span class="lineNum">     164 </span>            : 
+<span class="lineNum">     165 </span>            :   // Need to initialize lastidx to something that will never be used.
+<span class="lineNum">     166 </span><span class="lineCov">        229 :   for (size_t i = 0; i &lt; r.n; i++) {</span>
+<span class="lineNum">     167 </span><span class="lineCov">        182 :     r.i[i].lastidx = (size_t)-1;</span>
+<span class="lineNum">     168 </span><span class="lineCov">        182 :     if (r.i[i].code == Save) {</span>
+<span class="lineNum">     169 </span><span class="lineCov">         18 :       nsave++;</span>
+<span class="lineNum">     170 </span>            :     }
+<span class="lineNum">     171 </span>            :   }
+<span class="lineNum">     172 </span>            : 
+<span class="lineNum">     173 </span>            :   // Start with a single thread and add more as we need.  Note that addthread()
+<span class="lineNum">     174 </span>            :   // will execute instructions that don't consume input (i.e. epsilon closure).
+<span class="lineNum">     175 </span><span class="lineCov">         47 :   addthread(&amp;curr, r.i, calloc(nsave, sizeof(size_t)), nsave, 0);</span>
+<span class="lineNum">     176 </span>            : 
+<span class="lineNum">     177 </span>            :   size_t sp;
+<span class="lineNum">     178 </span><span class="lineCov">        154 :   for (sp = 0; curr.n &gt; 0; sp++) {</span>
+<span class="lineNum">     179 </span>            : 
+<span class="lineNum">     180 </span>            :     //printf(&quot;consider input %c\nthreads: &quot;, input[sp]);
+<span class="lineNum">     181 </span>            :     //printthreads(&amp;curr, r.i, nsave);
+<span class="lineNum">     182 </span>            : 
+<span class="lineNum">     183 </span>            :     // Execute each thread (this will only ever reach instructions that consume
+<span class="lineNum">     184 </span>            :     // input, since addthread() stops with those).
+<span class="lineNum">     185 </span><span class="lineCov">        230 :     for (size_t t = 0; t &lt; curr.n; t++) {</span>
+<span class="lineNum">     186 </span><span class="lineCov">        181 :       Instr *pc = curr.t[t].pc;</span>
+<span class="lineNum">     187 </span>            : 
+<span class="lineNum">     188 </span><span class="lineCov">        181 :       switch (pc-&gt;code) {</span>
+<span class="lineNum">     189 </span>            :       case Char:
+<span class="lineNum">     190 </span><span class="lineCov">        100 :         if (input[sp] != pc-&gt;c) {</span>
+<span class="lineNum">     191 </span><span class="lineCov">         44 :           free(curr.t[t].saved);</span>
+<span class="lineNum">     192 </span><span class="lineCov">         44 :           break; // fail, don't continue executing this thread</span>
+<span class="lineNum">     193 </span>            :         }
+<span class="lineNum">     194 </span>            :         // add thread containing the next instruction to the next thread list.
+<span class="lineNum">     195 </span><span class="lineCov">         56 :         addthread(&amp;next, pc+1, curr.t[t].saved, nsave, sp+1);</span>
+<span class="lineNum">     196 </span><span class="lineCov">         56 :         break;</span>
+<span class="lineNum">     197 </span>            :       case Any:
+<span class="lineNum">     198 </span><span class="lineCov">          7 :         if (input[sp] == '\0') {</span>
+<span class="lineNum">     199 </span><span class="lineCov">          1 :           free(curr.t[t].saved);</span>
+<span class="lineNum">     200 </span><span class="lineCov">          1 :           break; // dot can't match end of string!</span>
+<span class="lineNum">     201 </span>            :         }
+<span class="lineNum">     202 </span>            :         // add thread containing the next instruction to the next thread list.
+<span class="lineNum">     203 </span><span class="lineCov">          6 :         addthread(&amp;next, pc+1, curr.t[t].saved, nsave, sp+1);</span>
+<span class="lineNum">     204 </span><span class="lineCov">          6 :         break;</span>
+<span class="lineNum">     205 </span>            :       case Range:
+<span class="lineNum">     206 </span>            :       case NRange:
+<span class="lineNum">     207 </span><span class="lineCov">         16 :         if (!range(*pc, input[sp])) {</span>
+<span class="lineNum">     208 </span><span class="lineCov">          8 :           free(curr.t[t].saved);</span>
+<span class="lineNum">     209 </span><span class="lineCov">          8 :           break;</span>
+<span class="lineNum">     210 </span>            :         }
+<span class="lineNum">     211 </span><span class="lineCov">          8 :         addthread(&amp;next, pc+1, curr.t[t].saved, nsave, sp+1);</span>
+<span class="lineNum">     212 </span><span class="lineCov">          8 :         break;</span>
+<span class="lineNum">     213 </span>            :       case Match:
+<span class="lineNum">     214 </span><span class="lineCov">         58 :         stash(curr.t[t].saved, saved);</span>
+<span class="lineNum">     215 </span><span class="lineCov">         58 :         match = sp;</span>
+<span class="lineNum">     216 </span><span class="lineCov">         58 :         goto cont;</span>
+<span class="lineNum">     217 </span>            :       default:
+<span class="lineNum">     218 </span><span class="lineNoCov">          0 :         assert(false);</span>
+<span class="lineNum">     219 </span>            :         break;
+<span class="lineNum">     220 </span>            :       }
+<span class="lineNum">     221 </span>            :     }
+<span class="lineNum">     222 </span>            : 
+<span class="lineNum">     223 </span>            :   cont:
+<span class="lineNum">     224 </span>            :     // Swap the curr and next lists.
+<span class="lineNum">     225 </span><span class="lineCov">        107 :     temp = curr;</span>
+<span class="lineNum">     226 </span><span class="lineCov">        107 :     curr = next;</span>
+<span class="lineNum">     227 </span><span class="lineCov">        107 :     next = temp;</span>
+<span class="lineNum">     228 </span>            : 
+<span class="lineNum">     229 </span>            :     // Reset our new next list.
+<span class="lineNum">     230 </span><span class="lineCov">        107 :     next.n = 0;</span>
+<span class="lineNum">     231 </span>            :   }
+<span class="lineNum">     232 </span>            : 
+<span class="lineNum">     233 </span><span class="lineCov">         47 :   free(curr.t);</span>
+<span class="lineNum">     234 </span><span class="lineCov">         47 :   free(next.t);</span>
+<span class="lineNum">     235 </span><span class="lineCov">         47 :   return match;</span>
+<a name="236"><span class="lineNum">     236 </span>            : }</a>
+<span class="lineNum">     237 </span>            : 
+<span class="lineNum">     238 </span><span class="lineCov">          3 : int numsaves(Regex r)</span>
+<span class="lineNum">     239 </span>            : {
+<span class="lineNum">     240 </span><span class="lineCov">          3 :   int ns = 0;</span>
+<span class="lineNum">     241 </span><span class="lineCov">         25 :   for (size_t i = 0; i &lt; r.n; i++) {</span>
+<span class="lineNum">     242 </span><span class="lineCov">         22 :     if (r.i[i].code == Save &amp;&amp; r.i[i].s &gt; ns) {</span>
+<span class="lineNum">     243 </span><span class="lineCov">          3 :       ns = r.i[i].s;</span>
+<span class="lineNum">     244 </span>            :     }
+<span class="lineNum">     245 </span>            :   }
+<span class="lineNum">     246 </span><span class="lineCov">          3 :   return ns + 1;</span>
+<span class="lineNum">     247 </span>            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.11</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2016-03-11 22:05:55</td>
+            <td class="headerValue">2016-03-12 20:37:58</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">44</td>
@@ -100,11 +100,11 @@
 <span class="lineNum">      38 </span>            :    @param list The list to expand.
 <a name="39"><span class="lineNum">      39 </span>            :    @param[out] status Status variable.</a>
 <span class="lineNum">      40 </span>            :  */
-<span class="lineNum">      41 </span><span class="lineCov">      24525 : void al_expand(smb_al *list)</span>
+<span class="lineNum">      41 </span><span class="lineCov">      24520 : void al_expand(smb_al *list)</span>
 <span class="lineNum">      42 </span>            : {
-<span class="lineNum">      43 </span><span class="lineCov">      24525 :   list-&gt;allocated = list-&gt;allocated + SMB_AL_BLOCK_SIZE;</span>
-<span class="lineNum">      44 </span><span class="lineCov">      24525 :   list-&gt;data = smb_renew(DATA, list-&gt;data, list-&gt;allocated);</span>
-<span class="lineNum">      45 </span><span class="lineCov">      24525 : }</span>
+<span class="lineNum">      43 </span><span class="lineCov">      24520 :   list-&gt;allocated = list-&gt;allocated + SMB_AL_BLOCK_SIZE;</span>
+<span class="lineNum">      44 </span><span class="lineCov">      24520 :   list-&gt;data = smb_renew(DATA, list-&gt;data, list-&gt;allocated);</span>
+<span class="lineNum">      45 </span><span class="lineCov">      24520 : }</span>
 <span class="lineNum">      46 </span>            : 
 <span class="lineNum">      47 </span>            : /**
 <span class="lineNum">      48 </span>            :    @brief Shifts the elements in the array up one element starting from
@@ -149,14 +149,14 @@
 <span class="lineNum">      87 </span>            :    @param to_index The index to shift down to.  The element at this index is
 <a name="88"><span class="lineNum">      88 </span>            :    eventually overwritten.</a>
 <span class="lineNum">      89 </span>            :  */
-<span class="lineNum">      90 </span><span class="lineCov">       4094 : void al_shift_down(smb_al *list, int to_index)</span>
+<span class="lineNum">      90 </span><span class="lineCov">         14 : void al_shift_down(smb_al *list, int to_index)</span>
 <span class="lineNum">      91 </span>            : {
-<span class="lineNum">      92 </span><span class="lineCov">       4425 :   for (int i = to_index + 1; i &lt; list-&gt;length; i++) {</span>
-<span class="lineNum">      93 </span><span class="lineCov">        331 :     list-&gt;data[i - 1] = list-&gt;data[i];</span>
+<span class="lineNum">      92 </span><span class="lineCov">         51 :   for (int i = to_index + 1; i &lt; list-&gt;length; i++) {</span>
+<span class="lineNum">      93 </span><span class="lineCov">         37 :     list-&gt;data[i - 1] = list-&gt;data[i];</span>
 <span class="lineNum">      94 </span>            :   }
 <span class="lineNum">      95 </span>            : 
-<span class="lineNum">      96 </span><span class="lineCov">       4094 :   list-&gt;length--;</span>
-<span class="lineNum">      97 </span><span class="lineCov">       4094 : }</span>
+<span class="lineNum">      96 </span><span class="lineCov">         14 :   list-&gt;length--;</span>
+<span class="lineNum">      97 </span><span class="lineCov">         14 : }</span>
 <span class="lineNum">      98 </span>            : 
 <span class="lineNum">      99 </span>            : /*******************************************************************************
 <span class="lineNum">     100 </span>            : 
@@ -164,40 +164,40 @@
 <span class="lineNum">     102 </span>            : 
 <a name="103"><span class="lineNum">     103 </span>            : *******************************************************************************/</a>
 <span class="lineNum">     104 </span>            : 
-<span class="lineNum">     105 </span><span class="lineCov">       8482 : void al_init(smb_al *list)</span>
+<span class="lineNum">     105 </span><span class="lineCov">       1014 : void al_init(smb_al *list)</span>
 <span class="lineNum">     106 </span>            : {
-<span class="lineNum">     107 </span><span class="lineCov">       8482 :   list-&gt;data = smb_new(DATA, SMB_AL_BLOCK_SIZE);</span>
-<span class="lineNum">     108 </span><span class="lineCov">       8482 :   list-&gt;length = 0;</span>
-<span class="lineNum">     109 </span><span class="lineCov">       8482 :   list-&gt;allocated = SMB_AL_BLOCK_SIZE;</span>
-<a name="110"><span class="lineNum">     110 </span><span class="lineCov">       8482 : }</span></a>
+<span class="lineNum">     107 </span><span class="lineCov">       1014 :   list-&gt;data = smb_new(DATA, SMB_AL_BLOCK_SIZE);</span>
+<span class="lineNum">     108 </span><span class="lineCov">       1014 :   list-&gt;length = 0;</span>
+<span class="lineNum">     109 </span><span class="lineCov">       1014 :   list-&gt;allocated = SMB_AL_BLOCK_SIZE;</span>
+<a name="110"><span class="lineNum">     110 </span><span class="lineCov">       1014 : }</span></a>
 <span class="lineNum">     111 </span>            : 
-<span class="lineNum">     112 </span><span class="lineCov">       6045 : smb_al *al_create()</span>
+<span class="lineNum">     112 </span><span class="lineCov">       1014 : smb_al *al_create()</span>
 <span class="lineNum">     113 </span>            : {
-<span class="lineNum">     114 </span><span class="lineCov">       6045 :   smb_al *list = smb_new(smb_al, 1);</span>
-<span class="lineNum">     115 </span><span class="lineCov">       6045 :   al_init(list);</span>
-<span class="lineNum">     116 </span><span class="lineCov">       6045 :   return list;</span>
+<span class="lineNum">     114 </span><span class="lineCov">       1014 :   smb_al *list = smb_new(smb_al, 1);</span>
+<span class="lineNum">     115 </span><span class="lineCov">       1014 :   al_init(list);</span>
+<span class="lineNum">     116 </span><span class="lineCov">       1014 :   return list;</span>
 <a name="117"><span class="lineNum">     117 </span>            : }</a>
 <span class="lineNum">     118 </span>            : 
-<span class="lineNum">     119 </span><span class="lineCov">       8482 : void al_destroy(smb_al *list)</span>
+<span class="lineNum">     119 </span><span class="lineCov">       1014 : void al_destroy(smb_al *list)</span>
 <span class="lineNum">     120 </span>            : {
-<span class="lineNum">     121 </span><span class="lineCov">       8482 :   smb_free(list-&gt;data);</span>
-<a name="122"><span class="lineNum">     122 </span><span class="lineCov">       8482 : }</span></a>
+<span class="lineNum">     121 </span><span class="lineCov">       1014 :   smb_free(list-&gt;data);</span>
+<a name="122"><span class="lineNum">     122 </span><span class="lineCov">       1014 : }</span></a>
 <span class="lineNum">     123 </span>            : 
-<span class="lineNum">     124 </span><span class="lineCov">       6045 : void al_delete(smb_al *list)</span>
+<span class="lineNum">     124 </span><span class="lineCov">       1014 : void al_delete(smb_al *list)</span>
 <span class="lineNum">     125 </span>            : {
-<span class="lineNum">     126 </span><span class="lineCov">       6045 :   al_destroy(list);</span>
-<span class="lineNum">     127 </span><span class="lineCov">       6045 :   smb_free(list);</span>
-<a name="128"><span class="lineNum">     128 </span><span class="lineCov">       6045 : }</span></a>
+<span class="lineNum">     126 </span><span class="lineCov">       1014 :   al_destroy(list);</span>
+<span class="lineNum">     127 </span><span class="lineCov">       1014 :   smb_free(list);</span>
+<a name="128"><span class="lineNum">     128 </span><span class="lineCov">       1014 : }</span></a>
 <span class="lineNum">     129 </span>            : 
-<span class="lineNum">     130 </span><span class="lineCov">     510821 : void al_append(smb_al *list, DATA newData)</span>
+<span class="lineNum">     130 </span><span class="lineCov">     500817 : void al_append(smb_al *list, DATA newData)</span>
 <span class="lineNum">     131 </span>            : {
-<span class="lineNum">     132 </span><span class="lineCov">     510821 :   if (list-&gt;length &lt; list-&gt;allocated) {</span>
-<span class="lineNum">     133 </span><span class="lineCov">     486306 :     list-&gt;data[list-&gt;length++] = newData;</span>
+<span class="lineNum">     132 </span><span class="lineCov">     500817 :   if (list-&gt;length &lt; list-&gt;allocated) {</span>
+<span class="lineNum">     133 </span><span class="lineCov">     476307 :     list-&gt;data[list-&gt;length++] = newData;</span>
 <span class="lineNum">     134 </span>            :   } else {
-<span class="lineNum">     135 </span><span class="lineCov">      24515 :     al_expand(list);</span>
-<span class="lineNum">     136 </span><span class="lineCov">      24515 :     list-&gt;data[list-&gt;length++] = newData;</span>
+<span class="lineNum">     135 </span><span class="lineCov">      24510 :     al_expand(list);</span>
+<span class="lineNum">     136 </span><span class="lineCov">      24510 :     list-&gt;data[list-&gt;length++] = newData;</span>
 <span class="lineNum">     137 </span>            :   }
-<a name="138"><span class="lineNum">     138 </span><span class="lineCov">     510821 : }</span></a>
+<a name="138"><span class="lineNum">     138 </span><span class="lineCov">     500817 : }</span></a>
 <span class="lineNum">     139 </span>            : 
 <span class="lineNum">     140 </span><span class="lineCov">        205 : void al_prepend(smb_al *list, DATA newData)</span>
 <span class="lineNum">     141 </span>            : {
@@ -205,27 +205,27 @@
 <span class="lineNum">     143 </span><span class="lineCov">        205 :   list-&gt;data[0] = newData;</span>
 <a name="144"><span class="lineNum">     144 </span><span class="lineCov">        205 : }</span></a>
 <span class="lineNum">     145 </span>            : 
-<span class="lineNum">     146 </span><span class="lineCov">     566957 : DATA al_get(const smb_al *list, int index, smb_status *status)</span>
+<span class="lineNum">     146 </span><span class="lineCov">     541863 : DATA al_get(const smb_al *list, int index, smb_status *status)</span>
 <span class="lineNum">     147 </span>            : {
-<span class="lineNum">     148 </span><span class="lineCov">     566957 :   *status = SMB_SUCCESS;</span>
-<span class="lineNum">     149 </span><span class="lineCov">     566957 :   if (index &lt; 0 || index &gt;= list-&gt;length) {</span>
+<span class="lineNum">     148 </span><span class="lineCov">     541863 :   *status = SMB_SUCCESS;</span>
+<span class="lineNum">     149 </span><span class="lineCov">     541863 :   if (index &lt; 0 || index &gt;= list-&gt;length) {</span>
 <span class="lineNum">     150 </span><span class="lineCov">       1005 :     *status = SMB_INDEX_ERROR;</span>
 <span class="lineNum">     151 </span>            :     DATA mockData;
 <span class="lineNum">     152 </span><span class="lineCov">       1005 :     return mockData;</span>
 <span class="lineNum">     153 </span>            :   }
 <span class="lineNum">     154 </span>            : 
-<span class="lineNum">     155 </span><span class="lineCov">     565952 :   return list-&gt;data[index];</span>
+<span class="lineNum">     155 </span><span class="lineCov">     540858 :   return list-&gt;data[index];</span>
 <a name="156"><span class="lineNum">     156 </span>            : }</a>
 <span class="lineNum">     157 </span>            : 
-<span class="lineNum">     158 </span><span class="lineCov">       4098 : void al_remove(smb_al *list, int index, smb_status *status)</span>
+<span class="lineNum">     158 </span><span class="lineCov">         18 : void al_remove(smb_al *list, int index, smb_status *status)</span>
 <span class="lineNum">     159 </span>            : {
-<span class="lineNum">     160 </span><span class="lineCov">       4098 :   *status = SMB_SUCCESS;</span>
-<span class="lineNum">     161 </span><span class="lineCov">       4098 :   if (index &lt; 0 || index &gt;= list-&gt;length) {</span>
+<span class="lineNum">     160 </span><span class="lineCov">         18 :   *status = SMB_SUCCESS;</span>
+<span class="lineNum">     161 </span><span class="lineCov">         18 :   if (index &lt; 0 || index &gt;= list-&gt;length) {</span>
 <span class="lineNum">     162 </span><span class="lineCov">          4 :     *status = SMB_INDEX_ERROR;</span>
-<span class="lineNum">     163 </span><span class="lineCov">       4102 :     return;</span>
+<span class="lineNum">     163 </span><span class="lineCov">         22 :     return;</span>
 <span class="lineNum">     164 </span>            :   }
 <span class="lineNum">     165 </span>            : 
-<span class="lineNum">     166 </span><span class="lineCov">       4094 :   al_shift_down(list, index);</span>
+<span class="lineNum">     166 </span><span class="lineCov">         14 :   al_shift_down(list, index);</span>
 <a name="167"><span class="lineNum">     167 </span>            : }</a>
 <span class="lineNum">     168 </span>            : 
 <span class="lineNum">     169 </span><span class="lineCov">          5 : void al_insert(smb_al *list, int index, DATA newData)</span>
@@ -251,10 +251,10 @@
 <span class="lineNum">     189 </span><span class="lineCov">         30 :   list-&gt;data[index] = newData;</span>
 <a name="190"><span class="lineNum">     190 </span>            : }</a>
 <span class="lineNum">     191 </span>            : 
-<span class="lineNum">     192 </span><span class="lineCov">       2107 : void al_push_back(smb_al *list, DATA newData)</span>
+<span class="lineNum">     192 </span><span class="lineCov">         25 : void al_push_back(smb_al *list, DATA newData)</span>
 <span class="lineNum">     193 </span>            : {
-<span class="lineNum">     194 </span><span class="lineCov">       2107 :   al_append(list, newData);</span>
-<a name="195"><span class="lineNum">     195 </span><span class="lineCov">       2107 : }</span></a>
+<span class="lineNum">     194 </span><span class="lineCov">         25 :   al_append(list, newData);</span>
+<a name="195"><span class="lineNum">     195 </span><span class="lineCov">         25 : }</span></a>
 <span class="lineNum">     196 </span>            : 
 <span class="lineNum">     197 </span><span class="lineCov">          7 : DATA al_pop_back(smb_al *list, smb_status *status)</span>
 <span class="lineNum">     198 </span>            : {
@@ -275,13 +275,13 @@
 <span class="lineNum">     213 </span><span class="lineCov">          5 :   al_prepend(list, newData);</span>
 <a name="214"><span class="lineNum">     214 </span><span class="lineCov">          5 : }</span></a>
 <span class="lineNum">     215 </span>            : 
-<span class="lineNum">     216 </span><span class="lineCov">       4086 : DATA al_pop_front(smb_al *list, smb_status *status)</span>
+<span class="lineNum">     216 </span><span class="lineCov">          6 : DATA al_pop_front(smb_al *list, smb_status *status)</span>
 <span class="lineNum">     217 </span>            : {
 <span class="lineNum">     218 </span>            :   // On failure, returns dummy and sets INDEX_ERROR.
-<span class="lineNum">     219 </span><span class="lineCov">       4086 :   DATA toReturn = al_get(list, 0, status);</span>
+<span class="lineNum">     219 </span><span class="lineCov">          6 :   DATA toReturn = al_get(list, 0, status);</span>
 <span class="lineNum">     220 </span>            :   // On failure, sets INDEX_ERROR and does nothing.
-<span class="lineNum">     221 </span><span class="lineCov">       4086 :   al_remove(list, 0, status);</span>
-<span class="lineNum">     222 </span><span class="lineCov">       4086 :   return toReturn;</span>
+<span class="lineNum">     221 </span><span class="lineCov">          6 :   al_remove(list, 0, status);</span>
+<span class="lineNum">     222 </span><span class="lineCov">          6 :   return toReturn;</span>
 <a name="223"><span class="lineNum">     223 </span>            : }</a>
 <span class="lineNum">     224 </span>            : 
 <span class="lineNum">     225 </span><span class="lineCov">          2 : DATA al_peek_front(smb_al *list, smb_status *status)</span>
@@ -289,26 +289,26 @@
 <span class="lineNum">     227 </span><span class="lineCov">          2 :   return al_get(list, 0, status);</span>
 <a name="228"><span class="lineNum">     228 </span>            : }</a>
 <span class="lineNum">     229 </span>            : 
-<span class="lineNum">     230 </span><span class="lineCov">     573958 : int al_length(const smb_al *list)</span>
+<span class="lineNum">     230 </span><span class="lineCov">     542620 : int al_length(const smb_al *list)</span>
 <span class="lineNum">     231 </span>            : {
-<span class="lineNum">     232 </span><span class="lineCov">     573958 :   return list-&gt;length;</span>
+<span class="lineNum">     232 </span><span class="lineCov">     542620 :   return list-&gt;length;</span>
 <a name="233"><span class="lineNum">     233 </span>            : }</a>
 <span class="lineNum">     234 </span>            : 
-<span class="lineNum">     235 </span><span class="lineCov">       4266 : int al_index_of(const smb_al *list, DATA d, DATA_COMPARE comp)</span>
+<span class="lineNum">     235 </span><span class="lineCov">         22 : int al_index_of(const smb_al *list, DATA d, DATA_COMPARE comp)</span>
 <span class="lineNum">     236 </span>            : {
 <span class="lineNum">     237 </span>            :   int i;
-<span class="lineNum">     238 </span><span class="lineCov">       8496 :   for (i = 0; i &lt; list-&gt;length; i++) {</span>
-<span class="lineNum">     239 </span><span class="lineCov">       4735 :     if (comp == NULL) {</span>
+<span class="lineNum">     238 </span><span class="lineCov">        212 :   for (i = 0; i &lt; list-&gt;length; i++) {</span>
+<span class="lineNum">     239 </span><span class="lineCov">        211 :     if (comp == NULL) {</span>
 <span class="lineNum">     240 </span><span class="lineCov">        210 :       if (list-&gt;data[i].data_llint == d.data_llint) {</span>
 <span class="lineNum">     241 </span><span class="lineCov">         20 :         return i;</span>
 <span class="lineNum">     242 </span>            :       }
 <span class="lineNum">     243 </span>            :     } else {
-<span class="lineNum">     244 </span><span class="lineCov">       4525 :       if (comp(list-&gt;data[i], d) == 0) {</span>
-<span class="lineNum">     245 </span><span class="lineCov">        485 :         return i;</span>
+<span class="lineNum">     244 </span><span class="lineCov">          1 :       if (comp(list-&gt;data[i], d) == 0) {</span>
+<span class="lineNum">     245 </span><span class="lineCov">          1 :         return i;</span>
 <span class="lineNum">     246 </span>            :       }
 <span class="lineNum">     247 </span>            :     }
 <span class="lineNum">     248 </span>            :   }
-<span class="lineNum">     249 </span><span class="lineCov">       3761 :   return -1;</span>
+<span class="lineNum">     249 </span><span class="lineCov">          1 :   return -1;</span>
 <span class="lineNum">     250 </span>            : }
 <span class="lineNum">     251 </span>            : 
 <span class="lineNum">     252 </span>            : /**
@@ -318,13 +318,13 @@
 <span class="lineNum">     256 </span>            :    @return The next item in the array list.
 <a name="257"><span class="lineNum">     257 </span>            :    @exception SMB_STOP_ITERATION If the list has no more elements.</a>
 <span class="lineNum">     258 </span>            :  */
-<span class="lineNum">     259 </span><span class="lineCov">     501754 : DATA al_iter_next(smb_iter *iter, smb_status *status)</span>
+<span class="lineNum">     259 </span><span class="lineCov">     501500 : DATA al_iter_next(smb_iter *iter, smb_status *status)</span>
 <span class="lineNum">     260 </span>            : {
-<span class="lineNum">     261 </span><span class="lineCov">     501754 :   DATA ret_val = al_get((const smb_al *)iter-&gt;ds, iter-&gt;index++, status);</span>
-<span class="lineNum">     262 </span><span class="lineCov">     501754 :   if (*status == SMB_INDEX_ERROR) {</span>
+<span class="lineNum">     261 </span><span class="lineCov">     501500 :   DATA ret_val = al_get((const smb_al *)iter-&gt;ds, iter-&gt;index++, status);</span>
+<span class="lineNum">     262 </span><span class="lineCov">     501500 :   if (*status == SMB_INDEX_ERROR) {</span>
 <span class="lineNum">     263 </span><span class="lineCov">       1000 :     *status = SMB_STOP_ITERATION;</span>
 <span class="lineNum">     264 </span>            :   }
-<span class="lineNum">     265 </span><span class="lineCov">     501754 :   return ret_val;</span>
+<span class="lineNum">     265 </span><span class="lineCov">     501500 :   return ret_val;</span>
 <span class="lineNum">     266 </span>            : }
 <span class="lineNum">     267 </span>            : 
 <span class="lineNum">     268 </span>            : /**
@@ -332,9 +332,9 @@
 <span class="lineNum">     270 </span>            :    @param iter The iterator being used.
 <a name="271"><span class="lineNum">     271 </span>            :    @return Whether or not the iterator has another item.</a>
 <span class="lineNum">     272 </span>            :  */
-<span class="lineNum">     273 </span><span class="lineCov">     502016 : bool al_iter_has_next(smb_iter *iter)</span>
+<span class="lineNum">     273 </span><span class="lineCov">     501502 : bool al_iter_has_next(smb_iter *iter)</span>
 <span class="lineNum">     274 </span>            : {
-<span class="lineNum">     275 </span><span class="lineCov">     502016 :   return iter-&gt;index &lt; al_length((const smb_al *)iter-&gt;ds);</span>
+<span class="lineNum">     275 </span><span class="lineCov">     501502 :   return iter-&gt;index &lt; al_length((const smb_al *)iter-&gt;ds);</span>
 <span class="lineNum">     276 </span>            : }
 <span class="lineNum">     277 </span>            : 
 <span class="lineNum">     278 </span>            : /**
@@ -356,9 +356,9 @@
 <span class="lineNum">     294 </span><span class="lineCov">          1 :   smb_free(iter);</span>
 <a name="295"><span class="lineNum">     295 </span><span class="lineCov">          1 : }</span></a>
 <span class="lineNum">     296 </span>            : 
-<span class="lineNum">     297 </span><span class="lineCov">       1264 : smb_iter al_get_iter(const smb_al *list)</span>
+<span class="lineNum">     297 </span><span class="lineCov">       1004 : smb_iter al_get_iter(const smb_al *list)</span>
 <span class="lineNum">     298 </span>            : {
-<span class="lineNum">     299 </span><span class="lineCov">       1264 :   smb_iter iter = {</span>
+<span class="lineNum">     299 </span><span class="lineCov">       1004 :   smb_iter iter = {</span>
 <span class="lineNum">     300 </span>            :     // Data values
 <span class="lineNum">     301 </span>            :     .ds = list,
 <span class="lineNum">     302 </span>            :     .state = (DATA) { .data_ptr = NULL },
@@ -370,7 +370,7 @@
 <span class="lineNum">     308 </span>            :     .destroy = &amp;al_iter_destroy,
 <span class="lineNum">     309 </span>            :     .delete = &amp;al_iter_delete
 <span class="lineNum">     310 </span>            :   };
-<span class="lineNum">     311 </span><span class="lineCov">       1264 :   return iter;</span>
+<span class="lineNum">     311 </span><span class="lineCov">       1004 :   return iter;</span>
 <span class="lineNum">     312 </span>            : }
 <span class="lineNum">     313 </span>            : 
 <span class="lineNum">     314 </span>            : /*******************************************************************************

@@ -143,28 +143,8 @@
             
   <div class="section" id="libstephen-tutorial">
 <h1>Libstephen Tutorial<a class="headerlink" href="#libstephen-tutorial" title="Permalink to this headline">¶</a></h1>
-<p>Welcome to the Libstephen Tutorial! Here you will find documentation about the
-major features libstephen has to offer, for general purpose C programming. The
-documentation here is not exhaustive. If you really want to know the full
-interface of libstephen, there is no substitute for diving into the headers or
-the implementations.</p>
-<p>The <a class="reference external" href="http://stephen-brennan.com/libstephen">Libstephen Tool Site</a> has links
-to code coverage reports, automatically generated documentation, and the
-Wiki. Check it out!.</p>
 <p><strong>Introductory Notes</strong></p>
-<p>libstephen is a personal creation. It&#8217;s an experiment on the best way to write
-an API (for the implementer, and the user &#8211; I am both). That means that the API
-could frequently change. I feel like I&#8217;m getting close to an implementation that
-can stand the test of time, but before I tag a release as 1.0, I don&#8217;t want to
-commit to a steady interface.</p>
-<p>Since libstephen is a personal creation, I wouldn&#8217;t expect that its
-implementations are the most efficient ones out there (or bug free). I try to
-test the code pretty well, and I use it in other projects, but that doesn&#8217;t make
-it perfect (or even good). There are plenty of libraries out there that provide
-basic data structures, which are many times better than mine. I&#8217;m doing this for
-the pleasure of doing it myself, not for the superiority of my implementations.</p>
-<p>If you&#8217;re still reading, you must be dead set on using libstephen. Here are the
-basic ideas of the library:</p>
+<p>Here are some basic ideas in the design of the library.</p>
 <ul>
 <li><p class="first">A single &#8220;generic&#8221; type, called <code class="docutils literal"><span class="pre">DATA</span></code>. This is an 8-byte union. It can
 contain a very big integer, or a pointer, or a double. You can access these
@@ -205,6 +185,32 @@ to make generators!</li>
 </ul>
 </li>
 </ul>
+<p><strong>Tutorial</strong></p>
+<p>So, now that you know a little bit about the ideas behind my library, how do you
+get it up and running in your project?  Well, there are quite a few ways, but
+the best way currently is to use a Git submodule.</p>
+<p>I&#8217;ll assume you already have a Git repository with some C code.  Then, to add in
+libstephen, you&#8217;ll want to do:</p>
+<p>This will add a <code class="docutils literal"><span class="pre">libstephen</span></code> directory to your project, and check out the
+current version of libstephen.  Next, you&#8217;ll want to add
+<code class="docutils literal"><span class="pre">libstephen/bin/release/libstephen.a</span></code> as a dependency for your main executable
+in your Makefile.  You&#8217;ll also want to create a rule that will build libstephen.
+Imagine you had an existing makefile that looked like this:</p>
+<div class="code Makefile highlight-c"><div class="highlight"><pre><span></span>bin/release/main: $(OBJECTS)
+    gcc -o bin/release/main $(OBJECTS)
+</pre></div>
+</div>
+<p>Then, you could add in libstephen to the build process as simply as this:</p>
+<div class="code Makefile highlight-c"><div class="highlight"><pre><span></span>libstephen/bin/release/libstephen.a:
+    make -C libstephen
+
+bin/release/main: $(OBJECTS) libstephen/bin/release/libstephen.a
+    gcc -o bin/release/main $(OBJECTS) libstephen/bin/release/libstephen.a
+</pre></div>
+</div>
+<p>The only other thing is you&#8217;ll want to make sure that <code class="docutils literal"><span class="pre">libstephen/inc</span></code> is in
+your include path.  This is as simple as providing that path in the <code class="docutils literal"><span class="pre">-I</span></code>
+option to GCC.</p>
 <p><strong>Miscellaneous</strong></p>
 <p>After having the <code class="docutils literal"><span class="pre">DATA</span></code> union around for so long, I&#8217;ve gotten tired of having
 to create a <code class="docutils literal"><span class="pre">DATA</span></code> on the stack, assign a value to it, and then send that to

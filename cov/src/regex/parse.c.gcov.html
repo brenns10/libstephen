@@ -31,18 +31,18 @@
             <td class="headerValue">coverage.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">183</td>
-            <td class="headerCovTableEntry">184</td>
-            <td class="headerCovTableEntryHi">99.5 %</td>
+            <td class="headerCovTableEntry">147</td>
+            <td class="headerCovTableEntry">168</td>
+            <td class="headerCovTableEntryMed">87.5 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2016-03-11 22:05:55</td>
+            <td class="headerValue">2016-03-12 20:37:58</td>
             <td></td>
             <td class="headerItem">Functions:</td>
-            <td class="headerCovTableEntry">9</td>
-            <td class="headerCovTableEntry">9</td>
-            <td class="headerCovTableEntryHi">100.0 %</td>
+            <td class="headerCovTableEntry">13</td>
+            <td class="headerCovTableEntry">15</td>
+            <td class="headerCovTableEntryMed">86.7 %</td>
           </tr>
           <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
         </table>
@@ -62,408 +62,311 @@
 <pre class="source">
 <a name="1"><span class="lineNum">       1 </span>            : /***************************************************************************//**</a>
 <span class="lineNum">       2 </span>            : 
-<span class="lineNum">       3 </span>            :   @file         regex/parse.c
+<span class="lineNum">       3 </span>            :   @file         parse.c
 <span class="lineNum">       4 </span>            : 
 <span class="lineNum">       5 </span>            :   @author       Stephen Brennan
 <span class="lineNum">       6 </span>            : 
-<span class="lineNum">       7 </span>            :   @date         Created Saturday, 26 July 2014
+<span class="lineNum">       7 </span>            :   @date         Created Saturday, 23 January 2016
 <span class="lineNum">       8 </span>            : 
-<span class="lineNum">       9 </span>            :   @brief        Regular expression parsing functions.
+<span class="lineNum">       9 </span>            :   @brief        Recursive descent regex parser!  (modeled after Wikipedia)
 <span class="lineNum">      10 </span>            : 
-<span class="lineNum">      11 </span>            :   @copyright    Copyright (c) 2015, Stephen Brennan.  Released under the Revised
-<span class="lineNum">      12 </span>            :                 BSD License.  See the LICENSE.txt file for details.
+<span class="lineNum">      11 </span>            :   @copyright    Copyright (c) 2016, Stephen Brennan.  Released under the Revised
+<span class="lineNum">      12 </span>            :                 BSD License.  See LICENSE.txt for details.
 <span class="lineNum">      13 </span>            : 
 <span class="lineNum">      14 </span>            : *******************************************************************************/
 <span class="lineNum">      15 </span>            : 
-<span class="lineNum">      16 </span>            : #include &lt;stdbool.h&gt;          // true, false
-<span class="lineNum">      17 </span>            : #include &lt;assert.h&gt;           // assert()
-<span class="lineNum">      18 </span>            : 
-<span class="lineNum">      19 </span>            : #include &quot;libstephen/regex.h&quot; // functions we're implementing
-<span class="lineNum">      20 </span>            : #include &quot;libstephen/fsm.h&quot;   // for fsm operations
-<span class="lineNum">      21 </span>            : #include &quot;libstephen/ll.h&quot;    // for linked lists
-<span class="lineNum">      22 </span>            : #include &quot;str.h&quot;              // for get_escape
-<span class="lineNum">      23 </span>            : 
-<span class="lineNum">      24 </span>            : /**
-<span class="lineNum">      25 </span>            :    @brief Adjust the FSM according to its modifier, if any.
-<span class="lineNum">      26 </span>            : 
-<span class="lineNum">      27 </span>            :    When a character, character class, or parenthesized regex is read in, it
-<span class="lineNum">      28 </span>            :    could be followed by the modifiers `*`, `+`, or `?`.  This function adjusts
-<span class="lineNum">      29 </span>            :    the FSM for those modifiers, and adjusts the location pointer if one was
-<span class="lineNum">      30 </span>            :    present.
+<span class="lineNum">      16 </span>            : #include &lt;stdio.h&gt;
+<span class="lineNum">      17 </span>            : #include &lt;stdbool.h&gt;
+<span class="lineNum">      18 </span>            : #include &lt;stdlib.h&gt;
+<span class="lineNum">      19 </span>            : 
+<span class="lineNum">      20 </span>            : #include &quot;libstephen/re.h&quot;
+<span class="lineNum">      21 </span>            : #include &quot;libstephen/re_internals.h&quot;
+<span class="lineNum">      22 </span>            : 
+<span class="lineNum">      23 </span>            : char *names[] = {
+<span class="lineNum">      24 </span>            :   &quot;CharSym&quot;, &quot;Special&quot;, &quot;Eof&quot;, &quot;LParen&quot;, &quot;RParen&quot;, &quot;LBracket&quot;, &quot;RBracket&quot;,
+<span class="lineNum">      25 </span>            :   &quot;Plus&quot;, &quot;Minus&quot;, &quot;Star&quot;, &quot;Question&quot;, &quot;Caret&quot;, &quot;Pipe&quot;, &quot;Dot&quot;
+<span class="lineNum">      26 </span>            : };
+<span class="lineNum">      27 </span>            : 
+<span class="lineNum">      28 </span>            : char *ntnames[] = {
+<span class="lineNum">      29 </span>            :   &quot;TERM&quot;, &quot;EXPR&quot;, &quot;REGEX&quot;, &quot;CLASS&quot;, &quot;SUB&quot;
+<span class="lineNum">      30 </span>            : };
 <span class="lineNum">      31 </span>            : 
-<span class="lineNum">      32 </span>            :    @param new The newly read in FSM.
-<a name="33"><span class="lineNum">      33 </span>            :    @param regex The pointer to the pointer to the location in the regex.</a>
-<span class="lineNum">      34 </span>            :  */
-<span class="lineNum">      35 </span><span class="lineCov">         64 : void regex_parse_check_modifier(fsm *new, const wchar_t **regex)</span>
-<span class="lineNum">      36 </span>            : {
-<span class="lineNum">      37 </span>            :   fsm *f;
-<span class="lineNum">      38 </span>            : 
-<span class="lineNum">      39 </span><span class="lineCov">         64 :   switch ((*regex)[1]) {</span>
-<span class="lineNum">      40 </span>            : 
-<span class="lineNum">      41 </span>            :   case L'*':
-<span class="lineNum">      42 </span><span class="lineCov">          1 :     fsm_kleene(new);</span>
-<span class="lineNum">      43 </span><span class="lineCov">          1 :     (*regex)++;</span>
-<span class="lineNum">      44 </span><span class="lineCov">          1 :     break;</span>
-<span class="lineNum">      45 </span>            : 
-<span class="lineNum">      46 </span>            :   case L'+':
-<span class="lineNum">      47 </span><span class="lineCov">         13 :     f = fsm_copy(new);</span>
-<span class="lineNum">      48 </span><span class="lineCov">         13 :     fsm_kleene(f);</span>
-<span class="lineNum">      49 </span><span class="lineCov">         13 :     fsm_concat(new, f);</span>
-<span class="lineNum">      50 </span><span class="lineCov">         13 :     fsm_delete(f, true);</span>
-<span class="lineNum">      51 </span><span class="lineCov">         13 :     (*regex)++;</span>
-<span class="lineNum">      52 </span><span class="lineCov">         13 :     break;</span>
+<span class="lineNum">      32 </span>            : /*
+<span class="lineNum">      33 </span>            :   Convenience functions for parse trees.
+<a name="34"><span class="lineNum">      34 </span>            :  */</a>
+<span class="lineNum">      35 </span>            : 
+<span class="lineNum">      36 </span><span class="lineCov">        147 : static PTree *terminal_tree(Token tok)</span>
+<span class="lineNum">      37 </span>            : {
+<span class="lineNum">      38 </span><span class="lineCov">        147 :   PTree *tree = calloc(1, sizeof(PTree));</span>
+<span class="lineNum">      39 </span><span class="lineCov">        147 :   tree-&gt;nchildren = 0;</span>
+<span class="lineNum">      40 </span><span class="lineCov">        147 :   tree-&gt;production = 0; // marks this as terminal</span>
+<span class="lineNum">      41 </span><span class="lineCov">        147 :   tree-&gt;tok = tok;</span>
+<span class="lineNum">      42 </span><span class="lineCov">        147 :   return tree;</span>
+<a name="43"><span class="lineNum">      43 </span>            : }</a>
+<span class="lineNum">      44 </span>            : 
+<span class="lineNum">      45 </span><span class="lineCov">        290 : static PTree *nonterminal_tree(NTSym nt, size_t nchildren)</span>
+<span class="lineNum">      46 </span>            : {
+<span class="lineNum">      47 </span><span class="lineCov">        290 :   PTree *tree = calloc(1, sizeof(PTree));</span>
+<span class="lineNum">      48 </span><span class="lineCov">        290 :   tree-&gt;nchildren = nchildren;</span>
+<span class="lineNum">      49 </span><span class="lineCov">        290 :   tree-&gt;production = 1; // update this on return.</span>
+<span class="lineNum">      50 </span><span class="lineCov">        290 :   tree-&gt;nt = nt;</span>
+<span class="lineNum">      51 </span><span class="lineCov">        290 :   return tree;</span>
+<a name="52"><span class="lineNum">      52 </span>            : }</a>
 <span class="lineNum">      53 </span>            : 
-<span class="lineNum">      54 </span>            :   case L'?':
-<span class="lineNum">      55 </span>            :     // Create the machine that accepts the empty string
-<span class="lineNum">      56 </span><span class="lineCov">          2 :     f = fsm_create();</span>
-<span class="lineNum">      57 </span><span class="lineCov">          2 :     f-&gt;start = fsm_add_state(f, true);</span>
-<span class="lineNum">      58 </span><span class="lineCov">          2 :     fsm_union(new, f);</span>
-<span class="lineNum">      59 </span><span class="lineCov">          2 :     fsm_delete(f, true);</span>
-<span class="lineNum">      60 </span><span class="lineCov">          2 :     (*regex)++;</span>
-<span class="lineNum">      61 </span><span class="lineCov">          2 :     break;</span>
-<span class="lineNum">      62 </span>            : 
-<span class="lineNum">      63 </span>            :   /* case L'{': */
-<span class="lineNum">      64 </span>            :   /*   // A  */
-<span class="lineNum">      65 </span>            :   /*   (*regex)++; */
-<span class="lineNum">      66 </span>            :   }
-<span class="lineNum">      67 </span><span class="lineCov">         64 : }</span>
-<span class="lineNum">      68 </span>            : 
-<span class="lineNum">      69 </span>            : /**
-<span class="lineNum">      70 </span>            :    @brief Return a FSM that accepts any whitespace.
-<a name="71"><span class="lineNum">      71 </span>            :    @param flags Positive or negative.</a>
-<span class="lineNum">      72 </span>            :  */
-<span class="lineNum">      73 </span><span class="lineCov">          2 : fsm *regex_parse_create_whitespace_fsm(unsigned int flags)</span>
-<span class="lineNum">      74 </span>            : {
-<span class="lineNum">      75 </span><span class="lineCov">          2 :   fsm *f = fsm_create();</span>
-<span class="lineNum">      76 </span><span class="lineCov">          2 :   int src = fsm_add_state(f, false);</span>
-<span class="lineNum">      77 </span><span class="lineCov">          2 :   int dest = fsm_add_state(f, true);</span>
-<span class="lineNum">      78 </span><span class="lineCov">          2 :   fsm_trans *ft = fsm_trans_create(6, flags, dest);</span>
-<span class="lineNum">      79 </span><span class="lineCov">          2 :   ft-&gt;start[0] = L' ';</span>
-<span class="lineNum">      80 </span><span class="lineCov">          2 :   ft-&gt;end[0] = L' ';</span>
-<span class="lineNum">      81 </span><span class="lineCov">          2 :   ft-&gt;start[1] = L'\f';</span>
-<span class="lineNum">      82 </span><span class="lineCov">          2 :   ft-&gt;end[1] = L'\f';</span>
-<span class="lineNum">      83 </span><span class="lineCov">          2 :   ft-&gt;start[2] = L'\n';</span>
-<span class="lineNum">      84 </span><span class="lineCov">          2 :   ft-&gt;end[2] = L'\n';</span>
-<span class="lineNum">      85 </span><span class="lineCov">          2 :   ft-&gt;start[3] = L'\r';</span>
-<span class="lineNum">      86 </span><span class="lineCov">          2 :   ft-&gt;end[3] = L'\r';</span>
-<span class="lineNum">      87 </span><span class="lineCov">          2 :   ft-&gt;start[4] = L'\t';</span>
-<span class="lineNum">      88 </span><span class="lineCov">          2 :   ft-&gt;end[4] = L'\t';</span>
-<span class="lineNum">      89 </span><span class="lineCov">          2 :   ft-&gt;start[5] = L'\v';</span>
-<span class="lineNum">      90 </span><span class="lineCov">          2 :   ft-&gt;end[5] = L'\v';</span>
-<span class="lineNum">      91 </span><span class="lineCov">          2 :   fsm_add_trans(f, src, ft);</span>
-<span class="lineNum">      92 </span><span class="lineCov">          2 :   f-&gt;start = src;</span>
-<span class="lineNum">      93 </span><span class="lineCov">          2 :   return f;</span>
-<span class="lineNum">      94 </span>            : }
-<span class="lineNum">      95 </span>            : 
-<span class="lineNum">      96 </span>            : /**
-<a name="97"><span class="lineNum">      97 </span>            :    @brief Return a FSM for word characters (letters, numbers, and underscore).</a>
-<span class="lineNum">      98 </span>            :  */
-<span class="lineNum">      99 </span><span class="lineCov">          4 : fsm *regex_parse_create_word_fsm(unsigned int flags)</span>
+<span class="lineNum">      54 </span><span class="lineCov">        384 : void free_tree(PTree *tree)</span>
+<span class="lineNum">      55 </span>            : {
+<span class="lineNum">      56 </span><span class="lineCov">        710 :   for (size_t i = 0; i &lt; tree-&gt;nchildren; i++) {</span>
+<span class="lineNum">      57 </span><span class="lineCov">        326 :     free_tree(tree-&gt;children[i]);</span>
+<span class="lineNum">      58 </span>            :   }
+<span class="lineNum">      59 </span><span class="lineCov">        384 :   free(tree);</span>
+<span class="lineNum">      60 </span><span class="lineCov">        384 : }</span>
+<span class="lineNum">      61 </span>            : 
+<span class="lineNum">      62 </span>            : /*
+<span class="lineNum">      63 </span>            :   Convenience printing functions.
+<a name="64"><span class="lineNum">      64 </span>            :  */</a>
+<span class="lineNum">      65 </span>            : 
+<span class="lineNum">      66 </span><span class="lineNoCov">          0 : static void print_indent(int indent)</span>
+<span class="lineNum">      67 </span>            : {
+<span class="lineNum">      68 </span><span class="lineNoCov">          0 :   printf(&quot;;; &quot;);</span>
+<span class="lineNum">      69 </span><span class="lineNoCov">          0 :   while (indent--) {</span>
+<span class="lineNum">      70 </span><span class="lineNoCov">          0 :     printf(&quot; &quot;);</span>
+<span class="lineNum">      71 </span>            :   }
+<a name="72"><span class="lineNum">      72 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">      73 </span>            : 
+<span class="lineNum">      74 </span><span class="lineNoCov">          0 : static void print_tree(PTree *tree, int indent)</span>
+<span class="lineNum">      75 </span>            : {
+<span class="lineNum">      76 </span><span class="lineNoCov">          0 :   print_indent(indent);</span>
+<span class="lineNum">      77 </span><span class="lineNoCov">          0 :   if (tree == NULL) {</span>
+<span class="lineNum">      78 </span><span class="lineNoCov">          0 :     printf(&quot;NULL\n&quot;);</span>
+<span class="lineNum">      79 </span><span class="lineNoCov">          0 :     return;</span>
+<span class="lineNum">      80 </span>            :   }
+<span class="lineNum">      81 </span>            : 
+<span class="lineNum">      82 </span><span class="lineNoCov">          0 :   if (tree-&gt;nchildren == 0) {</span>
+<span class="lineNum">      83 </span>            :     // terminal
+<span class="lineNum">      84 </span><span class="lineNoCov">          0 :     printf(&quot;%s:'%s'\n&quot;, names[tree-&gt;tok.sym], char_to_string(tree-&gt;tok.c));</span>
+<span class="lineNum">      85 </span>            :   } else {
+<span class="lineNum">      86 </span><span class="lineNoCov">          0 :     printf(&quot;%s {\n&quot;, ntnames[tree-&gt;nt]);</span>
+<span class="lineNum">      87 </span><span class="lineNoCov">          0 :     for (size_t i = 0; i &lt; tree-&gt;nchildren; i++) {</span>
+<span class="lineNum">      88 </span><span class="lineNoCov">          0 :       print_tree(tree-&gt;children[i], indent + 1);</span>
+<span class="lineNum">      89 </span>            :     }
+<span class="lineNum">      90 </span><span class="lineNoCov">          0 :     print_indent(indent);</span>
+<span class="lineNum">      91 </span><span class="lineNoCov">          0 :     printf(&quot;}\n&quot;);</span>
+<span class="lineNum">      92 </span>            :   }
+<span class="lineNum">      93 </span>            : }
+<span class="lineNum">      94 </span>            : 
+<span class="lineNum">      95 </span>            : /*
+<span class="lineNum">      96 </span>            :   Simple convenience functions for a parser.
+<a name="97"><span class="lineNum">      97 </span>            :  */</a>
+<span class="lineNum">      98 </span>            : 
+<span class="lineNum">      99 </span><span class="lineCov">        622 : bool accept(TSym s, Lexer *l)</span>
 <span class="lineNum">     100 </span>            : {
-<span class="lineNum">     101 </span><span class="lineCov">          4 :   fsm *f = fsm_create();</span>
-<span class="lineNum">     102 </span><span class="lineCov">          4 :   int src = fsm_add_state(f, false);</span>
-<span class="lineNum">     103 </span><span class="lineCov">          4 :   int dest = fsm_add_state(f, true);</span>
-<span class="lineNum">     104 </span><span class="lineCov">          4 :   fsm_trans *ft = fsm_trans_create(4, flags, dest);</span>
-<span class="lineNum">     105 </span><span class="lineCov">          4 :   ft-&gt;start[0] = L'a';</span>
-<span class="lineNum">     106 </span><span class="lineCov">          4 :   ft-&gt;end[0] = L'z';</span>
-<span class="lineNum">     107 </span><span class="lineCov">          4 :   ft-&gt;start[1] = L'A';</span>
-<span class="lineNum">     108 </span><span class="lineCov">          4 :   ft-&gt;end[1] = L'Z';</span>
-<span class="lineNum">     109 </span><span class="lineCov">          4 :   ft-&gt;start[2] = L'_';</span>
-<span class="lineNum">     110 </span><span class="lineCov">          4 :   ft-&gt;end[2] = L'_';</span>
-<span class="lineNum">     111 </span><span class="lineCov">          4 :   ft-&gt;start[3] = L'0';</span>
-<span class="lineNum">     112 </span><span class="lineCov">          4 :   ft-&gt;end[3] = L'9';</span>
-<span class="lineNum">     113 </span><span class="lineCov">          4 :   fsm_add_trans(f, src, ft);</span>
-<span class="lineNum">     114 </span><span class="lineCov">          4 :   f-&gt;start = src;</span>
-<span class="lineNum">     115 </span><span class="lineCov">          4 :   return f;</span>
-<span class="lineNum">     116 </span>            : }
+<span class="lineNum">     101 </span><span class="lineCov">        622 :   if (l-&gt;tok.sym == s) {</span>
+<span class="lineNum">     102 </span><span class="lineCov">        151 :     nextsym(l);</span>
+<span class="lineNum">     103 </span><span class="lineCov">        151 :     return true;</span>
+<span class="lineNum">     104 </span>            :   }
+<span class="lineNum">     105 </span><span class="lineCov">        471 :   return false;</span>
+<a name="106"><span class="lineNum">     106 </span>            : }</a>
+<span class="lineNum">     107 </span>            : 
+<span class="lineNum">     108 </span><span class="lineCov">         69 : void expect(TSym s, Lexer *l)</span>
+<span class="lineNum">     109 </span>            : {
+<span class="lineNum">     110 </span><span class="lineCov">         69 :   if (l-&gt;tok.sym == s) {</span>
+<span class="lineNum">     111 </span><span class="lineCov">         69 :     nextsym(l);</span>
+<span class="lineNum">     112 </span><span class="lineCov">         69 :     return;</span>
+<span class="lineNum">     113 </span>            :   }
+<span class="lineNum">     114 </span><span class="lineNoCov">          0 :   fprintf(stderr, &quot;error: expected %s, got %s\n&quot;, names[s], names[l-&gt;tok.sym]);</span>
+<span class="lineNum">     115 </span><span class="lineNoCov">          0 :   exit(1);</span>
+<a name="116"><span class="lineNum">     116 </span>            : }</a>
 <span class="lineNum">     117 </span>            : 
-<span class="lineNum">     118 </span>            : /**
-<a name="119"><span class="lineNum">     119 </span>            :    @brief Return a FSM for digits.</a>
-<span class="lineNum">     120 </span>            :  */
-<span class="lineNum">     121 </span><span class="lineCov">         14 : fsm *regex_parse_create_digit_fsm(unsigned int flags)</span>
-<span class="lineNum">     122 </span>            : {
-<span class="lineNum">     123 </span><span class="lineCov">         14 :   fsm *f = fsm_create();</span>
-<span class="lineNum">     124 </span><span class="lineCov">         14 :   int src = fsm_add_state(f, false);</span>
-<span class="lineNum">     125 </span><span class="lineCov">         14 :   int dest = fsm_add_state(f, true);</span>
-<span class="lineNum">     126 </span><span class="lineCov">         14 :   fsm_trans *ft = fsm_trans_create(1, flags, dest);</span>
-<span class="lineNum">     127 </span><span class="lineCov">         14 :   ft-&gt;start[0] = L'0';</span>
-<span class="lineNum">     128 </span><span class="lineCov">         14 :   ft-&gt;end[0] = L'9';</span>
-<span class="lineNum">     129 </span><span class="lineCov">         14 :   fsm_add_trans(f, src, ft);</span>
-<span class="lineNum">     130 </span><span class="lineCov">         14 :   f-&gt;start = src;</span>
-<span class="lineNum">     131 </span><span class="lineCov">         14 :   return f;</span>
-<span class="lineNum">     132 </span>            : }
-<span class="lineNum">     133 </span>            : 
-<span class="lineNum">     134 </span>            : /**
-<span class="lineNum">     135 </span>            :    @brief Create the 'dot' FSM, i.e. the FSM that accepts 'almost' anything.
-<span class="lineNum">     136 </span>            : 
-<span class="lineNum">     137 </span>            :    The dot should accept 'almost' anything.  The one thing that my dot character
-<span class="lineNum">     138 </span>            :    will never accept is L'\0' (the null terminator).  The dot should not match
-<span class="lineNum">     139 </span>            :    WEOF, but since wchar_t can't hold WEOF, I'm good there.  Generally, the dot
-<span class="lineNum">     140 </span>            :    is not supposed to match L'\n' either, so I will also add that, but
-<a name="141"><span class="lineNum">     141 </span>            :    optionally.</a>
-<span class="lineNum">     142 </span>            :  */
-<span class="lineNum">     143 </span><span class="lineCov">          1 : fsm *regex_parse_create_dot_fsm(bool newline_accepted)</span>
-<span class="lineNum">     144 </span>            : {
-<span class="lineNum">     145 </span>            :   fsm_trans *ft;
-<span class="lineNum">     146 </span><span class="lineCov">          1 :   fsm *f = fsm_create();</span>
-<span class="lineNum">     147 </span><span class="lineCov">          1 :   int src = fsm_add_state(f, false);</span>
-<span class="lineNum">     148 </span><span class="lineCov">          1 :   int dest = fsm_add_state(f, true); // accepting</span>
-<span class="lineNum">     149 </span><span class="lineCov">          1 :   f-&gt;start = src;</span>
-<span class="lineNum">     150 </span><span class="lineCov">          1 :   if (!newline_accepted) {</span>
-<span class="lineNum">     151 </span><span class="lineCov">          1 :     ft = fsm_trans_create(2, FSM_TRANS_NEGATIVE, dest);</span>
-<span class="lineNum">     152 </span><span class="lineCov">          1 :     ft-&gt;start[1] = L'\n';</span>
-<span class="lineNum">     153 </span><span class="lineCov">          1 :     ft-&gt;end[1] = L'\n';</span>
-<span class="lineNum">     154 </span>            :   } else {
-<span class="lineNum">     155 </span><span class="lineNoCov">          0 :     ft = fsm_trans_create(1, FSM_TRANS_NEGATIVE, dest);</span>
-<span class="lineNum">     156 </span>            :   }
+<span class="lineNum">     118 </span><span class="lineCov">         63 : PTree *TERM(Lexer *l)</span>
+<span class="lineNum">     119 </span>            : {
+<span class="lineNum">     120 </span><span class="lineCov">         76 :   if (accept(CharSym, l) || accept(Dot, l) || accept(Special, l) ||</span>
+<span class="lineNum">     121 </span><span class="lineCov">         25 :       accept(Caret, l) || accept(Minus, l)) {</span>
+<span class="lineNum">     122 </span><span class="lineCov">         52 :     PTree *result = nonterminal_tree(TERMnt, 1);</span>
+<span class="lineNum">     123 </span><span class="lineCov">         52 :     result-&gt;children[0] = terminal_tree(l-&gt;prev);</span>
+<span class="lineNum">     124 </span><span class="lineCov">         52 :     result-&gt;production = 1;</span>
+<span class="lineNum">     125 </span><span class="lineCov">         52 :     return result;</span>
+<span class="lineNum">     126 </span><span class="lineCov">         11 :   } else if (accept(LParen, l)) {</span>
+<span class="lineNum">     127 </span><span class="lineCov">          5 :     PTree *result = nonterminal_tree(TERMnt, 3);</span>
+<span class="lineNum">     128 </span><span class="lineCov">          5 :     result-&gt;children[0] = terminal_tree(l-&gt;prev);</span>
+<span class="lineNum">     129 </span><span class="lineCov">          5 :     result-&gt;children[1] = REGEX(l);</span>
+<span class="lineNum">     130 </span><span class="lineCov">          5 :     expect(RParen, l);</span>
+<span class="lineNum">     131 </span><span class="lineCov">          5 :     result-&gt;children[2] = terminal_tree(l-&gt;prev);</span>
+<span class="lineNum">     132 </span><span class="lineCov">          5 :     result-&gt;production = 2;</span>
+<span class="lineNum">     133 </span><span class="lineCov">          5 :     return result;</span>
+<span class="lineNum">     134 </span><span class="lineCov">          6 :   } else if (accept(LBracket, l)) {</span>
+<span class="lineNum">     135 </span>            :     PTree *result;
+<span class="lineNum">     136 </span><span class="lineCov">          6 :     if (accept(Caret, l)) {</span>
+<span class="lineNum">     137 </span><span class="lineCov">          3 :       result = nonterminal_tree(TERMnt, 3);</span>
+<span class="lineNum">     138 </span><span class="lineCov">          3 :       result-&gt;children[0] = terminal_tree((Token){LBracket, '['});</span>
+<span class="lineNum">     139 </span><span class="lineCov">          3 :       result-&gt;children[1] = CLASS(l);</span>
+<span class="lineNum">     140 </span><span class="lineCov">          3 :       expect(RBracket, l);</span>
+<span class="lineNum">     141 </span><span class="lineCov">          3 :       result-&gt;children[2] = terminal_tree(l-&gt;prev);</span>
+<span class="lineNum">     142 </span><span class="lineCov">          3 :       result-&gt;production = 4;</span>
+<span class="lineNum">     143 </span>            :     } else {
+<span class="lineNum">     144 </span><span class="lineCov">          3 :       result = nonterminal_tree(TERMnt, 3);</span>
+<span class="lineNum">     145 </span><span class="lineCov">          3 :       result-&gt;children[0] = terminal_tree((Token){LBracket, '['});</span>
+<span class="lineNum">     146 </span><span class="lineCov">          3 :       result-&gt;children[1] = CLASS(l);</span>
+<span class="lineNum">     147 </span><span class="lineCov">          3 :       expect(RBracket, l);</span>
+<span class="lineNum">     148 </span><span class="lineCov">          3 :       result-&gt;children[2] = terminal_tree(l-&gt;prev);</span>
+<span class="lineNum">     149 </span><span class="lineCov">          3 :       result-&gt;production = 3;</span>
+<span class="lineNum">     150 </span>            :     }
+<span class="lineNum">     151 </span><span class="lineCov">          6 :     return result;</span>
+<span class="lineNum">     152 </span>            :   } else {
+<span class="lineNum">     153 </span><span class="lineNoCov">          0 :     fprintf(stderr, &quot;error: TERM: syntax error\n&quot;);</span>
+<span class="lineNum">     154 </span><span class="lineNoCov">          0 :     exit(1);</span>
+<span class="lineNum">     155 </span>            :   }
+<a name="156"><span class="lineNum">     156 </span>            : }</a>
 <span class="lineNum">     157 </span>            : 
-<span class="lineNum">     158 </span>            :   // No matter what, we can't allow EPSILON transitions for a dot.
-<span class="lineNum">     159 </span><span class="lineCov">          1 :   ft-&gt;start[0] = EPSILON;</span>
-<span class="lineNum">     160 </span><span class="lineCov">          1 :   ft-&gt;start[0] = EPSILON;</span>
-<span class="lineNum">     161 </span>            : 
-<span class="lineNum">     162 </span><span class="lineCov">          1 :   fsm_add_trans(f, src, ft);</span>
-<span class="lineNum">     163 </span><span class="lineCov">          1 :   return f;</span>
-<span class="lineNum">     164 </span>            : }
-<span class="lineNum">     165 </span>            : 
-<span class="lineNum">     166 </span>            : /**
-<span class="lineNum">     167 </span>            :    @brief Returns an FSM for an escape sequence, outside of a character class.
-<span class="lineNum">     168 </span>            : 
-<span class="lineNum">     169 </span>            :    Basically, adds the `\W`, `\w`, `\D`, `\d`, `\S`, `\s` character classes to
-<span class="lineNum">     170 </span>            :    the already existing character escape sequences covered by get_escape().
-<span class="lineNum">     171 </span>            : 
-<span class="lineNum">     172 </span>            :    Expects that `*regex` points to the backslash in the escape sequence.  Always
-<span class="lineNum">     173 </span>            :    returns such that `*regex` points to the LAST character in the escape
-<span class="lineNum">     174 </span>            :    sequence.
-<span class="lineNum">     175 </span>            : 
-<span class="lineNum">     176 </span>            :    @param regex Pointer to the pointer to the backslash escape.
-<a name="177"><span class="lineNum">     177 </span>            :    @return FSM to accept the backslash escape sequence.</a>
-<span class="lineNum">     178 </span>            :  */
-<span class="lineNum">     179 </span><span class="lineCov">         23 : fsm *regex_parse_outer_escape(const wchar_t **regex)</span>
-<span class="lineNum">     180 </span>            : {
-<span class="lineNum">     181 </span>            :   char c;
-<span class="lineNum">     182 </span>            : 
-<span class="lineNum">     183 </span><span class="lineCov">         23 :   (*regex)++; // advance to the specifier</span>
-<span class="lineNum">     184 </span><span class="lineCov">         23 :   switch (**regex) {</span>
-<span class="lineNum">     185 </span>            :   case L's':
-<span class="lineNum">     186 </span><span class="lineCov">          1 :     return regex_parse_create_whitespace_fsm(0);</span>
-<span class="lineNum">     187 </span>            :   case L'S':
-<span class="lineNum">     188 </span><span class="lineCov">          1 :     return regex_parse_create_whitespace_fsm(FSM_TRANS_NEGATIVE);</span>
-<span class="lineNum">     189 </span>            :   case L'w':
-<span class="lineNum">     190 </span><span class="lineCov">          3 :     return regex_parse_create_word_fsm(0);</span>
-<span class="lineNum">     191 </span>            :   case L'W':
-<span class="lineNum">     192 </span><span class="lineCov">          1 :     return regex_parse_create_word_fsm(FSM_TRANS_NEGATIVE);</span>
-<span class="lineNum">     193 </span>            :   case L'd':
-<span class="lineNum">     194 </span><span class="lineCov">         13 :     return regex_parse_create_digit_fsm(0);</span>
-<span class="lineNum">     195 </span>            :   case L'D':
-<span class="lineNum">     196 </span><span class="lineCov">          1 :     return regex_parse_create_digit_fsm(FSM_TRANS_NEGATIVE);</span>
-<span class="lineNum">     197 </span>            :   default:
-<span class="lineNum">     198 </span><span class="lineCov">          3 :     c = get_escape(regex);</span>
-<span class="lineNum">     199 </span>            :     // get_escape() leaves the pointer AFTER the last character in the escape.
-<span class="lineNum">     200 </span>            :     // We want it ON the last one.
-<span class="lineNum">     201 </span><span class="lineCov">          3 :     (*regex)--;</span>
-<span class="lineNum">     202 </span><span class="lineCov">          3 :     return fsm_create_single_char(c);</span>
+<span class="lineNum">     158 </span><span class="lineCov">         55 : PTree *EXPR(Lexer *l)</span>
+<span class="lineNum">     159 </span>            : {
+<span class="lineNum">     160 </span><span class="lineCov">         55 :   PTree *result = nonterminal_tree(EXPRnt, 1);</span>
+<span class="lineNum">     161 </span><span class="lineCov">         55 :   result-&gt;children[0] = TERM(l);</span>
+<span class="lineNum">     162 </span><span class="lineCov">         55 :   if (accept(Plus, l) || accept(Star, l) || accept(Question, l)) {</span>
+<span class="lineNum">     163 </span><span class="lineCov">         24 :     result-&gt;nchildren++;</span>
+<span class="lineNum">     164 </span><span class="lineCov">         24 :     result-&gt;children[1] = terminal_tree(l-&gt;prev);</span>
+<span class="lineNum">     165 </span><span class="lineCov">         24 :     if (accept(Question, l)) {</span>
+<span class="lineNum">     166 </span><span class="lineCov">          6 :       result-&gt;nchildren++;</span>
+<span class="lineNum">     167 </span><span class="lineCov">          6 :       result-&gt;children[2] = terminal_tree((Token){Question, '?'});</span>
+<span class="lineNum">     168 </span>            :     }
+<span class="lineNum">     169 </span>            :   }
+<span class="lineNum">     170 </span><span class="lineCov">         55 :   return result;</span>
+<a name="171"><span class="lineNum">     171 </span>            : }</a>
+<span class="lineNum">     172 </span>            : 
+<span class="lineNum">     173 </span><span class="lineCov">         41 : PTree *SUB(Lexer *l)</span>
+<span class="lineNum">     174 </span>            : {
+<span class="lineNum">     175 </span><span class="lineCov">         41 :   PTree *result = nonterminal_tree(SUBnt, 1);</span>
+<span class="lineNum">     176 </span><span class="lineCov">         41 :   PTree *orig = result, *prev = result;</span>
+<span class="lineNum">     177 </span>            : 
+<span class="lineNum">     178 </span><span class="lineCov">        130 :   while (l-&gt;tok.sym != Eof &amp;&amp; l-&gt;tok.sym != RParen &amp;&amp; l-&gt;tok.sym != Pipe) { // seems like a bit of a hack</span>
+<span class="lineNum">     179 </span><span class="lineCov">         48 :     result-&gt;children[0] = EXPR(l);</span>
+<span class="lineNum">     180 </span><span class="lineCov">         48 :     result-&gt;children[1] = nonterminal_tree(SUBnt, 0);</span>
+<span class="lineNum">     181 </span><span class="lineCov">         48 :     result-&gt;nchildren = 2;</span>
+<span class="lineNum">     182 </span><span class="lineCov">         48 :     prev = result;</span>
+<span class="lineNum">     183 </span><span class="lineCov">         48 :     result = result-&gt;children[1];</span>
+<span class="lineNum">     184 </span>            :   }
+<span class="lineNum">     185 </span>            : 
+<span class="lineNum">     186 </span>            :   // This prevents SUB nonterminals with no children in the final parse tree.
+<span class="lineNum">     187 </span><span class="lineCov">         41 :   if (prev != result) {</span>
+<span class="lineNum">     188 </span><span class="lineCov">         41 :     prev-&gt;nchildren = 1;</span>
+<span class="lineNum">     189 </span><span class="lineCov">         41 :     free(result);</span>
+<span class="lineNum">     190 </span>            :   }
+<span class="lineNum">     191 </span><span class="lineCov">         41 :   return orig;</span>
+<a name="192"><span class="lineNum">     192 </span>            : }</a>
+<span class="lineNum">     193 </span>            : 
+<span class="lineNum">     194 </span><span class="lineCov">         39 : PTree *REGEX(Lexer *l)</span>
+<span class="lineNum">     195 </span>            : {
+<span class="lineNum">     196 </span><span class="lineCov">         39 :   PTree *result = nonterminal_tree(REGEXnt, 1);</span>
+<span class="lineNum">     197 </span><span class="lineCov">         39 :   result-&gt;children[0] = SUB(l);</span>
+<span class="lineNum">     198 </span>            : 
+<span class="lineNum">     199 </span><span class="lineCov">         39 :   if (accept(Pipe, l)) {</span>
+<span class="lineNum">     200 </span><span class="lineCov">          3 :     result-&gt;nchildren = 3;</span>
+<span class="lineNum">     201 </span><span class="lineCov">          3 :     result-&gt;children[1] = terminal_tree(l-&gt;prev);</span>
+<span class="lineNum">     202 </span><span class="lineCov">          3 :     result-&gt;children[2] = REGEX(l);</span>
 <span class="lineNum">     203 </span>            :   }
-<span class="lineNum">     204 </span>            : }
-<span class="lineNum">     205 </span>            : 
-<span class="lineNum">     206 </span>            : /**
-<span class="lineNum">     207 </span>            :    @brief State for parsing character classes when not part of a range.
-<span class="lineNum">     208 </span>            : */
-<span class="lineNum">     209 </span>            : #define NORMAL 0
-<span class="lineNum">     210 </span>            : 
-<span class="lineNum">     211 </span>            : /**
-<span class="lineNum">     212 </span>            :    @brief State for parsing character classes when part of a range.
-<span class="lineNum">     213 </span>            : */
-<span class="lineNum">     214 </span>            : #define RANGE 1
-<span class="lineNum">     215 </span>            : 
-<span class="lineNum">     216 </span>            : /**
-<span class="lineNum">     217 </span>            :    @brief Create a FSM for a character class.
+<span class="lineNum">     204 </span><span class="lineCov">         39 :   return result;</span>
+<a name="205"><span class="lineNum">     205 </span>            : }</a>
+<span class="lineNum">     206 </span>            : 
+<span class="lineNum">     207 </span><span class="lineCov">         56 : bool CCHAR(Lexer *l)</span>
+<span class="lineNum">     208 </span>            : {
+<span class="lineNum">     209 </span><span class="lineCov">         56 :   TSym acceptable[] = {CharSym, Dot, LParen, RParen, Plus, Star, Question, Pipe};</span>
+<span class="lineNum">     210 </span><span class="lineCov">        244 :   for (size_t i = 0; i &lt; nelem(acceptable); i++) {</span>
+<span class="lineNum">     211 </span><span class="lineCov">        224 :     if (accept(acceptable[i], l)) {</span>
+<span class="lineNum">     212 </span><span class="lineCov">         36 :       l-&gt;prev.sym = CharSym;</span>
+<span class="lineNum">     213 </span><span class="lineCov">         36 :       return true;</span>
+<span class="lineNum">     214 </span>            :     }
+<span class="lineNum">     215 </span>            :   }
+<span class="lineNum">     216 </span><span class="lineCov">         20 :   return false;</span>
+<a name="217"><span class="lineNum">     217 </span>            : }</a>
 <span class="lineNum">     218 </span>            : 
-<span class="lineNum">     219 </span>            :    Reads a character class (pointed by `*regex`), which it then converts to a
-<span class="lineNum">     220 </span>            :    single transition FSM.
-<span class="lineNum">     221 </span>            : 
-<span class="lineNum">     222 </span>            :    @param regex Pointer to pointer to location in string!
-<a name="223"><span class="lineNum">     223 </span>            :    @returns FSM for character class.</a>
-<span class="lineNum">     224 </span>            :  */
-<span class="lineNum">     225 </span><span class="lineCov">          6 : fsm *regex_parse_char_class(const wchar_t **regex)</span>
-<span class="lineNum">     226 </span>            : {
-<span class="lineNum">     227 </span>            :   smb_ll start, end;
-<span class="lineNum">     228 </span><span class="lineCov">          6 :   smb_status status = SMB_SUCCESS;</span>
-<span class="lineNum">     229 </span>            :   DATA d;
-<span class="lineNum">     230 </span><span class="lineCov">          6 :   unsigned int flags = 0, state = NORMAL;</span>
-<span class="lineNum">     231 </span>            :   smb_iter iter;
-<span class="lineNum">     232 </span>            :   fsm *f;
-<span class="lineNum">     233 </span>            :   int src, dest;
-<span class="lineNum">     234 </span>            :   fsm_trans *ft;
-<span class="lineNum">     235 </span>            : 
-<span class="lineNum">     236 </span><span class="lineCov">          6 :   ll_init(&amp;start);</span>
-<span class="lineNum">     237 </span><span class="lineCov">          6 :   ll_init(&amp;end);</span>
-<span class="lineNum">     238 </span>            : 
-<span class="lineNum">     239 </span>            :   // Detect whether the character class is positive or negative
-<span class="lineNum">     240 </span><span class="lineCov">          6 :   (*regex)++;</span>
-<span class="lineNum">     241 </span><span class="lineCov">          6 :   if (**regex == L'^') {</span>
-<span class="lineNum">     242 </span><span class="lineCov">          4 :     flags = FSM_TRANS_NEGATIVE;</span>
-<span class="lineNum">     243 </span><span class="lineCov">          4 :     (*regex)++;</span>
-<span class="lineNum">     244 </span>            :   }
-<span class="lineNum">     245 </span>            : 
-<span class="lineNum">     246 </span>            :   // Loop through characters in the character class, recording each start-end
-<span class="lineNum">     247 </span>            :   // pair for the transition.
-<span class="lineNum">     248 </span><span class="lineCov">         24 :   for ( ; **regex != L']'; (*regex)++) {</span>
-<span class="lineNum">     249 </span><span class="lineCov">         18 :     if (**regex == L'-') {</span>
-<span class="lineNum">     250 </span><span class="lineCov">          4 :       state = RANGE;</span>
-<span class="lineNum">     251 </span>            :     } else {
-<span class="lineNum">     252 </span>            :       // Get the correct character
-<span class="lineNum">     253 </span><span class="lineCov">         14 :       if (**regex == L'\\') {</span>
-<span class="lineNum">     254 </span><span class="lineCov">          1 :         (*regex)++;</span>
-<span class="lineNum">     255 </span><span class="lineCov">          1 :         d.data_llint = get_escape(regex);</span>
-<span class="lineNum">     256 </span><span class="lineCov">          1 :         (*regex)--;</span>
-<span class="lineNum">     257 </span>            :       } else {
-<span class="lineNum">     258 </span><span class="lineCov">         13 :         d.data_llint = **regex;</span>
-<span class="lineNum">     259 </span>            :       }
-<span class="lineNum">     260 </span>            :       // Put it in the correct place
-<span class="lineNum">     261 </span><span class="lineCov">         14 :       if (state == NORMAL) {</span>
-<span class="lineNum">     262 </span><span class="lineCov">         11 :         ll_append(&amp;start, d);</span>
-<span class="lineNum">     263 </span><span class="lineCov">         11 :         ll_append(&amp;end, d);</span>
-<span class="lineNum">     264 </span>            :       } else {
-<span class="lineNum">     265 </span>            :         // Modify the last transition if this is a range
-<span class="lineNum">     266 </span><span class="lineCov">          3 :         ll_set(&amp;end, ll_length(&amp;end)-1, d, &amp;status);</span>
-<span class="lineNum">     267 </span><span class="lineCov">          3 :         state = NORMAL;</span>
-<span class="lineNum">     268 </span>            :       }
+<span class="lineNum">     219 </span><span class="lineCov">         16 : PTree *CLASS(Lexer *l)</span>
+<span class="lineNum">     220 </span>            : {
+<span class="lineNum">     221 </span><span class="lineCov">         16 :   PTree *result = nonterminal_tree(CLASSnt, 0), *curr, *prev;</span>
+<span class="lineNum">     222 </span>            :   Token t1, t2, t3;
+<span class="lineNum">     223 </span><span class="lineCov">         16 :   curr = result;</span>
+<span class="lineNum">     224 </span>            : 
+<span class="lineNum">     225 </span>            :   while (true) {
+<span class="lineNum">     226 </span><span class="lineCov">         44 :     if (CCHAR(l)) {</span>
+<span class="lineNum">     227 </span><span class="lineCov">         28 :       prev = curr;</span>
+<span class="lineNum">     228 </span><span class="lineCov">         28 :       t1 = l-&gt;prev;</span>
+<span class="lineNum">     229 </span><span class="lineCov">         28 :       if (accept(Minus, l)) {</span>
+<span class="lineNum">     230 </span><span class="lineCov">         12 :         t2 = l-&gt;prev;</span>
+<span class="lineNum">     231 </span><span class="lineCov">         12 :         if (CCHAR(l)) {</span>
+<span class="lineNum">     232 </span><span class="lineCov">          8 :           t3 = l-&gt;prev;</span>
+<span class="lineNum">     233 </span>            :           // We have ourselves a range!  Parse it.
+<span class="lineNum">     234 </span><span class="lineCov">          8 :           curr-&gt;children[0] = terminal_tree(t1);</span>
+<span class="lineNum">     235 </span><span class="lineCov">          8 :           curr-&gt;children[1] = terminal_tree(t3);</span>
+<span class="lineNum">     236 </span><span class="lineCov">          8 :           curr-&gt;children[2] = nonterminal_tree(CLASSnt, 0);</span>
+<span class="lineNum">     237 </span><span class="lineCov">          8 :           curr-&gt;nchildren = 3;</span>
+<span class="lineNum">     238 </span><span class="lineCov">          8 :           curr-&gt;production = 1;</span>
+<span class="lineNum">     239 </span><span class="lineCov">          8 :           curr = curr-&gt;children[2];</span>
+<span class="lineNum">     240 </span>            :         } else {
+<span class="lineNum">     241 </span>            :           // character followed by minus, but not range.
+<span class="lineNum">     242 </span><span class="lineCov">          4 :           unget(t2, l);</span>
+<span class="lineNum">     243 </span><span class="lineCov">          4 :           curr-&gt;children[0] = terminal_tree(t1);</span>
+<span class="lineNum">     244 </span><span class="lineCov">          4 :           curr-&gt;children[1] = nonterminal_tree(CLASSnt, 0);</span>
+<span class="lineNum">     245 </span><span class="lineCov">          4 :           curr-&gt;nchildren = 2;</span>
+<span class="lineNum">     246 </span><span class="lineCov">          4 :           curr-&gt;production = 3;</span>
+<span class="lineNum">     247 </span><span class="lineCov">          4 :           curr = curr-&gt;children[1];</span>
+<span class="lineNum">     248 </span>            :         }
+<span class="lineNum">     249 </span>            :       } else {
+<span class="lineNum">     250 </span>            :         // just a character
+<span class="lineNum">     251 </span><span class="lineCov">         16 :         curr-&gt;children[0] = terminal_tree(t1);</span>
+<span class="lineNum">     252 </span><span class="lineCov">         16 :         curr-&gt;children[1] = nonterminal_tree(CLASSnt, 0);</span>
+<span class="lineNum">     253 </span><span class="lineCov">         16 :         curr-&gt;nchildren = 2;</span>
+<span class="lineNum">     254 </span><span class="lineCov">         16 :         curr-&gt;production = 3;</span>
+<span class="lineNum">     255 </span><span class="lineCov">         16 :         curr = curr-&gt;children[1];</span>
+<span class="lineNum">     256 </span>            :       }
+<span class="lineNum">     257 </span><span class="lineCov">         16 :     } else if (accept(Minus, l)) {</span>
+<span class="lineNum">     258 </span>            :       // just a minus
+<span class="lineNum">     259 </span><span class="lineCov">          4 :       prev = curr;</span>
+<span class="lineNum">     260 </span><span class="lineCov">          4 :       curr-&gt;children[0] = terminal_tree(l-&gt;prev);</span>
+<span class="lineNum">     261 </span><span class="lineCov">          4 :       curr-&gt;nchildren = 1;</span>
+<span class="lineNum">     262 </span><span class="lineCov">          4 :       curr-&gt;production = 5;</span>
+<span class="lineNum">     263 </span><span class="lineCov">          4 :       break;</span>
+<span class="lineNum">     264 </span>            :     } else {
+<span class="lineNum">     265 </span><span class="lineCov">         12 :       free(curr);</span>
+<span class="lineNum">     266 </span><span class="lineCov">         12 :       prev-&gt;nchildren--;</span>
+<span class="lineNum">     267 </span><span class="lineCov">         12 :       prev-&gt;production++;</span>
+<span class="lineNum">     268 </span><span class="lineCov">         12 :       break;</span>
 <span class="lineNum">     269 </span>            :     }
-<span class="lineNum">     270 </span>            :   }
-<span class="lineNum">     271 </span>            : 
-<span class="lineNum">     272 </span><span class="lineCov">          6 :   if (state == RANGE) {</span>
-<span class="lineNum">     273 </span>            :     // The last hyphen was meant to be literal.  Yay!
-<span class="lineNum">     274 </span><span class="lineCov">          1 :     d.data_llint = L'-';</span>
-<span class="lineNum">     275 </span><span class="lineCov">          1 :     ll_append(&amp;start, d);</span>
-<span class="lineNum">     276 </span><span class="lineCov">          1 :     ll_append(&amp;end, d);</span>
-<span class="lineNum">     277 </span>            :   }
-<span class="lineNum">     278 </span>            : 
-<span class="lineNum">     279 </span>            :   // Now, create an fsm and fsm_trans, and write the recorded pairs into the
-<span class="lineNum">     280 </span>            :   // allocated start and end buffers.
-<span class="lineNum">     281 </span><span class="lineCov">          6 :   f = fsm_create();</span>
-<span class="lineNum">     282 </span><span class="lineCov">          6 :   src = fsm_add_state(f, false);</span>
-<span class="lineNum">     283 </span><span class="lineCov">          6 :   dest = fsm_add_state(f, true);</span>
-<span class="lineNum">     284 </span><span class="lineCov">          6 :   f-&gt;start = src;</span>
-<span class="lineNum">     285 </span><span class="lineCov">          6 :   ft = fsm_trans_create(ll_length(&amp;start) + (FLAG_CHECK(flags, FSM_TRANS_NEGATIVE) ? 1 : 0),</span>
-<span class="lineNum">     286 </span>            :                         flags, dest);
-<span class="lineNum">     287 </span>            : 
-<span class="lineNum">     288 </span><span class="lineCov">          6 :   iter = ll_get_iter(&amp;start);</span>
-<span class="lineNum">     289 </span><span class="lineCov">         24 :   while (iter.has_next(&amp;iter)) {</span>
-<span class="lineNum">     290 </span><span class="lineCov">         12 :     d = iter.next(&amp;iter, &amp;status);</span>
-<span class="lineNum">     291 </span><span class="lineCov">         12 :     assert(status == SMB_SUCCESS);</span>
-<span class="lineNum">     292 </span><span class="lineCov">         12 :     ft-&gt;start[iter.index-1] = (wchar_t) d.data_llint;</span>
-<span class="lineNum">     293 </span>            :   }
-<span class="lineNum">     294 </span><span class="lineCov">          6 :   iter = ll_get_iter(&amp;end);</span>
-<span class="lineNum">     295 </span><span class="lineCov">         24 :   while (iter.has_next(&amp;iter)) {</span>
-<span class="lineNum">     296 </span><span class="lineCov">         12 :     d = iter.next(&amp;iter, &amp;status);</span>
-<span class="lineNum">     297 </span><span class="lineCov">         12 :     assert(status == SMB_SUCCESS);</span>
-<span class="lineNum">     298 </span><span class="lineCov">         12 :     ft-&gt;end[iter.index-1] = (wchar_t) d.data_llint;</span>
-<span class="lineNum">     299 </span>            :   }
-<span class="lineNum">     300 </span><span class="lineCov">          6 :   if (FLAG_CHECK(flags, FSM_TRANS_NEGATIVE)) {</span>
-<span class="lineNum">     301 </span>            :     // We cannot allow epsilon to be matched in an actual character class.
-<span class="lineNum">     302 </span><span class="lineCov">          4 :     ft-&gt;start[ll_length(&amp;start)] = EPSILON;</span>
-<span class="lineNum">     303 </span><span class="lineCov">          4 :     ft-&gt;end[ll_length(&amp;start)] = EPSILON;</span>
-<span class="lineNum">     304 </span>            :   }
-<span class="lineNum">     305 </span>            : 
-<span class="lineNum">     306 </span><span class="lineCov">          6 :   fsm_add_trans(f, src, ft);</span>
-<span class="lineNum">     307 </span>            : 
-<span class="lineNum">     308 </span><span class="lineCov">          6 :   ll_destroy(&amp;start);</span>
-<span class="lineNum">     309 </span><span class="lineCov">          6 :   ll_destroy(&amp;end);</span>
-<span class="lineNum">     310 </span><span class="lineCov">          6 :   return f;</span>
-<span class="lineNum">     311 </span>            : }
-<span class="lineNum">     312 </span>            : 
-<span class="lineNum">     313 </span>            : /**
-<span class="lineNum">     314 </span>            :    @brief The workhorse recursive helper to regex_parse().
-<span class="lineNum">     315 </span>            : 
-<span class="lineNum">     316 </span>            :    Crawls through a regex, holding a FSM of the expression so far.  Single
-<span class="lineNum">     317 </span>            :    characters are concatenated as simple 0 -&gt; 1 machines.  Parenthesis initiate
-<span class="lineNum">     318 </span>            :    a recursive call.  Pipes union the current regex with everything after.
-<span class="lineNum">     319 </span>            : 
-<span class="lineNum">     320 </span>            :    Needs to be called with a non-NULL value for both, which is why there is a
-<span class="lineNum">     321 </span>            :    top level function.
-<span class="lineNum">     322 </span>            : 
-<span class="lineNum">     323 </span>            :    @param regex Local pointer to the location in the regular expression.
-<span class="lineNum">     324 </span>            :    @param final Pointer to the parent's location.
-<a name="325"><span class="lineNum">     325 </span>            :    @return An FSM for the regular expression.</a>
-<span class="lineNum">     326 </span>            :  */
-<span class="lineNum">     327 </span><span class="lineCov">         32 : fsm *regex_parse_recursive(const wchar_t *regex, const wchar_t **final)</span>
-<span class="lineNum">     328 </span>            : {
-<span class="lineNum">     329 </span>            :   // Initial FSM is a machine that accepts the empty string.
-<span class="lineNum">     330 </span><span class="lineCov">         32 :   fsm *curr = fsm_create();</span>
-<span class="lineNum">     331 </span>            :   fsm *new;
-<span class="lineNum">     332 </span>            :   bool capture;
-<span class="lineNum">     333 </span><span class="lineCov">         32 :   curr-&gt;start = fsm_add_state(curr, true);</span>
-<span class="lineNum">     334 </span>            : 
-<span class="lineNum">     335 </span>            :   // ASSUME THAT ALL PARENS, ETC ARE BALANCED!
-<span class="lineNum">     336 </span>            : 
-<span class="lineNum">     337 </span><span class="lineCov">         96 :   for ( ; *regex; regex++) {</span>
-<span class="lineNum">     338 </span><span class="lineCov">         71 :     switch (*regex) {</span>
-<span class="lineNum">     339 </span>            : 
-<span class="lineNum">     340 </span>            :     case L'(':
-<span class="lineNum">     341 </span><span class="lineCov">          4 :       capture = regex[1] == L'?';</span>
-<span class="lineNum">     342 </span><span class="lineCov">          4 :       if (capture)</span>
-<span class="lineNum">     343 </span><span class="lineCov">          2 :         new = regex_parse_recursive(regex + 2, &amp;regex);</span>
-<span class="lineNum">     344 </span>            :       else
-<span class="lineNum">     345 </span><span class="lineCov">          2 :         new = regex_parse_recursive(regex + 1, &amp;regex);</span>
-<span class="lineNum">     346 </span><span class="lineCov">          4 :       regex_parse_check_modifier(new, &amp;regex);</span>
-<span class="lineNum">     347 </span><span class="lineCov">          4 :       if (capture)</span>
-<span class="lineNum">     348 </span><span class="lineCov">          2 :         fsm_concat_capture(curr, new);</span>
-<span class="lineNum">     349 </span>            :       else
-<span class="lineNum">     350 </span><span class="lineCov">          2 :         fsm_concat(curr, new);</span>
-<span class="lineNum">     351 </span><span class="lineCov">          4 :       fsm_delete(new, true);</span>
-<span class="lineNum">     352 </span><span class="lineCov">          4 :       break;</span>
-<span class="lineNum">     353 </span>            : 
-<span class="lineNum">     354 </span>            :     case L')':
-<span class="lineNum">     355 </span><span class="lineCov">          4 :       *final = regex;</span>
-<span class="lineNum">     356 </span><span class="lineCov">          4 :       return curr;</span>
-<span class="lineNum">     357 </span>            :       break;
-<span class="lineNum">     358 </span>            : 
-<span class="lineNum">     359 </span>            :     case L'|':
-<span class="lineNum">     360 </span>            :       // Need to pass control back up without attempting to check modifiers.
-<span class="lineNum">     361 </span><span class="lineCov">          3 :       new = regex_parse_recursive(regex + 1, &amp;regex);</span>
-<span class="lineNum">     362 </span><span class="lineCov">          3 :       fsm_union(curr, new);</span>
-<span class="lineNum">     363 </span><span class="lineCov">          3 :       fsm_delete(new, true);</span>
-<span class="lineNum">     364 </span><span class="lineCov">          3 :       *final = regex;</span>
-<span class="lineNum">     365 </span><span class="lineCov">          3 :       return curr;</span>
-<span class="lineNum">     366 </span>            :       break;
-<span class="lineNum">     367 </span>            : 
-<span class="lineNum">     368 </span>            :     case L'[':
-<span class="lineNum">     369 </span><span class="lineCov">          6 :       new = regex_parse_char_class(&amp;regex);</span>
-<span class="lineNum">     370 </span><span class="lineCov">          6 :       regex_parse_check_modifier(new, &amp;regex);</span>
-<span class="lineNum">     371 </span><span class="lineCov">          6 :       fsm_concat(curr, new);</span>
-<span class="lineNum">     372 </span><span class="lineCov">          6 :       fsm_delete(new, true);</span>
-<span class="lineNum">     373 </span><span class="lineCov">          6 :       break;</span>
-<span class="lineNum">     374 </span>            : 
-<span class="lineNum">     375 </span>            :     case L'\\':
-<span class="lineNum">     376 </span><span class="lineCov">         23 :       new = regex_parse_outer_escape(&amp;regex);</span>
-<span class="lineNum">     377 </span><span class="lineCov">         23 :       regex_parse_check_modifier(new, &amp;regex);</span>
-<span class="lineNum">     378 </span><span class="lineCov">         23 :       fsm_concat(curr, new);</span>
-<span class="lineNum">     379 </span><span class="lineCov">         23 :       fsm_delete(new, true);</span>
-<span class="lineNum">     380 </span><span class="lineCov">         23 :       break;</span>
-<span class="lineNum">     381 </span>            : 
-<span class="lineNum">     382 </span>            :     case L'.':
-<span class="lineNum">     383 </span><span class="lineCov">          1 :       new = regex_parse_create_dot_fsm(false);</span>
-<span class="lineNum">     384 </span><span class="lineCov">          1 :       regex_parse_check_modifier(new, &amp;regex);</span>
-<span class="lineNum">     385 </span><span class="lineCov">          1 :       fsm_concat(curr, new);</span>
-<span class="lineNum">     386 </span><span class="lineCov">          1 :       fsm_delete(new, true);</span>
-<span class="lineNum">     387 </span><span class="lineCov">          1 :       break;</span>
-<span class="lineNum">     388 </span>            : 
-<span class="lineNum">     389 </span>            :     default:
-<span class="lineNum">     390 </span>            :       // A regular letter
-<span class="lineNum">     391 </span><span class="lineCov">         30 :       new = fsm_create_single_char(*regex);</span>
-<span class="lineNum">     392 </span><span class="lineCov">         30 :       regex_parse_check_modifier(new, &amp;regex);</span>
-<span class="lineNum">     393 </span><span class="lineCov">         30 :       fsm_concat(curr, new);</span>
-<span class="lineNum">     394 </span><span class="lineCov">         30 :       fsm_delete(new, true);</span>
-<span class="lineNum">     395 </span><span class="lineCov">         30 :       break;</span>
-<span class="lineNum">     396 </span>            :     }
-<span class="lineNum">     397 </span>            :   }
-<span class="lineNum">     398 </span><span class="lineCov">         25 :   *final = regex;</span>
-<span class="lineNum">     399 </span><span class="lineCov">         25 :   return curr;</span>
-<a name="400"><span class="lineNum">     400 </span>            : }</a>
-<span class="lineNum">     401 </span>            : 
-<span class="lineNum">     402 </span><span class="lineCov">         25 : fsm *regex_parse(const wchar_t *regex){</span>
-<span class="lineNum">     403 </span><span class="lineCov">         25 :   return regex_parse_recursive(regex, &amp;regex);</span>
-<span class="lineNum">     404 </span>            : }
+<span class="lineNum">     270 </span><span class="lineCov">         28 :   }</span>
+<span class="lineNum">     271 </span><span class="lineCov">         16 :   return result;</span>
+<a name="272"><span class="lineNum">     272 </span>            : }</a>
+<span class="lineNum">     273 </span>            : 
+<span class="lineNum">     274 </span><span class="lineCov">         29 : PTree *reparse(char *regex)</span>
+<span class="lineNum">     275 </span>            : {
+<span class="lineNum">     276 </span>            :   Lexer l;
+<span class="lineNum">     277 </span>            : 
+<span class="lineNum">     278 </span>            :   // Initialize the lexer.
+<span class="lineNum">     279 </span><span class="lineCov">         29 :   l.input = regex;</span>
+<span class="lineNum">     280 </span><span class="lineCov">         29 :   l.index = 0;</span>
+<span class="lineNum">     281 </span><span class="lineCov">         29 :   l.nbuf = 0;</span>
+<span class="lineNum">     282 </span><span class="lineCov">         29 :   l.tok = (Token){0};</span>
+<span class="lineNum">     283 </span>            : 
+<span class="lineNum">     284 </span>            :   // Create a parse tree!
+<span class="lineNum">     285 </span>            :   //printf(&quot;;; TOKENS:\n&quot;);
+<span class="lineNum">     286 </span><span class="lineCov">         29 :   nextsym(&amp;l);</span>
+<span class="lineNum">     287 </span><span class="lineCov">         29 :   PTree *tree = REGEX(&amp;l);</span>
+<span class="lineNum">     288 </span><span class="lineCov">         29 :   expect(Eof, &amp;l);</span>
+<span class="lineNum">     289 </span>            : 
+<span class="lineNum">     290 </span><span class="lineCov">         29 :   return tree;</span>
+<a name="291"><span class="lineNum">     291 </span>            : }</a>
+<span class="lineNum">     292 </span>            : 
+<span class="lineNum">     293 </span><span class="lineCov">         28 : Regex recomp(char *regex)</span>
+<span class="lineNum">     294 </span>            : {
+<span class="lineNum">     295 </span><span class="lineCov">         28 :   PTree *tree = reparse(regex);</span>
+<span class="lineNum">     296 </span>            :   //printf(&quot;;; PARSE TREE:\n&quot;);
+<span class="lineNum">     297 </span>            :   //print_tree(tree, 0);
+<span class="lineNum">     298 </span>            : 
+<span class="lineNum">     299 </span>            :   // Generate code from parse tree.
+<span class="lineNum">     300 </span><span class="lineCov">         28 :   Regex code = codegen(tree);</span>
+<span class="lineNum">     301 </span>            : 
+<span class="lineNum">     302 </span>            :   // Free tree.
+<span class="lineNum">     303 </span><span class="lineCov">         28 :   free_tree(tree);</span>
+<span class="lineNum">     304 </span>            : 
+<span class="lineNum">     305 </span>            :   // Return code.
+<span class="lineNum">     306 </span><span class="lineCov">         28 :   return code;</span>
+<span class="lineNum">     307 </span>            : }
 </pre>
       </td>
     </tr>

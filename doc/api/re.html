@@ -1,0 +1,356 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Regular Expressions &mdash; libstephen 0.1 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="libstephen 0.1 documentation" href="../index.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> libstephen
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/index.html">Libstephen Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="index.html">Libstephen API Documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">libstephen</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+    <li>Regular Expressions</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/api/re.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="regular-expressions">
+<h1>Regular Expressions<a class="headerlink" href="#regular-expressions" title="Permalink to this headline">¶</a></h1>
+<div class="breathe-sectiondef container">
+<p class="breathe-sectiondef-title rubric">Defines</p>
+<dl class="define">
+<dt id="c.nelem">
+<span class="target" id="project0re_8h_1a5c013528254cfdf7a2132e7eecaf2b69"></span><code class="descname">nelem</code><span class="sig-paren">(</span>x<span class="sig-paren">)</span><a class="headerlink" href="#c.nelem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Macro for the number of elements of a statically allocated array. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef container">
+<p class="breathe-sectiondef-title rubric">Typedefs</p>
+<dl class="typedef">
+<dt id="c.Instr">
+<span class="target" id="project0re_8h_1aefedf4598793bff6921483923dfca5f4"></span><em class="property">typedef </em><code class="descname">Instr</code><a class="headerlink" href="#c.Instr" title="Permalink to this definition">¶</a></dt>
+<dd><p>An instruction for the virtual machine. The details of this struct aren&#8217;t important for client code, but a declaration is necessary for defining the <a class="reference internal" href="#project0struct_regex"><span>Regex</span></a> type. </p>
+</dd></dl>
+
+<dl class="typedef">
+<dt id="c.Regex">
+<span class="target" id="project0re_8h_1a486ae933c238dc40e9f99b7ea9b28536"></span><em class="property">typedef </em><code class="descname">Regex</code><a class="headerlink" href="#c.Regex" title="Permalink to this definition">¶</a></dt>
+<dd><p>This typedef is for convenience. See the documentation for struct <a class="reference internal" href="#project0struct_regex"><span>Regex</span></a>. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef container">
+<p class="breathe-sectiondef-title rubric">Functions</p>
+<dl class="function">
+<dt id="c.read_prog">
+<span class="target" id="project0re_8h_1ac7374a69338cffaec9304be14bf3981a"></span><a class="reference internal" href="#c.Regex" title="Regex">Regex</a> <code class="descname">read_prog</code><span class="sig-paren">(</span>char *<em>&nbsp;str</em><span class="sig-paren">)</span><a class="headerlink" href="#c.read_prog" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read in a program from a string. This takes the &#8220;assembly like&#8221; representation and turns it into compiled instructions. Every instruction must be on a single line, and spaces are used as delimiters. Also, labels must be on their own lines. Here is an example of code in this format:</p>
+<p>save 0 L1: char a split L1 L2 L2: match</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>The bytecode of the program. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">str</span></code> - <p>The text representation of the program. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.fread_prog">
+<span class="target" id="project0re_8h_1ab3480ede761dc6ec7c9d5aa9862d3597"></span><a class="reference internal" href="#c.Regex" title="Regex">Regex</a> <code class="descname">fread_prog</code><span class="sig-paren">(</span>FILE *<em>&nbsp;f</em><span class="sig-paren">)</span><a class="headerlink" href="#c.fread_prog" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads in a program from a file instead of a string. <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>The regex bytecode. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">f</span></code> - <p>File to read from. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.write_prog">
+<span class="target" id="project0re_8h_1a013497b4a62578fd019926acd9b6a538"></span>void <code class="descname">write_prog</code><span class="sig-paren">(</span><a class="reference internal" href="#c.Regex" title="Regex">Regex</a><em>&nbsp;r</em>, FILE *<em>&nbsp;f</em><span class="sig-paren">)</span><a class="headerlink" href="#c.write_prog" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes a program to the same format as the read_prog() functions do. <dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">r</span></code> - <p>The regex to write. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">f</span></code> - <p>The file to write to. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.free_prog">
+<span class="target" id="project0re_8h_1a84b8878075214c72dfd2803f6f98efb2"></span>void <code class="descname">free_prog</code><span class="sig-paren">(</span><a class="reference internal" href="#c.Regex" title="Regex">Regex</a><em>&nbsp;r</em><span class="sig-paren">)</span><a class="headerlink" href="#c.free_prog" title="Permalink to this definition">¶</a></dt>
+<dd><p>Free a <a class="reference internal" href="#project0struct_regex"><span>Regex</span></a> object. You must do this when you&#8217;re done with it. <dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">r</span></code> - <p><a class="reference internal" href="#project0struct_regex"><span>Regex</span></a> to free. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.recomp">
+<span class="target" id="project0re_8h_1ab75d374a092d94685835c7a1576bbb11"></span><a class="reference internal" href="#c.Regex" title="Regex">Regex</a> <code class="descname">recomp</code><span class="sig-paren">(</span>char *<em>&nbsp;regex</em><span class="sig-paren">)</span><a class="headerlink" href="#c.recomp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compile a regular expression! <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>The compiled bytecode for the regex. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">regex</span></code> - <p>The text form of the regular expression. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.execute">
+<span class="target" id="project0re_8h_1a252ee0883215023ab7f2ff0c0a1a7a46"></span>ssize_t <code class="descname">execute</code><span class="sig-paren">(</span><a class="reference internal" href="#c.Regex" title="Regex">Regex</a><em>&nbsp;r</em>, char *<em>&nbsp;input</em>, size_t **<em>&nbsp;saved</em><span class="sig-paren">)</span><a class="headerlink" href="#c.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute a regex on a string. <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>Length of match, or -1 if no match. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">r</span></code> - <p>Compiled regular expression bytecode to execute. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">input</span></code> - <p>Text to use as input. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">saved</span></code> - <p>Out pointer for captured indices. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.numsaves">
+<span class="target" id="project0re_8h_1a11d6ef5de5f5da4d808ac72bdff10a1e"></span>int <code class="descname">numsaves</code><span class="sig-paren">(</span><a class="reference internal" href="#c.Regex" title="Regex">Regex</a><em>&nbsp;r</em><span class="sig-paren">)</span><a class="headerlink" href="#c.numsaves" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the number of saved index slots required by a regex. <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>Number of slots. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">r</span></code> - <p>The regular expression bytecode. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<dl class="struct">
+<dt>
+<span class="target" id="project0struct_regex"></span><em class="property">struct </em><code class="descname">Regex</code></dt>
+<dd><em>#include &lt;re.h&gt;</em><p>Represents a compiled regular expression. This consists of a pointer to the instructions, and a counter for how many instructions there are. This is not a large struct, so you shouldn&#8217;t pass around pointers to it. You might as well just pass around copies of this struct. </p>
+<div class="breathe-sectiondef container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt id="c.n">
+<span class="target" id="project0struct_regex_1a3d05cf6aa68b03e254d70afbe869e305"></span>size_t <code class="descname">n</code><a class="headerlink" href="#c.n" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of instructions. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.i">
+<span class="target" id="project0struct_regex_1a4b2424176880b469462f6bbd979ddd81"></span><a class="reference internal" href="#c.Instr" title="Instr">Instr</a>* <code class="descname">i</code><a class="headerlink" href="#c.i" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pointer to instruction buffer. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2013-2015, Stephen Brennan.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2016-03-11 22:05:55</td>
+            <td class="headerValue">2016-03-12 20:37:58</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">6</td>
@@ -168,7 +168,7 @@
 <span class="lineNum">     106 </span><span class="lineCov">          2 :   return list;</span>
 <a name="107"><span class="lineNum">     107 </span>            : }</a>
 <span class="lineNum">     108 </span>            : 
-<span class="lineNum">     109 </span><span class="lineCov">         16 : smb_ll *split_linesw(wchar_t *source)</span>
+<span class="lineNum">     109 </span><span class="lineCov">          2 : smb_ll *split_linesw(wchar_t *source)</span>
 <span class="lineNum">     110 </span>            : {
 <span class="lineNum">     111 </span>            :   wchar_t *start;
 <span class="lineNum">     112 </span>            :   smb_ll *list;
@@ -178,25 +178,25 @@
 <span class="lineNum">     116 </span>            :     We go through `source` looking for every newline, replace it with NUL, and
 <span class="lineNum">     117 </span>            :     add the beginnig of the line to the list.
 <span class="lineNum">     118 </span>            :    */
-<span class="lineNum">     119 </span><span class="lineCov">         16 :   start = source;</span>
-<span class="lineNum">     120 </span><span class="lineCov">         16 :   list = ll_create();</span>
-<span class="lineNum">     121 </span><span class="lineCov">        705 :   while (*source != L'\0') {</span>
-<span class="lineNum">     122 </span><span class="lineCov">        673 :     if (*source == L'\n') {</span>
+<span class="lineNum">     119 </span><span class="lineCov">          2 :   start = source;</span>
+<span class="lineNum">     120 </span><span class="lineCov">          2 :   list = ll_create();</span>
+<span class="lineNum">     121 </span><span class="lineCov">         39 :   while (*source != L'\0') {</span>
+<span class="lineNum">     122 </span><span class="lineCov">         35 :     if (*source == L'\n') {</span>
 <span class="lineNum">     123 </span>            :       // Add line to list.
-<span class="lineNum">     124 </span><span class="lineCov">         65 :       d.data_ptr = start;</span>
-<span class="lineNum">     125 </span><span class="lineCov">         65 :       ll_append(list, d);</span>
+<span class="lineNum">     124 </span><span class="lineCov">          5 :       d.data_ptr = start;</span>
+<span class="lineNum">     125 </span><span class="lineCov">          5 :       ll_append(list, d);</span>
 <span class="lineNum">     126 </span>            :       // Null-terminate the line.
-<span class="lineNum">     127 </span><span class="lineCov">         65 :       *source = L'\0';</span>
+<span class="lineNum">     127 </span><span class="lineCov">          5 :       *source = L'\0';</span>
 <span class="lineNum">     128 </span>            :       // Next string starts at the next character.
-<span class="lineNum">     129 </span><span class="lineCov">         65 :       start = source + 1;</span>
+<span class="lineNum">     129 </span><span class="lineCov">          5 :       start = source + 1;</span>
 <span class="lineNum">     130 </span>            :     }
-<span class="lineNum">     131 </span><span class="lineCov">        673 :     source++;</span>
+<span class="lineNum">     131 </span><span class="lineCov">         35 :     source++;</span>
 <span class="lineNum">     132 </span>            :   }
-<span class="lineNum">     133 </span><span class="lineCov">         16 :   if (start != source) {</span>
-<span class="lineNum">     134 </span><span class="lineCov">          9 :     d.data_ptr = start;</span>
-<span class="lineNum">     135 </span><span class="lineCov">          9 :     ll_append(list, d);</span>
+<span class="lineNum">     133 </span><span class="lineCov">          2 :   if (start != source) {</span>
+<span class="lineNum">     134 </span><span class="lineCov">          1 :     d.data_ptr = start;</span>
+<span class="lineNum">     135 </span><span class="lineCov">          1 :     ll_append(list, d);</span>
 <span class="lineNum">     136 </span>            :   }
-<span class="lineNum">     137 </span><span class="lineCov">         16 :   return list;</span>
+<span class="lineNum">     137 </span><span class="lineCov">          2 :   return list;</span>
 <span class="lineNum">     138 </span>            : }
 </pre>
       </td>
