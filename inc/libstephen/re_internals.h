@@ -21,6 +21,18 @@
 
 #include "re.h"
 
+enum code {
+  Char, Match, Jump, Split, Save, Any, Range, NRange
+};
+
+struct Instr {
+  enum code code; // opcode
+  char c;         // character
+  size_t s;       // slot for "saving" a string index
+  Instr *x, *y;   // targets for jump and split
+  size_t lastidx; // used by Pike VM for fast membership testing
+};
+
 /**
    @brief Types of terminal symbols!
  */
@@ -90,7 +102,7 @@ struct Lexer {
 void escape(Lexer *l);
 Token nextsym(Lexer *l);
 void unget(Token t, Lexer *l);
-instr *codegen(PTree *tree, size_t *n);
+Regex codegen(PTree *tree);
 
 /* Parsing */
 bool accept(TSym s, Lexer *l);

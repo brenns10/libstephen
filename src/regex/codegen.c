@@ -15,7 +15,7 @@
 
   The difficult part of code generation is that you need to generate code with
   "jump" and "split" instructions that point to other instructions.  But since
-  the jump and split targets are just (instr*) pointers, and these frequently
+  the jump and split targets are just (Instr*) pointers, and these frequently
   get moved around or freed during code generation, a naive implementation will
   end up with a bunch of dangling pointers.
 
@@ -39,7 +39,7 @@
 
 typedef struct Fragment Fragment;
 struct Fragment {
-  instr in;
+  Instr in;
   intptr_t id;
   Fragment *next;
 };
@@ -70,35 +70,35 @@ static void join(Fragment *a, Fragment *b)
 {
   Fragment *prev = NULL;
   Fragment *l = last(a);
-  instr *lastid;
+  Instr *lastid;
 
   // lastid will be set in case the last instruction is a Match, which will be
   // deleted later.
   if (l->in.code == Match) {
-    lastid = (instr*) l->id;
+    lastid = (Instr*) l->id;
   } else {
-    lastid = (instr*) -1;
+    lastid = (Instr*) -1;
   }
 
   while (a->next != NULL) {
     // Matches should be replaced with jumps to the next fragment.
     if (a->in.code == Match) {
       a->in.code = Jump;
-      a->in.x = (instr*)b->id;
+      a->in.x = (Instr*)b->id;
     }
     // Jumps to the final match instruction should instead be targeted to the
     // next fragment.
     if ((a->in.code == Jump || a->in.code == Split) && a->in.x == lastid) {
-      a->in.x = (instr*) b->id;
+      a->in.x = (Instr*) b->id;
     }
     if (a->in.code == Split && a->in.y == lastid) {
-      a->in.y = (instr*) b->id;
+      a->in.y = (Instr*) b->id;
     }
     prev = a;
     a = a->next;
   }
 
-  // If the last instruction is a Match, delete it.
+  // If the last Instruction is a Match, delete it.
   if (prev != NULL && a->in.code == Match) {
     free(a);
     prev->next = b;
@@ -241,14 +241,14 @@ static Fragment *expr(PTree *t, State *s)
       c = newfrag(Match, s);
       if (t->nchildren == 3) {
         // Non-greedy
-        a->in.x = (instr*) c->id;
-        a->in.y = (instr*) f->id;
+        a->in.x = (Instr*) c->id;
+        a->in.y = (Instr*) f->id;
       } else {
         // Greedy
-        a->in.x = (instr*) f->id;
-        a->in.y = (instr*) c->id;
+        a->in.x = (Instr*) f->id;
+        a->in.y = (Instr*) c->id;
       }
-      b->in.x = (instr*) a->id;
+      b->in.x = (Instr*) a->id;
       a->next = f;
       b->next = c;
       join(a, b);
@@ -265,12 +265,12 @@ static Fragment *expr(PTree *t, State *s)
       b = newfrag(Match, s);
       if (t->nchildren == 3) {
         // Non-greedy
-        a->in.x = (instr*) b->id;
-        a->in.y = (instr*) f->id;
+        a->in.x = (Instr*) b->id;
+        a->in.y = (Instr*) f->id;
       } else {
         // Greedy
-        a->in.x = (instr*) f->id;
-        a->in.y = (instr*) b->id;
+        a->in.x = (Instr*) f->id;
+        a->in.y = (Instr*) b->id;
       }
       join(f, a);
       a->next = b;
@@ -287,12 +287,12 @@ static Fragment *expr(PTree *t, State *s)
       b = newfrag(Match, s);
       if (t->nchildren == 3) {
         // Non-greedy
-        a->in.x = (instr*) b->id;
-        a->in.y = (instr*) f->id;
+        a->in.x = (Instr*) b->id;
+        a->in.y = (Instr*) f->id;
       } else {
         // Greedy
-        a->in.x = (instr*) f->id;
-        a->in.y = (instr*) b->id;
+        a->in.x = (Instr*) f->id;
+        a->in.y = (Instr*) b->id;
       }
       a->next = f;
       join(f, b);
@@ -337,13 +337,13 @@ static Fragment *regex(PTree *tree, State *state)
     Fragment *r = regex(tree->children[2], state);
 
     Fragment *pre = newfrag(Split, state);
-    pre->in.x = (instr*) s->id;
-    pre->in.y = (instr*) r->id;
+    pre->in.x = (Instr*) s->id;
+    pre->in.y = (Instr*) r->id;
     pre->next = s;
 
     Fragment *m = newfrag(Match, state);
     Fragment *j = newfrag(Jump, state);
-    j->in.x = (instr*) m->id;
+    j->in.x = (Instr*) m->id;
     j->next = r;
     join(j, m);
     join(pre, j);
@@ -393,17 +393,18 @@ static Fragment *class(PTree *tree, State *state, bool is_negative)
   return f;
 }
 
-instr *codegen(PTree *tree, size_t *n)
+Regex codegen(PTree *tree)
 {
   // Generate code.
   State s = {0, 0};
   Fragment *f = regex(tree, &s);
+  size_t n;
 
   // Get the length of the code
-  *n = fraglen(f);
+  n = fraglen(f);
 
   // Allocate buffers for the code, and for a lookup table of targets for jumps.
-  instr *code = calloc(*n, sizeof(instr));
+  Instr *code = calloc(n, sizeof(Instr));
   size_t *targets = calloc(s.id, sizeof(size_t));
 
   // Fill up the lookup table.
@@ -413,7 +414,7 @@ instr *codegen(PTree *tree, size_t *n)
     targets[curr->id] = i;
   }
 
-  // Now, copy in the instructions, replacing the jump targets from the table.
+  // Now, copy in the Instructions, replacing the jump targets from the table.
   for (curr = f, i = 0; curr; curr = curr->next, i++) {
     code[i] = curr->in;
     if (code[i].code == Jump || code[i].code == Split) {
@@ -426,5 +427,5 @@ instr *codegen(PTree *tree, size_t *n)
 
   free(targets);
   freefraglist(f);
-  return code;
+  return (Regex){.n=n, .i=code};
 }

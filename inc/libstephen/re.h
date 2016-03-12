@@ -21,31 +21,27 @@
 
 // DEFINITIONS
 
-enum code {
-  Char, Match, Jump, Split, Save, Any, Range, NRange
-};
+struct Instr;
+typedef struct Instr Instr;
 
-typedef struct instr instr;
-struct instr {
-  enum code code; // opcode
-  char c;         // character
-  size_t s;       // slot for "saving" a string index
-  instr *x, *y;   // targets for jump and split
-  size_t lastidx; // used by Pike VM for fast membership testing
+typedef struct Regex Regex;
+struct Regex {
+  size_t n;
+  Instr *i;
 };
 
 // Read/Write Programs
-instr *read_prog(char *str, size_t *ninstr);
-instr *fread_prog(FILE *f, size_t *ninstr);
-void write_prog(instr *prog, size_t n, FILE *f);
-void free_prog(instr *prog, size_t n);
+Regex read_prog(char *str);
+Regex fread_prog(FILE *f);
+void write_prog(Regex r, FILE *f);
+void free_prog(Regex r);
 
 // parser.c
-instr *recomp(char *regex, size_t *n);
+Regex recomp(char *regex);
 
 // pike.c
-ssize_t execute(instr *prog, size_t proglen, char *input, size_t **saved);
-int numsaves(instr *code, size_t ncode);
+ssize_t execute(Regex r, char *input, size_t **saved);
+int numsaves(Regex r);
 
 #define nelem(x) (sizeof(x)/sizeof((x)[0]))
 

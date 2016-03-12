@@ -21,6 +21,7 @@
 #include <unistd.h>
 
 #include "libstephen/re.h"
+#include "libstephen/re_internals.h"
 
 #define COMMENT ';'
 
@@ -175,13 +176,13 @@ static char **tokenize(char *line, size_t *ntok)
    @param line Text to parse.
    @param lineno Line number (just used for error msg).
  */
-static instr read_instr(char *line, int lineno)
+static Instr read_instr(char *line, int lineno)
 {
   // First, we're going to tokenize the string into a statically allocated
   // buffer.  We know we don't need more than like TODO
   size_t ntok;
   char **tokens = tokenize(line, &ntok);
-  instr inst = {0};
+  Instr inst = {0};
 
   if (strcmp(tokens[0], Opcodes[Char]) == 0) {
     if (ntok != 2) {
@@ -202,15 +203,15 @@ static instr read_instr(char *line, int lineno)
       exit(1);
     }
     inst.code = Jump;
-    inst.x = (instr*)tokens[1];
+    inst.x = (Instr*)tokens[1];
   } else if (strcmp(tokens[0], Opcodes[Split]) == 0) {
     if (ntok != 3) {
       fprintf(stderr, "line %d: require 3 tokens for split\n", lineno);
       exit(1);
     }
     inst.code = Split;
-    inst.x = (instr*)tokens[1];
-    inst.y = (instr*)tokens[2];
+    inst.x = (Instr*)tokens[1];
+    inst.y = (Instr*)tokens[2];
   } else if (strcmp(tokens[0], Opcodes[Save]) == 0) {
     if (ntok != 2) {
       fprintf(stderr, "line %d: require 2 tokens for save\n", lineno);
@@ -234,7 +235,7 @@ static instr read_instr(char *line, int lineno)
     inst.code = (strcmp(tokens[0], Opcodes[Range]) == 0) ? Range : NRange;
     inst.s = (size_t) (ntok - 1) / 2;
     char *block = calloc(ntok - 1, sizeof(char));
-    inst.x = (instr*)block;
+    inst.x = (Instr*)block;
     for (size_t i = 0; i < ntok - 1; i++) {
       block[i] = string_to_char(tokens[i+1]);
     }
@@ -269,10 +270,10 @@ static size_t gettarget(char **labels, size_t *labelindices, size_t nlabels,
    @param str Code
    @param[out] ninstr Where to put the number of instructions
  */
-instr *read_prog(char *str, size_t *ninstr)
+Regex read_prog(char *str)
 {
   size_t nlines = 1;
-  instr *rv = NULL;
+  Instr *rv = NULL;
 
   // Count newlines.
   for (size_t i = 0; str[i]; i++) {
@@ -328,7 +329,7 @@ instr *read_prog(char *str, size_t *ninstr)
   }
   // we'll assume that the labels are valid for now
 
-  rv = calloc(ncode, sizeof(instr));
+  rv = calloc(ncode, sizeof(Instr));
   codeidx = 0;
   for (size_t i = 0; i < nlines; i++) {
     if (types[i] != Code) {
@@ -352,16 +353,13 @@ instr *read_prog(char *str, size_t *ninstr)
   free(lines);
   free(labels);
   free(labelindices);
-  if (ninstr) {
-    *ninstr = codeidx;
-  }
-  return rv;
+  return (Regex){.n=codeidx, .i=rv};
 }
 
 /**
    @brief Read a program from a file.
  */
-instr *fread_prog(FILE *f, size_t *ninstr) {
+Regex fread_prog(FILE *f) {
   size_t alloc = 4096;
   char *buf = malloc(alloc);
   size_t start = 0;
@@ -375,7 +373,7 @@ instr *fread_prog(FILE *f, size_t *ninstr) {
     }
   }
 
-  instr *rv = read_prog(buf, ninstr);
+  Regex rv = read_prog(buf);
   free(buf);
   return rv;
 }
@@ -383,55 +381,55 @@ instr *fread_prog(FILE *f, size_t *ninstr) {
 /**
    @brief Write a program to a file.
  */
-void write_prog(instr *prog, size_t n, FILE *f)
+void write_prog(Regex r, FILE *f)
 {
-  size_t *labels = calloc(n, sizeof(size_t));
+  size_t *labels = calloc(r.n, sizeof(size_t));
 
   // Find every instruction that needs a label.
-  for (size_t i = 0; i < n; i++) {
-    if (prog[i].code == Jump || prog[i].code == Split) {
-      labels[prog[i].x - prog] = 1;
+  for (size_t i = 0; i < r.n; i++) {
+    if (r.i[i].code == Jump || r.i[i].code == Split) {
+      labels[r.i[i].x - r.i] = 1;
     }
-    if (prog[i].code == Split) {
-      labels[prog[i].y - prog] = 1;
+    if (r.i[i].code == Split) {
+      labels[r.i[i].y - r.i] = 1;
     }
   }
 
   size_t l = 1;
-  for (size_t i = 0; i < n; i++) {
+  for (size_t i = 0; i < r.n; i++) {
     if (labels[i] > 0) {
       labels[i] = l++;
     }
   }
 
-  for (size_t i = 0; i < n; i++) {
+  for (size_t i = 0; i < r.n; i++) {
     if (labels[i] > 0) {
       fprintf(f, "L%zu:\n", labels[i]);
     }
-    char *block = (char*) prog[i].x;
-    switch (prog[i].code) {
+    char *block = (char*) r.i[i].x;
+    switch (r.i[i].code) {
     case Char:
-      fprintf(f, "    char %s\n", char_to_string(prog[i].c));
+      fprintf(f, "    char %s\n", char_to_string(r.i[i].c));
       break;
     case Match:
       fprintf(f, "    match\n");
       break;
     case Jump:
-      fprintf(f, "    jump L%zu\n", labels[prog[i].x - prog]);
+      fprintf(f, "    jump L%zu\n", labels[r.i[i].x - r.i]);
       break;
     case Split:
-      fprintf(f, "    split L%zu L%zu\n", labels[prog[i].x - prog],
-              labels[prog[i].y - prog]);
+      fprintf(f, "    split L%zu L%zu\n", labels[r.i[i].x - r.i],
+              labels[r.i[i].y - r.i]);
       break;
     case Save:
-      fprintf(f, "    save %zu\n", prog[i].s);
+      fprintf(f, "    save %zu\n", r.i[i].s);
       break;
     case Any:
       fprintf(f, "    any\n");
       break;
     case NRange:
       fprintf(f, "    nrange");
-      for (size_t j = 0; j < prog[i].s; j++) {
+      for (size_t j = 0; j < r.i[i].s; j++) {
         fprintf(f, " %s", char_to_string(block[2*j]));
         fprintf(f, " %s", char_to_string(block[2*j + 1]));
       }
@@ -439,7 +437,7 @@ void write_prog(instr *prog, size_t n, FILE *f)
       break;
     case Range:
       fprintf(f, "    range");
-      for (size_t j = 0; j < prog[i].s; j++) {
+      for (size_t j = 0; j < r.i[i].s; j++) {
         fprintf(f, " %s", char_to_string(block[2*j]));
         fprintf(f, " %s", char_to_string(block[2*j + 1]));
       }
@@ -451,12 +449,12 @@ void write_prog(instr *prog, size_t n, FILE *f)
   free(labels);
 }
 
-void free_prog(instr *prog, size_t n)
+void free_prog(Regex r)
 {
-  for (size_t i = 0; i < n; i++) {
-    if (prog[i].code == Range || prog[i].code == NRange) {
-      free(prog[i].x);
+  for (size_t i = 0; i < r.n; i++) {
+    if (r.i[i].code == Range || r.i[i].code == NRange) {
+      free(r.i[i].x);
     }
   }
-  free(prog);
+  free(r.i);
 }

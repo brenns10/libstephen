@@ -21,90 +21,85 @@
 
 static int test_any(void)
 {
-  size_t n;
-  instr *prog = recomp(".", &n);
+  Regex r = recomp(".");
 
-  TEST_ASSERT(execute(prog, n, "a", NULL) == 1);
-  TEST_ASSERT(execute(prog, n, "b", NULL) == 1);
-  TEST_ASSERT(execute(prog, n, "c", NULL) == 1);
-  TEST_ASSERT(execute(prog, n, "(", NULL) == 1);
-  TEST_ASSERT(execute(prog, n, "*", NULL) == 1);
-  TEST_ASSERT(execute(prog, n, ".", NULL) == 1);
-  TEST_ASSERT(execute(prog, n, "", NULL) == -1);
+  TEST_ASSERT(execute(r, "a", NULL) == 1);
+  TEST_ASSERT(execute(r, "b", NULL) == 1);
+  TEST_ASSERT(execute(r, "c", NULL) == 1);
+  TEST_ASSERT(execute(r, "(", NULL) == 1);
+  TEST_ASSERT(execute(r, "*", NULL) == 1);
+  TEST_ASSERT(execute(r, ".", NULL) == 1);
+  TEST_ASSERT(execute(r, "", NULL) == -1);
 
-  free_prog(prog, n);
+  free_prog(r);
   return 0;
 }
 
 static int test_char(void)
 {
-  size_t n;
-  instr *prog = recomp("a", &n);
+  Regex r = recomp("a");
 
-  TEST_ASSERT(execute(prog, n, "a", NULL) == 1);
-  TEST_ASSERT(execute(prog, n, "b", NULL) == -1);
-  TEST_ASSERT(execute(prog, n, "c", NULL) == -1);
+  TEST_ASSERT(execute(r, "a", NULL) == 1);
+  TEST_ASSERT(execute(r, "b", NULL) == -1);
+  TEST_ASSERT(execute(r, "c", NULL) == -1);
 
-  free_prog(prog, n);
+  free_prog(r);
   return 0;
 }
 
 static int test_range(void)
 {
-  size_t n;
-  instr *prog = recomp("[a-c -]", &n);
+  Regex r = recomp("[a-c -]");
 
-  TEST_ASSERT(execute(prog, n, "a", NULL) == 1);
-  TEST_ASSERT(execute(prog, n, "b", NULL) == 1);
-  TEST_ASSERT(execute(prog, n, "c", NULL) == 1);
-  TEST_ASSERT(execute(prog, n, "d", NULL) == -1);
-  TEST_ASSERT(execute(prog, n, "e", NULL) == -1);
-  TEST_ASSERT(execute(prog, n, "A", NULL) == -1);
-  TEST_ASSERT(execute(prog, n, " ", NULL) == 1);
-  TEST_ASSERT(execute(prog, n, "-", NULL) == 1);
+  TEST_ASSERT(execute(r, "a", NULL) == 1);
+  TEST_ASSERT(execute(r, "b", NULL) == 1);
+  TEST_ASSERT(execute(r, "c", NULL) == 1);
+  TEST_ASSERT(execute(r, "d", NULL) == -1);
+  TEST_ASSERT(execute(r, "e", NULL) == -1);
+  TEST_ASSERT(execute(r, "A", NULL) == -1);
+  TEST_ASSERT(execute(r, " ", NULL) == 1);
+  TEST_ASSERT(execute(r, "-", NULL) == 1);
 
-  free_prog(prog, n);
+  free_prog(r);
   return 0;
 }
 
 static int test_nrange(void)
 {
-  size_t n;
-  instr *prog = recomp("[^a-c -]", &n);
+  Regex r = recomp("[^a-c -]");
 
-  TEST_ASSERT(execute(prog, n, "a", NULL) == -1);
-  TEST_ASSERT(execute(prog, n, "b", NULL) == -1);
-  TEST_ASSERT(execute(prog, n, "c", NULL) == -1);
-  TEST_ASSERT(execute(prog, n, "d", NULL) == 1);
-  TEST_ASSERT(execute(prog, n, "e", NULL) == 1);
-  TEST_ASSERT(execute(prog, n, "A", NULL) == 1);
-  TEST_ASSERT(execute(prog, n, " ", NULL) == -1);
-  TEST_ASSERT(execute(prog, n, "-", NULL) == -1);
+  TEST_ASSERT(execute(r, "a", NULL) == -1);
+  TEST_ASSERT(execute(r, "b", NULL) == -1);
+  TEST_ASSERT(execute(r, "c", NULL) == -1);
+  TEST_ASSERT(execute(r, "d", NULL) == 1);
+  TEST_ASSERT(execute(r, "e", NULL) == 1);
+  TEST_ASSERT(execute(r, "A", NULL) == 1);
+  TEST_ASSERT(execute(r, " ", NULL) == -1);
+  TEST_ASSERT(execute(r, "-", NULL) == -1);
 
-  free_prog(prog, n);
+  free_prog(r);
   return 0;
 }
 
 static int test_split_jump(void)
 {
-  size_t n;
-  instr *prog = recomp("a*", &n);
+  Regex r = recomp("a*");
 
-  TEST_ASSERT(execute(prog, n, "", NULL) == 0);
-  TEST_ASSERT(execute(prog, n, "a", NULL) == 1);
-  TEST_ASSERT(execute(prog, n, "aa", NULL) == 2);
-  TEST_ASSERT(execute(prog, n, "aaa", NULL) == 3);
-  TEST_ASSERT(execute(prog, n, "aaaa", NULL) == 4);
-  TEST_ASSERT(execute(prog, n, "b", NULL) == 0);
+  TEST_ASSERT(execute(r, "", NULL) == 0);
+  TEST_ASSERT(execute(r, "a", NULL) == 1);
+  TEST_ASSERT(execute(r, "aa", NULL) == 2);
+  TEST_ASSERT(execute(r, "aaa", NULL) == 3);
+  TEST_ASSERT(execute(r, "aaaa", NULL) == 4);
+  TEST_ASSERT(execute(r, "b", NULL) == 0);
 
-  free_prog(prog, n);
+  free_prog(r);
   return 0;
 }
 
 /*
   So, this one serves two purposes - in pike.c:addthread(), there is an if
   statement for detecting whether a thread has already been added to the list at
-  this instruction.  This requires a significant amount of non-determinism -
+  this Instruction.  This requires a significant amount of non-determinism -
   i.e. two different ways to get to the same instruction.  The easiest way to
   get that was two greedy stars of the same character right next to each other -
   that's a lot of ways to get to each instruction.
@@ -115,79 +110,75 @@ static int test_split_jump(void)
  */
 static int test_nondeterminism_freeing(void)
 {
-  size_t n;
-  instr *prog = recomp("a*a*", &n);
+  Regex r = recomp("a*a*");
 
-  TEST_ASSERT(execute(prog, n, "", NULL) == 0);
-  TEST_ASSERT(execute(prog, n, "a", NULL) == 1);
-  TEST_ASSERT(execute(prog, n, "aa", NULL) == 2);
-  TEST_ASSERT(execute(prog, n, "aaa", NULL) == 3);
-  TEST_ASSERT(execute(prog, n, "aaaa", NULL) == 4);
-  TEST_ASSERT(execute(prog, n, "b", NULL) == 0);
+  TEST_ASSERT(execute(r, "", NULL) == 0);
+  TEST_ASSERT(execute(r, "a", NULL) == 1);
+  TEST_ASSERT(execute(r, "aa", NULL) == 2);
+  TEST_ASSERT(execute(r, "aaa", NULL) == 3);
+  TEST_ASSERT(execute(r, "aaaa", NULL) == 4);
+  TEST_ASSERT(execute(r, "b", NULL) == 0);
 
-  free_prog(prog, n);
+  free_prog(r);
   return 0;
 }
 
 static int test_save(void)
 {
-  size_t n;
   size_t *capture;
-  instr *prog = recomp("(a*)b", &n);
+  Regex r = recomp("(a*)b");
 
-  TEST_ASSERT(numsaves(prog, n) == 2);
+  TEST_ASSERT(numsaves(r) == 2);
 
-  TEST_ASSERT(execute(prog, n, "b", &capture) == 1);
+  TEST_ASSERT(execute(r, "b", &capture) == 1);
   TEST_ASSERT(capture[0] == 0);
   TEST_ASSERT(capture[1] == 0);
   free(capture);
-  TEST_ASSERT(execute(prog, n, "ab", &capture) == 2);
+  TEST_ASSERT(execute(r, "ab", &capture) == 2);
   TEST_ASSERT(capture[0] == 0);
   TEST_ASSERT(capture[1] == 1);
   free(capture);
-  TEST_ASSERT(execute(prog, n, "aab", &capture) == 3);
+  TEST_ASSERT(execute(r, "aab", &capture) == 3);
   TEST_ASSERT(capture[0] == 0);
   TEST_ASSERT(capture[1] == 2);
   free(capture);
-  TEST_ASSERT(execute(prog, n, "aaab", &capture) == 4);
+  TEST_ASSERT(execute(r, "aaab", &capture) == 4);
   TEST_ASSERT(capture[0] == 0);
   TEST_ASSERT(capture[1] == 3);
   free(capture);
 
-  free_prog(prog, n);
+  free_prog(r);
   return 0;
 }
 
 /* Make sure this gives no memory leaks. */
 static int test_save_null(void)
 {
-  size_t n;
-  instr *prog = recomp("(a*)b", &n);
+  Regex r = recomp("(a*)b");
 
-  TEST_ASSERT(numsaves(prog, n) == 2);
+  TEST_ASSERT(numsaves(r) == 2);
 
-  TEST_ASSERT(execute(prog, n, "b", NULL) == 1);
-  TEST_ASSERT(execute(prog, n, "ab", NULL) == 2);
-  TEST_ASSERT(execute(prog, n, "aab", NULL) == 3);
-  TEST_ASSERT(execute(prog, n, "aaab", NULL) == 4);
-  free_prog(prog, n);
+  TEST_ASSERT(execute(r, "b", NULL) == 1);
+  TEST_ASSERT(execute(r, "ab", NULL) == 2);
+  TEST_ASSERT(execute(r, "aab", NULL) == 3);
+  TEST_ASSERT(execute(r, "aaab", NULL) == 4);
+  free_prog(r);
   return 0;
 }
 
 static int test_save_discard_stash(void)
 {
-  size_t n;
   size_t *capture;
-  instr *prog = recomp("(a*)b+", &n);
+  Regex r = recomp("(a*)b+");
 
-  TEST_ASSERT(numsaves(prog, n) == 2);
+  TEST_ASSERT(numsaves(r) == 2);
 
-  TEST_ASSERT(execute(prog, n, "aabbb", &capture) == 5);
+  TEST_ASSERT(execute(r, "aabbb", &capture) == 5);
   TEST_ASSERT(capture[0] == 0);
   TEST_ASSERT(capture[1] == 2);
   free(capture);
 
-  free_prog(prog, n);
+  free_prog(r);
   return 0;
 }
 

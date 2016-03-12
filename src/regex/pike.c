@@ -26,12 +26,13 @@
 #include <unistd.h>
 
 #include "libstephen/re.h"
+#include "libstephen/re_internals.h"
 
 // Declarations:
 
 typedef struct thread thread;
 struct thread {
-  instr *pc;
+  Instr *pc;
   size_t *saved;
 };
 
@@ -43,7 +44,7 @@ struct thread_list {
 
 // Printing, for diagnostics
 
-void printthreads(thread_list *tl, instr *prog, size_t nsave) {
+void printthreads(thread_list *tl, Instr *prog, size_t nsave) {
   for (size_t i = 0; i < tl->n; i++) {
     printf("T%zu@pc=%lu{", i, (intptr_t) (tl->t[i].pc - prog));
     for (size_t j = 0; j < nsave; j++) {
@@ -56,7 +57,7 @@ void printthreads(thread_list *tl, instr *prog, size_t nsave) {
 
 // Helper evaluation functions for instructions
 
-bool range(instr in, char test) {
+bool range(Instr in, char test) {
   if (test == '\0') {
     return false;
   }
@@ -89,7 +90,7 @@ thread_list newthread_list(size_t n)
   return tl;
 }
 
-void addthread(thread_list *threads, instr *pc, size_t *saved, size_t nsave,
+void addthread(thread_list *threads, Instr *pc, size_t *saved, size_t nsave,
                size_t sp)
 {
   //printf("addthread(): pc=%d, saved={%u, %u}, sp=%u, lastidx=%u\n", pc - extprog,
@@ -145,12 +146,12 @@ void stash(size_t *new, size_t **destination)
   *destination = new;
 }
 
-ssize_t execute(instr *prog, size_t proglen, char *input, size_t **saved)
+ssize_t execute(Regex r, char *input, size_t **saved)
 {
   // Can have at most n threads, where n is the length of the program.  This is
   // because (as it is now) the thread state is simply a program counter.
-  thread_list curr = newthread_list(proglen);
-  thread_list next = newthread_list(proglen);
+  thread_list curr = newthread_list(r.n);
+  thread_list next = newthread_list(r.n);
   thread_list temp;
   size_t nsave = 0;
   ssize_t match = -1;
@@ -162,27 +163,27 @@ ssize_t execute(instr *prog, size_t proglen, char *input, size_t **saved)
   }
 
   // Need to initialize lastidx to something that will never be used.
-  for (size_t i = 0; i < proglen; i++) {
-    prog[i].lastidx = (size_t)-1;
-    if (prog[i].code == Save) {
+  for (size_t i = 0; i < r.n; i++) {
+    r.i[i].lastidx = (size_t)-1;
+    if (r.i[i].code == Save) {
       nsave++;
     }
   }
 
   // Start with a single thread and add more as we need.  Note that addthread()
   // will execute instructions that don't consume input (i.e. epsilon closure).
-  addthread(&curr, prog, calloc(nsave, sizeof(size_t)), nsave, 0);
+  addthread(&curr, r.i, calloc(nsave, sizeof(size_t)), nsave, 0);
 
   size_t sp;
   for (sp = 0; curr.n > 0; sp++) {
 
     //printf("consider input %c\nthreads: ", input[sp]);
-    //printthreads(&curr, prog, nsave);
+    //printthreads(&curr, r.i, nsave);
 
     // Execute each thread (this will only ever reach instructions that consume
     // input, since addthread() stops with those).
     for (size_t t = 0; t < curr.n; t++) {
-      instr *pc = curr.t[t].pc;
+      Instr *pc = curr.t[t].pc;
 
       switch (pc->code) {
       case Char:
@@ -234,14 +235,12 @@ ssize_t execute(instr *prog, size_t proglen, char *input, size_t **saved)
   return match;
 }
 
-// Driver program
-
-int numsaves(instr *code, size_t ncode)
+int numsaves(Regex r)
 {
   int ns = 0;
-  for (size_t i = 0; i < ncode; i++) {
-    if (code[i].code == Save && code[i].s > ns) {
-      ns = code[i].s;
+  for (size_t i = 0; i < r.n; i++) {
+    if (r.i[i].code == Save && r.i[i].s > ns) {
+      ns = r.i[i].s;
     }
   }
   return ns + 1;

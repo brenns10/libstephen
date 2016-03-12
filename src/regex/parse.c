@@ -290,14 +290,14 @@ PTree *reparse(char *regex)
   return tree;
 }
 
-instr *recomp(char *regex, size_t *n)
+Regex recomp(char *regex)
 {
   PTree *tree = reparse(regex);
   //printf(";; PARSE TREE:\n");
   //print_tree(tree, 0);
 
   // Generate code from parse tree.
-  instr *code = codegen(tree, n);
+  Regex code = codegen(tree);
 
   // Free tree.
   free_tree(tree);
