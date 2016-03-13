@@ -22,39 +22,6 @@
 
 /*******************************************************************************
 
-                                  Diagnostics
-
-*******************************************************************************/
-
-/*
-  The debug option enables all diagnostics.
- */
-#ifdef SMB_DEBUG
-#define SMB_ENABLE_DIAGNOSTIC_CODE
-#define SMB_ENABLE_DIAGNOSTIC_PRINTING
-#endif
-
-/**
-   @brief Run this code only if SMB_ENABLE_DIAGNOSTIC_CODE is defined.
- */
-#ifdef SMB_ENABLE_DIAGNOSTIC_CODE
-#define SMB_DIAG_ONLY(x) x
-#else
-#define SMB_DIAG_ONLY(x)
-#endif // SMB_ENABLE_DIAGNOSTIC_CODE
-
-/**
-   @brief Print this (printf) only if SMB_ENABLE_DIAGNOSTIC_PRINTING is defined.
-*/
-#ifdef SMB_ENABLE_DIAGNOSTIC_PRINTING
-#define SMB_DP(...) printf(__VA_ARGS__)
-#else
-#define SMB_DP(...)
-#endif // SMB_ENABLE_DIAGNOSTIC_PRINTING
-
-
-/*******************************************************************************
-
                                  Base Data Type
 
 *******************************************************************************/
