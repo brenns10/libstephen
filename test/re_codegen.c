@@ -25,9 +25,9 @@ static int test_dot(void)
 {
   Regex r = recomp(".");
 
-  TEST_ASSERT(r.n == 2);
-  TEST_ASSERT(r.i[0].code == Any);
-  TEST_ASSERT(r.i[1].code == Match);
+  TA_SIZE_EQ(r.n, (size_t)2);
+  TA_INT_EQ(r.i[0].code, Any);
+  TA_INT_EQ(r.i[1].code, Match);
 
   free_prog(r);
   return 0;
@@ -36,51 +36,51 @@ static int test_dot(void)
 static int test_special(void)
 {
   Regex r = recomp("\\d");
-  TEST_ASSERT(r.n == 2);
-  TEST_ASSERT(r.i[0].code == Range);
-  TEST_ASSERT(r.i[0].s == 1);
-  TEST_ASSERT(0 == strncmp("09", (char*)r.i[0].x, 2));
-  TEST_ASSERT(r.i[1].code == Match);
+  TA_SIZE_EQ(r.n, (size_t)2);
+  TA_INT_EQ(r.i[0].code, Range);
+  TA_SIZE_EQ(r.i[0].s, (size_t)1);
+  TA_STRN_EQ("09", (char*)r.i[0].x, 2);
+  TA_INT_EQ(r.i[1].code, Match);
   free_prog(r);
 
   r = recomp("\\D");
-  TEST_ASSERT(r.n == 2);
-  TEST_ASSERT(r.i[0].code == NRange);
-  TEST_ASSERT(r.i[0].s == 1);
-  TEST_ASSERT(0 == strncmp("09", (char*)r.i[0].x, 2));
-  TEST_ASSERT(r.i[1].code == Match);
+  TA_SIZE_EQ(r.n, (size_t) 2);
+  TA_INT_EQ(r.i[0].code, NRange);
+  TA_SIZE_EQ(r.i[0].s, (size_t)1);
+  TA_STRN_EQ("09", (char*)r.i[0].x, 2);
+  TA_INT_EQ(r.i[1].code, Match);
   free_prog(r);
 
   r = recomp("\\w");
-  TEST_ASSERT(r.n == 2);
-  TEST_ASSERT(r.i[0].code == Range);
-  TEST_ASSERT(r.i[0].s == 4);
-  TEST_ASSERT(0 == strncmp("azAZ09__", (char*)r.i[0].x, 8));
-  TEST_ASSERT(r.i[1].code == Match);
+  TA_SIZE_EQ(r.n, (size_t) 2);
+  TA_INT_EQ(r.i[0].code, Range);
+  TA_SIZE_EQ(r.i[0].s, (size_t) 4);
+  TA_STRN_EQ("azAZ09__", (char*)r.i[0].x, 8);
+  TA_INT_EQ(r.i[1].code, Match);
   free_prog(r);
 
   r = recomp("\\W");
-  TEST_ASSERT(r.n == 2);
-  TEST_ASSERT(r.i[0].code == NRange);
-  TEST_ASSERT(r.i[0].s == 4);
-  TEST_ASSERT(0 == strncmp("azAZ09__", (char*)r.i[0].x, 8));
-  TEST_ASSERT(r.i[1].code == Match);
+  TA_SIZE_EQ(r.n, (size_t) 2);
+  TA_INT_EQ(r.i[0].code, NRange);
+  TA_SIZE_EQ(r.i[0].s, (size_t) 4);
+  TA_STRN_EQ("azAZ09__", (char*)r.i[0].x, 8);
+  TA_INT_EQ(r.i[1].code, Match);
   free_prog(r);
 
   r = recomp("\\s");
-  TEST_ASSERT(r.n == 2);
-  TEST_ASSERT(r.i[0].code == Range);
-  TEST_ASSERT(r.i[0].s == 6);
-  TEST_ASSERT(0 == strncmp("  \t\t\n\n\r\r\f\f\v\v", (char*)r.i[0].x, 12));
-  TEST_ASSERT(r.i[1].code == Match);
+  TA_SIZE_EQ(r.n, (size_t) 2);
+  TA_INT_EQ(r.i[0].code, Range);
+  TA_SIZE_EQ(r.i[0].s, (size_t) 6);
+  TA_STRN_EQ("  \t\t\n\n\r\r\f\f\v\v", (char*)r.i[0].x, 12);
+  TA_INT_EQ(r.i[1].code, Match);
   free_prog(r);
 
   r = recomp("\\S");
-  TEST_ASSERT(r.n == 2);
-  TEST_ASSERT(r.i[0].code == NRange);
-  TEST_ASSERT(r.i[0].s == 6);
-  TEST_ASSERT(0 == strncmp("  \t\t\n\n\r\r\f\f\v\v", (char*)r.i[0].x, 12));
-  TEST_ASSERT(r.i[1].code == Match);
+  TA_SIZE_EQ(r.n, (size_t) 2);
+  TA_INT_EQ(r.i[0].code, NRange);
+  TA_SIZE_EQ(r.i[0].s, (size_t) 6);
+  TA_STRN_EQ("  \t\t\n\n\r\r\f\f\v\v", (char*)r.i[0].x, 12);
+  TA_INT_EQ(r.i[1].code, Match);
   free_prog(r);
 
   return 0;
@@ -90,13 +90,13 @@ static int test_plus(void)
 {
   Regex r = recomp("a+");
 
-  TEST_ASSERT(r.n == 3);
-  TEST_ASSERT(r.i[0].code == Char);
-  TEST_ASSERT(r.i[0].c == 'a');
-  TEST_ASSERT(r.i[1].code == Split);
-  TEST_ASSERT(r.i[1].x == r.i);
-  TEST_ASSERT(r.i[1].y == r.i + 2);
-  TEST_ASSERT(r.i[2].code == Match);
+  TA_SIZE_EQ(r.n, (size_t) 3);
+  TA_INT_EQ(r.i[0].code, Char);
+  TA_CHAR_EQ(r.i[0].c, 'a');
+  TA_INT_EQ(r.i[1].code, Split);
+  TA_PTR_EQ(r.i[1].x, r.i);
+  TA_PTR_EQ(r.i[1].y, r.i + 2);
+  TA_INT_EQ(r.i[2].code, Match);
 
   free_prog(r);
   return 0;
@@ -106,13 +106,13 @@ static int test_plus_question(void)
 {
   Regex r = recomp("a+?");
 
-  TEST_ASSERT(r.n == 3);
-  TEST_ASSERT(r.i[0].code == Char);
-  TEST_ASSERT(r.i[0].c == 'a');
-  TEST_ASSERT(r.i[1].code == Split);
-  TEST_ASSERT(r.i[1].x == r.i + 2);
-  TEST_ASSERT(r.i[1].y == r.i);
-  TEST_ASSERT(r.i[2].code == Match);
+  TA_SIZE_EQ(r.n, 3);
+  TA_INT_EQ(r.i[0].code, Char);
+  TA_CHAR_EQ(r.i[0].c, 'a');
+  TA_INT_EQ(r.i[1].code, Split);
+  TA_PTR_EQ(r.i[1].x, r.i + 2);
+  TA_PTR_EQ(r.i[1].y, r.i);
+  TA_INT_EQ(r.i[2].code, Match);
 
   free_prog(r);
   return 0;
@@ -122,15 +122,15 @@ static int test_star(void)
 {
   Regex r = recomp("a*");
 
-  TEST_ASSERT(r.n == 4);
-  TEST_ASSERT(r.i[0].code == Split);
-  TEST_ASSERT(r.i[0].x == r.i + 1);
-  TEST_ASSERT(r.i[0].y == r.i + 3);
-  TEST_ASSERT(r.i[1].code == Char);
-  TEST_ASSERT(r.i[1].c == 'a');
-  TEST_ASSERT(r.i[2].code == Jump);
-  TEST_ASSERT(r.i[2].x == r.i);
-  TEST_ASSERT(r.i[3].code == Match);
+  TA_SIZE_EQ(r.n, 4);
+  TA_INT_EQ(r.i[0].code, Split);
+  TA_PTR_EQ(r.i[0].x, r.i + 1);
+  TA_PTR_EQ(r.i[0].y, r.i + 3);
+  TA_INT_EQ(r.i[1].code, Char);
+  TA_CHAR_EQ(r.i[1].c, 'a');
+  TA_INT_EQ(r.i[2].code, Jump);
+  TA_PTR_EQ(r.i[2].x, r.i);
+  TA_INT_EQ(r.i[3].code, Match);
 
   free_prog(r);
   return 0;
@@ -140,15 +140,15 @@ static int test_star_question(void)
 {
   Regex r = recomp("a*?");
 
-  TEST_ASSERT(r.n == 4);
-  TEST_ASSERT(r.i[0].code == Split);
-  TEST_ASSERT(r.i[0].x == r.i + 3);
-  TEST_ASSERT(r.i[0].y == r.i + 1);
-  TEST_ASSERT(r.i[1].code == Char);
-  TEST_ASSERT(r.i[1].c == 'a');
-  TEST_ASSERT(r.i[2].code == Jump);
-  TEST_ASSERT(r.i[2].x == r.i);
-  TEST_ASSERT(r.i[3].code == Match);
+  TA_SIZE_EQ(r.n, 4);
+  TA_INT_EQ(r.i[0].code, Split);
+  TA_PTR_EQ(r.i[0].x, r.i + 3);
+  TA_PTR_EQ(r.i[0].y, r.i + 1);
+  TA_INT_EQ(r.i[1].code, Char);
+  TA_CHAR_EQ(r.i[1].c, 'a');
+  TA_INT_EQ(r.i[2].code, Jump);
+  TA_PTR_EQ(r.i[2].x, r.i);
+  TA_INT_EQ(r.i[3].code, Match);
 
   free_prog(r);
   return 0;
@@ -158,13 +158,13 @@ static int test_question(void)
 {
   Regex r = recomp("a?");
 
-  TEST_ASSERT(r.n == 3);
-  TEST_ASSERT(r.i[0].code == Split);
-  TEST_ASSERT(r.i[0].x == r.i + 1);
-  TEST_ASSERT(r.i[0].y == r.i + 2);
-  TEST_ASSERT(r.i[1].code == Char);
-  TEST_ASSERT(r.i[1].c == 'a');
-  TEST_ASSERT(r.i[2].code == Match);
+  TA_SIZE_EQ(r.n, 3);
+  TA_INT_EQ(r.i[0].code, Split);
+  TA_PTR_EQ(r.i[0].x, r.i + 1);
+  TA_PTR_EQ(r.i[0].y, r.i + 2);
+  TA_INT_EQ(r.i[1].code, Char);
+  TA_CHAR_EQ(r.i[1].c, 'a');
+  TA_INT_EQ(r.i[2].code, Match);
 
   free_prog(r);
   return 0;
@@ -174,13 +174,13 @@ static int test_question_question(void)
 {
   Regex r = recomp("a??");
 
-  TEST_ASSERT(r.n == 3);
-  TEST_ASSERT(r.i[0].code == Split);
-  TEST_ASSERT(r.i[0].x == r.i + 2);
-  TEST_ASSERT(r.i[0].y == r.i + 1);
-  TEST_ASSERT(r.i[1].code == Char);
-  TEST_ASSERT(r.i[1].c == 'a');
-  TEST_ASSERT(r.i[2].code == Match);
+  TA_SIZE_EQ(r.n, 3);
+  TA_INT_EQ(r.i[0].code, Split);
+  TA_PTR_EQ(r.i[0].x, r.i + 2);
+  TA_PTR_EQ(r.i[0].y, r.i + 1);
+  TA_INT_EQ(r.i[1].code, Char);
+  TA_CHAR_EQ(r.i[1].c, 'a');
+  TA_INT_EQ(r.i[2].code, Match);
 
   free_prog(r);
   return 0;
@@ -190,12 +190,12 @@ static int test_concat(void)
 {
   Regex r = recomp("ab");
 
-  TEST_ASSERT(r.n == 3);
-  TEST_ASSERT(r.i[0].code == Char);
-  TEST_ASSERT(r.i[0].c == 'a');
-  TEST_ASSERT(r.i[1].code == Char);
-  TEST_ASSERT(r.i[1].c == 'b');
-  TEST_ASSERT(r.i[2].code == Match);
+  TA_SIZE_EQ(r.n, 3);
+  TA_INT_EQ(r.i[0].code, Char);
+  TA_CHAR_EQ(r.i[0].c, 'a');
+  TA_INT_EQ(r.i[1].code, Char);
+  TA_CHAR_EQ(r.i[1].c, 'b');
+  TA_INT_EQ(r.i[2].code, Match);
 
   free_prog(r);
   return 0;
@@ -205,17 +205,17 @@ static int test_alternate(void)
 {
   Regex r = recomp("a|b");
 
-  TEST_ASSERT(r.n == 5);
-  TEST_ASSERT(r.i[0].code == Split);
-  TEST_ASSERT(r.i[0].x == r.i + 1);
-  TEST_ASSERT(r.i[0].y == r.i + 3);
-  TEST_ASSERT(r.i[1].code == Char);
-  TEST_ASSERT(r.i[1].c == 'a');
-  TEST_ASSERT(r.i[2].code == Jump);
-  TEST_ASSERT(r.i[2].x == r.i + 4);
-  TEST_ASSERT(r.i[3].code == Char);
-  TEST_ASSERT(r.i[3].c == 'b');
-  TEST_ASSERT(r.i[4].code == Match);
+  TA_SIZE_EQ(r.n, 5);
+  TA_INT_EQ(r.i[0].code, Split);
+  TA_PTR_EQ(r.i[0].x, r.i + 1);
+  TA_PTR_EQ(r.i[0].y, r.i + 3);
+  TA_INT_EQ(r.i[1].code, Char);
+  TA_CHAR_EQ(r.i[1].c, 'a');
+  TA_INT_EQ(r.i[2].code, Jump);
+  TA_PTR_EQ(r.i[2].x, r.i + 4);
+  TA_INT_EQ(r.i[3].code, Char);
+  TA_CHAR_EQ(r.i[3].c, 'b');
+  TA_INT_EQ(r.i[4].code, Match);
 
   free_prog(r);
   return 0;
@@ -225,14 +225,14 @@ static int test_capture(void)
 {
   Regex r = recomp("(a)");
 
-  TEST_ASSERT(r.n == 4);
-  TEST_ASSERT(r.i[0].code == Save);
-  TEST_ASSERT(r.i[0].s == 0);
-  TEST_ASSERT(r.i[1].code == Char);
-  TEST_ASSERT(r.i[1].c == 'a');
-  TEST_ASSERT(r.i[2].code == Save);
-  TEST_ASSERT(r.i[2].s == 1);
-  TEST_ASSERT(r.i[3].code == Match);
+  TA_SIZE_EQ(r.n, 4);
+  TA_INT_EQ(r.i[0].code, Save);
+  TA_SIZE_EQ(r.i[0].s, 0);
+  TA_INT_EQ(r.i[1].code, Char);
+  TA_CHAR_EQ(r.i[1].c, 'a');
+  TA_INT_EQ(r.i[2].code, Save);
+  TA_SIZE_EQ(r.i[2].s, 1);
+  TA_INT_EQ(r.i[3].code, Match);
 
   free_prog(r);
   return 0;
@@ -242,19 +242,19 @@ static int test_class(void)
 {
   Regex r = recomp("[a-bd -]");
 
-  TEST_ASSERT(r.n == 2);
-  TEST_ASSERT(r.i[0].code == Range);
-  TEST_ASSERT(r.i[0].s == 4);
+  TA_SIZE_EQ(r.n, 2);
+  TA_INT_EQ(r.i[0].code, Range);
+  TA_SIZE_EQ(r.i[0].s, 4);
   char *block = (char*) r.i[0].x;
-  TEST_ASSERT(block[0] == 'a');
-  TEST_ASSERT(block[1] == 'b');
-  TEST_ASSERT(block[2] == 'd');
-  TEST_ASSERT(block[3] == 'd');
-  TEST_ASSERT(block[4] == ' ');
-  TEST_ASSERT(block[5] == ' ');
-  TEST_ASSERT(block[6] == '-');
-  TEST_ASSERT(block[7] == '-');
-  TEST_ASSERT(r.i[1].code == Match);
+  TA_CHAR_EQ(block[0], 'a');
+  TA_CHAR_EQ(block[1], 'b');
+  TA_CHAR_EQ(block[2], 'd');
+  TA_CHAR_EQ(block[3], 'd');
+  TA_CHAR_EQ(block[4], ' ');
+  TA_CHAR_EQ(block[5], ' ');
+  TA_CHAR_EQ(block[6], '-');
+  TA_CHAR_EQ(block[7], '-');
+  TA_INT_EQ(r.i[1].code, Match);
 
   free_prog(r);
   return 0;
@@ -264,19 +264,19 @@ static int test_nclass(void)
 {
   Regex r = recomp("[^a-bd f-g]");
 
-  TEST_ASSERT(r.n == 2);
-  TEST_ASSERT(r.i[0].code == NRange);
-  TEST_ASSERT(r.i[0].s == 4);
+  TA_SIZE_EQ(r.n, 2);
+  TA_INT_EQ(r.i[0].code, NRange);
+  TA_SIZE_EQ(r.i[0].s, 4);
   char *block = (char*) r.i[0].x;
-  TEST_ASSERT(block[0] == 'a');
-  TEST_ASSERT(block[1] == 'b');
-  TEST_ASSERT(block[2] == 'd');
-  TEST_ASSERT(block[3] == 'd');
-  TEST_ASSERT(block[4] == ' ');
-  TEST_ASSERT(block[5] == ' ');
-  TEST_ASSERT(block[6] == 'f');
-  TEST_ASSERT(block[7] == 'g');
-  TEST_ASSERT(r.i[1].code == Match);
+  TA_CHAR_EQ(block[0], 'a');
+  TA_CHAR_EQ(block[1], 'b');
+  TA_CHAR_EQ(block[2], 'd');
+  TA_CHAR_EQ(block[3], 'd');
+  TA_CHAR_EQ(block[4], ' ');
+  TA_CHAR_EQ(block[5], ' ');
+  TA_CHAR_EQ(block[6], 'f');
+  TA_CHAR_EQ(block[7], 'g');
+  TA_INT_EQ(r.i[1].code, Match);
 
   free_prog(r);
   return 0;
@@ -286,13 +286,13 @@ static int test_join_complex(void)
 {
   Regex r = recomp("a*b+");
 
-  TEST_ASSERT(r.n == 6);
-  TEST_ASSERT(r.i[0].code == Split);
-  TEST_ASSERT(r.i[1].code == Char);
-  TEST_ASSERT(r.i[2].code == Jump);
-  TEST_ASSERT(r.i[3].code == Char);
-  TEST_ASSERT(r.i[4].code == Split);
-  TEST_ASSERT(r.i[5].code == Match);
+  TA_SIZE_EQ(r.n, 6);
+  TA_INT_EQ(r.i[0].code, Split);
+  TA_INT_EQ(r.i[1].code, Char);
+  TA_INT_EQ(r.i[2].code, Jump);
+  TA_INT_EQ(r.i[3].code, Char);
+  TA_INT_EQ(r.i[4].code, Split);
+  TA_INT_EQ(r.i[5].code, Match);
 
   free_prog(r);
   return 0;

@@ -47,9 +47,9 @@ int test_cbuf_concat_noalloc(void)
   cbuf *c = cb_create(10);
   cb_concat(c, "abc");
   cb_concat(c, "def");
-  TEST_ASSERT(0 == strcmp(c->buf, "abcdef"));
-  TEST_ASSERT(c->capacity == 10);
-  TEST_ASSERT(c->length == 6);
+  TA_STR_EQ(c->buf, "abcdef");
+  TA_INT_EQ(c->capacity, 10);
+  TA_INT_EQ(c->length, 6);
   cb_delete(c);
   return 0;
 }
@@ -62,9 +62,9 @@ int test_wcbuf_concat_noalloc(void)
   wcbuf *wc = wcb_create(10);
   wcb_concat(wc, L"abc");
   wcb_concat(wc, L"def");
-  TEST_ASSERT(0 == wcscmp(wc->buf, L"abcdef"));
-  TEST_ASSERT(wc->capacity == 10);
-  TEST_ASSERT(wc->length == 6);
+  TA_WSTR_EQ(wc->buf, L"abcdef");
+  TA_INT_EQ(wc->capacity, 10);
+  TA_INT_EQ(wc->length, 6);
   wcb_delete(wc);
   return 0;
 }
@@ -77,9 +77,9 @@ int test_cbuf_concat_realloc(void)
   cbuf *c = cb_create(4);
   cb_concat(c, "abc");
   cb_concat(c, "def");
-  TEST_ASSERT(0 == strcmp(c->buf, "abcdef"));
-  TEST_ASSERT(c->capacity == 8);
-  TEST_ASSERT(c->length == 6);
+  TA_STR_EQ(c->buf, "abcdef");
+  TA_INT_EQ(c->capacity, 8);
+  TA_INT_EQ(c->length, 6);
   cb_delete(c);
   return 0;
 }
@@ -92,9 +92,9 @@ int test_wcbuf_concat_realloc(void)
   wcbuf *wc = wcb_create(4);
   wcb_concat(wc, L"abc");
   wcb_concat(wc, L"def");
-  TEST_ASSERT(0 == wcscmp(wc->buf, L"abcdef"));
-  TEST_ASSERT(wc->capacity == 8);
-  TEST_ASSERT(wc->length == 6);
+  TA_WSTR_EQ(wc->buf, L"abcdef");
+  TA_INT_EQ(wc->capacity, 8);
+  TA_INT_EQ(wc->length, 6);
   wcb_delete(wc);
   return 0;
 }
@@ -108,9 +108,9 @@ int test_cbuf_append_noalloc(void)
   cb_append(c, 'a');
   cb_append(c, 'b');
   cb_append(c, 'c');
-  TEST_ASSERT(0 == strcmp(c->buf, "abc"));
-  TEST_ASSERT(c->capacity == 4);
-  TEST_ASSERT(c->length == 3);
+  TA_STR_EQ(c->buf, "abc");
+  TA_INT_EQ(c->capacity, 4);
+  TA_INT_EQ(c->length, 3);
   cb_delete(c);
   return 0;
 }
@@ -124,9 +124,9 @@ int test_wcbuf_append_noalloc(void)
   wcb_append(wc, L'a');
   wcb_append(wc, L'b');
   wcb_append(wc, L'c');
-  TEST_ASSERT(0 == wcscmp(wc->buf, L"abc"));
-  TEST_ASSERT(wc->capacity == 4);
-  TEST_ASSERT(wc->length == 3);
+  TA_WSTR_EQ(wc->buf, L"abc");
+  TA_INT_EQ(wc->capacity, 4);
+  TA_INT_EQ(wc->length, 3);
   wcb_delete(wc);
   return 0;
 }
@@ -140,9 +140,9 @@ int test_cbuf_append_realloc(void)
   cb_append(c, 'a');
   cb_append(c, 'b');
   cb_append(c, 'c');
-  TEST_ASSERT(0 == strcmp(c->buf, "abc"));
-  TEST_ASSERT(c->capacity == 6);
-  TEST_ASSERT(c->length == 3);
+  TA_STR_EQ(c->buf, "abc");
+  TA_INT_EQ(c->capacity, 6);
+  TA_INT_EQ(c->length, 3);
   cb_delete(c);
   return 0;
 }
@@ -156,9 +156,9 @@ int test_wcbuf_append_realloc(void)
   wcb_append(wc, L'a');
   wcb_append(wc, L'b');
   wcb_append(wc, L'c');
-  TEST_ASSERT(0 == wcscmp(wc->buf, L"abc"));
-  TEST_ASSERT(wc->capacity == 6);
-  TEST_ASSERT(wc->length == 3);
+  TA_WSTR_EQ(wc->buf, L"abc");
+  TA_INT_EQ(wc->capacity, 6);
+  TA_INT_EQ(wc->length, 3);
   wcb_delete(wc);
   return 0;
 }
@@ -171,7 +171,7 @@ int test_cbuf_printf(void)
   cbuf *cb = cb_create(8);
   cb_concat(cb, "prefix ");
   cb_printf(cb, "format %ls %s %d suffix", L"wcs", "mbs", 20);
-  TEST_ASSERT(0 == strcmp(cb->buf, "prefix format wcs mbs 20 suffix"));
+  TA_STR_EQ(cb->buf, "prefix format wcs mbs 20 suffix");
   cb_delete(cb);
   return 0;
 }
@@ -184,7 +184,7 @@ int test_wcbuf_printf(void)
   wcbuf *wcb = wcb_create(8);
   wcb_concat(wcb, L"prefix ");
   wcb_printf(wcb, L"format %ls %s %d suffix", L"wcs", "mbs", 20);
-  TEST_ASSERT(0 == wcscmp(wcb->buf, L"prefix format wcs mbs 20 suffix"));
+  TA_WSTR_EQ(wcb->buf, L"prefix format wcs mbs 20 suffix");
   wcb_delete(wcb);
   return 0;
 }
@@ -196,11 +196,11 @@ int test_cbuf_trim(void)
 {
   cbuf *cb = cb_create(8);
   cb_concat(cb, "abc");
-  TEST_ASSERT(cb->capacity == 8);
-  TEST_ASSERT(cb->length == 3);
+  TA_INT_EQ(cb->capacity, 8);
+  TA_INT_EQ(cb->length, 3);
   cb_trim(cb);
-  TEST_ASSERT(cb->capacity == 4);
-  TEST_ASSERT(cb->length == 3);
+  TA_INT_EQ(cb->capacity, 4);
+  TA_INT_EQ(cb->length, 3);
   cb_delete(cb);
   return 0;
 }
@@ -212,11 +212,11 @@ int test_wcbuf_trim(void)
 {
   wcbuf *wcb = wcb_create(8);
   wcb_concat(wcb, L"abc");
-  TEST_ASSERT(wcb->capacity == 8);
-  TEST_ASSERT(wcb->length == 3);
+  TA_INT_EQ(wcb->capacity, 8);
+  TA_INT_EQ(wcb->length, 3);
   wcb_trim(wcb);
-  TEST_ASSERT(wcb->capacity == 4);
-  TEST_ASSERT(wcb->length == 3);
+  TA_INT_EQ(wcb->capacity, 4);
+  TA_INT_EQ(wcb->length, 3);
   wcb_delete(wcb);
   return 0;
 }
@@ -228,9 +228,9 @@ int test_cbuf_clear(void)
 {
   cbuf *cb = cb_create(8);
   cb_concat(cb, "abc");
-  TEST_ASSERT(strcmp(cb->buf, "abc") == 0);
+  TA_STR_EQ(cb->buf, "abc");
   cb_clear(cb);
-  TEST_ASSERT(strcmp(cb->buf, "") == 0);
+  TA_STR_EQ(cb->buf, "");
   cb_delete(cb);
   return 0;
 }
@@ -242,9 +242,9 @@ int test_wcbuf_clear(void)
 {
   wcbuf *wcb = wcb_create(8);
   wcb_concat(wcb, L"abc");
-  TEST_ASSERT(wcscmp(wcb->buf, L"abc") == 0);
+  TA_WSTR_EQ(wcb->buf, L"abc");
   wcb_clear(wcb);
-  TEST_ASSERT(wcscmp(wcb->buf, L"") == 0);
+  TA_WSTR_EQ(wcb->buf, L"");
   wcb_delete(wcb);
   return 0;
 }

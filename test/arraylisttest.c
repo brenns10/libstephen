@@ -29,10 +29,10 @@ int al_test_create()
   smb_al *list = al_create();
   al_append(list, d);
 
-  TEST_ASSERT(al_length(list) == 1);
+  TA_INT_EQ(al_length(list), 1);
 
-  TEST_ASSERT(al_get(list, 0, &status).data_llint == 13);
-  TEST_ASSERT(status == SMB_SUCCESS);
+  TA_LLINT_EQ(al_get(list, 0, &status).data_llint, (long long int)13);
+  TA_INT_EQ(status, SMB_SUCCESS);
 
   al_delete(list);
   return 0;
@@ -41,7 +41,7 @@ int al_test_create()
 int al_test_create_empty()
 {
   smb_al *list = al_create();
-  TEST_ASSERT(al_length(list) == 0);
+  TA_INT_EQ(al_length(list), 0);
   al_delete(list);
   return 0;
 }

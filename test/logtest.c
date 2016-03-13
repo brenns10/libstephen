@@ -62,27 +62,27 @@ int test_too_many_levels(void)
   smb_status status = SMB_SUCCESS;
   sl_clear_handlers(NULL);
   sl_add_handler(NULL, (smb_loghandler){.level=LEVEL_DEBUG, .dst=stdout}, &status);
-  TEST_ASSERT(status == SMB_SUCCESS);
+  TA_INT_EQ(status, SMB_SUCCESS);
   sl_add_handler(NULL, (smb_loghandler){.level=LEVEL_INFO, .dst=stdout}, &status);
-  TEST_ASSERT(status == SMB_SUCCESS);
+  TA_INT_EQ(status, SMB_SUCCESS);
   sl_add_handler(NULL, (smb_loghandler){.level=LEVEL_WARNING, .dst=stdout}, &status);
-  TEST_ASSERT(status == SMB_SUCCESS);
+  TA_INT_EQ(status, SMB_SUCCESS);
   sl_add_handler(NULL, (smb_loghandler){.level=LEVEL_ERROR, .dst=stdout}, &status);
-  TEST_ASSERT(status == SMB_SUCCESS);
+  TA_INT_EQ(status, SMB_SUCCESS);
   sl_add_handler(NULL, (smb_loghandler){.level=LEVEL_CRITICAL,  .dst=stdout}, &status);
-  TEST_ASSERT(status == SMB_SUCCESS);
+  TA_INT_EQ(status, SMB_SUCCESS);
   sl_add_handler(NULL, (smb_loghandler){.level=LEVEL_DEBUG, .dst=stdout}, &status);
-  TEST_ASSERT(status == SMB_SUCCESS);
+  TA_INT_EQ(status, SMB_SUCCESS);
   sl_add_handler(NULL, (smb_loghandler){.level=LEVEL_INFO, .dst=stdout}, &status);
-  TEST_ASSERT(status == SMB_SUCCESS);
+  TA_INT_EQ(status, SMB_SUCCESS);
   sl_add_handler(NULL, (smb_loghandler){.level=LEVEL_WARNING, .dst=stdout}, &status);
-  TEST_ASSERT(status == SMB_SUCCESS);
+  TA_INT_EQ(status, SMB_SUCCESS);
   sl_add_handler(NULL, (smb_loghandler){.level=LEVEL_ERROR, .dst=stdout}, &status);
-  TEST_ASSERT(status == SMB_SUCCESS);
+  TA_INT_EQ(status, SMB_SUCCESS);
   sl_add_handler(NULL, (smb_loghandler){.level=LEVEL_CRITICAL,  .dst=stdout}, &status);
-  TEST_ASSERT(status == SMB_SUCCESS);
+  TA_INT_EQ(status, SMB_SUCCESS);
   sl_add_handler(NULL, (smb_loghandler){.level=LEVEL_CRITICAL,  .dst=stdout}, &status);
-  TEST_ASSERT(status == SMB_INDEX_ERROR);
+  TA_INT_EQ(status, SMB_INDEX_ERROR);
   return 0;
 }
 

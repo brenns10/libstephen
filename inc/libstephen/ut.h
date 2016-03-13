@@ -16,6 +16,10 @@
 #ifndef LIBSTEPHEN_UT_H
 #define LIBSTEPHEN_UT_H
 
+#include <stdio.h>
+#include <string.h>
+#include <wchar.h>
+
 /**
    @brief The size of a description text field (in characters) for an smbunit test.
  */
@@ -40,7 +44,146 @@
      (that is, zero), the assertion fails.
 
  */
-#define TEST_ASSERT(expr) if(!(expr)) return __LINE__
+#define TEST_ASSERT(expr)\
+  do {\
+    if(!(expr)) {\
+      fprintf(stderr, "Assertion: " #expr " failed.\n"); \
+      return __LINE__;\
+    }\
+  } while (0);
+
+#define _ASSERTION_BASE_(X, Y, SPEC, TYPE, INV) \
+  do {\
+    if ((X) INV (Y)) {\
+      fprintf(stderr, "Assertion failed: " SPEC " " #INV " " SPEC "\n",\
+              (TYPE) (X), (TYPE) (Y));\
+      return __LINE__;\
+    }\
+  }\
+  while (0);
+
+#define TA_PTR_EQ(X, Y) _ASSERTION_BASE_(X, Y, "%p", void*, !=)
+#define TA_PTR_NE(X, Y) _ASSERTION_BASE_(X, Y, "%p", void*, ==)
+#define TA_PTR_LT(X, Y) _ASSERTION_BASE_(X, Y, "%p", void*, >=)
+#define TA_PTR_GT(X, Y) _ASSERTION_BASE_(X, Y, "%p", void*, <=)
+#define TA_PTR_LE(X, Y) _ASSERTION_BASE_(X, Y, "%p", void*, >)
+#define TA_PTR_GE(X, Y) _ASSERTION_BASE_(X, Y, "%p", void*, <)
+
+#define TA_SIZE_EQ(X, Y) _ASSERTION_BASE_(X, Y, "%zu", size_t, !=)
+#define TA_SIZE_NE(X, Y) _ASSERTION_BASE_(X, Y, "%zu", size_t, ==)
+#define TA_SIZE_LT(X, Y) _ASSERTION_BASE_(X, Y, "%zu", size_t, >=)
+#define TA_SIZE_GT(X, Y) _ASSERTION_BASE_(X, Y, "%zu", size_t, <=)
+#define TA_SIZE_LE(X, Y) _ASSERTION_BASE_(X, Y, "%zu", size_t, >)
+#define TA_SIZE_GE(X, Y) _ASSERTION_BASE_(X, Y, "%zu", size_t, <)
+
+#define TA_INT_EQ(X, Y) _ASSERTION_BASE_(X, Y, "%d", int, !=)
+#define TA_INT_NE(X, Y) _ASSERTION_BASE_(X, Y, "%d", int, ==)
+#define TA_INT_LT(X, Y) _ASSERTION_BASE_(X, Y, "%d", int, >=)
+#define TA_INT_GT(X, Y) _ASSERTION_BASE_(X, Y, "%d", int, <=)
+#define TA_INT_LE(X, Y) _ASSERTION_BASE_(X, Y, "%d", int, >)
+#define TA_INT_GE(X, Y) _ASSERTION_BASE_(X, Y, "%d", int, <)
+
+#define TA_LLINT_EQ(X, Y) _ASSERTION_BASE_(X, Y, "%lld", long long, !=)
+#define TA_LLINT_NE(X, Y) _ASSERTION_BASE_(X, Y, "%lld", long long, ==)
+#define TA_LLINT_LT(X, Y) _ASSERTION_BASE_(X, Y, "%lld", long long, >=)
+#define TA_LLINT_GT(X, Y) _ASSERTION_BASE_(X, Y, "%lld", long long, <=)
+#define TA_LLINT_LE(X, Y) _ASSERTION_BASE_(X, Y, "%lld", long long, >)
+#define TA_LLINT_GE(X, Y) _ASSERTION_BASE_(X, Y, "%lld", long long, <)
+
+#define TA_UINT_EQ(X, Y) _ASSERTION_BASE_(X, Y, "%u", unsigned, !=)
+#define TA_UINT_NE(X, Y) _ASSERTION_BASE_(X, Y, "%u", unsigned, ==)
+#define TA_UINT_LT(X, Y) _ASSERTION_BASE_(X, Y, "%u", unsigned, >=)
+#define TA_UINT_GT(X, Y) _ASSERTION_BASE_(X, Y, "%u", unsigned, <=)
+#define TA_UINT_LE(X, Y) _ASSERTION_BASE_(X, Y, "%u", unsigned, >)
+#define TA_UINT_GE(X, Y) _ASSERTION_BASE_(X, Y, "%u", unsigned, <)
+
+#define TA_LLUINT_EQ(X, Y) _ASSERTION_BASE_(X, Y, "%llu", long long unsigned, !=)
+#define TA_LLUINT_NE(X, Y) _ASSERTION_BASE_(X, Y, "%llu", long long unsigned, ==)
+#define TA_LLUINT_LT(X, Y) _ASSERTION_BASE_(X, Y, "%llu", long long unsigned, >=)
+#define TA_LLUINT_GT(X, Y) _ASSERTION_BASE_(X, Y, "%llu", long long unsigned, <=)
+#define TA_LLUINT_LE(X, Y) _ASSERTION_BASE_(X, Y, "%llu", long long unsigned, >)
+#define TA_LLUINT_GE(X, Y) _ASSERTION_BASE_(X, Y, "%llu", long long unsigned, <)
+
+#define TA_FLT_EQ(X, Y) _ASSERTION_BASE_(X, Y, "%f", float, !=)
+#define TA_FLT_NE(X, Y) _ASSERTION_BASE_(X, Y, "%f", float, ==)
+#define TA_FLT_LT(X, Y) _ASSERTION_BASE_(X, Y, "%f", float, >=)
+#define TA_FLT_GT(X, Y) _ASSERTION_BASE_(X, Y, "%f", float, <=)
+#define TA_FLT_LE(X, Y) _ASSERTION_BASE_(X, Y, "%f", float, >)
+#define TA_FLT_GE(X, Y) _ASSERTION_BASE_(X, Y, "%f", float, <)
+
+#define TA_CHAR_EQ(X, Y) _ASSERTION_BASE_(X, Y, "%c", char, !=)
+#define TA_CHAR_NE(X, Y) _ASSERTION_BASE_(X, Y, "%c", char, ==)
+#define TA_CHAR_LT(X, Y) _ASSERTION_BASE_(X, Y, "%c", char, >=)
+#define TA_CHAR_GT(X, Y) _ASSERTION_BASE_(X, Y, "%c", char, <=)
+#define TA_CHAR_LE(X, Y) _ASSERTION_BASE_(X, Y, "%c", char, >)
+#define TA_CHAR_GE(X, Y) _ASSERTION_BASE_(X, Y, "%c", char, <)
+
+#define TA_WCHAR_EQ(X, Y) _ASSERTION_BASE_(X, Y, "%lc", wchar_t, !=)
+#define TA_WCHAR_NE(X, Y) _ASSERTION_BASE_(X, Y, "%lc", wchar_t, ==)
+#define TA_WCHAR_LT(X, Y) _ASSERTION_BASE_(X, Y, "%lc", wchar_t, >=)
+#define TA_WCHAR_GT(X, Y) _ASSERTION_BASE_(X, Y, "%lc", wchar_t, <=)
+#define TA_WCHAR_LE(X, Y) _ASSERTION_BASE_(X, Y, "%lc", wchar_t, >)
+#define TA_WCHAR_GE(X, Y) _ASSERTION_BASE_(X, Y, "%lc", wchar_t, <)
+
+#define TA_STR_EQ(x, y)\
+  do {\
+    if (strcmp((x), (y)) != 0) {\
+      fprintf(stderr, "Assertion failed: \"%s\" != \"%s\"\n", x, y);\
+      return __LINE__;\
+    }\
+  } while (0);
+#define TA_STR_NE(x, y)\
+  do {\
+    if (strcmp((x), (y) == 0) {\
+      fprintf(stderr, "Assertion failed:  \"%s\" != \"%s\"\n", x, y);\
+      return __LINE__;\
+    }\
+  } while (0);
+
+#define TA_STRN_EQ(x, y, n)\
+  do {\
+    if (strncmp((x), (y), (n)) != 0) {\
+      fprintf(stderr, "Assertion failed: \"%s\" != \"%s\"\n", x, y);\
+      return __LINE__;\
+    }\
+  } while (0);
+#define TA_STRN_NE(x, y, n)\
+  do {\
+    if (strcmp((x), (y), (n)) == 0) {\
+      fprintf(stderr, "Assertion failed:  \"%s\" == \"%s\"\n", x, y);\
+      return __LINE__;\
+    }\
+  } while (0);
+
+#define TA_WSTR_EQ(x, y)\
+  do {\
+    if (wcscmp((x), (y)) != 0) {\
+      fprintf(stderr, "Assertion failed: \"%ls\" != \"%ls\"\n", x, y);\
+      return __LINE__;\
+    }\
+  } while (0);
+#define TA_WSTR_NE(x, y)\
+  do {\
+    if (wcscmp((x), (y)) == 0) {\
+      fprintf(stderr, "Assertion failed: \"%ls\" != \"%ls\"\n", x, y);\
+      return __LINE__;\
+    }\
+  } while (0);
+
+#define TA_WSTRN_EQ(x, y, n)\
+  do {\
+    if (wcsncmp((x), (y), (n)) != 0) {\
+      fprintf(stderr, "Assertion failed: \"%ls\" != \"%ls\"\n", x, y);\
+      return __LINE__;\
+    }\
+  } while (0);
+#define TA_WSTRN_NE(x, y, n)\
+  do {\
+    if (wcsncmp((x), (y), (n)) == 0) {\
+      fprintf(stderr, "Assertion failed:  \"%ls\" == \"%ls\"\n", x, y);\
+      return __LINE__;\
+    }\
+  } while (0);
 
 /**
    @brief Defines a single unit test.

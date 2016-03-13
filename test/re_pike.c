@@ -23,13 +23,13 @@ static int test_any(void)
 {
   Regex r = recomp(".");
 
-  TEST_ASSERT(execute(r, "a", NULL) == 1);
-  TEST_ASSERT(execute(r, "b", NULL) == 1);
-  TEST_ASSERT(execute(r, "c", NULL) == 1);
-  TEST_ASSERT(execute(r, "(", NULL) == 1);
-  TEST_ASSERT(execute(r, "*", NULL) == 1);
-  TEST_ASSERT(execute(r, ".", NULL) == 1);
-  TEST_ASSERT(execute(r, "", NULL) == -1);
+  TA_INT_EQ(execute(r, "a", NULL), 1);
+  TA_INT_EQ(execute(r, "b", NULL), 1);
+  TA_INT_EQ(execute(r, "c", NULL), 1);
+  TA_INT_EQ(execute(r, "(", NULL), 1);
+  TA_INT_EQ(execute(r, "*", NULL), 1);
+  TA_INT_EQ(execute(r, ".", NULL), 1);
+  TA_INT_EQ(execute(r, "", NULL), -1);
 
   free_prog(r);
   return 0;
@@ -39,9 +39,9 @@ static int test_char(void)
 {
   Regex r = recomp("a");
 
-  TEST_ASSERT(execute(r, "a", NULL) == 1);
-  TEST_ASSERT(execute(r, "b", NULL) == -1);
-  TEST_ASSERT(execute(r, "c", NULL) == -1);
+  TA_INT_EQ(execute(r, "a", NULL), 1);
+  TA_INT_EQ(execute(r, "b", NULL), -1);
+  TA_INT_EQ(execute(r, "c", NULL), -1);
 
   free_prog(r);
   return 0;
@@ -51,14 +51,14 @@ static int test_range(void)
 {
   Regex r = recomp("[a-c -]");
 
-  TEST_ASSERT(execute(r, "a", NULL) == 1);
-  TEST_ASSERT(execute(r, "b", NULL) == 1);
-  TEST_ASSERT(execute(r, "c", NULL) == 1);
-  TEST_ASSERT(execute(r, "d", NULL) == -1);
-  TEST_ASSERT(execute(r, "e", NULL) == -1);
-  TEST_ASSERT(execute(r, "A", NULL) == -1);
-  TEST_ASSERT(execute(r, " ", NULL) == 1);
-  TEST_ASSERT(execute(r, "-", NULL) == 1);
+  TA_INT_EQ(execute(r, "a", NULL), 1);
+  TA_INT_EQ(execute(r, "b", NULL), 1);
+  TA_INT_EQ(execute(r, "c", NULL), 1);
+  TA_INT_EQ(execute(r, "d", NULL), -1);
+  TA_INT_EQ(execute(r, "e", NULL), -1);
+  TA_INT_EQ(execute(r, "A", NULL), -1);
+  TA_INT_EQ(execute(r, " ", NULL), 1);
+  TA_INT_EQ(execute(r, "-", NULL), 1);
 
   free_prog(r);
   return 0;
@@ -68,14 +68,14 @@ static int test_nrange(void)
 {
   Regex r = recomp("[^a-c -]");
 
-  TEST_ASSERT(execute(r, "a", NULL) == -1);
-  TEST_ASSERT(execute(r, "b", NULL) == -1);
-  TEST_ASSERT(execute(r, "c", NULL) == -1);
-  TEST_ASSERT(execute(r, "d", NULL) == 1);
-  TEST_ASSERT(execute(r, "e", NULL) == 1);
-  TEST_ASSERT(execute(r, "A", NULL) == 1);
-  TEST_ASSERT(execute(r, " ", NULL) == -1);
-  TEST_ASSERT(execute(r, "-", NULL) == -1);
+  TA_INT_EQ(execute(r, "a", NULL), -1);
+  TA_INT_EQ(execute(r, "b", NULL), -1);
+  TA_INT_EQ(execute(r, "c", NULL), -1);
+  TA_INT_EQ(execute(r, "d", NULL), 1);
+  TA_INT_EQ(execute(r, "e", NULL), 1);
+  TA_INT_EQ(execute(r, "A", NULL), 1);
+  TA_INT_EQ(execute(r, " ", NULL), -1);
+  TA_INT_EQ(execute(r, "-", NULL), -1);
 
   free_prog(r);
   return 0;
@@ -85,12 +85,12 @@ static int test_split_jump(void)
 {
   Regex r = recomp("a*");
 
-  TEST_ASSERT(execute(r, "", NULL) == 0);
-  TEST_ASSERT(execute(r, "a", NULL) == 1);
-  TEST_ASSERT(execute(r, "aa", NULL) == 2);
-  TEST_ASSERT(execute(r, "aaa", NULL) == 3);
-  TEST_ASSERT(execute(r, "aaaa", NULL) == 4);
-  TEST_ASSERT(execute(r, "b", NULL) == 0);
+  TA_INT_EQ(execute(r, "", NULL), 0);
+  TA_INT_EQ(execute(r, "a", NULL), 1);
+  TA_INT_EQ(execute(r, "aa", NULL), 2);
+  TA_INT_EQ(execute(r, "aaa", NULL), 3);
+  TA_INT_EQ(execute(r, "aaaa", NULL), 4);
+  TA_INT_EQ(execute(r, "b", NULL), 0);
 
   free_prog(r);
   return 0;
@@ -112,12 +112,12 @@ static int test_nondeterminism_freeing(void)
 {
   Regex r = recomp("a*a*");
 
-  TEST_ASSERT(execute(r, "", NULL) == 0);
-  TEST_ASSERT(execute(r, "a", NULL) == 1);
-  TEST_ASSERT(execute(r, "aa", NULL) == 2);
-  TEST_ASSERT(execute(r, "aaa", NULL) == 3);
-  TEST_ASSERT(execute(r, "aaaa", NULL) == 4);
-  TEST_ASSERT(execute(r, "b", NULL) == 0);
+  TA_INT_EQ(execute(r, "", NULL), 0);
+  TA_INT_EQ(execute(r, "a", NULL), 1);
+  TA_INT_EQ(execute(r, "aa", NULL), 2);
+  TA_INT_EQ(execute(r, "aaa", NULL), 3);
+  TA_INT_EQ(execute(r, "aaaa", NULL), 4);
+  TA_INT_EQ(execute(r, "b", NULL), 0);
 
   free_prog(r);
   return 0;
@@ -128,23 +128,23 @@ static int test_save(void)
   size_t *capture;
   Regex r = recomp("(a*)b");
 
-  TEST_ASSERT(numsaves(r) == 2);
+  TA_INT_EQ(numsaves(r), 2);
 
-  TEST_ASSERT(execute(r, "b", &capture) == 1);
-  TEST_ASSERT(capture[0] == 0);
-  TEST_ASSERT(capture[1] == 0);
+  TA_INT_EQ(execute(r, "b", &capture), 1);
+  TA_SIZE_EQ(capture[0], 0);
+  TA_SIZE_EQ(capture[1], 0);
   free(capture);
-  TEST_ASSERT(execute(r, "ab", &capture) == 2);
-  TEST_ASSERT(capture[0] == 0);
-  TEST_ASSERT(capture[1] == 1);
+  TA_INT_EQ(execute(r, "ab", &capture), 2);
+  TA_SIZE_EQ(capture[0], 0);
+  TA_SIZE_EQ(capture[1], 1);
   free(capture);
-  TEST_ASSERT(execute(r, "aab", &capture) == 3);
-  TEST_ASSERT(capture[0] == 0);
-  TEST_ASSERT(capture[1] == 2);
+  TA_INT_EQ(execute(r, "aab", &capture), 3);
+  TA_SIZE_EQ(capture[0], 0);
+  TA_SIZE_EQ(capture[1], 2);
   free(capture);
-  TEST_ASSERT(execute(r, "aaab", &capture) == 4);
-  TEST_ASSERT(capture[0] == 0);
-  TEST_ASSERT(capture[1] == 3);
+  TA_INT_EQ(execute(r, "aaab", &capture), 4);
+  TA_SIZE_EQ(capture[0], 0);
+  TA_SIZE_EQ(capture[1], 3);
   free(capture);
 
   free_prog(r);
@@ -156,12 +156,12 @@ static int test_save_null(void)
 {
   Regex r = recomp("(a*)b");
 
-  TEST_ASSERT(numsaves(r) == 2);
+  TA_INT_EQ(numsaves(r), 2);
 
-  TEST_ASSERT(execute(r, "b", NULL) == 1);
-  TEST_ASSERT(execute(r, "ab", NULL) == 2);
-  TEST_ASSERT(execute(r, "aab", NULL) == 3);
-  TEST_ASSERT(execute(r, "aaab", NULL) == 4);
+  TA_INT_EQ(execute(r, "b", NULL), 1);
+  TA_INT_EQ(execute(r, "ab", NULL), 2);
+  TA_INT_EQ(execute(r, "aab", NULL), 3);
+  TA_INT_EQ(execute(r, "aaab", NULL), 4);
   free_prog(r);
   return 0;
 }
@@ -171,11 +171,11 @@ static int test_save_discard_stash(void)
   size_t *capture;
   Regex r = recomp("(a*)b+");
 
-  TEST_ASSERT(numsaves(r) == 2);
+  TA_INT_EQ(numsaves(r), 2);
 
-  TEST_ASSERT(execute(r, "aabbb", &capture) == 5);
-  TEST_ASSERT(capture[0] == 0);
-  TEST_ASSERT(capture[1] == 2);
+  TA_INT_EQ(execute(r, "aabbb", &capture), 5);
+  TA_SIZE_EQ(capture[0], 0);
+  TA_SIZE_EQ(capture[1], 2);
   free(capture);
 
   free_prog(r);
