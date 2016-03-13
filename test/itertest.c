@@ -88,14 +88,14 @@ int iter_test_count()
     int n = 0;
     while (it.has_next(&it)) {
       it.next(&it, &status);
-      TEST_ASSERT(status == SMB_SUCCESS);
+      TA_INT_EQ(status, SMB_SUCCESS);
       n++;
     }
     it.next(&it, &status);
-    TEST_ASSERT(status == SMB_STOP_ITERATION);
+    TA_INT_EQ(status, SMB_STOP_ITERATION);
     it.destroy(&it);
     cleanup();
-    TEST_ASSERT(i == n);
+    TA_INT_EQ(i, n);
   }
   return 0;
 }
@@ -112,8 +112,8 @@ int iter_test_values()
   int i = 0;
   while (it.has_next(&it)) {
     d = it.next(&it, &status);
-    TEST_ASSERT(status == SMB_SUCCESS);
-    TEST_ASSERT(d.data_llint == 100 * i);
+    TA_INT_EQ(status, SMB_SUCCESS);
+    TA_LLINT_EQ(d.data_llint, (long long)100 * i);
     i++;
   }
   it.destroy(&it);

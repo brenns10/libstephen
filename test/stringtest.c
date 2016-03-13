@@ -29,7 +29,7 @@ int test_read_file(void)
     "This is the second line of my file.\n";
   char *str = read_file(f);
 
-  TEST_ASSERT(strcmp(expected, str) == 0);
+  TA_STR_EQ(expected, str)
   smb_free(str);
   fclose(f);
   return 0;
@@ -43,7 +43,7 @@ int test_read_filew(void)
     L"This is the second line of my file.\n";
   wchar_t *str = read_filew(f);
 
-  TEST_ASSERT(wcscmp(expected, str) == 0);
+  TA_WSTR_EQ(expected, str);
   smb_free(str);
   fclose(f);
   return 0;
@@ -62,7 +62,7 @@ int test_read_line(void)
 
   while (!feof(f)) {
     line = read_line(f);
-    TEST_ASSERT(strcmp(lines[i], line) == 0);
+    TA_STR_EQ(lines[i], line)
     smb_free(line);
     i++;
   }
@@ -83,7 +83,7 @@ int test_read_linew(void)
 
   while (!feof(f)) {
     line = read_linew(f);
-    TEST_ASSERT(wcscmp(lines[i], line) == 0);
+    TA_WSTR_EQ(lines[i], line);
     smb_free(line);
     i++;
   }
@@ -101,7 +101,7 @@ int test_split_lines(void)
   smb_status st = SMB_SUCCESS;
   while (it.has_next(&it)) {
     line = it.next(&it, &st).data_ptr;
-    TEST_ASSERT(strcmp(lines[it.index-1], line) == 0);
+    TA_STR_EQ(lines[it.index-1], line)
     assert(st == SMB_SUCCESS);
   }
   ll_delete(linelist);
@@ -118,7 +118,7 @@ int test_split_linesw(void)
   smb_status st = SMB_SUCCESS;
   while (it.has_next(&it)) {
     line = it.next(&it, &st).data_ptr;
-    TEST_ASSERT(wcscmp(lines[it.index-1], line) == 0);
+    TA_WSTR_EQ(lines[it.index-1], line);
     assert(st == SMB_SUCCESS);
   }
   ll_delete(linelist);
@@ -135,7 +135,7 @@ int test_split_lines_nonewline(void)
   smb_status st = SMB_SUCCESS;
   while (it.has_next(&it)) {
     line = it.next(&it, &st).data_ptr;
-    TEST_ASSERT(strcmp(lines[it.index-1], line) == 0);
+    TA_STR_EQ(lines[it.index-1], line)
     assert(st == SMB_SUCCESS);
   }
   ll_delete(linelist);
@@ -152,7 +152,7 @@ int test_split_linesw_nonewline(void)
   smb_status st = SMB_SUCCESS;
   while (it.has_next(&it)) {
     line = it.next(&it, &st).data_ptr;
-    TEST_ASSERT(wcscmp(lines[it.index-1], line) == 0);
+    TA_WSTR_EQ(lines[it.index-1], line);
     assert(st == SMB_SUCCESS);
   }
   ll_delete(linelist);

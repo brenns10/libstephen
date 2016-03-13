@@ -29,7 +29,7 @@ int bf_test_init()
   bf_init(field, test_bools);
 
   for (i = 0; i < SMB_BITFIELD_SIZE(test_bools); i++) {
-    TEST_ASSERT(field[i] == 0);
+    TA_INT_EQ(field[i], 0);
   }
 
   return 0;

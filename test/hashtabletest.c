@@ -76,8 +76,8 @@ int ht_test_insert()
   for (i = 0; i < TEST_PAIRS; i++) {
     key.data_ptr = test_keys[i];
     rv = ht_get(table, key, &status);
-    TEST_ASSERT(status == SMB_SUCCESS);
-    TEST_ASSERT(test_values[i] == rv.data_ptr);
+    TA_INT_EQ(status, SMB_SUCCESS);
+    TA_STR_EQ(test_values[i], (char*)rv.data_ptr);
   }
 
   ht_delete(table);
@@ -98,20 +98,20 @@ int ht_test_remove()
     ht_insert(table, key, value);
   }
 
-  TEST_ASSERT(table->length == TEST_PAIRS);
+  TA_INT_EQ(table->length, TEST_PAIRS);
 
   for (i = 0; i < TEST_PAIRS; i++) {
     key.data_ptr = test_keys[i];
     value = ht_get(table, key, &status);
-    TEST_ASSERT(status == SMB_SUCCESS);
-    TEST_ASSERT(test_values[i] == value.data_ptr);
+    TA_INT_EQ(status, SMB_SUCCESS);
+    TA_STR_EQ(test_values[i], (char*)value.data_ptr);
     ht_remove_act(table, key, ht_test_deleter, &status);
-    TEST_ASSERT(status == SMB_SUCCESS);
-    TEST_ASSERT(table->length == TEST_PAIRS - i - 1);
+    TA_INT_EQ(status, SMB_SUCCESS);
+    TA_INT_EQ(table->length, TEST_PAIRS - i - 1);
   }
 
   ht_delete_act(table, ht_test_deleter);
-  TEST_ASSERT(ht_test_deletions == TEST_PAIRS);
+  TA_INT_EQ(ht_test_deletions, TEST_PAIRS);
   return 0;
 }
 
@@ -126,7 +126,7 @@ int ht_test_remove_invalid()
 
   key.data_ptr = "invalid key";
   ht_get(table, key, &status);
-  TEST_ASSERT(status == SMB_NOT_FOUND_ERROR);
+  TA_INT_EQ(status, SMB_NOT_FOUND_ERROR);
 
   ht_delete(table);
   return 0;
@@ -149,29 +149,29 @@ int ht_test_buckets()
     key.data_llint = i;
     value.data_llint = -i;
     ht_insert(table, key, value);
-    TEST_ASSERT(status == SMB_SUCCESS);
-    TEST_ASSERT(table->length == i+1);
+    TA_INT_EQ(status, SMB_SUCCESS);
+    TA_INT_EQ(table->length, i+1);
   }
 
   // Remove one from the middle of the bucket list.
   key.data_llint = 10;
   ht_remove_act(table, key, ht_test_deleter, &status);
-  TEST_ASSERT(status == SMB_SUCCESS);
-  TEST_ASSERT(table->length == 19);
+  TA_INT_EQ(status, SMB_SUCCESS);
+  TA_INT_EQ(table->length, 19);
 
   // Remove one from the beginning of the bucket list.
   key.data_llint = 0;
   ht_remove_act(table, key, ht_test_deleter, &status);
-  TEST_ASSERT(status == SMB_SUCCESS);
-  TEST_ASSERT(table->length == 18);
+  TA_INT_EQ(status, SMB_SUCCESS);
+  TA_INT_EQ(table->length, 18);
 
   //ht_print(table, 0);
 
   // Remove from the end of the list.
   key.data_llint = 19;
   ht_remove_act(table, key, ht_test_deleter, &status);
-  TEST_ASSERT(status == SMB_SUCCESS);
-  TEST_ASSERT(table->length == 17);
+  TA_INT_EQ(status, SMB_SUCCESS);
+  TA_INT_EQ(table->length, 17);
 
   //ht_print(table, 0);
 
@@ -179,19 +179,19 @@ int ht_test_buckets()
   for (i = 1; i < 10; i++) {
     key.data_llint = i;
     value = ht_get(table, key, &status);
-    TEST_ASSERT(status == SMB_SUCCESS);
-    TEST_ASSERT(value.data_llint == -i);
+    TA_INT_EQ(status, SMB_SUCCESS);
+    TA_LLINT_EQ(value.data_llint, (long long)-i);
   }
 
   for (i = 11; i < 19; i++) {
     key.data_llint = i;
     value = ht_get(table, key, &status);
-    TEST_ASSERT(status == SMB_SUCCESS);
-    TEST_ASSERT(value.data_llint == -i);
+    TA_INT_EQ(status, SMB_SUCCESS);
+    TA_LLINT_EQ(value.data_llint, (long long)-i);
   }
 
   ht_delete_act(table, ht_test_deleter);
-  TEST_ASSERT(ht_test_deletions == 20);
+  TA_INT_EQ(ht_test_deletions, 20);
   return 0;
 }
 
@@ -213,25 +213,25 @@ int ht_test_resize()
     key.data_llint = i;
     value.data_llint = -i;
     ht_insert(table, key, value);
-    TEST_ASSERT(table->allocated == HASH_TABLE_INITIAL_SIZE);
-    TEST_ASSERT(table->length == i + 1);
+    TA_INT_EQ(table->allocated, HASH_TABLE_INITIAL_SIZE);
+    TA_INT_EQ(table->length, i + 1);
   }
 
   key.data_llint = last_stable;
   value.data_llint = -last_stable;
   ht_insert(table, key, value);
-  TEST_ASSERT(table->allocated > HASH_TABLE_INITIAL_SIZE);
-  TEST_ASSERT(table->length == last_stable + 1);
+  TA_INT_GT(table->allocated, HASH_TABLE_INITIAL_SIZE);
+  TA_INT_EQ(table->length, last_stable + 1);
 
   for (i = 0; i <= last_stable; i++) {
     key.data_llint = i;
     value = ht_get(table, key, &status);
-    TEST_ASSERT(status == SMB_SUCCESS);
-    TEST_ASSERT(value.data_llint == -i);
+    TA_INT_EQ(status, SMB_SUCCESS);
+    TA_LLINT_EQ(value.data_llint, (long long)-i);
   }
 
   ht_delete_act(table, ht_test_deleter);
-  TEST_ASSERT(ht_test_deletions == last_stable + 1);
+  TA_INT_EQ(ht_test_deletions, last_stable + 1);
   return 0;
 }
 
@@ -251,29 +251,29 @@ int ht_test_duplicate()
   }
 
   for (i = 0; i < TEST_PAIRS; i += 2) {
-    TEST_ASSERT(table->length == TEST_PAIRS);
+    TA_INT_EQ(table->length, TEST_PAIRS);
 
     key.data_ptr = test_keys[i];
     value.data_ptr = newKey;
     ht_insert(table, key, value);
     value = ht_get(table, key, &status);
-    TEST_ASSERT(status == SMB_SUCCESS);
-    TEST_ASSERT(value.data_ptr == newKey);
+    TA_INT_EQ(status, SMB_SUCCESS);
+    TA_PTR_EQ(value.data_ptr, newKey);
   }
 
   for (i = 0; i < TEST_PAIRS; i++) {
     key.data_ptr = test_keys[i];
     value = ht_get(table, key, &status);
-    TEST_ASSERT(status == SMB_SUCCESS);
+    TA_INT_EQ(status, SMB_SUCCESS);
     if (i % 2 == 1) {
-      TEST_ASSERT(value.data_ptr == test_values[i]);
+      TA_PTR_EQ(value.data_ptr, test_values[i]);
     } else {
-      TEST_ASSERT(value.data_ptr == newKey);
+      TA_PTR_EQ(value.data_ptr, newKey);
     }
   }
 
   ht_delete_act(table, ht_test_deleter);
-  TEST_ASSERT(ht_test_deletions == TEST_PAIRS);
+  TA_INT_EQ(ht_test_deletions, TEST_PAIRS);
   return 0;
 }
 

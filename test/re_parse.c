@@ -31,11 +31,11 @@ static int test_TERM_CharSym(void)
   PTree *tree = TERM(&l);
   expect(Eof, &l);
 
-  TEST_ASSERT(tree != NULL);
-  TEST_ASSERT(tree->nt == TERMnt);
-  TEST_ASSERT(tree->nchildren == 1);
-  TEST_ASSERT(tree->children[0]->tok.sym == CharSym);
-  TEST_ASSERT(tree->children[0]->tok.c == 'a');
+  TA_PTR_NE(tree, NULL);
+  TA_INT_EQ(tree->nt, TERMnt);
+  TA_INT_EQ(tree->nchildren, 1);
+  TA_INT_EQ(tree->children[0]->tok.sym, CharSym);
+  TA_CHAR_EQ(tree->children[0]->tok.c, 'a');
 
   free_tree(tree);
   return 0;
@@ -53,11 +53,11 @@ static int test_TERM_Minus(void)
   PTree *tree = TERM(&l);
   expect(Eof, &l);
 
-  TEST_ASSERT(tree != NULL);
-  TEST_ASSERT(tree->nt == TERMnt);
-  TEST_ASSERT(tree->nchildren == 1);
-  TEST_ASSERT(tree->children[0]->tok.sym == Minus);
-  TEST_ASSERT(tree->children[0]->tok.c == '-');
+  TA_PTR_NE(tree, NULL);
+  TA_INT_EQ(tree->nt, TERMnt);
+  TA_INT_EQ(tree->nchildren, 1);
+  TA_INT_EQ(tree->children[0]->tok.sym, Minus);
+  TA_CHAR_EQ(tree->children[0]->tok.c, '-');
 
   free_tree(tree);
   return 0;
@@ -75,11 +75,11 @@ static int test_TERM_Caret(void)
   PTree *tree = TERM(&l);
   expect(Eof, &l);
 
-  TEST_ASSERT(tree != NULL);
-  TEST_ASSERT(tree->nt == TERMnt);
-  TEST_ASSERT(tree->nchildren == 1);
-  TEST_ASSERT(tree->children[0]->tok.sym == Caret);
-  TEST_ASSERT(tree->children[0]->tok.c == '^');
+  TA_PTR_NE(tree, NULL);
+  TA_INT_EQ(tree->nt, TERMnt);
+  TA_INT_EQ(tree->nchildren, 1);
+  TA_INT_EQ(tree->children[0]->tok.sym, Caret);
+  TA_CHAR_EQ(tree->children[0]->tok.c, '^');
 
   free_tree(tree);
   return 0;
@@ -97,11 +97,11 @@ static int test_TERM_Dot(void)
   PTree *tree = TERM(&l);
   expect(Eof, &l);
 
-  TEST_ASSERT(tree != NULL);
-  TEST_ASSERT(tree->nt == TERMnt);
-  TEST_ASSERT(tree->nchildren == 1);
-  TEST_ASSERT(tree->children[0]->tok.sym == Dot);
-  TEST_ASSERT(tree->children[0]->tok.c == '.');
+  TA_PTR_NE(tree, NULL);
+  TA_INT_EQ(tree->nt, TERMnt);
+  TA_INT_EQ(tree->nchildren, 1);
+  TA_INT_EQ(tree->children[0]->tok.sym, Dot);
+  TA_CHAR_EQ(tree->children[0]->tok.c, '.');
 
   free_tree(tree);
   return 0;
@@ -119,11 +119,11 @@ static int test_TERM_Special(void)
   PTree *tree = TERM(&l);
   expect(Eof, &l);
 
-  TEST_ASSERT(tree != NULL);
-  TEST_ASSERT(tree->nt == TERMnt);
-  TEST_ASSERT(tree->nchildren == 1);
-  TEST_ASSERT(tree->children[0]->tok.sym == Special);
-  TEST_ASSERT(tree->children[0]->tok.c == 'w');
+  TA_PTR_NE(tree, NULL);
+  TA_INT_EQ(tree->nt, TERMnt);
+  TA_INT_EQ(tree->nchildren, 1);
+  TA_INT_EQ(tree->children[0]->tok.sym, Special);
+  TA_CHAR_EQ(tree->children[0]->tok.c, 'w');
 
   free_tree(tree);
   return 0;
@@ -141,10 +141,10 @@ static int test_TERM_Subexpr(void)
   PTree *tree = TERM(&l);
   expect(Eof, &l);
 
-  TEST_ASSERT(tree != NULL);
-  TEST_ASSERT(tree->nt == TERMnt);
-  TEST_ASSERT(tree->nchildren == 3);
-  TEST_ASSERT(tree->children[1]->nt == REGEXnt);
+  TA_PTR_NE(tree, NULL);
+  TA_INT_EQ(tree->nt, TERMnt);
+  TA_INT_EQ(tree->nchildren, 3);
+  TA_INT_EQ(tree->children[1]->nt, REGEXnt);
 
   free_tree(tree);
   return 0;
@@ -162,11 +162,11 @@ static int test_TERM_Class(void)
   PTree *tree = TERM(&l);
   expect(Eof, &l);
 
-  TEST_ASSERT(tree != NULL);
-  TEST_ASSERT(tree->nt == TERMnt);
-  TEST_ASSERT(tree->nchildren == 3);
-  TEST_ASSERT(tree->production == 3);
-  TEST_ASSERT(tree->children[1]->nt == CLASSnt);
+  TA_PTR_NE(tree, NULL);
+  TA_INT_EQ(tree->nt, TERMnt);
+  TA_INT_EQ(tree->nchildren, 3);
+  TA_INT_EQ(tree->production, 3);
+  TA_INT_EQ(tree->children[1]->nt, CLASSnt);
 
   free_tree(tree);
   return 0;
@@ -184,11 +184,11 @@ static int test_TERM_NClass(void)
   PTree *tree = TERM(&l);
   expect(Eof, &l);
 
-  TEST_ASSERT(tree != NULL);
-  TEST_ASSERT(tree->nt == TERMnt);
-  TEST_ASSERT(tree->nchildren == 3);
-  TEST_ASSERT(tree->production == 4);
-  TEST_ASSERT(tree->children[1]->nt == CLASSnt);
+  TA_PTR_NE(tree, NULL);
+  TA_INT_EQ(tree->nt, TERMnt);
+  TA_INT_EQ(tree->nchildren, 3);
+  TA_INT_EQ(tree->production, 4);
+  TA_INT_EQ(tree->children[1]->nt, CLASSnt);
 
   free_tree(tree);
   return 0;
@@ -206,11 +206,11 @@ static int test_EXPR_Term(void)
   PTree *tree = EXPR(&l);
   expect(Eof, &l);
 
-  TEST_ASSERT(tree != NULL);
-  TEST_ASSERT(tree->nt == EXPRnt);
-  TEST_ASSERT(tree->nchildren == 1);
-  TEST_ASSERT(tree->children[0]->nt == TERMnt);
-  TEST_ASSERT(tree->children[0]->nchildren == 1);
+  TA_PTR_NE(tree, NULL);
+  TA_INT_EQ(tree->nt, EXPRnt);
+  TA_INT_EQ(tree->nchildren, 1);
+  TA_INT_EQ(tree->children[0]->nt, TERMnt);
+  TA_INT_EQ(tree->children[0]->nchildren, 1);
 
   free_tree(tree);
   return 0;
@@ -228,11 +228,11 @@ static int test_EXPR_Plus(void)
   PTree *tree = EXPR(&l);
   expect(Eof, &l);
 
-  TEST_ASSERT(tree != NULL);
-  TEST_ASSERT(tree->nt == EXPRnt);
-  TEST_ASSERT(tree->nchildren == 2);
-  TEST_ASSERT(tree->children[0]->nt == TERMnt);
-  TEST_ASSERT(tree->children[0]->nchildren == 1);
+  TA_PTR_NE(tree, NULL);
+  TA_INT_EQ(tree->nt, EXPRnt);
+  TA_INT_EQ(tree->nchildren, 2);
+  TA_INT_EQ(tree->children[0]->nt, TERMnt);
+  TA_INT_EQ(tree->children[0]->nchildren, 1);
   TEST_ASSERT(tree->children[1]->tok.sym == Plus);
 
   free_tree(tree);
@@ -251,11 +251,11 @@ static int test_EXPR_PlusQuestion(void)
   PTree *tree = EXPR(&l);
   expect(Eof, &l);
 
-  TEST_ASSERT(tree != NULL);
-  TEST_ASSERT(tree->nt == EXPRnt);
-  TEST_ASSERT(tree->nchildren == 3);
-  TEST_ASSERT(tree->children[0]->nt == TERMnt);
-  TEST_ASSERT(tree->children[0]->nchildren == 1);
+  TA_PTR_NE(tree, NULL);
+  TA_INT_EQ(tree->nt, EXPRnt);
+  TA_INT_EQ(tree->nchildren, 3);
+  TA_INT_EQ(tree->children[0]->nt, TERMnt);
+  TA_INT_EQ(tree->children[0]->nchildren, 1);
   TEST_ASSERT(tree->children[1]->tok.sym == Plus);
   TEST_ASSERT(tree->children[2]->tok.sym == Question);
 
@@ -275,11 +275,11 @@ static int test_EXPR_Star(void)
   PTree *tree = EXPR(&l);
   expect(Eof, &l);
 
-  TEST_ASSERT(tree != NULL);
-  TEST_ASSERT(tree->nt == EXPRnt);
-  TEST_ASSERT(tree->nchildren == 2);
-  TEST_ASSERT(tree->children[0]->nt == TERMnt);
-  TEST_ASSERT(tree->children[0]->nchildren == 1);
+  TA_PTR_NE(tree, NULL);
+  TA_INT_EQ(tree->nt, EXPRnt);
+  TA_INT_EQ(tree->nchildren, 2);
+  TA_INT_EQ(tree->children[0]->nt, TERMnt);
+  TA_INT_EQ(tree->children[0]->nchildren, 1);
   TEST_ASSERT(tree->children[1]->tok.sym == Star);
 
   free_tree(tree);
@@ -298,11 +298,11 @@ static int test_EXPR_StarQuestion(void)
   PTree *tree = EXPR(&l);
   expect(Eof, &l);
 
-  TEST_ASSERT(tree != NULL);
-  TEST_ASSERT(tree->nt == EXPRnt);
-  TEST_ASSERT(tree->nchildren == 3);
-  TEST_ASSERT(tree->children[0]->nt == TERMnt);
-  TEST_ASSERT(tree->children[0]->nchildren == 1);
+  TA_PTR_NE(tree, NULL);
+  TA_INT_EQ(tree->nt, EXPRnt);
+  TA_INT_EQ(tree->nchildren, 3);
+  TA_INT_EQ(tree->children[0]->nt, TERMnt);
+  TA_INT_EQ(tree->children[0]->nchildren, 1);
   TEST_ASSERT(tree->children[1]->tok.sym == Star);
   TEST_ASSERT(tree->children[2]->tok.sym == Question);
 
@@ -322,11 +322,11 @@ static int test_EXPR_Question(void)
   PTree *tree = EXPR(&l);
   expect(Eof, &l);
 
-  TEST_ASSERT(tree != NULL);
-  TEST_ASSERT(tree->nt == EXPRnt);
-  TEST_ASSERT(tree->nchildren == 2);
-  TEST_ASSERT(tree->children[0]->nt == TERMnt);
-  TEST_ASSERT(tree->children[0]->nchildren == 1);
+  TA_PTR_NE(tree, NULL);
+  TA_INT_EQ(tree->nt, EXPRnt);
+  TA_INT_EQ(tree->nchildren, 2);
+  TA_INT_EQ(tree->children[0]->nt, TERMnt);
+  TA_INT_EQ(tree->children[0]->nchildren, 1);
   TEST_ASSERT(tree->children[1]->tok.sym == Question);
 
   free_tree(tree);
@@ -345,11 +345,11 @@ static int test_EXPR_QuestionQuestion(void)
   PTree *tree = EXPR(&l);
   expect(Eof, &l);
 
-  TEST_ASSERT(tree != NULL);
-  TEST_ASSERT(tree->nt == EXPRnt);
-  TEST_ASSERT(tree->nchildren == 3);
-  TEST_ASSERT(tree->children[0]->nt == TERMnt);
-  TEST_ASSERT(tree->children[0]->nchildren == 1);
+  TA_PTR_NE(tree, NULL);
+  TA_INT_EQ(tree->nt, EXPRnt);
+  TA_INT_EQ(tree->nchildren, 3);
+  TA_INT_EQ(tree->children[0]->nt, TERMnt);
+  TA_INT_EQ(tree->children[0]->nchildren, 1);
   TEST_ASSERT(tree->children[1]->tok.sym == Question);
   TEST_ASSERT(tree->children[2]->tok.sym == Question);
 
@@ -369,11 +369,11 @@ static int test_SUB_Normal(void)
   PTree *tree = SUB(&l);
   expect(Eof, &l);
 
-  TEST_ASSERT(tree != NULL);
-  TEST_ASSERT(tree->nt == SUBnt);
-  TEST_ASSERT(tree->nchildren == 1);
-  TEST_ASSERT(tree->children[0]->nt == EXPRnt);
-  TEST_ASSERT(tree->children[0]->nchildren == 1);
+  TA_PTR_NE(tree, NULL);
+  TA_INT_EQ(tree->nt, SUBnt);
+  TA_INT_EQ(tree->nchildren, 1);
+  TA_INT_EQ(tree->children[0]->nt, EXPRnt);
+  TA_INT_EQ(tree->children[0]->nchildren, 1);
   free_tree(tree);
   return 0;
 }
@@ -390,14 +390,14 @@ static int test_SUB_Concat(void)
   PTree *tree = SUB(&l);
   expect(Eof, &l);
 
-  TEST_ASSERT(tree != NULL);
-  TEST_ASSERT(tree->nt == SUBnt);
-  TEST_ASSERT(tree->nchildren == 2);
-  TEST_ASSERT(tree->children[0]->nt == EXPRnt);
-  TEST_ASSERT(tree->children[0]->nchildren == 1);
-  TEST_ASSERT(tree->children[1]->nt == SUBnt);
-  TEST_ASSERT(tree->children[1]->nchildren == 1);
-  TEST_ASSERT(tree->children[1]->children[0]->nt == EXPRnt);
+  TA_PTR_NE(tree, NULL);
+  TA_INT_EQ(tree->nt, SUBnt);
+  TA_INT_EQ(tree->nchildren, 2);
+  TA_INT_EQ(tree->children[0]->nt, EXPRnt);
+  TA_INT_EQ(tree->children[0]->nchildren, 1);
+  TA_INT_EQ(tree->children[1]->nt, SUBnt);
+  TA_INT_EQ(tree->children[1]->nchildren, 1);
+  TA_INT_EQ(tree->children[1]->children[0]->nt, EXPRnt);
 
   free_tree(tree);
   return 0;
@@ -415,11 +415,11 @@ static int test_REGEX_Normal(void)
   PTree *tree = REGEX(&l);
   expect(Eof, &l);
 
-  TEST_ASSERT(tree != NULL);
-  TEST_ASSERT(tree->nt == REGEXnt);
-  TEST_ASSERT(tree->nchildren == 1);
-  TEST_ASSERT(tree->children[0]->nt == SUBnt);
-  TEST_ASSERT(tree->children[0]->nchildren == 1);
+  TA_PTR_NE(tree, NULL);
+  TA_INT_EQ(tree->nt, REGEXnt);
+  TA_INT_EQ(tree->nchildren, 1);
+  TA_INT_EQ(tree->children[0]->nt, SUBnt);
+  TA_INT_EQ(tree->children[0]->nchildren, 1);
 
   free_tree(tree);
   return 0;
@@ -437,15 +437,15 @@ static int test_REGEX_Alternate(void)
   PTree *tree = REGEX(&l);
   expect(Eof, &l);
 
-  TEST_ASSERT(tree != NULL);
-  TEST_ASSERT(tree->nt == REGEXnt);
-  TEST_ASSERT(tree->nchildren == 3);
-  TEST_ASSERT(tree->children[0]->nt == SUBnt);
-  TEST_ASSERT(tree->children[0]->nchildren == 1);
-  TEST_ASSERT(tree->children[1]->tok.sym == Pipe);
-  TEST_ASSERT(tree->children[2]->nt == REGEXnt);
-  TEST_ASSERT(tree->children[2]->nchildren == 1);
-  TEST_ASSERT(tree->children[2]->children[0]->nt == SUBnt);
+  TA_PTR_NE(tree, NULL);
+  TA_INT_EQ(tree->nt, REGEXnt);
+  TA_INT_EQ(tree->nchildren, 3);
+  TA_INT_EQ(tree->children[0]->nt, SUBnt);
+  TA_INT_EQ(tree->children[0]->nchildren, 1);
+  TA_INT_EQ(tree->children[1]->tok.sym, Pipe);
+  TA_INT_EQ(tree->children[2]->nt, REGEXnt);
+  TA_INT_EQ(tree->children[2]->nchildren, 1);
+  TA_INT_EQ(tree->children[2]->children[0]->nt, SUBnt);
 
   free_tree(tree);
   return 0;
@@ -463,13 +463,13 @@ static int test_CLASS_range(void)
   PTree *tree = CLASS(&l);
   expect(Eof, &l);
 
-  TEST_ASSERT(tree != NULL);
-  TEST_ASSERT(tree->nt == CLASSnt);
-  TEST_ASSERT(tree->nchildren == 2);
-  TEST_ASSERT(tree->children[0]->tok.sym == CharSym);
-  TEST_ASSERT(tree->children[0]->tok.c == 'a');
-  TEST_ASSERT(tree->children[1]->tok.sym == CharSym);
-  TEST_ASSERT(tree->children[1]->tok.c == 'b');
+  TA_PTR_NE(tree, NULL);
+  TA_INT_EQ(tree->nt, CLASSnt);
+  TA_INT_EQ(tree->nchildren, 2);
+  TA_INT_EQ(tree->children[0]->tok.sym, CharSym);
+  TA_CHAR_EQ(tree->children[0]->tok.c, 'a');
+  TA_INT_EQ(tree->children[1]->tok.sym, CharSym);
+  TA_CHAR_EQ(tree->children[1]->tok.c, 'b');
 
   free_tree(tree);
   return 0;
@@ -487,19 +487,19 @@ static int test_CLASS_range_range(void)
   PTree *tree = CLASS(&l);
   expect(Eof, &l);
 
-  TEST_ASSERT(tree != NULL);
-  TEST_ASSERT(tree->nt == CLASSnt);
-  TEST_ASSERT(tree->nchildren == 3);
-  TEST_ASSERT(tree->children[0]->tok.sym == CharSym);
-  TEST_ASSERT(tree->children[0]->tok.c == 'a');
-  TEST_ASSERT(tree->children[1]->tok.sym == CharSym);
-  TEST_ASSERT(tree->children[1]->tok.c == 'b');
-  TEST_ASSERT(tree->children[2]->nt == CLASSnt);
-  TEST_ASSERT(tree->children[2]->nchildren == 2);
-  TEST_ASSERT(tree->children[2]->children[0]->tok.sym == CharSym);
-  TEST_ASSERT(tree->children[2]->children[0]->tok.c == '1');
-  TEST_ASSERT(tree->children[2]->children[1]->tok.sym == CharSym);
-  TEST_ASSERT(tree->children[2]->children[1]->tok.c == '2');
+  TA_PTR_NE(tree, NULL);
+  TA_INT_EQ(tree->nt, CLASSnt);
+  TA_INT_EQ(tree->nchildren, 3);
+  TA_INT_EQ(tree->children[0]->tok.sym, CharSym);
+  TA_CHAR_EQ(tree->children[0]->tok.c, 'a');
+  TA_INT_EQ(tree->children[1]->tok.sym, CharSym);
+  TA_CHAR_EQ(tree->children[1]->tok.c, 'b');
+  TA_INT_EQ(tree->children[2]->nt, CLASSnt);
+  TA_INT_EQ(tree->children[2]->nchildren, 2);
+  TA_INT_EQ(tree->children[2]->children[0]->tok.sym, CharSym);
+  TA_CHAR_EQ(tree->children[2]->children[0]->tok.c, '1');
+  TA_INT_EQ(tree->children[2]->children[1]->tok.sym, CharSym);
+  TA_CHAR_EQ(tree->children[2]->children[1]->tok.c, '2');
 
   free_tree(tree);
   return 0;
@@ -519,11 +519,11 @@ static int test_CLASS_single(void)
     PTree *tree = CLASS(&l);
     expect(Eof, &l);
 
-    TEST_ASSERT(tree != NULL);
-    TEST_ASSERT(tree->nt == CLASSnt);
-    TEST_ASSERT(tree->nchildren == 1);
-    TEST_ASSERT(tree->children[0]->tok.sym == CharSym);
-    TEST_ASSERT(tree->children[0]->tok.c == accept[i][0]);
+    TA_PTR_NE(tree, NULL);
+    TA_INT_EQ(tree->nt, CLASSnt);
+    TA_INT_EQ(tree->nchildren, 1);
+    TA_INT_EQ(tree->children[0]->tok.sym, CharSym);
+    TA_INT_EQ(tree->children[0]->tok.c, accept[i][0]);
 
     free_tree(tree);
   }
@@ -542,14 +542,14 @@ static int test_CLASS_single_hyphen(void)
   PTree *tree = CLASS(&l);
   expect(Eof, &l);
 
-  TEST_ASSERT(tree != NULL);
-  TEST_ASSERT(tree->nt == CLASSnt);
-  TEST_ASSERT(tree->nchildren == 2);
-  TEST_ASSERT(tree->children[0]->tok.sym == CharSym);
-  TEST_ASSERT(tree->children[0]->tok.c == 'a');
-  TEST_ASSERT(tree->children[1]->nt == CLASSnt);
-  TEST_ASSERT(tree->children[1]->nchildren == 1);
-  TEST_ASSERT(tree->children[1]->children[0]->tok.sym == Minus);
+  TA_PTR_NE(tree, NULL);
+  TA_INT_EQ(tree->nt, CLASSnt);
+  TA_INT_EQ(tree->nchildren, 2);
+  TA_INT_EQ(tree->children[0]->tok.sym, CharSym);
+  TA_CHAR_EQ(tree->children[0]->tok.c, 'a');
+  TA_INT_EQ(tree->children[1]->nt, CLASSnt);
+  TA_INT_EQ(tree->children[1]->nchildren, 1);
+  TA_INT_EQ(tree->children[1]->children[0]->tok.sym, Minus);
 
   free_tree(tree);
   return 0;
@@ -559,30 +559,30 @@ static int test_reparse(void)
 {
   PTree *tree = reparse("a+|b*");
 
-  TEST_ASSERT(tree != NULL);
-  TEST_ASSERT(tree->nt == REGEXnt);
-  TEST_ASSERT(tree->nchildren == 3);
-  TEST_ASSERT(tree->children[0]->nt == SUBnt);
-  TEST_ASSERT(tree->children[0]->nchildren == 1);
-  TEST_ASSERT(tree->children[0]->children[0]->nt == EXPRnt);
-  TEST_ASSERT(tree->children[0]->children[0]->nchildren == 2);
-  TEST_ASSERT(tree->children[0]->children[0]->children[0]->nt == TERMnt);
-  TEST_ASSERT(tree->children[0]->children[0]->children[0]->nchildren == 1);
-  TEST_ASSERT(tree->children[0]->children[0]->children[0]->children[0]->tok.sym == CharSym);
-  TEST_ASSERT(tree->children[0]->children[0]->children[0]->children[0]->tok.c == 'a');
-  TEST_ASSERT(tree->children[0]->children[0]->children[1]->tok.sym == Plus);
-  TEST_ASSERT(tree->children[1]->tok.sym == Pipe);
-  TEST_ASSERT(tree->children[2]->nt == REGEXnt);
-  TEST_ASSERT(tree->children[2]->nchildren == 1);
-  TEST_ASSERT(tree->children[2]->children[0]->nt == SUBnt);
-  TEST_ASSERT(tree->children[2]->children[0]->nchildren == 1);
-  TEST_ASSERT(tree->children[2]->children[0]->children[0]->nt == EXPRnt);
-  TEST_ASSERT(tree->children[2]->children[0]->children[0]->nchildren == 2);
-  TEST_ASSERT(tree->children[2]->children[0]->children[0]->children[0]->nt == TERMnt);
-  TEST_ASSERT(tree->children[2]->children[0]->children[0]->children[0]->nchildren == 1);
-  TEST_ASSERT(tree->children[2]->children[0]->children[0]->children[0]->children[0]->tok.sym == CharSym);
-  TEST_ASSERT(tree->children[2]->children[0]->children[0]->children[0]->children[0]->tok.c == 'b');
-  TEST_ASSERT(tree->children[2]->children[0]->children[0]->children[1]->tok.sym == Star);
+  TA_PTR_NE(tree, NULL);
+  TA_INT_EQ(tree->nt, REGEXnt);
+  TA_INT_EQ(tree->nchildren, 3);
+  TA_INT_EQ(tree->children[0]->nt, SUBnt);
+  TA_INT_EQ(tree->children[0]->nchildren, 1);
+  TA_INT_EQ(tree->children[0]->children[0]->nt, EXPRnt);
+  TA_INT_EQ(tree->children[0]->children[0]->nchildren, 2);
+  TA_INT_EQ(tree->children[0]->children[0]->children[0]->nt, TERMnt);
+  TA_INT_EQ(tree->children[0]->children[0]->children[0]->nchildren, 1);
+  TA_INT_EQ(tree->children[0]->children[0]->children[0]->children[0]->tok.sym, CharSym);
+  TA_CHAR_EQ(tree->children[0]->children[0]->children[0]->children[0]->tok.c, 'a');
+  TA_INT_EQ(tree->children[0]->children[0]->children[1]->tok.sym, Plus);
+  TA_INT_EQ(tree->children[1]->tok.sym, Pipe);
+  TA_INT_EQ(tree->children[2]->nt, REGEXnt);
+  TA_INT_EQ(tree->children[2]->nchildren, 1);
+  TA_INT_EQ(tree->children[2]->children[0]->nt, SUBnt);
+  TA_INT_EQ(tree->children[2]->children[0]->nchildren, 1);
+  TA_INT_EQ(tree->children[2]->children[0]->children[0]->nt, EXPRnt);
+  TA_INT_EQ(tree->children[2]->children[0]->children[0]->nchildren, 2);
+  TA_INT_EQ(tree->children[2]->children[0]->children[0]->children[0]->nt, TERMnt);
+  TA_INT_EQ(tree->children[2]->children[0]->children[0]->children[0]->nchildren, 1);
+  TA_INT_EQ(tree->children[2]->children[0]->children[0]->children[0]->children[0]->tok.sym, CharSym);
+  TA_CHAR_EQ(tree->children[2]->children[0]->children[0]->children[0]->children[0]->tok.c, 'b');
+  TA_INT_EQ(tree->children[2]->children[0]->children[0]->children[1]->tok.sym, Star);
 
   free_tree(tree);
   return 0;

@@ -46,12 +46,12 @@ int test_append()
     // Put a small, 200 item load on it.  This tests appending on
     // empty and general appending.
     list.append(&list, d);
-    TEST_ASSERT(list.length(&list) == d.data_llint + 1);
+    TA_LLINT_EQ((long long)list.length(&list), d.data_llint + 1);
 
     // Test that the data is correct.
     for (int i = 0; i < list.length(&list); i++) {
-      TEST_ASSERT(list.get(&list, i, &status).data_llint == i);
-      TEST_ASSERT(status == SMB_SUCCESS);
+      TA_LLINT_EQ(list.get(&list, i, &status).data_llint, (long long) i);
+      TA_INT_EQ(status, SMB_SUCCESS);
     }
   }
 
@@ -68,11 +68,11 @@ int test_prepend()
   // Test prepend about 200 times...
   for (d.data_llint = 0; d.data_llint < 200; d.data_llint++) {
     list.prepend(&list, d);
-    TEST_ASSERT(list.length(&list) == d.data_llint + 1);
+    TA_LLINT_EQ((long long)list.length(&list), d.data_llint + 1);
 
     for (int i = 0; i < list.length(&list); i++) {
-      TEST_ASSERT(list.get(&list, i, &status).data_llint == d.data_llint - i);
-      TEST_ASSERT(status == SMB_SUCCESS);
+      TA_LLINT_EQ(list.get(&list, i, &status).data_llint, d.data_llint - i);
+      TA_INT_EQ(status, SMB_SUCCESS);
     }
   }
 
@@ -94,31 +94,31 @@ int test_set()
 
   // Verify the data
   for (d.data_llint = 0 ; d.data_llint < length; d.data_llint++) {
-    TEST_ASSERT(list.get(&list, d.data_llint, &status).data_llint == d.data_llint);
-    TEST_ASSERT(status == SMB_SUCCESS);
+    TA_LLINT_EQ(list.get(&list, d.data_llint, &status).data_llint, d.data_llint);
+    TA_INT_EQ(status, SMB_SUCCESS);
   }
 
   // Test that the length is correct
-  TEST_ASSERT(list.length(&list) == length);
+  TA_INT_EQ(list.length(&list), length);
 
   // Test set
   for (int i = 0; i < list.length(&list); i++) {
     d.data_llint = length - i;
     list.set(&list, i, d, &status);
-    TEST_ASSERT(status == SMB_SUCCESS);
-    TEST_ASSERT(list.get(&list, i, &status).data_llint == d.data_llint);
-    TEST_ASSERT(status == SMB_SUCCESS);
+    TA_INT_EQ(status, SMB_SUCCESS);
+    TA_LLINT_EQ(list.get(&list, i, &status).data_llint, d.data_llint);
+    TA_INT_EQ(status, SMB_SUCCESS);
   }
 
   // Test that the length is still correct
-  TEST_ASSERT(list.length(&list) == length);
+  TA_INT_EQ(list.length(&list), length);
 
   list.set(&list, list.length(&list), d, &status);
-  TEST_ASSERT(status == SMB_INDEX_ERROR);
+  TA_INT_EQ(status, SMB_INDEX_ERROR);
 
   status = SMB_SUCCESS;
   list.get(&list, list.length(&list), &status);
-  TEST_ASSERT(status == SMB_INDEX_ERROR);
+  TA_INT_EQ(status, SMB_INDEX_ERROR);
 
   list.delete(&list);
   return 0;
@@ -138,43 +138,43 @@ int test_remove()
 
   // Verify the data
   for (d.data_llint = 0 ; d.data_llint < length; d.data_llint++) {
-    TEST_ASSERT(list.get(&list, d.data_llint, &status).data_llint == d.data_llint);
-    TEST_ASSERT(status == SMB_SUCCESS);
+    TA_LLINT_EQ(list.get(&list, d.data_llint, &status).data_llint, d.data_llint);
+    TA_INT_EQ(status, SMB_SUCCESS);
   }
 
   // Remove first element
   list.remove(&list, 0, &status);
-  TEST_ASSERT(status == SMB_SUCCESS);
-  TEST_ASSERT(list.length(&list) == length - 1);
-  TEST_ASSERT(list.get(&list, 0, &status).data_llint == 1);
-  TEST_ASSERT(status == SMB_SUCCESS);
+  TA_INT_EQ(status, SMB_SUCCESS);
+  TA_INT_EQ(list.length(&list), length - 1);
+  TA_LLINT_EQ(list.get(&list, 0, &status).data_llint, (long long) 1);
+  TA_INT_EQ(status, SMB_SUCCESS);
 
   // Remove middle element
   list.remove(&list, 10, &status); // list[10] == 11 before
-  TEST_ASSERT(status == SMB_SUCCESS);
-  TEST_ASSERT(list.length(&list) == length - 2);
-  TEST_ASSERT(list.get(&list, 10, &status).data_llint == 12);
-  TEST_ASSERT(status == SMB_SUCCESS);
+  TA_INT_EQ(status, SMB_SUCCESS);
+  TA_INT_EQ(list.length(&list), length - 2);
+  TA_LLINT_EQ(list.get(&list, 10, &status).data_llint, (long long) 12);
+  TA_INT_EQ(status, SMB_SUCCESS);
 
   // Remove last element
   list.remove(&list, list.length(&list) - 1, &status);
-  TEST_ASSERT(status == SMB_SUCCESS);
-  TEST_ASSERT(list.length(&list) == length - 3);
+  TA_INT_EQ(status, SMB_SUCCESS);
+  TA_INT_EQ(list.length(&list), length - 3);
 
   // Remove invalid element
   list.remove(&list, list.length(&list), &status);
-  TEST_ASSERT(status == SMB_INDEX_ERROR);
+  TA_INT_EQ(status, SMB_INDEX_ERROR);
   status = SMB_SUCCESS;
   list.remove(&list, -1, &status);
-  TEST_ASSERT(status == SMB_INDEX_ERROR);
+  TA_INT_EQ(status, SMB_INDEX_ERROR);
   status = SMB_SUCCESS;
 
   // Test all elements values
   int value = 1;
   for (int i = 0; i < length - 3; i++) {
     if (i == 10) value++;
-    TEST_ASSERT(list.get(&list, i, &status).data_llint == value);
-    TEST_ASSERT(status == SMB_SUCCESS);
+    TA_LLINT_EQ(list.get(&list, i, &status).data_llint, (long long)value);
+    TA_INT_EQ(status, SMB_SUCCESS);
     value++;
   }
 
@@ -196,53 +196,53 @@ int test_insert()
 
   // Verify the data
   for (d.data_llint = 0 ; d.data_llint < length; d.data_llint++) {
-    TEST_ASSERT(list.get(&list, d.data_llint, &status).data_llint == d.data_llint);
-    TEST_ASSERT(status == SMB_SUCCESS);
+    TA_LLINT_EQ(list.get(&list, d.data_llint, &status).data_llint, d.data_llint);
+    TA_INT_EQ(status, SMB_SUCCESS);
   }
 
   // Here are the insertions for the test:
   d.data_llint = 100;
   list.insert(&list, 0, d);
-  TEST_ASSERT(list.length(&list) == length + 1);
+  TA_INT_EQ(list.length(&list), length + 1);
 
   d.data_llint = 101;
   list.insert(&list, 10, d);
-  TEST_ASSERT(list.length(&list) == length + 2);
+  TA_INT_EQ(list.length(&list), length + 2);
 
   d.data_llint = 102;
   list.insert(&list, list.length(&list), d);
-  TEST_ASSERT(list.length(&list) == length + 3);
+  TA_INT_EQ(list.length(&list), length + 3);
 
 
   d.data_llint = 101;
   list.insert(&list, -1, d);
-  TEST_ASSERT(list.length(&list) == length + 4);
+  TA_INT_EQ(list.length(&list), length + 4);
 
   d.data_llint = 102;
   list.insert(&list, list.length(&list) + 1, d);
-  TEST_ASSERT(list.length(&list) == length + 5);
+  TA_INT_EQ(list.length(&list), length + 5);
 
   int value = 0;
 
   for (int i = 0; i < list.length(&list); i++) {
     if (i == 0) {
-      TEST_ASSERT(list.get(&list, i, &status).data_llint == 101);
-      TEST_ASSERT(status == SMB_SUCCESS);
+      TA_LLINT_EQ(list.get(&list, i, &status).data_llint, (long long)101);
+      TA_INT_EQ(status, SMB_SUCCESS);
     } else if (i == 1) {
-      TEST_ASSERT(list.get(&list, i, &status).data_llint == 100);
-      TEST_ASSERT(status == SMB_SUCCESS);
+      TA_LLINT_EQ(list.get(&list, i, &status).data_llint, (long long)100);
+      TA_INT_EQ(status, SMB_SUCCESS);
     } else if (i == 11) {
-      TEST_ASSERT(list.get(&list, i, &status).data_llint == 101);
-      TEST_ASSERT(status == SMB_SUCCESS);
+      TA_LLINT_EQ(list.get(&list, i, &status).data_llint, (long long) 101);
+      TA_INT_EQ(status, SMB_SUCCESS);
     } else if (i == list.length(&list) - 2) {
-      TEST_ASSERT(list.get(&list, i, &status).data_llint == 102);
-      TEST_ASSERT(status == SMB_SUCCESS);
+      TA_LLINT_EQ(list.get(&list, i, &status).data_llint, (long long) 102);
+      TA_INT_EQ(status, SMB_SUCCESS);
     } else if (i == list.length(&list) - 1) {
-      TEST_ASSERT(list.get(&list, i, &status).data_llint == 102);
-      TEST_ASSERT(status == SMB_SUCCESS);
+      TA_LLINT_EQ(list.get(&list, i, &status).data_llint, (long long) 102);
+      TA_INT_EQ(status, SMB_SUCCESS);
     } else {
-      TEST_ASSERT(list.get(&list, i, &status).data_llint == value);
-      TEST_ASSERT(status == SMB_SUCCESS);
+      TA_LLINT_EQ(list.get(&list, i, &status).data_llint, (long long) value);
+      TA_INT_EQ(status, SMB_SUCCESS);
       value++;
     }
   }
@@ -264,21 +264,21 @@ int test_front(void)
   }
 
   // Test that peek works correctly with data.
-  TEST_ASSERT(list.peek_front(&list, &status).data_llint == 0);
-  TEST_ASSERT(status == SMB_SUCCESS);
+  TA_LLINT_EQ(list.peek_front(&list, &status).data_llint, (long long) 0);
+  TA_INT_EQ(status, SMB_SUCCESS);
 
   // Check that pop works correctly.
   for (d.data_llint = 0; d.data_llint < length; d.data_llint++) {
-    TEST_ASSERT(list.pop_front(&list, &status).data_llint == d.data_llint);
-    TEST_ASSERT(status == SMB_SUCCESS);
+    TA_LLINT_EQ(list.pop_front(&list, &status).data_llint, d.data_llint);
+    TA_INT_EQ(status, SMB_SUCCESS);
   }
 
   // Check that peek and pop will fail correctly.
   list.peek_front(&list, &status);
-  TEST_ASSERT(status == SMB_INDEX_ERROR);
+  TA_INT_EQ(status, SMB_INDEX_ERROR);
   status = SMB_SUCCESS;
   list.pop_front(&list, &status);
-  TEST_ASSERT(status == SMB_INDEX_ERROR);
+  TA_INT_EQ(status, SMB_INDEX_ERROR);
 
   // Cleanup
   list.delete(&list);
@@ -298,21 +298,21 @@ int test_back(void)
   }
 
   // Test that peek works correctly with data.
-  TEST_ASSERT(list.peek_back(&list, &status).data_llint == 4);
-  TEST_ASSERT(status == SMB_SUCCESS);
+  TA_LLINT_EQ(list.peek_back(&list, &status).data_llint, (long long)4);
+  TA_INT_EQ(status, SMB_SUCCESS);
 
   // Check that pop works correctly.
   for (d.data_llint = length-1; d.data_llint >= 0; d.data_llint--) {
-    TEST_ASSERT(list.pop_back(&list, &status).data_llint == d.data_llint);
-    TEST_ASSERT(status == SMB_SUCCESS);
+    TA_LLINT_EQ(list.pop_back(&list, &status).data_llint, d.data_llint);
+    TA_INT_EQ(status, SMB_SUCCESS);
   }
 
   // Check that peek and pop will fail correctly.
   list.peek_back(&list, &status);
-  TEST_ASSERT(status == SMB_INDEX_ERROR);
+  TA_INT_EQ(status, SMB_INDEX_ERROR);
   status = SMB_SUCCESS;
   list.pop_back(&list, &status);
-  TEST_ASSERT(status == SMB_INDEX_ERROR);
+  TA_INT_EQ(status, SMB_INDEX_ERROR);
 
   // Cleanup
   list.delete(&list);
@@ -335,14 +335,14 @@ int test_index_of(void)
   d.data_ptr = t1;
 
   // Check that the string won't be found in an empty list.
-  TEST_ASSERT(list.index_of(&list, d, &data_compare_string) == -1);
+  TA_INT_EQ(list.index_of(&list, d, &data_compare_string), -1);
 
   // Now add the copy to the list.
   d2.data_ptr = t2;
   list.append(&list, d2);
 
   // Now assert that the string will be found in the list.
-  TEST_ASSERT(list.index_of(&list, d, &data_compare_string) == 0);
+  TA_INT_EQ(list.index_of(&list, d, &data_compare_string), 0);
 
   smb_free(t2);
   list.pop_back(&list, &status);
@@ -354,7 +354,7 @@ int test_index_of(void)
 
   // Check that it finds the data.
   for (d.data_llint = 0; d.data_llint < length; d.data_llint++) {
-    TEST_ASSERT(list.index_of(&list, d, NULL) == d.data_llint);
+    TA_LLINT_EQ((long long)list.index_of(&list, d, NULL), d.data_llint);
   }
 
   list.delete(&list);
