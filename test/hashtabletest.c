@@ -8,7 +8,7 @@
 
   @brief        A test of the hash table.
 
-  @copyright    Copyright (c) 2013-2015, Stephen Brennan.  Released under the
+  @copyright    Copyright (c) 2013-2016, Stephen Brennan.  Released under the
                 Revised BSD License.  See the LICENSE.txt file for details.
 
 *******************************************************************************/

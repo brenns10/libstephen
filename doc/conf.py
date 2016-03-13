@@ -59,7 +59,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'libstephen'
-copyright = '2013-2015, Stephen Brennan'
+copyright = '2013-2016, Stephen Brennan'
 author = 'Stephen Brennan'
 highlight_language = 'c'
 

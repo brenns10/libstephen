@@ -8,8 +8,8 @@
 
   @brief        Logging facilities for libstephen.
 
-  @copyright    Copyright (c) 2015, Stephen Brennan.  Released under the Revised
-                BSD License.  See LICENSE.txt for details.
+  @copyright    Copyright (c) 2015-2016, Stephen Brennan.  Released under the
+                Revised BSD License.  See LICENSE.txt for details.
 
 *******************************************************************************/
 

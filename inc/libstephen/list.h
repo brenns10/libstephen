@@ -13,7 +13,7 @@
   lists without consideration for which list implementation they're using.  The
   iterator is also the only way to efficiently iterate through the linked list.
 
-  @copyright    Copyright (c) 2013-2015, Stephen Brennan.  Released under the
+  @copyright    Copyright (c) 2013-2016, Stephen Brennan.  Released under the
                 Revised BSD License.  See the LICENSE.txt file for details.
 
 *******************************************************************************/

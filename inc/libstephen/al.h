@@ -13,7 +13,7 @@
   the linked list ones.  It also supports the use of the generic list interface,
   so both array lists and linked lists can be used interchangeably, in C!
 
-  @copyright    Copyright (c) 2013-2015, Stephen Brennan.  Released under the
+  @copyright    Copyright (c) 2013-2016, Stephen Brennan.  Released under the
                 Revised BSD License.  See the LICENSE.txt file for details.
 
 *******************************************************************************/
