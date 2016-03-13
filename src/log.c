@@ -135,6 +135,16 @@ static char *sl_level_string(int level) {
   }
 }
 
+bool sl_will_log(smb_logger *obj, int level)
+{
+  for (int i = 0; i < obj->num; i++) {
+    if (obj->handlers[i].level <= level) {
+      return true;
+    }
+  }
+  return false;
+}
+
 void sl_log(smb_logger *obj, char *file, int line, const char *function, int level, ...) {
   cbuf file_line_buf, message_buf;
   char *level_string, *format;
@@ -142,6 +152,10 @@ void sl_log(smb_logger *obj, char *file, int line, const char *function, int lev
   int i;
 
   reference_logger(&obj);
+
+  if (!sl_will_log(obj, level)) {
+    return; // early termination to prevent formatting if we can avoid it
+  }
 
   cb_init(&file_line_buf, 256);
   cb_printf(&file_line_buf, "%s:%d", file, line);
