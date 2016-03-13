@@ -235,9 +235,9 @@ ssize_t execute(Regex r, char *input, size_t **saved)
   return match;
 }
 
-int numsaves(Regex r)
+size_t numsaves(Regex r)
 {
-  int ns = 0;
+  size_t ns = 0;
   for (size_t i = 0; i < r.n; i++) {
     if (r.i[i].code == Save && r.i[i].s > ns) {
       ns = r.i[i].s;

@@ -106,7 +106,7 @@ ssize_t execute(Regex r, char *input, size_t **saved);
    @param r The regular expression bytecode.
    @returns Number of slots.
  */
-int numsaves(Regex r);
+size_t numsaves(Regex r);
 
 /**
    Macro for the number of elements of a statically allocated array.
