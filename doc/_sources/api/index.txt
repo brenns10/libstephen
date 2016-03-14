@@ -14,7 +14,6 @@ Libstephen API Documentation
    ad
    log
    ut
-   fsm
-   regex
+   re
    util
    str
