@@ -264,6 +264,13 @@ DATA ht_get(smb_ht const *table, DATA key, smb_status *status)
   return table->table[index].value;
 }
 
+bool ht_contains(smb_ht const *table, DATA key)
+{
+  smb_status status = SMB_SUCCESS;
+  ht_get(table, key, &status);
+  return status == SMB_SUCCESS;
+}
+
 unsigned int ht_string_hash(DATA data)
 {
   char *theString = (char *)data.data_ptr;

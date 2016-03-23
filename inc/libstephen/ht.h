@@ -195,6 +195,13 @@ void ht_remove(smb_ht *table, DATA key, smb_status *status);
  */
 DATA ht_get(smb_ht const *table, DATA key, smb_status *status);
 /**
+   @brief Return true when a key is contained in the table.
+   @param table A pointer to the hash table.
+   @param key The key to search for.
+   @returns Whether the key is present.
+ */
+bool ht_contains(smb_ht const *table, DATA key);
+/**
    @brief Return the hash of the data, interpreting it as a string.
    @param data The string to hash, assuming that the value contained is a char*.
    @returns The hash value of the string.
