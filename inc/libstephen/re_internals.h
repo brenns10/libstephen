@@ -105,8 +105,6 @@ void unget(Token t, Lexer *l);
 Regex codegen(PTree *tree);
 
 /* Parsing */
-bool accept(TSym s, Lexer *l);
-void expect(TSym s, Lexer *l);
 PTree *TERM(Lexer *l);
 PTree *EXPR(Lexer *l);
 PTree *REGEX(Lexer *l);

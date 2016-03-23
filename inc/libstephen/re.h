@@ -21,6 +21,7 @@
 
 // DEFINITIONS
 
+/// @cond HIDDEN_SYMBOLS
 /**
    An instruction for the virtual machine.  The details of this struct aren't
    important for client code, but a declaration is necessary for defining the
@@ -28,6 +29,7 @@
  */
 typedef struct Instr Instr;
 struct Instr;
+/// @endcond HIDDEN_SYMBOLS
 
 /**
    This typedef is for convenience.  See the documentation for struct Regex.
