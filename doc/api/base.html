@@ -162,7 +162,7 @@
 <p class="breathe-sectiondef-title rubric">Defines</p>
 <dl class="define">
 <dt id="c.smb_new">
-<span class="target" id="project0base_8h_1a4e2b96ac50547b6fa3a44e70015611e7"></span><code class="descname">smb_new</code><span class="sig-paren">(</span>type, <a class="reference internal" href="re.html#c.n" title="n">n</a><span class="sig-paren">)</span><a class="headerlink" href="#c.smb_new" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libstephenbase_8h_1a4e2b96ac50547b6fa3a44e70015611e7"></span><code class="descname">smb_new</code><span class="sig-paren">(</span>type, <a class="reference internal" href="re.html#c.n" title="n">n</a><span class="sig-paren">)</span><a class="headerlink" href="#c.smb_new" title="Permalink to this definition">¶</a></dt>
 <dd><p>A nicer allocation function. </p>
 <p>This macro/function wraps malloc(). It&#8217;s inspired by the g_new function in glib. It allows you to allocate memory and adjust the allocation counter in one call. Instead of specifying the size of the memory, you specify type and number of instances.</p>
 <p><dl class="docutils">
@@ -182,7 +182,7 @@
 
 <dl class="define">
 <dt id="c.smb_renew">
-<span class="target" id="project0base_8h_1ad2da77f3ed741c359c41b7ba6e18f0a0"></span><code class="descname">smb_renew</code><span class="sig-paren">(</span>type, ptr, newamt<span class="sig-paren">)</span><a class="headerlink" href="#c.smb_renew" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libstephenbase_8h_1ad2da77f3ed741c359c41b7ba6e18f0a0"></span><code class="descname">smb_renew</code><span class="sig-paren">(</span>type, ptr, newamt<span class="sig-paren">)</span><a class="headerlink" href="#c.smb_renew" title="Permalink to this definition">¶</a></dt>
 <dd><p>A nicer reallocation function. </p>
 <p>This macro/function wraps realloc(). It allows you reallocate memory and adjust the allocation counter accordingly. Exits on failure.</p>
 <p><dl class="docutils">
@@ -204,7 +204,7 @@
 
 <dl class="define">
 <dt id="c.smb_free">
-<span class="target" id="project0base_8h_1aea21945861a8d1978f9b7e5989c18aba"></span><code class="descname">smb_free</code><span class="sig-paren">(</span>ptr<span class="sig-paren">)</span><a class="headerlink" href="#c.smb_free" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libstephenbase_8h_1aea21945861a8d1978f9b7e5989c18aba"></span><code class="descname">smb_free</code><span class="sig-paren">(</span>ptr<span class="sig-paren">)</span><a class="headerlink" href="#c.smb_free" title="Permalink to this definition">¶</a></dt>
 <dd><p>A nicer free function. </p>
 <p>This macro/function wraps free(). It exits on failure and adjusts the malloc counter. <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
@@ -219,62 +219,62 @@
 
 <dl class="define">
 <dt id="c.SMB_SUCCESS">
-<span class="target" id="project0base_8h_1acd8a760b789d1789506bd88b72f9eee4"></span><code class="descname">SMB_SUCCESS</code><a class="headerlink" href="#c.SMB_SUCCESS" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libstephenbase_8h_1acd8a760b789d1789506bd88b72f9eee4"></span><code class="descname">SMB_SUCCESS</code><a class="headerlink" href="#c.SMB_SUCCESS" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="define">
 <dt id="c.SMB_INDEX_ERROR">
-<span class="target" id="project0base_8h_1aa3eaaa4a45dfde6dc5a07df01419d015"></span><code class="descname">SMB_INDEX_ERROR</code><a class="headerlink" href="#c.SMB_INDEX_ERROR" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libstephenbase_8h_1aa3eaaa4a45dfde6dc5a07df01419d015"></span><code class="descname">SMB_INDEX_ERROR</code><a class="headerlink" href="#c.SMB_INDEX_ERROR" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="define">
 <dt id="c.SMB_NOT_FOUND_ERROR">
-<span class="target" id="project0base_8h_1a550350a81fa1175e13468dd895fb91af"></span><code class="descname">SMB_NOT_FOUND_ERROR</code><a class="headerlink" href="#c.SMB_NOT_FOUND_ERROR" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libstephenbase_8h_1a550350a81fa1175e13468dd895fb91af"></span><code class="descname">SMB_NOT_FOUND_ERROR</code><a class="headerlink" href="#c.SMB_NOT_FOUND_ERROR" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="define">
 <dt id="c.SMB_STOP_ITERATION">
-<span class="target" id="project0base_8h_1ae3163dd484ab6c8ce86310023cd588a7"></span><code class="descname">SMB_STOP_ITERATION</code><a class="headerlink" href="#c.SMB_STOP_ITERATION" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libstephenbase_8h_1ae3163dd484ab6c8ce86310023cd588a7"></span><code class="descname">SMB_STOP_ITERATION</code><a class="headerlink" href="#c.SMB_STOP_ITERATION" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="define">
 <dt id="c.SMB_EXTERNAL_EXCEPTION_START">
-<span class="target" id="project0base_8h_1a85ea832e1e86fe7dbd563cc092ddcd9d"></span><code class="descname">SMB_EXTERNAL_EXCEPTION_START</code><a class="headerlink" href="#c.SMB_EXTERNAL_EXCEPTION_START" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libstephenbase_8h_1a85ea832e1e86fe7dbd563cc092ddcd9d"></span><code class="descname">SMB_EXTERNAL_EXCEPTION_START</code><a class="headerlink" href="#c.SMB_EXTERNAL_EXCEPTION_START" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="define">
 <dt id="c.PRINT_ERROR_LOC">
-<span class="target" id="project0base_8h_1a091f768bd3fdf42d03e04d4d7b581967"></span><code class="descname">PRINT_ERROR_LOC</code><a class="headerlink" href="#c.PRINT_ERROR_LOC" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libstephenbase_8h_1a091f768bd3fdf42d03e04d4d7b581967"></span><code class="descname">PRINT_ERROR_LOC</code><a class="headerlink" href="#c.PRINT_ERROR_LOC" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="define">
 <dt id="c.FLAG_CHECK">
-<span class="target" id="project0base_8h_1a48889e1f6e31be86a3a00f26134a276c"></span><code class="descname">FLAG_CHECK</code><span class="sig-paren">(</span>var, bit<span class="sig-paren">)</span><a class="headerlink" href="#c.FLAG_CHECK" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libstephenbase_8h_1a48889e1f6e31be86a3a00f26134a276c"></span><code class="descname">FLAG_CHECK</code><span class="sig-paren">(</span>var, bit<span class="sig-paren">)</span><a class="headerlink" href="#c.FLAG_CHECK" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="define">
 <dt id="c.FLAG_SET">
-<span class="target" id="project0base_8h_1a6c152d77db67d13291b43bfa26bd2d1d"></span><code class="descname">FLAG_SET</code><span class="sig-paren">(</span>var, bit<span class="sig-paren">)</span><a class="headerlink" href="#c.FLAG_SET" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libstephenbase_8h_1a6c152d77db67d13291b43bfa26bd2d1d"></span><code class="descname">FLAG_SET</code><span class="sig-paren">(</span>var, bit<span class="sig-paren">)</span><a class="headerlink" href="#c.FLAG_SET" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="define">
 <dt id="c.FLAG_CLEAR">
-<span class="target" id="project0base_8h_1a2e56c2496cf3db0d3df50a91657144fa"></span><code class="descname">FLAG_CLEAR</code><span class="sig-paren">(</span>var, bit<span class="sig-paren">)</span><a class="headerlink" href="#c.FLAG_CLEAR" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libstephenbase_8h_1a2e56c2496cf3db0d3df50a91657144fa"></span><code class="descname">FLAG_CLEAR</code><span class="sig-paren">(</span>var, bit<span class="sig-paren">)</span><a class="headerlink" href="#c.FLAG_CLEAR" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="define">
 <dt id="c.LLINT">
-<span class="target" id="project0base_8h_1a9ec221235333dccac26f68008f8e068c"></span><code class="descname">LLINT</code><span class="sig-paren">(</span><a class="reference internal" href="ht.html#c.value" title="value">value</a><span class="sig-paren">)</span><a class="headerlink" href="#c.LLINT" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libstephenbase_8h_1a9ec221235333dccac26f68008f8e068c"></span><code class="descname">LLINT</code><span class="sig-paren">(</span><a class="reference internal" href="ht.html#c.value" title="value">value</a><span class="sig-paren">)</span><a class="headerlink" href="#c.LLINT" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="define">
 <dt id="c.PTR">
-<span class="target" id="project0base_8h_1a37bde731836d58389aaf07e5265c7075"></span><code class="descname">PTR</code><span class="sig-paren">(</span><a class="reference internal" href="ht.html#c.value" title="value">value</a><span class="sig-paren">)</span><a class="headerlink" href="#c.PTR" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libstephenbase_8h_1a37bde731836d58389aaf07e5265c7075"></span><code class="descname">PTR</code><span class="sig-paren">(</span><a class="reference internal" href="ht.html#c.value" title="value">value</a><span class="sig-paren">)</span><a class="headerlink" href="#c.PTR" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="define">
 <dt id="c.DBL">
-<span class="target" id="project0base_8h_1a14a396468644978dc7be4d4f404e18ab"></span><code class="descname">DBL</code><span class="sig-paren">(</span><a class="reference internal" href="ht.html#c.value" title="value">value</a><span class="sig-paren">)</span><a class="headerlink" href="#c.DBL" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libstephenbase_8h_1a14a396468644978dc7be4d4f404e18ab"></span><code class="descname">DBL</code><span class="sig-paren">(</span><a class="reference internal" href="ht.html#c.value" title="value">value</a><span class="sig-paren">)</span><a class="headerlink" href="#c.DBL" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
@@ -282,36 +282,36 @@
 <p class="breathe-sectiondef-title rubric">Typedefs</p>
 <dl class="typedef">
 <dt id="c.DATA">
-<span class="target" id="project0base_8h_1a0002899edd28b669c12190ad82912d01"></span><em class="property">typedef </em><code class="descname">DATA</code><a class="headerlink" href="#c.DATA" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libstephenbase_8h_1a0002899edd28b669c12190ad82912d01"></span><em class="property">typedef </em><code class="descname">DATA</code><a class="headerlink" href="#c.DATA" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base data type for the data structures. </p>
 <p>Capable of containing long integers, double precision floats, or pointers. Takes up 8 bytes. </p>
 </dd></dl>
 
 <dl class="typedef">
 <dt id="c.DATA_ACTION">
-<span class="target" id="project0base_8h_1a74462a5d502ce1518853bd850ae90a44"></span><em class="property">typedef </em><code class="descname">(* DATA_ACTION)</code><span class="sig-paren">(</span><a class="reference internal" href="#c.DATA" title="DATA">DATA</a><span class="sig-paren">)</span><a class="headerlink" href="#c.DATA_ACTION" title="Permalink to this definition">¶</a></dt>
-<dd><p>A function pointer that takes a <a class="reference internal" href="#project0union_d_a_t_a"><span>DATA</span></a> and performs an action on it. </p>
+<span class="target" id="libstephenbase_8h_1a74462a5d502ce1518853bd850ae90a44"></span><em class="property">typedef </em><code class="descname">(* DATA_ACTION)</code><span class="sig-paren">(</span><a class="reference internal" href="#c.DATA" title="DATA">DATA</a><span class="sig-paren">)</span><a class="headerlink" href="#c.DATA_ACTION" title="Permalink to this definition">¶</a></dt>
+<dd><p>A function pointer that takes a <a class="reference internal" href="#libstephenunion_d_a_t_a"><span>DATA</span></a> and performs an action on it. </p>
 <p>The function could count it, call free on it, print it, etc. Useful for stuff like deleting data structures full of items (if they&#8217;re pointers to dynamically allocated data, they&#8217;ll need to be freed), applying an action to every item in a list (e.g. printing), and many more applications. </p>
 </dd></dl>
 
 <dl class="typedef">
 <dt id="c.DATA_COMPARE">
-<span class="target" id="project0base_8h_1a877fcc10033f151ebdf36ee7515cfec5"></span><em class="property">typedef </em><code class="descname">(* DATA_COMPARE)</code><span class="sig-paren">(</span><a class="reference internal" href="#c.DATA" title="DATA">DATA</a>, <a class="reference internal" href="#c.DATA" title="DATA">DATA</a><span class="sig-paren">)</span><a class="headerlink" href="#c.DATA_COMPARE" title="Permalink to this definition">¶</a></dt>
-<dd><p>A function pointer that takes two <a class="reference internal" href="#project0union_d_a_t_a"><span>DATA</span></a> and compares them. </p>
-<p>This comparator function is used for two purposes: (1) to check for equality, and (2) to order data. If a particular type of data has no ordering, then it is sufficient for the purposes of equality testing to return 0 if equal, and 1 if not equal. However, this will fail for any function that uses the DATA_COMPARE to order <a class="reference internal" href="#project0union_d_a_t_a"><span>DATA</span></a>. Therefore, any function that takes a DATA_COMPARE should specify in its documentation whether it will use it for equality testing, or for ordering.</p>
-<p>The DATA_COMPARE function shall return 0 iff the two <a class="reference internal" href="#project0union_d_a_t_a"><span>DATA</span></a> are equal. It shall return a value less than 0 iff the first is less than the second. It shall return a value greater than zero iff the first is greater than the second. </p>
+<span class="target" id="libstephenbase_8h_1a877fcc10033f151ebdf36ee7515cfec5"></span><em class="property">typedef </em><code class="descname">(* DATA_COMPARE)</code><span class="sig-paren">(</span><a class="reference internal" href="#c.DATA" title="DATA">DATA</a>, <a class="reference internal" href="#c.DATA" title="DATA">DATA</a><span class="sig-paren">)</span><a class="headerlink" href="#c.DATA_COMPARE" title="Permalink to this definition">¶</a></dt>
+<dd><p>A function pointer that takes two <a class="reference internal" href="#libstephenunion_d_a_t_a"><span>DATA</span></a> and compares them. </p>
+<p>This comparator function is used for two purposes: (1) to check for equality, and (2) to order data. If a particular type of data has no ordering, then it is sufficient for the purposes of equality testing to return 0 if equal, and 1 if not equal. However, this will fail for any function that uses the DATA_COMPARE to order <a class="reference internal" href="#libstephenunion_d_a_t_a"><span>DATA</span></a>. Therefore, any function that takes a DATA_COMPARE should specify in its documentation whether it will use it for equality testing, or for ordering.</p>
+<p>The DATA_COMPARE function shall return 0 iff the two <a class="reference internal" href="#libstephenunion_d_a_t_a"><span>DATA</span></a> are equal. It shall return a value less than 0 iff the first is less than the second. It shall return a value greater than zero iff the first is greater than the second. </p>
 </dd></dl>
 
 <dl class="typedef">
 <dt id="c.DATA_PRINTER">
-<span class="target" id="project0base_8h_1a7c788ded5478947b05646b05b6ee1c60"></span><em class="property">typedef </em><code class="descname">(* DATA_PRINTER)</code><span class="sig-paren">(</span>FILE<em>&nbsp;*</em>, <a class="reference internal" href="#c.DATA" title="DATA">DATA</a><span class="sig-paren">)</span><a class="headerlink" href="#c.DATA_PRINTER" title="Permalink to this definition">¶</a></dt>
-<dd><p>A function pointer that takes a <a class="reference internal" href="#project0union_d_a_t_a"><span>DATA</span></a> and prints it. </p>
+<span class="target" id="libstephenbase_8h_1a7c788ded5478947b05646b05b6ee1c60"></span><em class="property">typedef </em><code class="descname">(* DATA_PRINTER)</code><span class="sig-paren">(</span>FILE<em>&nbsp;*</em>, <a class="reference internal" href="#c.DATA" title="DATA">DATA</a><span class="sig-paren">)</span><a class="headerlink" href="#c.DATA_PRINTER" title="Permalink to this definition">¶</a></dt>
+<dd><p>A function pointer that takes a <a class="reference internal" href="#libstephenunion_d_a_t_a"><span>DATA</span></a> and prints it. </p>
 <p>This function should not print a trailing newline! There are higher level functions that will deal with that. </p>
 </dd></dl>
 
 <dl class="typedef">
 <dt id="c.smb_status">
-<span class="target" id="project0base_8h_1ad37814341a522ba13972cbfd0e9b3aec"></span><em class="property">typedef </em><code class="descname">smb_status</code><a class="headerlink" href="#c.smb_status" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libstephenbase_8h_1ad37814341a522ba13972cbfd0e9b3aec"></span><em class="property">typedef </em><code class="descname">smb_status</code><a class="headerlink" href="#c.smb_status" title="Permalink to this definition">¶</a></dt>
 <dd><p>An enumeration of all possible status values for libstephen functions. </p>
 </dd></dl>
 
@@ -320,85 +320,85 @@
 <p class="breathe-sectiondef-title rubric">Functions</p>
 <dl class="function">
 <dt id="c.data_compare_string">
-<span class="target" id="project0base_8h_1a9c00e60cb893e903896edb296174179d"></span>int <code class="descname">data_compare_string</code><span class="sig-paren">(</span><a class="reference internal" href="#c.DATA" title="DATA">DATA</a><em>&nbsp;d1</em>, <a class="reference internal" href="#c.DATA" title="DATA">DATA</a><em>&nbsp;d2</em><span class="sig-paren">)</span><a class="headerlink" href="#c.data_compare_string" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libstephenbase_8h_1a9c00e60cb893e903896edb296174179d"></span>int <code class="descname">data_compare_string</code><span class="sig-paren">(</span><a class="reference internal" href="#c.DATA" title="DATA">DATA</a><em>&nbsp;d1</em>, <a class="reference internal" href="#c.DATA" title="DATA">DATA</a><em>&nbsp;d2</em><span class="sig-paren">)</span><a class="headerlink" href="#c.data_compare_string" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="c.data_compare_int">
-<span class="target" id="project0base_8h_1a5611c83d911dab8bccd914e00c079d60"></span>int <code class="descname">data_compare_int</code><span class="sig-paren">(</span><a class="reference internal" href="#c.DATA" title="DATA">DATA</a><em>&nbsp;d1</em>, <a class="reference internal" href="#c.DATA" title="DATA">DATA</a><em>&nbsp;d2</em><span class="sig-paren">)</span><a class="headerlink" href="#c.data_compare_int" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libstephenbase_8h_1a5611c83d911dab8bccd914e00c079d60"></span>int <code class="descname">data_compare_int</code><span class="sig-paren">(</span><a class="reference internal" href="#c.DATA" title="DATA">DATA</a><em>&nbsp;d1</em>, <a class="reference internal" href="#c.DATA" title="DATA">DATA</a><em>&nbsp;d2</em><span class="sig-paren">)</span><a class="headerlink" href="#c.data_compare_int" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="c.data_compare_float">
-<span class="target" id="project0base_8h_1ac44cfcf5f655639467f3facb720d2f96"></span>int <code class="descname">data_compare_float</code><span class="sig-paren">(</span><a class="reference internal" href="#c.DATA" title="DATA">DATA</a><em>&nbsp;d1</em>, <a class="reference internal" href="#c.DATA" title="DATA">DATA</a><em>&nbsp;d2</em><span class="sig-paren">)</span><a class="headerlink" href="#c.data_compare_float" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libstephenbase_8h_1ac44cfcf5f655639467f3facb720d2f96"></span>int <code class="descname">data_compare_float</code><span class="sig-paren">(</span><a class="reference internal" href="#c.DATA" title="DATA">DATA</a><em>&nbsp;d1</em>, <a class="reference internal" href="#c.DATA" title="DATA">DATA</a><em>&nbsp;d2</em><span class="sig-paren">)</span><a class="headerlink" href="#c.data_compare_float" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="c.data_compare_pointer">
-<span class="target" id="project0base_8h_1aa3ed26600d5f0a6afffcbbc80291ef02"></span>int <code class="descname">data_compare_pointer</code><span class="sig-paren">(</span><a class="reference internal" href="#c.DATA" title="DATA">DATA</a><em>&nbsp;d1</em>, <a class="reference internal" href="#c.DATA" title="DATA">DATA</a><em>&nbsp;d2</em><span class="sig-paren">)</span><a class="headerlink" href="#c.data_compare_pointer" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libstephenbase_8h_1aa3ed26600d5f0a6afffcbbc80291ef02"></span>int <code class="descname">data_compare_pointer</code><span class="sig-paren">(</span><a class="reference internal" href="#c.DATA" title="DATA">DATA</a><em>&nbsp;d1</em>, <a class="reference internal" href="#c.DATA" title="DATA">DATA</a><em>&nbsp;d2</em><span class="sig-paren">)</span><a class="headerlink" href="#c.data_compare_pointer" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="c.data_printer_string">
-<span class="target" id="project0base_8h_1a8476cd51fa728489728f95077f2a19e5"></span>void <code class="descname">data_printer_string</code><span class="sig-paren">(</span>FILE *<em>&nbsp;f</em>, <a class="reference internal" href="#c.DATA" title="DATA">DATA</a><em>&nbsp;d</em><span class="sig-paren">)</span><a class="headerlink" href="#c.data_printer_string" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libstephenbase_8h_1a8476cd51fa728489728f95077f2a19e5"></span>void <code class="descname">data_printer_string</code><span class="sig-paren">(</span>FILE *<em>&nbsp;f</em>, <a class="reference internal" href="#c.DATA" title="DATA">DATA</a><em>&nbsp;d</em><span class="sig-paren">)</span><a class="headerlink" href="#c.data_printer_string" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="c.data_printer_int">
-<span class="target" id="project0base_8h_1ae828fc251b2ab93ad38c7fecb2b086dc"></span>void <code class="descname">data_printer_int</code><span class="sig-paren">(</span>FILE *<em>&nbsp;f</em>, <a class="reference internal" href="#c.DATA" title="DATA">DATA</a><em>&nbsp;d</em><span class="sig-paren">)</span><a class="headerlink" href="#c.data_printer_int" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libstephenbase_8h_1ae828fc251b2ab93ad38c7fecb2b086dc"></span>void <code class="descname">data_printer_int</code><span class="sig-paren">(</span>FILE *<em>&nbsp;f</em>, <a class="reference internal" href="#c.DATA" title="DATA">DATA</a><em>&nbsp;d</em><span class="sig-paren">)</span><a class="headerlink" href="#c.data_printer_int" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="c.data_printer_float">
-<span class="target" id="project0base_8h_1ab4e0aaacbb85c79e00a23a6e35d7b3bb"></span>void <code class="descname">data_printer_float</code><span class="sig-paren">(</span>FILE *<em>&nbsp;f</em>, <a class="reference internal" href="#c.DATA" title="DATA">DATA</a><em>&nbsp;d</em><span class="sig-paren">)</span><a class="headerlink" href="#c.data_printer_float" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libstephenbase_8h_1ab4e0aaacbb85c79e00a23a6e35d7b3bb"></span>void <code class="descname">data_printer_float</code><span class="sig-paren">(</span>FILE *<em>&nbsp;f</em>, <a class="reference internal" href="#c.DATA" title="DATA">DATA</a><em>&nbsp;d</em><span class="sig-paren">)</span><a class="headerlink" href="#c.data_printer_float" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="c.data_printer_pointer">
-<span class="target" id="project0base_8h_1ad2e4d81b660c6b55d2dabf4955408cef"></span>void <code class="descname">data_printer_pointer</code><span class="sig-paren">(</span>FILE *<em>&nbsp;f</em>, <a class="reference internal" href="#c.DATA" title="DATA">DATA</a><em>&nbsp;d</em><span class="sig-paren">)</span><a class="headerlink" href="#c.data_printer_pointer" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libstephenbase_8h_1ad2e4d81b660c6b55d2dabf4955408cef"></span>void <code class="descname">data_printer_pointer</code><span class="sig-paren">(</span>FILE *<em>&nbsp;f</em>, <a class="reference internal" href="#c.DATA" title="DATA">DATA</a><em>&nbsp;d</em><span class="sig-paren">)</span><a class="headerlink" href="#c.data_printer_pointer" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="c.smb___new">
-<span class="target" id="project0base_8h_1a01abcbf929d4a55deec703d4e2ace058"></span>void* <code class="descname">smb___new</code><span class="sig-paren">(</span>size_t<em>&nbsp;amt</em><span class="sig-paren">)</span><a class="headerlink" href="#c.smb___new" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libstephenbase_8h_1a01abcbf929d4a55deec703d4e2ace058"></span>void* <code class="descname">smb___new</code><span class="sig-paren">(</span>size_t<em>&nbsp;amt</em><span class="sig-paren">)</span><a class="headerlink" href="#c.smb___new" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="c.smb___renew">
-<span class="target" id="project0base_8h_1a07be0eb29b8df12ecd7e6c70f619cedc"></span>void* <code class="descname">smb___renew</code><span class="sig-paren">(</span>void *<em>&nbsp;ptr</em>, size_t<em>&nbsp;newsize</em><span class="sig-paren">)</span><a class="headerlink" href="#c.smb___renew" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libstephenbase_8h_1a07be0eb29b8df12ecd7e6c70f619cedc"></span>void* <code class="descname">smb___renew</code><span class="sig-paren">(</span>void *<em>&nbsp;ptr</em>, size_t<em>&nbsp;newsize</em><span class="sig-paren">)</span><a class="headerlink" href="#c.smb___renew" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="c.smb___free">
-<span class="target" id="project0base_8h_1a9d55b20e3e32a8ab273d659ffd49ea9c"></span>void <code class="descname">smb___free</code><span class="sig-paren">(</span>void *<em>&nbsp;ptr</em><span class="sig-paren">)</span><a class="headerlink" href="#c.smb___free" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libstephenbase_8h_1a9d55b20e3e32a8ab273d659ffd49ea9c"></span>void <code class="descname">smb___free</code><span class="sig-paren">(</span>void *<em>&nbsp;ptr</em><span class="sig-paren">)</span><a class="headerlink" href="#c.smb___free" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="function">
 <dt id="c.smb_status_string">
-<span class="target" id="project0base_8h_1a2163925d2fd83d74e43d8db08ec13eaf"></span>char* <code class="descname">smb_status_string</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_status" title="smb_status">smb_status</a><em>&nbsp;status</em><span class="sig-paren">)</span><a class="headerlink" href="#c.smb_status_string" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libstephenbase_8h_1a2163925d2fd83d74e43d8db08ec13eaf"></span>char* <code class="descname">smb_status_string</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_status" title="smb_status">smb_status</a><em>&nbsp;status</em><span class="sig-paren">)</span><a class="headerlink" href="#c.smb_status_string" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
 <dl class="union">
 <dt>
-<span class="target" id="project0union_d_a_t_a"></span><em class="property">union </em><code class="descname">DATA</code></dt>
+<span class="target" id="libstephenunion_d_a_t_a"></span><em class="property">union </em><code class="descname">DATA</code></dt>
 <dd><em>#include &lt;base.h&gt;</em><p>Base data type for the data structures. </p>
 <p>Capable of containing long integers, double precision floats, or pointers. Takes up 8 bytes. </p>
 <div class="breathe-sectiondef container">
 <p class="breathe-sectiondef-title rubric">Public Members</p>
 <dl class="variable">
 <dt id="c.data_llint">
-<span class="target" id="project0union_d_a_t_a_1a8ecd719db38548932e2a1281e998e7cf"></span>long long int <code class="descname">data_llint</code><a class="headerlink" href="#c.data_llint" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libstephenunion_d_a_t_a_1a8ecd719db38548932e2a1281e998e7cf"></span>long long int <code class="descname">data_llint</code><a class="headerlink" href="#c.data_llint" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="variable">
 <dt id="c.data_dbl">
-<span class="target" id="project0union_d_a_t_a_1a7be6b110919750e82fbc10b43f035dc1"></span>double <code class="descname">data_dbl</code><a class="headerlink" href="#c.data_dbl" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libstephenunion_d_a_t_a_1a7be6b110919750e82fbc10b43f035dc1"></span>double <code class="descname">data_dbl</code><a class="headerlink" href="#c.data_dbl" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="variable">
 <dt id="c.data_ptr">
-<span class="target" id="project0union_d_a_t_a_1abd166fdd046bf6ad359ddbd822a90911"></span>void* <code class="descname">data_ptr</code><a class="headerlink" href="#c.data_ptr" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libstephenunion_d_a_t_a_1abd166fdd046bf6ad359ddbd822a90911"></span>void* <code class="descname">data_ptr</code><a class="headerlink" href="#c.data_ptr" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>

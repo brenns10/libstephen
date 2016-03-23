@@ -168,7 +168,7 @@ The args library analyzes args as generally as possible. It recognizes three dif
 <p class="breathe-sectiondef-title rubric">Defines</p>
 <dl class="define">
 <dt id="c.MAX_FLAGS">
-<span class="target" id="project0ad_8h_1aea77c3647896556fe9a577bab0092c12"></span><code class="descname">MAX_FLAGS</code><a class="headerlink" href="#c.MAX_FLAGS" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libstephenad_8h_1aea77c3647896556fe9a577bab0092c12"></span><code class="descname">MAX_FLAGS</code><a class="headerlink" href="#c.MAX_FLAGS" title="Permalink to this definition">¶</a></dt>
 <dd><p>The number of regular flags. 52 = 26 + 26. </p>
 </dd></dl>
 
@@ -177,7 +177,7 @@ The args library analyzes args as generally as possible. It recognizes three dif
 <p class="breathe-sectiondef-title rubric">Typedefs</p>
 <dl class="typedef">
 <dt id="c.smb_ad">
-<span class="target" id="project0ad_8h_1aef757153c5185d449f10add6dda7c17f"></span><em class="property">typedef </em><code class="descname">smb_ad</code><a class="headerlink" href="#c.smb_ad" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libstephenad_8h_1aef757153c5185d449f10add6dda7c17f"></span><em class="property">typedef </em><code class="descname">smb_ad</code><a class="headerlink" href="#c.smb_ad" title="Permalink to this definition">¶</a></dt>
 <dd><p>Data structure to store information on arguments passed to the program. </p>
 </dd></dl>
 
@@ -186,8 +186,8 @@ The args library analyzes args as generally as possible. It recognizes three dif
 <p class="breathe-sectiondef-title rubric">Functions</p>
 <dl class="function">
 <dt id="c.arg_data_init">
-<span class="target" id="project0ad_8h_1a51481abab2eeb0cdbbbaebee43354c88"></span>void <code class="descname">arg_data_init</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_ad" title="smb_ad">smb_ad</a>  *<em>&nbsp;data</em><span class="sig-paren">)</span><a class="headerlink" href="#c.arg_data_init" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize an <a class="reference internal" href="#project0structsmb__ad"><span>smb_ad</span></a> structure in memory that has already been allocated. </p>
+<span class="target" id="libstephenad_8h_1a51481abab2eeb0cdbbbaebee43354c88"></span>void <code class="descname">arg_data_init</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_ad" title="smb_ad">smb_ad</a>  *<em>&nbsp;data</em><span class="sig-paren">)</span><a class="headerlink" href="#c.arg_data_init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize an <a class="reference internal" href="#libstephenstructsmb__ad"><span>smb_ad</span></a> structure in memory that has already been allocated. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last">
@@ -201,8 +201,8 @@ The args library analyzes args as generally as possible. It recognizes three dif
 
 <dl class="function">
 <dt id="c.arg_data_create">
-<span class="target" id="project0ad_8h_1aa224636d3915622613b93f027e84c58f"></span><a class="reference internal" href="#c.smb_ad" title="smb_ad">smb_ad</a>* <code class="descname">arg_data_create</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#c.arg_data_create" title="Permalink to this definition">¶</a></dt>
-<dd><p>Allocate and initialize a <a class="reference internal" href="#project0structsmb__ad"><span>smb_ad</span></a> structure for argument parsing. </p>
+<span class="target" id="libstephenad_8h_1aa224636d3915622613b93f027e84c58f"></span><a class="reference internal" href="#c.smb_ad" title="smb_ad">smb_ad</a>* <code class="descname">arg_data_create</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#c.arg_data_create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Allocate and initialize a <a class="reference internal" href="#libstephenstructsmb__ad"><span>smb_ad</span></a> structure for argument parsing. </p>
 <p><dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd>A pointer to the structure. </dd>
@@ -212,7 +212,7 @@ The args library analyzes args as generally as possible. It recognizes three dif
 
 <dl class="function">
 <dt id="c.arg_data_destroy">
-<span class="target" id="project0ad_8h_1a681e0d3266aed3f011b43bc0502d742c"></span>void <code class="descname">arg_data_destroy</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_ad" title="smb_ad">smb_ad</a>  *<em>&nbsp;data</em><span class="sig-paren">)</span><a class="headerlink" href="#c.arg_data_destroy" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libstephenad_8h_1a681e0d3266aed3f011b43bc0502d742c"></span>void <code class="descname">arg_data_destroy</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_ad" title="smb_ad">smb_ad</a>  *<em>&nbsp;data</em><span class="sig-paren">)</span><a class="headerlink" href="#c.arg_data_destroy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Free the resources of an arg_data object, but do not free it. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
@@ -227,7 +227,7 @@ The args library analyzes args as generally as possible. It recognizes three dif
 
 <dl class="function">
 <dt id="c.arg_data_delete">
-<span class="target" id="project0ad_8h_1a4d4f97c2fd352e5a252d3e920c661573"></span>void <code class="descname">arg_data_delete</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_ad" title="smb_ad">smb_ad</a>  *<em>&nbsp;data</em><span class="sig-paren">)</span><a class="headerlink" href="#c.arg_data_delete" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libstephenad_8h_1a4d4f97c2fd352e5a252d3e920c661573"></span>void <code class="descname">arg_data_delete</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_ad" title="smb_ad">smb_ad</a>  *<em>&nbsp;data</em><span class="sig-paren">)</span><a class="headerlink" href="#c.arg_data_delete" title="Permalink to this definition">¶</a></dt>
 <dd><p>Free the resources of an arg data object, and then free the object itself. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
@@ -242,13 +242,13 @@ The args library analyzes args as generally as possible. It recognizes three dif
 
 <dl class="function">
 <dt id="c.process_args">
-<span class="target" id="project0ad_8h_1af41f795755de6840b9d7e4b0a23f7655"></span>void <code class="descname">process_args</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_ad" title="smb_ad">smb_ad</a>  *<em>&nbsp;data</em>, int<em>&nbsp;argc</em>, char **<em>&nbsp;argv</em><span class="sig-paren">)</span><a class="headerlink" href="#c.process_args" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libstephenad_8h_1af41f795755de6840b9d7e4b0a23f7655"></span>void <code class="descname">process_args</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_ad" title="smb_ad">smb_ad</a>  *<em>&nbsp;data</em>, int<em>&nbsp;argc</em>, char **<em>&nbsp;argv</em><span class="sig-paren">)</span><a class="headerlink" href="#c.process_args" title="Permalink to this definition">¶</a></dt>
 <dd><p>Analyze the arguments passed to the program. </p>
 <p>Pass in the argc and argv, but make sure to decrement and increment each respective variable so they do not include the name of the program. Unless, of course, you want the program name to be processed as an argument. Once you have called this function, you can use the querying functions to find all the arguments.</p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">data</span></code> - <p>A pointer to an <a class="reference internal" href="#project0structsmb__ad"><span>smb_ad</span></a> object. </p>
+<li><code class="first docutils literal"><span class="pre">data</span></code> - <p>A pointer to an <a class="reference internal" href="#libstephenstructsmb__ad"><span>smb_ad</span></a> object. </p>
 </li>
 <li><code class="first docutils literal"><span class="pre">argc</span></code> - <p>The number of arguments (not including program name). </p>
 </li>
@@ -262,12 +262,12 @@ The args library analyzes args as generally as possible. It recognizes three dif
 
 <dl class="function">
 <dt id="c.check_flag">
-<span class="target" id="project0ad_8h_1ab86d90dadb2c5a4490b1336ff5398ade"></span>int <code class="descname">check_flag</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_ad" title="smb_ad">smb_ad</a>  *<em>&nbsp;data</em>, char<em>&nbsp;flag</em><span class="sig-paren">)</span><a class="headerlink" href="#c.check_flag" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libstephenad_8h_1ab86d90dadb2c5a4490b1336ff5398ade"></span>int <code class="descname">check_flag</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_ad" title="smb_ad">smb_ad</a>  *<em>&nbsp;data</em>, char<em>&nbsp;flag</em><span class="sig-paren">)</span><a class="headerlink" href="#c.check_flag" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check whether a flag is raised. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">data</span></code> - <p>The <a class="reference internal" href="#project0structsmb__ad"><span>smb_ad</span></a> returned by <a class="reference internal" href="#project0ad_8h_1af41f795755de6840b9d7e4b0a23f7655"><span>process_args()</span></a>. </p>
+<li><code class="first docutils literal"><span class="pre">data</span></code> - <p>The <a class="reference internal" href="#libstephenstructsmb__ad"><span>smb_ad</span></a> returned by <a class="reference internal" href="#libstephenad_8h_1af41f795755de6840b9d7e4b0a23f7655"><span>process_args()</span></a>. </p>
 </li>
 <li><code class="first docutils literal"><span class="pre">flag</span></code> - <p>The character flag to check. Alphabetical only. </p>
 </li>
@@ -287,14 +287,14 @@ The args library analyzes args as generally as possible. It recognizes three dif
 
 <dl class="function">
 <dt id="c.check_long_flag">
-<span class="target" id="project0ad_8h_1a61dc32c3f9db3a2c821d06687a388567"></span>int <code class="descname">check_long_flag</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_ad" title="smb_ad">smb_ad</a>  *<em>&nbsp;data</em>, char *<em>&nbsp;flag</em><span class="sig-paren">)</span><a class="headerlink" href="#c.check_long_flag" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libstephenad_8h_1a61dc32c3f9db3a2c821d06687a388567"></span>int <code class="descname">check_long_flag</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_ad" title="smb_ad">smb_ad</a>  *<em>&nbsp;data</em>, char *<em>&nbsp;flag</em><span class="sig-paren">)</span><a class="headerlink" href="#c.check_long_flag" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check whether a long flag appeared. It must occur verbatim. </p>
 <p><dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd>the index of the flag + 1 if it is set. </dd>
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">data</span></code> - <p>The <a class="reference internal" href="#project0structsmb__ad"><span>smb_ad</span></a> returned by <a class="reference internal" href="#project0ad_8h_1af41f795755de6840b9d7e4b0a23f7655"><span>process_args()</span></a>. </p>
+<li><code class="first docutils literal"><span class="pre">data</span></code> - <p>The <a class="reference internal" href="#libstephenstructsmb__ad"><span>smb_ad</span></a> returned by <a class="reference internal" href="#libstephenad_8h_1af41f795755de6840b9d7e4b0a23f7655"><span>process_args()</span></a>. </p>
 </li>
 <li><code class="first docutils literal"><span class="pre">flag</span></code> - <p>The string flag to check for. </p>
 </li>
@@ -312,14 +312,14 @@ The args library analyzes args as generally as possible. It recognizes three dif
 
 <dl class="function">
 <dt id="c.check_bare_string">
-<span class="target" id="project0ad_8h_1af0f74c830c61ea741f73ebb52b698275"></span>int <code class="descname">check_bare_string</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_ad" title="smb_ad">smb_ad</a>  *<em>&nbsp;data</em>, char *<em>&nbsp;string</em><span class="sig-paren">)</span><a class="headerlink" href="#c.check_bare_string" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libstephenad_8h_1af0f74c830c61ea741f73ebb52b698275"></span>int <code class="descname">check_bare_string</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_ad" title="smb_ad">smb_ad</a>  *<em>&nbsp;data</em>, char *<em>&nbsp;string</em><span class="sig-paren">)</span><a class="headerlink" href="#c.check_bare_string" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check whether a bare string appeared. It must occur verbatim. </p>
 <p><dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd>the index of the flag + 1 if it is set. </dd>
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">data</span></code> - <p>The <a class="reference internal" href="#project0structsmb__ad"><span>smb_ad</span></a> returned by <a class="reference internal" href="#project0ad_8h_1af41f795755de6840b9d7e4b0a23f7655"><span>process_args()</span></a>. </p>
+<li><code class="first docutils literal"><span class="pre">data</span></code> - <p>The <a class="reference internal" href="#libstephenstructsmb__ad"><span>smb_ad</span></a> returned by <a class="reference internal" href="#libstephenad_8h_1af41f795755de6840b9d7e4b0a23f7655"><span>process_args()</span></a>. </p>
 </li>
 <li><code class="first docutils literal"><span class="pre">string</span></code> - <p>The string to search for. </p>
 </li>
@@ -337,14 +337,14 @@ The args library analyzes args as generally as possible. It recognizes three dif
 
 <dl class="function">
 <dt id="c.get_flag_parameter">
-<span class="target" id="project0ad_8h_1a678e35b71964e37d356d141589215e07"></span>char* <code class="descname">get_flag_parameter</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_ad" title="smb_ad">smb_ad</a>  *<em>&nbsp;data</em>, char<em>&nbsp;flag</em><span class="sig-paren">)</span><a class="headerlink" href="#c.get_flag_parameter" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libstephenad_8h_1a678e35b71964e37d356d141589215e07"></span>char* <code class="descname">get_flag_parameter</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_ad" title="smb_ad">smb_ad</a>  *<em>&nbsp;data</em>, char<em>&nbsp;flag</em><span class="sig-paren">)</span><a class="headerlink" href="#c.get_flag_parameter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the string parameter associated with the flag. </p>
 <p><dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd>The parameter of the flag. </dd>
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">data</span></code> - <p>The <a class="reference internal" href="#project0structsmb__ad"><span>smb_ad</span></a> returned by <a class="reference internal" href="#project0ad_8h_1af41f795755de6840b9d7e4b0a23f7655"><span>process_args()</span></a>. </p>
+<li><code class="first docutils literal"><span class="pre">data</span></code> - <p>The <a class="reference internal" href="#libstephenstructsmb__ad"><span>smb_ad</span></a> returned by <a class="reference internal" href="#libstephenad_8h_1af41f795755de6840b9d7e4b0a23f7655"><span>process_args()</span></a>. </p>
 </li>
 <li><code class="first docutils literal"><span class="pre">flag</span></code> - <p>The flag to find parameters of. </p>
 </li>
@@ -356,14 +356,14 @@ The args library analyzes args as generally as possible. It recognizes three dif
 
 <dl class="function">
 <dt id="c.get_long_flag_parameter">
-<span class="target" id="project0ad_8h_1a5ceaa31d0075027166d030202059821f"></span>char* <code class="descname">get_long_flag_parameter</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_ad" title="smb_ad">smb_ad</a>  *<em>&nbsp;data</em>, char *<em>&nbsp;string</em><span class="sig-paren">)</span><a class="headerlink" href="#c.get_long_flag_parameter" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libstephenad_8h_1a5ceaa31d0075027166d030202059821f"></span>char* <code class="descname">get_long_flag_parameter</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_ad" title="smb_ad">smb_ad</a>  *<em>&nbsp;data</em>, char *<em>&nbsp;string</em><span class="sig-paren">)</span><a class="headerlink" href="#c.get_long_flag_parameter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the string parameter associated with the long string. </p>
 <p><dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd>The parameter of the long flag. </dd>
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">data</span></code> - <p>The <a class="reference internal" href="#project0structsmb__ad"><span>smb_ad</span></a> returned by <a class="reference internal" href="#project0ad_8h_1af41f795755de6840b9d7e4b0a23f7655"><span>process_args()</span></a>. </p>
+<li><code class="first docutils literal"><span class="pre">data</span></code> - <p>The <a class="reference internal" href="#libstephenstructsmb__ad"><span>smb_ad</span></a> returned by <a class="reference internal" href="#libstephenad_8h_1af41f795755de6840b9d7e4b0a23f7655"><span>process_args()</span></a>. </p>
 </li>
 <li><code class="first docutils literal"><span class="pre">string</span></code> - <p>The long flag to find parameters of. </p>
 </li>
@@ -381,7 +381,7 @@ The args library analyzes args as generally as possible. It recognizes three dif
 
 <dl class="function">
 <dt id="c.ad_print">
-<span class="target" id="project0ad_8h_1a6442d00676cae10e9d3fac9758490112"></span>void <code class="descname">ad_print</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_ad" title="smb_ad">smb_ad</a>  *<em>&nbsp;data</em>, FILE *<em>&nbsp;f</em><span class="sig-paren">)</span><a class="headerlink" href="#c.ad_print" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libstephenad_8h_1a6442d00676cae10e9d3fac9758490112"></span>void <code class="descname">ad_print</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_ad" title="smb_ad">smb_ad</a>  *<em>&nbsp;data</em>, FILE *<em>&nbsp;f</em><span class="sig-paren">)</span><a class="headerlink" href="#c.ad_print" title="Permalink to this definition">¶</a></dt>
 <dd><p>Print the contents of the arg data struct to a file for debugging. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
@@ -399,37 +399,37 @@ The args library analyzes args as generally as possible. It recognizes three dif
 </div>
 <dl class="struct">
 <dt>
-<span class="target" id="project0structsmb__ad"></span><em class="property">struct </em><code class="descname">smb_ad</code></dt>
+<span class="target" id="libstephenstructsmb__ad"></span><em class="property">struct </em><code class="descname">smb_ad</code></dt>
 <dd><em>#include &lt;ad.h&gt;</em><p>Data structure to store information on arguments passed to the program. </p>
 <div class="breathe-sectiondef container">
 <p class="breathe-sectiondef-title rubric">Public Members</p>
 <dl class="variable">
 <dt id="c.flags">
-<span class="target" id="project0structsmb__ad_1a899a76dc5f03f0d4ea3793c339e07ee9"></span>uint64_t <code class="descname">flags</code><a class="headerlink" href="#c.flags" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libstephenstructsmb__ad_1a899a76dc5f03f0d4ea3793c339e07ee9"></span>uint64_t <code class="descname">flags</code><a class="headerlink" href="#c.flags" title="Permalink to this definition">¶</a></dt>
 <dd><p>Holds boolean value for whether each character flag is set. </p>
 </dd></dl>
 
 <dl class="variable">
 <dt>
-<span class="target" id="project0structsmb__ad_1a6cd07587ed296173be3c44f1ffbc4fdf"></span><code class="descname">char* flag_strings[MAX_FLAGS]</code></dt>
+<span class="target" id="libstephenstructsmb__ad_1a6cd07587ed296173be3c44f1ffbc4fdf"></span><code class="descname">char* flag_strings[MAX_FLAGS]</code></dt>
 <dd><p>Holds the parameters for each regular (character) flag. </p>
 </dd></dl>
 
 <dl class="variable">
 <dt id="c.long_flags">
-<span class="target" id="project0structsmb__ad_1ac5a3dc77b9a52d81774f0a6efa8eae93"></span>struct <a class="reference internal" href="ll.html#c.smb_ll" title="smb_ll">smb_ll</a>* <code class="descname">long_flags</code><a class="headerlink" href="#c.long_flags" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libstephenstructsmb__ad_1ac5a3dc77b9a52d81774f0a6efa8eae93"></span>struct <a class="reference internal" href="ll.html#c.smb_ll" title="smb_ll">smb_ll</a>* <code class="descname">long_flags</code><a class="headerlink" href="#c.long_flags" title="Permalink to this definition">¶</a></dt>
 <dd><p>Holds the long flags. </p>
 </dd></dl>
 
 <dl class="variable">
 <dt id="c.long_flag_strings">
-<span class="target" id="project0structsmb__ad_1a491f3949d66b30b396a3f78a146aa3d5"></span>struct <a class="reference internal" href="ll.html#c.smb_ll" title="smb_ll">smb_ll</a>* <code class="descname">long_flag_strings</code><a class="headerlink" href="#c.long_flag_strings" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libstephenstructsmb__ad_1a491f3949d66b30b396a3f78a146aa3d5"></span>struct <a class="reference internal" href="ll.html#c.smb_ll" title="smb_ll">smb_ll</a>* <code class="descname">long_flag_strings</code><a class="headerlink" href="#c.long_flag_strings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Holds the parameters of the long flags. </p>
 </dd></dl>
 
 <dl class="variable">
 <dt id="c.bare_strings">
-<span class="target" id="project0structsmb__ad_1a16b4f2441070701113f9b2d4313533bd"></span>struct <a class="reference internal" href="ll.html#c.smb_ll" title="smb_ll">smb_ll</a>* <code class="descname">bare_strings</code><a class="headerlink" href="#c.bare_strings" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libstephenstructsmb__ad_1a16b4f2441070701113f9b2d4313533bd"></span>struct <a class="reference internal" href="ll.html#c.smb_ll" title="smb_ll">smb_ll</a>* <code class="descname">bare_strings</code><a class="headerlink" href="#c.bare_strings" title="Permalink to this definition">¶</a></dt>
 <dd><p>Holds the bare strings (strings that aren&#8217;t flags or flag params). </p>
 </dd></dl>
 

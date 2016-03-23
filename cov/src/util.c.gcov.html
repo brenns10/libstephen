@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2016-03-14 14:50:52</td>
+            <td class="headerValue">2016-03-23 01:51:44</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">5</td>
@@ -94,14 +94,14 @@
 <span class="lineNum">      32 </span>            :    @param amt The number of bytes to allocate.
 <a name="33"><span class="lineNum">      33 </span>            :    @returns The pointer to the allocated memory (guaranteed).</a>
 <span class="lineNum">      34 </span>            :  */
-<span class="lineNum">      35 </span><span class="lineCov">     504395 : void *smb___new(size_t amt)</span>
+<span class="lineNum">      35 </span><span class="lineCov">     504398 : void *smb___new(size_t amt)</span>
 <span class="lineNum">      36 </span>            : {
-<span class="lineNum">      37 </span><span class="lineCov">     504395 :   void *result = malloc(amt);</span>
-<span class="lineNum">      38 </span><span class="lineCov">     504395 :   if (!result) {</span>
+<span class="lineNum">      37 </span><span class="lineCov">     504398 :   void *result = malloc(amt);</span>
+<span class="lineNum">      38 </span><span class="lineCov">     504398 :   if (!result) {</span>
 <span class="lineNum">      39 </span><span class="lineNoCov">          0 :     fprintf(stderr, &quot;smb_new: allocation error\n&quot;);</span>
 <span class="lineNum">      40 </span><span class="lineNoCov">          0 :     exit(1);</span>
 <span class="lineNum">      41 </span>            :   }
-<span class="lineNum">      42 </span><span class="lineCov">     504395 :   return result;</span>
+<span class="lineNum">      42 </span><span class="lineCov">     504398 :   return result;</span>
 <span class="lineNum">      43 </span>            : }
 <span class="lineNum">      44 </span>            : 
 <span class="lineNum">      45 </span>            : /**
@@ -130,10 +130,10 @@
 <span class="lineNum">      68 </span>            : 
 <a name="69"><span class="lineNum">      69 </span>            :    @param ptr Memory to free.</a>
 <span class="lineNum">      70 </span>            :  */
-<span class="lineNum">      71 </span><span class="lineCov">     504395 : void smb___free(void *ptr)</span>
+<span class="lineNum">      71 </span><span class="lineCov">     504398 : void smb___free(void *ptr)</span>
 <span class="lineNum">      72 </span>            : {
-<span class="lineNum">      73 </span><span class="lineCov">     504395 :   free(ptr);</span>
-<a name="74"><span class="lineNum">      74 </span><span class="lineCov">     504395 : }</span></a>
+<span class="lineNum">      73 </span><span class="lineCov">     504398 :   free(ptr);</span>
+<a name="74"><span class="lineNum">      74 </span><span class="lineCov">     504398 : }</span></a>
 <span class="lineNum">      75 </span>            : 
 <span class="lineNum">      76 </span><span class="lineNoCov">          0 : wchar_t *smb_read_linew(FILE *file, smb_status *status)</span>
 <span class="lineNum">      77 </span>            : {
@@ -240,12 +240,12 @@
 <span class="lineNum">     178 </span>            :    @return An integer indicating whether the strings are equal, less than, or
 <a name="179"><span class="lineNum">     179 </span>            :    greater than.</a>
 <span class="lineNum">     180 </span>            :  */
-<span class="lineNum">     181 </span><span class="lineCov">         28 : int data_compare_string(DATA d1, DATA d2)</span>
+<span class="lineNum">     181 </span><span class="lineCov">         33 : int data_compare_string(DATA d1, DATA d2)</span>
 <span class="lineNum">     182 </span>            : {
 <span class="lineNum">     183 </span>            :   char *s1, *s2;
-<span class="lineNum">     184 </span><span class="lineCov">         28 :   s1 = (char *)d1.data_ptr;</span>
-<span class="lineNum">     185 </span><span class="lineCov">         28 :   s2 = (char *)d2.data_ptr;</span>
-<span class="lineNum">     186 </span><span class="lineCov">         28 :   return strcmp(s1, s2);</span>
+<span class="lineNum">     184 </span><span class="lineCov">         33 :   s1 = (char *)d1.data_ptr;</span>
+<span class="lineNum">     185 </span><span class="lineCov">         33 :   s2 = (char *)d2.data_ptr;</span>
+<span class="lineNum">     186 </span><span class="lineCov">         33 :   return strcmp(s1, s2);</span>
 <span class="lineNum">     187 </span>            : }
 <span class="lineNum">     188 </span>            : 
 <span class="lineNum">     189 </span>            : /**

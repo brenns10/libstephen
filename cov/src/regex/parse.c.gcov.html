@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2016-03-14 14:50:52</td>
+            <td class="headerValue">2016-03-23 01:51:44</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">13</td>
@@ -158,7 +158,7 @@
 <span class="lineNum">      96 </span>            :   Simple convenience functions for a parser.
 <a name="97"><span class="lineNum">      97 </span>            :  */</a>
 <span class="lineNum">      98 </span>            : 
-<span class="lineNum">      99 </span><span class="lineCov">        622 : bool accept(TSym s, Lexer *l)</span>
+<span class="lineNum">      99 </span><span class="lineCov">        622 : static bool accept(TSym s, Lexer *l)</span>
 <span class="lineNum">     100 </span>            : {
 <span class="lineNum">     101 </span><span class="lineCov">        622 :   if (l-&gt;tok.sym == s) {</span>
 <span class="lineNum">     102 </span><span class="lineCov">        151 :     nextsym(l);</span>
@@ -167,11 +167,11 @@
 <span class="lineNum">     105 </span><span class="lineCov">        471 :   return false;</span>
 <a name="106"><span class="lineNum">     106 </span>            : }</a>
 <span class="lineNum">     107 </span>            : 
-<span class="lineNum">     108 </span><span class="lineCov">         69 : void expect(TSym s, Lexer *l)</span>
+<span class="lineNum">     108 </span><span class="lineCov">         40 : static void expect(TSym s, Lexer *l)</span>
 <span class="lineNum">     109 </span>            : {
-<span class="lineNum">     110 </span><span class="lineCov">         69 :   if (l-&gt;tok.sym == s) {</span>
-<span class="lineNum">     111 </span><span class="lineCov">         69 :     nextsym(l);</span>
-<span class="lineNum">     112 </span><span class="lineCov">         69 :     return;</span>
+<span class="lineNum">     110 </span><span class="lineCov">         40 :   if (l-&gt;tok.sym == s) {</span>
+<span class="lineNum">     111 </span><span class="lineCov">         40 :     nextsym(l);</span>
+<span class="lineNum">     112 </span><span class="lineCov">         40 :     return;</span>
 <span class="lineNum">     113 </span>            :   }
 <span class="lineNum">     114 </span><span class="lineNoCov">          0 :   fprintf(stderr, &quot;error: expected %s, got %s\n&quot;, names[s], names[l-&gt;tok.sym]);</span>
 <span class="lineNum">     115 </span><span class="lineNoCov">          0 :   exit(1);</span>

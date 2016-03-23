@@ -161,7 +161,7 @@
 <p class="breathe-sectiondef-title rubric">Functions</p>
 <dl class="function">
 <dt id="c.read_file">
-<span class="target" id="project0str_8h_1aa45cf9c39ef28fea07b546e92a9d4dc3"></span>char* <code class="descname">read_file</code><span class="sig-paren">(</span>FILE *<em>&nbsp;f</em><span class="sig-paren">)</span><a class="headerlink" href="#c.read_file" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libstephenstr_8h_1aa45cf9c39ef28fea07b546e92a9d4dc3"></span>char* <code class="descname">read_file</code><span class="sig-paren">(</span>FILE *<em>&nbsp;f</em><span class="sig-paren">)</span><a class="headerlink" href="#c.read_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read a file into a string and return a pointer to it. </p>
 <p>
 It is the caller&#8217;s responsibility to free() the returned pointer! <dl class="docutils">
@@ -177,7 +177,7 @@ It is the caller&#8217;s responsibility to free() the returned pointer! <dl clas
 
 <dl class="function">
 <dt id="c.read_filew">
-<span class="target" id="project0str_8h_1a8a8710177714fbc6ee209dc179c69172"></span>wchar_t* <code class="descname">read_filew</code><span class="sig-paren">(</span>FILE *<em>&nbsp;f</em><span class="sig-paren">)</span><a class="headerlink" href="#c.read_filew" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libstephenstr_8h_1a8a8710177714fbc6ee209dc179c69172"></span>wchar_t* <code class="descname">read_filew</code><span class="sig-paren">(</span>FILE *<em>&nbsp;f</em><span class="sig-paren">)</span><a class="headerlink" href="#c.read_filew" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read a file into a wide string and return a pointer to it. </p>
 <p>
 It is the caller&#8217;s responsibility to free() the returned pointer! <dl class="docutils">
@@ -193,7 +193,7 @@ It is the caller&#8217;s responsibility to free() the returned pointer! <dl clas
 
 <dl class="function">
 <dt id="c.read_line">
-<span class="target" id="project0str_8h_1a83ce385bf93ce5b1861d7715561913ce"></span>char* <code class="descname">read_line</code><span class="sig-paren">(</span>FILE *<em>&nbsp;file</em><span class="sig-paren">)</span><a class="headerlink" href="#c.read_line" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libstephenstr_8h_1a83ce385bf93ce5b1861d7715561913ce"></span>char* <code class="descname">read_line</code><span class="sig-paren">(</span>FILE *<em>&nbsp;file</em><span class="sig-paren">)</span><a class="headerlink" href="#c.read_line" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read line from file into string, and return pointer to it. </p>
 <p>
 It is the caller&#8217;s responsibility to free() the returned pointer! <dl class="docutils">
@@ -209,7 +209,7 @@ It is the caller&#8217;s responsibility to free() the returned pointer! <dl clas
 
 <dl class="function">
 <dt id="c.read_linew">
-<span class="target" id="project0str_8h_1a263dabc2b7baa5b983d9fa74a0716d92"></span>wchar_t* <code class="descname">read_linew</code><span class="sig-paren">(</span>FILE *<em>&nbsp;file</em><span class="sig-paren">)</span><a class="headerlink" href="#c.read_linew" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libstephenstr_8h_1a263dabc2b7baa5b983d9fa74a0716d92"></span>wchar_t* <code class="descname">read_linew</code><span class="sig-paren">(</span>FILE *<em>&nbsp;file</em><span class="sig-paren">)</span><a class="headerlink" href="#c.read_linew" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read line from file into wide string, and return pointer to it. </p>
 <p>
 It is the caller&#8217;s responsibility to free() the returned pointer! <dl class="docutils">
@@ -225,7 +225,7 @@ It is the caller&#8217;s responsibility to free() the returned pointer! <dl clas
 
 <dl class="function">
 <dt id="c.split_lines">
-<span class="target" id="project0str_8h_1a49b8df05cc3b80c188f69fef55e01fb6"></span><a class="reference internal" href="ll.html#c.smb_ll" title="smb_ll">smb_ll</a>* <code class="descname">split_lines</code><span class="sig-paren">(</span>char *<em>&nbsp;source</em><span class="sig-paren">)</span><a class="headerlink" href="#c.split_lines" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libstephenstr_8h_1a49b8df05cc3b80c188f69fef55e01fb6"></span><a class="reference internal" href="ll.html#c.smb_ll" title="smb_ll">smb_ll</a>* <code class="descname">split_lines</code><span class="sig-paren">(</span>char *<em>&nbsp;source</em><span class="sig-paren">)</span><a class="headerlink" href="#c.split_lines" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a list of lines from the given string. </p>
 <p>
 The string is modified! You should make a copy before doing this. Also, it is the caller&#8217;s responsibility to free the returned list. <dl class="docutils">
@@ -243,7 +243,7 @@ The string is modified! You should make a copy before doing this. Also, it is th
 
 <dl class="function">
 <dt id="c.split_linesw">
-<span class="target" id="project0str_8h_1a74392a4b42796a44538510daa9614b2a"></span><a class="reference internal" href="ll.html#c.smb_ll" title="smb_ll">smb_ll</a>* <code class="descname">split_linesw</code><span class="sig-paren">(</span>wchar_t *<em>&nbsp;source</em><span class="sig-paren">)</span><a class="headerlink" href="#c.split_linesw" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libstephenstr_8h_1a74392a4b42796a44538510daa9614b2a"></span><a class="reference internal" href="ll.html#c.smb_ll" title="smb_ll">smb_ll</a>* <code class="descname">split_linesw</code><span class="sig-paren">(</span>wchar_t *<em>&nbsp;source</em><span class="sig-paren">)</span><a class="headerlink" href="#c.split_linesw" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a list of lines from the given wide string. </p>
 <p>
 The string is modified! You should make a copy before doing this. Also, it is the caller&#8217;s responsibility to free the returned list. <dl class="docutils">
