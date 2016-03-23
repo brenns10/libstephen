@@ -19,6 +19,21 @@
 #include "libstephen/re.h"
 #include "libstephen/re_internals.h"
 
+/*
+  Simple convenience functions for a parser.
+  REDEFINED HERE SO THAT THEY DON'T POLLUTE THE GLOBAL NAMESPACE.
+ */
+
+static void expect(TSym s, Lexer *l)
+{
+  if (l->tok.sym == s) {
+    nextsym(l);
+    return;
+  }
+  fprintf(stderr, "error: expected %s, got %s\n", names[s], names[l->tok.sym]);
+  exit(1);
+}
+
 static int test_TERM_CharSym(void)
 {
   Lexer l;

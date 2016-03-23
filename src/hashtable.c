@@ -300,7 +300,7 @@ DATA ht_iter_next(smb_iter *iter, smb_status *status)
 bool ht_iter_has_next(smb_iter *iter)
 {
   const smb_ht *ht = iter->ds;
-  return iter->index < (int)ht->allocated;
+  return iter->index < (int)ht->length;
 }
 
 void ht_iter_destroy(smb_iter *iter)
@@ -318,9 +318,9 @@ smb_iter ht_get_iter(const smb_ht *ht)
 {
   smb_iter iter = {
     // Data:
-    .ds = ht,          // A reference to the data structure.
-    .state = LLINT(0), // This tracks the actual index into the table.
-    .index = 0,        // This tracks how many keys have been returned.
+    .ds = ht,           // A reference to the data structure.
+    .state = LLINT(-1), // This tracks the actual index into the table.
+    .index = 0,         // This tracks how many keys have been returned.
 
     // Functions
     .next = &ht_iter_next,

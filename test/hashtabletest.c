@@ -75,6 +75,7 @@ int ht_test_insert()
 
   for (i = 0; i < TEST_PAIRS; i++) {
     key.data_ptr = test_keys[i];
+    TEST_ASSERT(ht_contains(table, key));
     rv = ht_get(table, key, &status);
     TA_INT_EQ(status, SMB_SUCCESS);
     TA_STR_EQ(test_values[i], (char*)rv.data_ptr);
@@ -277,6 +278,40 @@ int ht_test_duplicate()
   return 0;
 }
 
+int ht_test_iterator(void)
+{
+  smb_status status = SMB_SUCCESS;
+  size_t i;
+  smb_ht *table = ht_create(&ht_string_hash, &data_compare_string);
+  bool seen[TEST_PAIRS];
+  size_t nseen = 0;
+
+  for (i = 0; i < TEST_PAIRS; i++) {
+    ht_insert(table, PTR(test_keys[i]), PTR(test_values[i]));
+    seen[i] = false;
+  }
+
+  smb_iter it = ht_get_iter(table);
+  while (it.has_next(&it)) {
+    char *returned = it.next(&it, &status).data_ptr;
+    TA_INT_EQ(status, SMB_SUCCESS);
+    for (i = 0; i < TEST_PAIRS; i++) {
+      if (strcmp(returned, test_keys[i]) == 0) {
+        seen[i] = true;
+        nseen++;
+        break;
+      }
+    }
+  }
+
+  TA_INT_EQ(nseen, TEST_PAIRS);
+  for (i = 0; i < TEST_PAIRS; i++) {
+    TEST_ASSERT(seen[i]);
+  }
+  ht_delete(table);
+  return 0;
+}
+
 void hash_table_test()
 {
   smb_ut_group *group = su_create_test_group("test/hashtabletest.c");
@@ -298,6 +333,9 @@ void hash_table_test()
 
   smb_ut_test *duplicate = su_create_test("duplicate", ht_test_duplicate);
   su_add_test(group, duplicate);
+
+  smb_ut_test *test_iterator = su_create_test("test_iterator", ht_test_iterator);
+  su_add_test(group, test_iterator);
 
   su_run_group(group);
   su_delete_group(group);
