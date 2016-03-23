@@ -96,7 +96,7 @@ static void print_tree(PTree *tree, int indent)
   Simple convenience functions for a parser.
  */
 
-bool accept(TSym s, Lexer *l)
+static bool accept(TSym s, Lexer *l)
 {
   if (l->tok.sym == s) {
     nextsym(l);
@@ -105,7 +105,7 @@ bool accept(TSym s, Lexer *l)
   return false;
 }
 
-void expect(TSym s, Lexer *l)
+static void expect(TSym s, Lexer *l)
 {
   if (l->tok.sym == s) {
     nextsym(l);
