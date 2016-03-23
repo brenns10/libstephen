@@ -17,6 +17,7 @@
 #define LIBSTEPHEN_HT_H
 
 #include "base.h"  /* DATA, DATA_ACTION */
+#include "list.h"  /* DATA, DATA_ACTION */
 
 /**
    @brief An initial amount of rows in the hash table.  Something just off of a
@@ -201,6 +202,12 @@ DATA ht_get(smb_ht const *table, DATA key, smb_status *status);
    @returns Whether the key is present.
  */
 bool ht_contains(smb_ht const *table, DATA key);
+/**
+   @brief Return an iterator over the keys of the table.
+   @param ht A pointer to the hash table.
+   @returns An iterator struct.
+ */
+smb_iter ht_get_iter(const smb_ht *ht);
 /**
    @brief Return the hash of the data, interpreting it as a string.
    @param data The string to hash, assuming that the value contained is a char*.

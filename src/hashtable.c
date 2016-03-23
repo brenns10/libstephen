@@ -271,6 +271,66 @@ bool ht_contains(smb_ht const *table, DATA key)
   return status == SMB_SUCCESS;
 }
 
+DATA ht_iter_next(smb_iter *iter, smb_status *status)
+{
+  *status = SMB_SUCCESS;
+  long long int i = iter->state.data_llint + 1;
+  const smb_ht *ht = iter->ds;
+
+  // Move up until we either run off the table, or find a bucket that contains
+  // something.
+  while (i < ht->allocated && ht->table[i].mark != HT_FULL) {
+    i++;
+  }
+
+  // save current index back to data structure
+  iter->state.data_llint = i;
+
+  // If we hit the end of the table, stop iterating.
+  if (i >= ht->allocated) {
+    *status = SMB_STOP_ITERATION;
+    return LLINT(0);
+  } else {
+    // Otherwise, return the key we found.
+    iter->index++; // count the number of items we've found so far
+    return ht->table[i].key;
+  }
+}
+
+bool ht_iter_has_next(smb_iter *iter)
+{
+  const smb_ht *ht = iter->ds;
+  return iter->index < (int)ht->allocated;
+}
+
+void ht_iter_destroy(smb_iter *iter)
+{
+  (void)iter; //unused
+}
+
+void ht_iter_delete(smb_iter *iter)
+{
+  ht_iter_destroy(iter);
+  free(iter);
+}
+
+smb_iter ht_get_iter(const smb_ht *ht)
+{
+  smb_iter iter = {
+    // Data:
+    .ds = ht,          // A reference to the data structure.
+    .state = LLINT(0), // This tracks the actual index into the table.
+    .index = 0,        // This tracks how many keys have been returned.
+
+    // Functions
+    .next = &ht_iter_next,
+    .has_next = &ht_iter_has_next,
+    .destroy = &ht_iter_destroy,
+    .delete = &ht_iter_delete
+  };
+  return iter;
+}
+
 unsigned int ht_string_hash(DATA data)
 {
   char *theString = (char *)data.data_ptr;
