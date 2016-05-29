@@ -204,9 +204,10 @@ static Fragment *term(PTree *t, State *s)
     // Parenthesized expression
     f = newfrag(Save, s);
     f->in.s = s->capture++;
+    size_t nextsave = s->capture++;
     f->next = regex(t->children[1], s);
     Fragment *n = newfrag(Save, s);
-    n->in.s = s->capture++;
+    n->in.s = nextsave;
     n->next = newfrag(Match, s);
     join(f, n);
   } else {
