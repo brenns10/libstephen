@@ -22,7 +22,7 @@ Captures recap(const char *s, const size_t *l, size_t n)
 {
   Captures c;
   c.n = n/2;
-  c.cap = calloc(n, sizeof(char *));
+  c.cap = calloc(c.n, sizeof(char *));
   for (size_t i = 0; i < n / 2; i++) {
     size_t start = l[i*2];
     size_t end = l[i*2 + 1];
