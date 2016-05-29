@@ -87,7 +87,7 @@
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Libstephen API Documentation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="base.html">Libstephen Base</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ll.html">Linked List</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="">Array List</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Array List</a></li>
 <li class="toctree-l2"><a class="reference internal" href="list.html">List Interface</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ht.html">Hash Table</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bf.html">Bitfield</a></li>
@@ -385,7 +385,7 @@ arraylist.c provides an array implementation of the list interface. It has its o
 <dl class="function">
 <dt id="c.al_push_back">
 <span class="target" id="libstephenal_8h_1a8edb13307adf97fd11e12300884faf8a"></span>void <code class="descname">al_push_back</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_al" title="smb_al">smb_al</a>  *<em>&nbsp;list</em>, <a class="reference internal" href="base.html#c.DATA" title="DATA">DATA</a><em>&nbsp;newData</em><span class="sig-paren">)</span><a class="headerlink" href="#c.al_push_back" title="Permalink to this definition">¶</a></dt>
-<dd><p>Push the data to the back of the list. An alias for al_append. See <a class="reference internal" href="ll.html#libstephenll_8h_1a13d5085ba6443cc36e6d2c85da2b9223"><span>ll_push_back()</span></a> if you don&#8217;t know the what &#8216;push&#8217; means. </p>
+<dd><p>Push the data to the back of the list. An alias for al_append. See <a class="reference internal" href="ll.html#libstephenll_8h_1a13d5085ba6443cc36e6d2c85da2b9223"><span class="std std-ref">ll_push_back()</span></a> if you don&#8217;t know the what &#8216;push&#8217; means. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last">
@@ -402,7 +402,7 @@ arraylist.c provides an array implementation of the list interface. It has its o
 <dl class="function">
 <dt id="c.al_pop_back">
 <span class="target" id="libstephenal_8h_1acd7ff2a4d0330ed1b49b0a12a74ea45d"></span><a class="reference internal" href="base.html#c.DATA" title="DATA">DATA</a> <code class="descname">al_pop_back</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_al" title="smb_al">smb_al</a>  *<em>&nbsp;list</em>, <a class="reference internal" href="base.html#c.smb_status" title="smb_status">smb_status</a>  *<em>&nbsp;status</em><span class="sig-paren">)</span><a class="headerlink" href="#c.al_pop_back" title="Permalink to this definition">¶</a></dt>
-<dd><p>Pop the data from the back of the list. See <a class="reference internal" href="ll.html#libstephenll_8h_1a98deac6d90b0165f69711228e86aca45"><span>ll_pop_back()</span></a> if you don&#8217;t know what &#8216;pop&#8217; means. </p>
+<dd><p>Pop the data from the back of the list. See <a class="reference internal" href="ll.html#libstephenll_8h_1a98deac6d90b0165f69711228e86aca45"><span class="std std-ref">ll_pop_back()</span></a> if you don&#8217;t know what &#8216;pop&#8217; means. </p>
 <p><dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd>The data from the back of the list. </dd>
@@ -427,7 +427,7 @@ arraylist.c provides an array implementation of the list interface. It has its o
 <dl class="function">
 <dt id="c.al_peek_back">
 <span class="target" id="libstephenal_8h_1acf9ccd1e881914465cdd090727b37705"></span><a class="reference internal" href="base.html#c.DATA" title="DATA">DATA</a> <code class="descname">al_peek_back</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_al" title="smb_al">smb_al</a>  *<em>&nbsp;list</em>, <a class="reference internal" href="base.html#c.smb_status" title="smb_status">smb_status</a>  *<em>&nbsp;status</em><span class="sig-paren">)</span><a class="headerlink" href="#c.al_peek_back" title="Permalink to this definition">¶</a></dt>
-<dd><p>Peeks at the data from the back of the list. See <a class="reference internal" href="ll.html#libstephenll_8h_1a020f9e50639387120cf56ec43b5e9a27"><span>ll_peek_back()</span></a> if you don&#8217;t know what &#8216;peek&#8217; means. </p>
+<dd><p>Peeks at the data from the back of the list. See <a class="reference internal" href="ll.html#libstephenll_8h_1a020f9e50639387120cf56ec43b5e9a27"><span class="std std-ref">ll_peek_back()</span></a> if you don&#8217;t know what &#8216;peek&#8217; means. </p>
 <p><dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd>The data at the back of the list. </dd>
@@ -452,7 +452,7 @@ arraylist.c provides an array implementation of the list interface. It has its o
 <dl class="function">
 <dt id="c.al_push_front">
 <span class="target" id="libstephenal_8h_1aeb6a0721927200d74a8d549ab8c1f4c5"></span>void <code class="descname">al_push_front</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_al" title="smb_al">smb_al</a>  *<em>&nbsp;list</em>, <a class="reference internal" href="base.html#c.DATA" title="DATA">DATA</a><em>&nbsp;data</em><span class="sig-paren">)</span><a class="headerlink" href="#c.al_push_front" title="Permalink to this definition">¶</a></dt>
-<dd><p>Push the data to the front of the list. Alias for al_prepend. See <a class="reference internal" href="ll.html#libstephenll_8h_1a13d5085ba6443cc36e6d2c85da2b9223"><span>ll_push_back()</span></a> if you don&#8217;t know what &#8216;push&#8217; means. </p>
+<dd><p>Push the data to the front of the list. Alias for al_prepend. See <a class="reference internal" href="ll.html#libstephenll_8h_1a13d5085ba6443cc36e6d2c85da2b9223"><span class="std std-ref">ll_push_back()</span></a> if you don&#8217;t know what &#8216;push&#8217; means. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last">
@@ -469,7 +469,7 @@ arraylist.c provides an array implementation of the list interface. It has its o
 <dl class="function">
 <dt id="c.al_pop_front">
 <span class="target" id="libstephenal_8h_1a28e2cb40a7e251b7f6bc271516f5987e"></span><a class="reference internal" href="base.html#c.DATA" title="DATA">DATA</a> <code class="descname">al_pop_front</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_al" title="smb_al">smb_al</a>  *<em>&nbsp;list</em>, <a class="reference internal" href="base.html#c.smb_status" title="smb_status">smb_status</a>  *<em>&nbsp;status</em><span class="sig-paren">)</span><a class="headerlink" href="#c.al_pop_front" title="Permalink to this definition">¶</a></dt>
-<dd><p>Pop the data from the front of the list. See <a class="reference internal" href="ll.html#libstephenll_8h_1a98deac6d90b0165f69711228e86aca45"><span>ll_pop_back()</span></a> if you don&#8217;t know what &#8216;pop&#8217; means. </p>
+<dd><p>Pop the data from the front of the list. See <a class="reference internal" href="ll.html#libstephenll_8h_1a98deac6d90b0165f69711228e86aca45"><span class="std std-ref">ll_pop_back()</span></a> if you don&#8217;t know what &#8216;pop&#8217; means. </p>
 <p><dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd>The data from the front of the list. </dd>
@@ -494,7 +494,7 @@ arraylist.c provides an array implementation of the list interface. It has its o
 <dl class="function">
 <dt id="c.al_peek_front">
 <span class="target" id="libstephenal_8h_1a4d0e2e609e8f19f10d7c7a8d4416e820"></span><a class="reference internal" href="base.html#c.DATA" title="DATA">DATA</a> <code class="descname">al_peek_front</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_al" title="smb_al">smb_al</a>  *<em>&nbsp;list</em>, <a class="reference internal" href="base.html#c.smb_status" title="smb_status">smb_status</a>  *<em>&nbsp;status</em><span class="sig-paren">)</span><a class="headerlink" href="#c.al_peek_front" title="Permalink to this definition">¶</a></dt>
-<dd><p>Peek at the data from the front of the list. See <a class="reference internal" href="ll.html#libstephenll_8h_1a020f9e50639387120cf56ec43b5e9a27"><span>ll_peek_back()</span></a> if you don&#8217;t know what &#8216;peek&#8217; means. </p>
+<dd><p>Peek at the data from the front of the list. See <a class="reference internal" href="ll.html#libstephenll_8h_1a020f9e50639387120cf56ec43b5e9a27"><span class="std std-ref">ll_peek_back()</span></a> if you don&#8217;t know what &#8216;peek&#8217; means. </p>
 <p><dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd>The data from the front of the list. </dd>
@@ -560,7 +560,7 @@ arraylist.c provides an array implementation of the list interface. It has its o
 <dd><p>Return an iterator on the array list. </p>
 <p><dl class="docutils">
 <dt><strong>Return</strong></dt>
-<dd>The <a class="reference internal" href="list.html#libstephenstructsmb__iter"><span>smb_iter</span></a> to the list. </dd>
+<dd>The <a class="reference internal" href="list.html#libstephenstructsmb__iter"><span class="std std-ref">smb_iter</span></a> to the list. </dd>
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last">
 <li><code class="first docutils literal"><span class="pre">list</span></code> - <p>A pointer to the list. </p>

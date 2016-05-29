@@ -85,7 +85,7 @@
                 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../tutorial/index.html">Libstephen Tutorial</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Libstephen API Documentation</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="">Libstephen Base</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Libstephen Base</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ll.html">Linked List</a></li>
 <li class="toctree-l2"><a class="reference internal" href="al.html">Array List</a></li>
 <li class="toctree-l2"><a class="reference internal" href="list.html">List Interface</a></li>
@@ -290,22 +290,22 @@
 <dl class="typedef">
 <dt id="c.DATA_ACTION">
 <span class="target" id="libstephenbase_8h_1a74462a5d502ce1518853bd850ae90a44"></span><em class="property">typedef </em><code class="descname">(* DATA_ACTION)</code><span class="sig-paren">(</span><a class="reference internal" href="#c.DATA" title="DATA">DATA</a><span class="sig-paren">)</span><a class="headerlink" href="#c.DATA_ACTION" title="Permalink to this definition">¶</a></dt>
-<dd><p>A function pointer that takes a <a class="reference internal" href="#libstephenunion_d_a_t_a"><span>DATA</span></a> and performs an action on it. </p>
+<dd><p>A function pointer that takes a <a class="reference internal" href="#libstephenunion_d_a_t_a"><span class="std std-ref">DATA</span></a> and performs an action on it. </p>
 <p>The function could count it, call free on it, print it, etc. Useful for stuff like deleting data structures full of items (if they&#8217;re pointers to dynamically allocated data, they&#8217;ll need to be freed), applying an action to every item in a list (e.g. printing), and many more applications. </p>
 </dd></dl>
 
 <dl class="typedef">
 <dt id="c.DATA_COMPARE">
 <span class="target" id="libstephenbase_8h_1a877fcc10033f151ebdf36ee7515cfec5"></span><em class="property">typedef </em><code class="descname">(* DATA_COMPARE)</code><span class="sig-paren">(</span><a class="reference internal" href="#c.DATA" title="DATA">DATA</a>, <a class="reference internal" href="#c.DATA" title="DATA">DATA</a><span class="sig-paren">)</span><a class="headerlink" href="#c.DATA_COMPARE" title="Permalink to this definition">¶</a></dt>
-<dd><p>A function pointer that takes two <a class="reference internal" href="#libstephenunion_d_a_t_a"><span>DATA</span></a> and compares them. </p>
-<p>This comparator function is used for two purposes: (1) to check for equality, and (2) to order data. If a particular type of data has no ordering, then it is sufficient for the purposes of equality testing to return 0 if equal, and 1 if not equal. However, this will fail for any function that uses the DATA_COMPARE to order <a class="reference internal" href="#libstephenunion_d_a_t_a"><span>DATA</span></a>. Therefore, any function that takes a DATA_COMPARE should specify in its documentation whether it will use it for equality testing, or for ordering.</p>
-<p>The DATA_COMPARE function shall return 0 iff the two <a class="reference internal" href="#libstephenunion_d_a_t_a"><span>DATA</span></a> are equal. It shall return a value less than 0 iff the first is less than the second. It shall return a value greater than zero iff the first is greater than the second. </p>
+<dd><p>A function pointer that takes two <a class="reference internal" href="#libstephenunion_d_a_t_a"><span class="std std-ref">DATA</span></a> and compares them. </p>
+<p>This comparator function is used for two purposes: (1) to check for equality, and (2) to order data. If a particular type of data has no ordering, then it is sufficient for the purposes of equality testing to return 0 if equal, and 1 if not equal. However, this will fail for any function that uses the DATA_COMPARE to order <a class="reference internal" href="#libstephenunion_d_a_t_a"><span class="std std-ref">DATA</span></a>. Therefore, any function that takes a DATA_COMPARE should specify in its documentation whether it will use it for equality testing, or for ordering.</p>
+<p>The DATA_COMPARE function shall return 0 iff the two <a class="reference internal" href="#libstephenunion_d_a_t_a"><span class="std std-ref">DATA</span></a> are equal. It shall return a value less than 0 iff the first is less than the second. It shall return a value greater than zero iff the first is greater than the second. </p>
 </dd></dl>
 
 <dl class="typedef">
 <dt id="c.DATA_PRINTER">
 <span class="target" id="libstephenbase_8h_1a7c788ded5478947b05646b05b6ee1c60"></span><em class="property">typedef </em><code class="descname">(* DATA_PRINTER)</code><span class="sig-paren">(</span>FILE<em>&nbsp;*</em>, <a class="reference internal" href="#c.DATA" title="DATA">DATA</a><span class="sig-paren">)</span><a class="headerlink" href="#c.DATA_PRINTER" title="Permalink to this definition">¶</a></dt>
-<dd><p>A function pointer that takes a <a class="reference internal" href="#libstephenunion_d_a_t_a"><span>DATA</span></a> and prints it. </p>
+<dd><p>A function pointer that takes a <a class="reference internal" href="#libstephenunion_d_a_t_a"><span class="std std-ref">DATA</span></a> and prints it. </p>
 <p>This function should not print a trailing newline! There are higher level functions that will deal with that. </p>
 </dd></dl>
 

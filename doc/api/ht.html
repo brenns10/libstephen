@@ -89,7 +89,7 @@
 <li class="toctree-l2"><a class="reference internal" href="ll.html">Linked List</a></li>
 <li class="toctree-l2"><a class="reference internal" href="al.html">Array List</a></li>
 <li class="toctree-l2"><a class="reference internal" href="list.html">List Interface</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="">Hash Table</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Hash Table</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bf.html">Bitfield</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cb.html">Character Buffer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ad.html">Argument Parsing</a></li>
@@ -251,7 +251,7 @@
 </li>
 <li><code class="first docutils literal"><span class="pre">hash_func</span></code> - <p>A hash function for the table. </p>
 </li>
-<li><code class="first docutils literal"><span class="pre">equal</span></code> - <p>A comparison function for <a class="reference internal" href="base.html#libstephenunion_d_a_t_a"><span>DATA</span></a>. </p>
+<li><code class="first docutils literal"><span class="pre">equal</span></code> - <p>A comparison function for <a class="reference internal" href="base.html#libstephenunion_d_a_t_a"><span class="std std-ref">DATA</span></a>. </p>
 </li>
 </ul>
 </dd>
@@ -268,9 +268,9 @@
 <dd>A pointer to the new hash table. </dd>
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">hash_func</span></code> - <p>A function that takes one <a class="reference internal" href="base.html#libstephenunion_d_a_t_a"><span>DATA</span></a> and returns a hash value generated from it. It should be a good hash function. </p>
+<li><code class="first docutils literal"><span class="pre">hash_func</span></code> - <p>A function that takes one <a class="reference internal" href="base.html#libstephenunion_d_a_t_a"><span class="std std-ref">DATA</span></a> and returns a hash value generated from it. It should be a good hash function. </p>
 </li>
-<li><code class="first docutils literal"><span class="pre">equal</span></code> - <p>A comparison function for <a class="reference internal" href="base.html#libstephenunion_d_a_t_a"><span>DATA</span></a>. </p>
+<li><code class="first docutils literal"><span class="pre">equal</span></code> - <p>A comparison function for <a class="reference internal" href="base.html#libstephenunion_d_a_t_a"><span class="std std-ref">DATA</span></a>. </p>
 </li>
 </ul>
 </dd>
@@ -299,7 +299,7 @@
 <dt id="c.ht_destroy">
 <span class="target" id="libstephenht_8h_1a6d003432e6c0919bb4e801e07a7db7f5"></span>void <code class="descname">ht_destroy</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_ht" title="smb_ht">smb_ht</a>  *<em>&nbsp;table</em><span class="sig-paren">)</span><a class="headerlink" href="#c.ht_destroy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Free any resources used by the hash table, but doesn&#8217;t free the pointer. Doesn&#8217;t perform any actions on the data as it is deleted. </p>
-<p>If pointers are contained within the hash table, they are not freed. Use <a class="reference internal" href="#libstephenht_8h_1a5ccfba9e2426f5e1f444003054a503e0"><span>ht_destroy_act()</span></a> to specify a deletion action on the hash table. <dl class="docutils">
+<p>If pointers are contained within the hash table, they are not freed. Use <a class="reference internal" href="#libstephenht_8h_1a5ccfba9e2426f5e1f444003054a503e0"><span class="std std-ref">ht_destroy_act()</span></a> to specify a deletion action on the hash table. <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last">
 <li><code class="first docutils literal"><span class="pre">table</span></code> - <p>The table to destroy. </p>

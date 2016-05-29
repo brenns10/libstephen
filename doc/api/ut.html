@@ -94,7 +94,7 @@
 <li class="toctree-l2"><a class="reference internal" href="cb.html">Character Buffer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ad.html">Argument Parsing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="log.html">Logging</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="">Unit Testing</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Unit Testing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="re.html">Regular Expressions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="util.html">Utilities &amp; Miscellaneous</a></li>
 <li class="toctree-l2"><a class="reference internal" href="str.html">String Functions</a></li>
@@ -176,7 +176,7 @@
 <dt id="c.TEST_ASSERT">
 <span class="target" id="libstephenut_8h_1a29a763f14098f5574ae5c68291dc6ddd"></span><code class="descname">TEST_ASSERT</code><span class="sig-paren">(</span>expr<span class="sig-paren">)</span><a class="headerlink" href="#c.TEST_ASSERT" title="Permalink to this definition">¶</a></dt>
 <dd><p>Asserts that an expression is true. If false, returns line number. </p>
-<p>Note that this is a macro, so using some things (++ and &#8211; operators especially) can have unintended results. As a general rule, do not put any complicated code inside the <a class="reference internal" href="#libstephenut_8h_1a29a763f14098f5574ae5c68291dc6ddd"><span>TEST_ASSERT()</span></a> statement at all.</p>
+<p>Note that this is a macro, so using some things (++ and &#8211; operators especially) can have unintended results. As a general rule, do not put any complicated code inside the <a class="reference internal" href="#libstephenut_8h_1a29a763f14098f5574ae5c68291dc6ddd"><span class="std std-ref">TEST_ASSERT()</span></a> statement at all.</p>
 <p># PARAMETERS #</p>
 <p><ul class="simple">
 <li>expr: The expression to check. If the expression evaluates to true (that is, not 0), the assertion passes. If the expression evaluates to false (that is, zero), the assertion fails. </li>
@@ -597,10 +597,10 @@
 <dd><p>Run a group of tests. </p>
 <p>The tests are run sequentially (in the order they were added to the group). If a test fails, the remaining tests are not executed. <dl class="docutils">
 <dt><strong>Return</strong></dt>
-<dd>An integer. Since the tests are run sequentially via the <a class="reference internal" href="#libstephenut_8h_1ac8c3c8ac882832c9bf369204e7ce49ec"><span>su_run_test()</span></a> function, it returns 0 if all tests succeeded, or else the return code of the failed test from <a class="reference internal" href="#libstephenut_8h_1ac8c3c8ac882832c9bf369204e7ce49ec"><span>su_run_test()</span></a>. </dd>
+<dd>An integer. Since the tests are run sequentially via the <a class="reference internal" href="#libstephenut_8h_1ac8c3c8ac882832c9bf369204e7ce49ec"><span class="std std-ref">su_run_test()</span></a> function, it returns 0 if all tests succeeded, or else the return code of the failed test from <a class="reference internal" href="#libstephenut_8h_1ac8c3c8ac882832c9bf369204e7ce49ec"><span class="std std-ref">su_run_test()</span></a>. </dd>
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">group</span></code> - <p>A pointer to the <a class="reference internal" href="#libstephenstructsmb__ut__group"><span>smb_ut_group</span></a> to run. </p>
+<li><code class="first docutils literal"><span class="pre">group</span></code> - <p>A pointer to the <a class="reference internal" href="#libstephenstructsmb__ut__group"><span class="std std-ref">smb_ut_group</span></a> to run. </p>
 </li>
 </ul>
 </dd>
@@ -627,7 +627,7 @@
 <dt id="c.su_delete_group">
 <span class="target" id="libstephenut_8h_1a63abf54d9afc1e99e2cd8f227a5df1ff"></span>void <code class="descname">su_delete_group</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_ut_group" title="smb_ut_group">smb_ut_group</a>  *<em>&nbsp;group</em><span class="sig-paren">)</span><a class="headerlink" href="#c.su_delete_group" title="Permalink to this definition">¶</a></dt>
 <dd><p>Free the memory associated with the group AND ALL TESTS WITHIN IT. You MUST use this to delete test groups. </p>
-<p>Note that if a pointer to a <a class="reference internal" href="#libstephenstructsmb__ut__test"><span>smb_ut_test</span></a> within the <a class="reference internal" href="#libstephenstructsmb__ut__group"><span>smb_ut_group</span></a> is already invalid (freed), then <a class="reference internal" href="#libstephenut_8h_1a63abf54d9afc1e99e2cd8f227a5df1ff"><span>su_delete_group()</span></a> assumes that it has been freed and moves on. So you may include a single test in more than one group and safely delete them both (but after deleting the first group, the test will no longer be valid and a segmentation fault will occur if you try to run the second group). <dl class="docutils">
+<p>Note that if a pointer to a <a class="reference internal" href="#libstephenstructsmb__ut__test"><span class="std std-ref">smb_ut_test</span></a> within the <a class="reference internal" href="#libstephenstructsmb__ut__group"><span class="std std-ref">smb_ut_group</span></a> is already invalid (freed), then <a class="reference internal" href="#libstephenut_8h_1a63abf54d9afc1e99e2cd8f227a5df1ff"><span class="std std-ref">su_delete_group()</span></a> assumes that it has been freed and moves on. So you may include a single test in more than one group and safely delete them both (but after deleting the first group, the test will no longer be valid and a segmentation fault will occur if you try to run the second group). <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last">
 <li><code class="first docutils literal"><span class="pre">group</span></code> - <p>A pointer to the group to free </p>

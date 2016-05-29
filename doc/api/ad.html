@@ -92,7 +92,7 @@
 <li class="toctree-l2"><a class="reference internal" href="ht.html">Hash Table</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bf.html">Bitfield</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cb.html">Character Buffer</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="">Argument Parsing</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Argument Parsing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="log.html">Logging</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ut.html">Unit Testing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="re.html">Regular Expressions</a></li>
@@ -187,7 +187,7 @@ The args library analyzes args as generally as possible. It recognizes three dif
 <dl class="function">
 <dt id="c.arg_data_init">
 <span class="target" id="libstephenad_8h_1a51481abab2eeb0cdbbbaebee43354c88"></span>void <code class="descname">arg_data_init</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_ad" title="smb_ad">smb_ad</a>  *<em>&nbsp;data</em><span class="sig-paren">)</span><a class="headerlink" href="#c.arg_data_init" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize an <a class="reference internal" href="#libstephenstructsmb__ad"><span>smb_ad</span></a> structure in memory that has already been allocated. </p>
+<dd><p>Initialize an <a class="reference internal" href="#libstephenstructsmb__ad"><span class="std std-ref">smb_ad</span></a> structure in memory that has already been allocated. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last">
@@ -202,7 +202,7 @@ The args library analyzes args as generally as possible. It recognizes three dif
 <dl class="function">
 <dt id="c.arg_data_create">
 <span class="target" id="libstephenad_8h_1aa224636d3915622613b93f027e84c58f"></span><a class="reference internal" href="#c.smb_ad" title="smb_ad">smb_ad</a>* <code class="descname">arg_data_create</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#c.arg_data_create" title="Permalink to this definition">¶</a></dt>
-<dd><p>Allocate and initialize a <a class="reference internal" href="#libstephenstructsmb__ad"><span>smb_ad</span></a> structure for argument parsing. </p>
+<dd><p>Allocate and initialize a <a class="reference internal" href="#libstephenstructsmb__ad"><span class="std std-ref">smb_ad</span></a> structure for argument parsing. </p>
 <p><dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd>A pointer to the structure. </dd>
@@ -248,7 +248,7 @@ The args library analyzes args as generally as possible. It recognizes three dif
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">data</span></code> - <p>A pointer to an <a class="reference internal" href="#libstephenstructsmb__ad"><span>smb_ad</span></a> object. </p>
+<li><code class="first docutils literal"><span class="pre">data</span></code> - <p>A pointer to an <a class="reference internal" href="#libstephenstructsmb__ad"><span class="std std-ref">smb_ad</span></a> object. </p>
 </li>
 <li><code class="first docutils literal"><span class="pre">argc</span></code> - <p>The number of arguments (not including program name). </p>
 </li>
@@ -267,7 +267,7 @@ The args library analyzes args as generally as possible. It recognizes three dif
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">data</span></code> - <p>The <a class="reference internal" href="#libstephenstructsmb__ad"><span>smb_ad</span></a> returned by <a class="reference internal" href="#libstephenad_8h_1af41f795755de6840b9d7e4b0a23f7655"><span>process_args()</span></a>. </p>
+<li><code class="first docutils literal"><span class="pre">data</span></code> - <p>The <a class="reference internal" href="#libstephenstructsmb__ad"><span class="std std-ref">smb_ad</span></a> returned by <a class="reference internal" href="#libstephenad_8h_1af41f795755de6840b9d7e4b0a23f7655"><span class="std std-ref">process_args()</span></a>. </p>
 </li>
 <li><code class="first docutils literal"><span class="pre">flag</span></code> - <p>The character flag to check. Alphabetical only. </p>
 </li>
@@ -294,7 +294,7 @@ The args library analyzes args as generally as possible. It recognizes three dif
 <dd>the index of the flag + 1 if it is set. </dd>
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">data</span></code> - <p>The <a class="reference internal" href="#libstephenstructsmb__ad"><span>smb_ad</span></a> returned by <a class="reference internal" href="#libstephenad_8h_1af41f795755de6840b9d7e4b0a23f7655"><span>process_args()</span></a>. </p>
+<li><code class="first docutils literal"><span class="pre">data</span></code> - <p>The <a class="reference internal" href="#libstephenstructsmb__ad"><span class="std std-ref">smb_ad</span></a> returned by <a class="reference internal" href="#libstephenad_8h_1af41f795755de6840b9d7e4b0a23f7655"><span class="std std-ref">process_args()</span></a>. </p>
 </li>
 <li><code class="first docutils literal"><span class="pre">flag</span></code> - <p>The string flag to check for. </p>
 </li>
@@ -319,7 +319,7 @@ The args library analyzes args as generally as possible. It recognizes three dif
 <dd>the index of the flag + 1 if it is set. </dd>
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">data</span></code> - <p>The <a class="reference internal" href="#libstephenstructsmb__ad"><span>smb_ad</span></a> returned by <a class="reference internal" href="#libstephenad_8h_1af41f795755de6840b9d7e4b0a23f7655"><span>process_args()</span></a>. </p>
+<li><code class="first docutils literal"><span class="pre">data</span></code> - <p>The <a class="reference internal" href="#libstephenstructsmb__ad"><span class="std std-ref">smb_ad</span></a> returned by <a class="reference internal" href="#libstephenad_8h_1af41f795755de6840b9d7e4b0a23f7655"><span class="std std-ref">process_args()</span></a>. </p>
 </li>
 <li><code class="first docutils literal"><span class="pre">string</span></code> - <p>The string to search for. </p>
 </li>
@@ -344,7 +344,7 @@ The args library analyzes args as generally as possible. It recognizes three dif
 <dd>The parameter of the flag. </dd>
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">data</span></code> - <p>The <a class="reference internal" href="#libstephenstructsmb__ad"><span>smb_ad</span></a> returned by <a class="reference internal" href="#libstephenad_8h_1af41f795755de6840b9d7e4b0a23f7655"><span>process_args()</span></a>. </p>
+<li><code class="first docutils literal"><span class="pre">data</span></code> - <p>The <a class="reference internal" href="#libstephenstructsmb__ad"><span class="std std-ref">smb_ad</span></a> returned by <a class="reference internal" href="#libstephenad_8h_1af41f795755de6840b9d7e4b0a23f7655"><span class="std std-ref">process_args()</span></a>. </p>
 </li>
 <li><code class="first docutils literal"><span class="pre">flag</span></code> - <p>The flag to find parameters of. </p>
 </li>
@@ -363,7 +363,7 @@ The args library analyzes args as generally as possible. It recognizes three dif
 <dd>The parameter of the long flag. </dd>
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">data</span></code> - <p>The <a class="reference internal" href="#libstephenstructsmb__ad"><span>smb_ad</span></a> returned by <a class="reference internal" href="#libstephenad_8h_1af41f795755de6840b9d7e4b0a23f7655"><span>process_args()</span></a>. </p>
+<li><code class="first docutils literal"><span class="pre">data</span></code> - <p>The <a class="reference internal" href="#libstephenstructsmb__ad"><span class="std std-ref">smb_ad</span></a> returned by <a class="reference internal" href="#libstephenad_8h_1af41f795755de6840b9d7e4b0a23f7655"><span class="std std-ref">process_args()</span></a>. </p>
 </li>
 <li><code class="first docutils literal"><span class="pre">string</span></code> - <p>The long flag to find parameters of. </p>
 </li>

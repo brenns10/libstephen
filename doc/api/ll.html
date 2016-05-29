@@ -86,7 +86,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../tutorial/index.html">Libstephen Tutorial</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Libstephen API Documentation</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="base.html">Libstephen Base</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="">Linked List</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Linked List</a></li>
 <li class="toctree-l2"><a class="reference internal" href="al.html">Array List</a></li>
 <li class="toctree-l2"><a class="reference internal" href="list.html">List Interface</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ht.html">Hash Table</a></li>
@@ -224,8 +224,8 @@ This linked list data structure provides most basic features necessary in a link
 <dl class="function">
 <dt id="c.ll_delete">
 <span class="target" id="libstephenll_8h_1ab8e3ccadda5dd1dc4dbf66984ef176f4"></span>void <code class="descname">ll_delete</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_ll" title="smb_ll">smb_ll</a>  *<em>&nbsp;list</em><span class="sig-paren">)</span><a class="headerlink" href="#c.ll_delete" title="Permalink to this definition">¶</a></dt>
-<dd><p>Frees the resources held by the linked list, and the memory allocated to the <a class="reference internal" href="#libstephenstructsmb__ll"><span>smb_ll</span></a> object. </p>
-<p>This is equivalent to calling ll_destroy on the pointer, and then calling <a class="reference internal" href="base.html#libstephenbase_8h_1aea21945861a8d1978f9b7e5989c18aba"><span>smb_free()</span></a> on the pointer. <dl class="docutils">
+<dd><p>Frees the resources held by the linked list, and the memory allocated to the <a class="reference internal" href="#libstephenstructsmb__ll"><span class="std std-ref">smb_ll</span></a> object. </p>
+<p>This is equivalent to calling ll_destroy on the pointer, and then calling <a class="reference internal" href="base.html#libstephenbase_8h_1aea21945861a8d1978f9b7e5989c18aba"><span class="std std-ref">smb_free()</span></a> on the pointer. <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last">
 <li><code class="first docutils literal"><span class="pre">list</span></code> - <p>A pointer to the list to delete. </p>
@@ -239,10 +239,10 @@ This linked list data structure provides most basic features necessary in a link
 <dl class="function">
 <dt id="c.ll_create_list">
 <span class="target" id="libstephenll_8h_1ae0c587435afbd5968b98d09698f1cb50"></span><a class="reference internal" href="list.html#c.smb_list" title="smb_list">smb_list</a> <code class="descname">ll_create_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#c.ll_create_list" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates a new, empty list, and returns it as an instance of the generic <a class="reference internal" href="list.html#libstephenstructsmb__list"><span>smb_list</span></a> data structure. </p>
+<dd><p>Creates a new, empty list, and returns it as an instance of the generic <a class="reference internal" href="list.html#libstephenstructsmb__list"><span class="std std-ref">smb_list</span></a> data structure. </p>
 <p><dl class="docutils">
 <dt><strong>See</strong></dt>
-<dd><a class="reference internal" href="list.html#libstephenstructsmb__list"><span>smb_list</span></a> </dd>
+<dd><a class="reference internal" href="list.html#libstephenstructsmb__list"><span class="std std-ref">smb_list</span></a> </dd>
 <dt><strong>Return</strong></dt>
 <dd>A generic list interface object. </dd>
 </dl>
@@ -252,10 +252,10 @@ This linked list data structure provides most basic features necessary in a link
 <dl class="function">
 <dt id="c.ll_cast_to_list">
 <span class="target" id="libstephenll_8h_1a4908a70b2a0b2cc15bf0dbbec618cf1c"></span><a class="reference internal" href="list.html#c.smb_list" title="smb_list">smb_list</a> <code class="descname">ll_cast_to_list</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_ll" title="smb_ll">smb_ll</a>  *<em>&nbsp;list</em><span class="sig-paren">)</span><a class="headerlink" href="#c.ll_cast_to_list" title="Permalink to this definition">¶</a></dt>
-<dd><p>Cast a <a class="reference internal" href="#libstephenstructsmb__ll"><span>smb_ll</span></a> pointer to an instance of the <a class="reference internal" href="list.html#libstephenstructsmb__list"><span>smb_list</span></a> interface. </p>
+<dd><p>Cast a <a class="reference internal" href="#libstephenstructsmb__ll"><span class="std std-ref">smb_ll</span></a> pointer to an instance of the <a class="reference internal" href="list.html#libstephenstructsmb__list"><span class="std std-ref">smb_list</span></a> interface. </p>
 <p><dl class="docutils">
 <dt><strong>See</strong></dt>
-<dd><a class="reference internal" href="list.html#libstephenstructsmb__list"><span>smb_list</span></a> </dd>
+<dd><a class="reference internal" href="list.html#libstephenstructsmb__list"><span class="std std-ref">smb_list</span></a> </dd>
 <dt><strong>Return</strong></dt>
 <dd>A generic list interface object. </dd>
 <dt><strong>Parameters</strong></dt>
@@ -305,7 +305,7 @@ This linked list data structure provides most basic features necessary in a link
 <dl class="function">
 <dt id="c.ll_push_back">
 <span class="target" id="libstephenll_8h_1a13d5085ba6443cc36e6d2c85da2b9223"></span>void <code class="descname">ll_push_back</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_ll" title="smb_ll">smb_ll</a>  *<em>&nbsp;list</em>, <a class="reference internal" href="base.html#c.DATA" title="DATA">DATA</a><em>&nbsp;new_data</em><span class="sig-paren">)</span><a class="headerlink" href="#c.ll_push_back" title="Permalink to this definition">¶</a></dt>
-<dd><p>Push the data to the back of the list. An alias for <a class="reference internal" href="#libstephenll_8h_1ad0fa08647833fbfb6badf3feb4a7e734"><span>ll_append()</span></a>. </p>
+<dd><p>Push the data to the back of the list. An alias for <a class="reference internal" href="#libstephenll_8h_1ad0fa08647833fbfb6badf3feb4a7e734"><span class="std std-ref">ll_append()</span></a>. </p>
 <p>Push, of course, refers to its usage in the context of stacks. In other words, the function appends an item at the end fo the list. <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last">
@@ -375,7 +375,7 @@ This linked list data structure provides most basic features necessary in a link
 <dd><p>Push the data to the front of the list. An alias for ll_prepend. </p>
 <p><dl class="docutils">
 <dt><strong>See</strong></dt>
-<dd><a class="reference internal" href="#libstephenll_8h_1a13d5085ba6443cc36e6d2c85da2b9223"><span>ll_push_back</span></a> If the term &#8216;push&#8217; is unfamiliar. </dd>
+<dd><a class="reference internal" href="#libstephenll_8h_1a13d5085ba6443cc36e6d2c85da2b9223"><span class="std std-ref">ll_push_back</span></a> If the term &#8216;push&#8217; is unfamiliar. </dd>
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last">
 <li><code class="first docutils literal"><span class="pre">list</span></code> - <p>A pointer to the list. </p>
@@ -394,7 +394,7 @@ This linked list data structure provides most basic features necessary in a link
 <dd><p>Pop the data from the front of the list. </p>
 <p><dl class="docutils">
 <dt><strong>See</strong></dt>
-<dd><a class="reference internal" href="#libstephenll_8h_1a98deac6d90b0165f69711228e86aca45"><span>ll_pop_back</span></a> If the term &#8216;pop&#8217; is unfamiliar. </dd>
+<dd><a class="reference internal" href="#libstephenll_8h_1a98deac6d90b0165f69711228e86aca45"><span class="std std-ref">ll_pop_back</span></a> If the term &#8216;pop&#8217; is unfamiliar. </dd>
 <dt><strong>Return</strong></dt>
 <dd>The data from the front of the list. </dd>
 <dt><strong>Parameters</strong></dt>
@@ -421,7 +421,7 @@ This linked list data structure provides most basic features necessary in a link
 <dd><p>Peek at the front of the list. </p>
 <p><dl class="docutils">
 <dt><strong>See</strong></dt>
-<dd><a class="reference internal" href="#libstephenll_8h_1a020f9e50639387120cf56ec43b5e9a27"><span>ll_peek_back</span></a> If the term &#8216;peek&#8217; is unfamiliar. </dd>
+<dd><a class="reference internal" href="#libstephenll_8h_1a020f9e50639387120cf56ec43b5e9a27"><span class="std std-ref">ll_peek_back</span></a> If the term &#8216;peek&#8217; is unfamiliar. </dd>
 <dt><strong>Return</strong></dt>
 <dd>The data from the front of the list. </dd>
 <dt><strong>Parameters</strong></dt>
@@ -446,7 +446,7 @@ This linked list data structure provides most basic features necessary in a link
 <dt id="c.ll_get">
 <span class="target" id="libstephenll_8h_1aeb6a7c2857e0c5244e46c70c4cc937af"></span><a class="reference internal" href="base.html#c.DATA" title="DATA">DATA</a> <code class="descname">ll_get</code><span class="sig-paren">(</span>const  <a class="reference internal" href="#c.smb_ll" title="smb_ll">smb_ll</a>  *<em>&nbsp;list</em>, int<em>&nbsp;index</em>, <a class="reference internal" href="base.html#c.smb_status" title="smb_status">smb_status</a>  *<em>&nbsp;status</em><span class="sig-paren">)</span><a class="headerlink" href="#c.ll_get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets the data from the given index. </p>
-<p>However, there is no guarantee that the index was valid. An empty <a class="reference internal" href="base.html#libstephenunion_d_a_t_a"><span>DATA</span></a> object is returned in that case, and an SMB_INDEX_ERROR is raised. <dl class="docutils">
+<p>However, there is no guarantee that the index was valid. An empty <a class="reference internal" href="base.html#libstephenunion_d_a_t_a"><span class="std std-ref">DATA</span></a> object is returned in that case, and an SMB_INDEX_ERROR is raised. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd>The data at the specified index, if it exists. </dd>
 <dt><strong>Parameters</strong></dt>
@@ -517,7 +517,7 @@ This linked list data structure provides most basic features necessary in a link
 <dt id="c.ll_set">
 <span class="target" id="libstephenll_8h_1ad45a9374335d4b3bf517e1ea02878e87"></span>void <code class="descname">ll_set</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_ll" title="smb_ll">smb_ll</a>  *<em>&nbsp;list</em>, int<em>&nbsp;index</em>, <a class="reference internal" href="base.html#c.DATA" title="DATA">DATA</a><em>&nbsp;new_data</em>, <a class="reference internal" href="base.html#c.smb_status" title="smb_status">smb_status</a>  *<em>&nbsp;status</em><span class="sig-paren">)</span><a class="headerlink" href="#c.ll_set" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets an existing element to a new value. </p>
-<p>It is illegal to call <a class="reference internal" href="#libstephenll_8h_1ad45a9374335d4b3bf517e1ea02878e87"><span>ll_set()</span></a> on an out of bounds index. You must use <a class="reference internal" href="#libstephenll_8h_1a166d2fc859c7ca0de5ea9f497b7a6a0f"><span>ll_insert()</span></a> for that. <dl class="docutils">
+<p>It is illegal to call <a class="reference internal" href="#libstephenll_8h_1ad45a9374335d4b3bf517e1ea02878e87"><span class="std std-ref">ll_set()</span></a> on an out of bounds index. You must use <a class="reference internal" href="#libstephenll_8h_1a166d2fc859c7ca0de5ea9f497b7a6a0f"><span class="std std-ref">ll_insert()</span></a> for that. <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last">
 <li><code class="first docutils literal"><span class="pre">list</span></code> - <p>The list to modify. </p>
