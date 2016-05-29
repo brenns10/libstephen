@@ -69,6 +69,7 @@ EXTRA_INCLUDES=
 # finicky beast.
 SOURCE_DIR=src
 TEST_DIR=test
+UTIL_DIR=util
 INCLUDE_DIR=inc
 OBJECT_DIR=obj
 BINARY_DIR=bin
@@ -115,13 +116,19 @@ OBJECTS=$(patsubst $(SOURCE_DIR)/%.c,$(OBJECT_DIR)/$(CFG)/$(SOURCE_DIR)/%.o,$(SO
 TEST_SOURCES=$(shell find $(TEST_DIR) -type f -name "*.c")
 TEST_OBJECTS=$(patsubst $(TEST_DIR)/%.c,$(OBJECT_DIR)/$(CFG)/$(TEST_DIR)/%.o,$(TEST_SOURCES))
 
+UTIL_SOURCES=$(shell find $(UTIL_DIR) -type f -name "*.c")
+UTIL_TARGETS=$(patsubst $(UTIL_DIR)/%.c,$(BINARY_DIR)/$(CFG)/%,$(UTIL_SOURCES))
+
 DEPENDENCIES  = $(patsubst $(SOURCE_DIR)/%.c,$(DEPENDENCY_DIR)/$(SOURCE_DIR)/%.d,$(SOURCES))
 DEPENDENCIES += $(patsubst $(TEST_DIR)/%.c,$(DEPENDENCY_DIR)/$(TEST_DIR)/%.d,$(TEST_SOURCES))
 
 # --- GLOBAL TARGETS: You can probably adjust and augment these if you'd like.
 .PHONY: all test doc cov clean clean_all clean_cov clean_doc
 
-all: $(BINARY_DIR)/$(CFG)/$(TARGET)
+# All compiles *everything*, including tests, but doesn't run any.
+all: $(BINARY_DIR)/$(CFG)/$(TARGET) $(BINARY_DIR)/$(CFG)/$(TEST_TARGET) util
+
+util: $(UTIL_TARGETS)
 
 test: $(BINARY_DIR)/$(CFG)/$(TEST_TARGET)
 	valgrind $(BINARY_DIR)/$(CFG)/$(TEST_TARGET)
@@ -169,8 +176,13 @@ ifeq ($(PROJECT_TYPE),executable)
 	$(CC) $(LFLAGS) $^ -o $@
 endif
 
-# RULE TO BULID YOUR TEST TARGET HERE: (it's assumed that it's an executable)
+# RULE TO BUILD YOUR TEST TARGET HERE: (it's assumed that it's an executable)
 $(BINARY_DIR)/$(CFG)/$(TEST_TARGET): $(filter-out $(OBJECT_MAIN),$(OBJECTS)) $(TEST_OBJECTS) $(STATIC_LIBS)
+	$(DIR_GUARD)
+	$(CC) $(LFLAGS) $^ -o $@
+
+# RULE TO BUILD UTILITES
+$(BINARY_DIR)/$(CFG)/%: $(OBJECT_DIR)/$(CFG)/util/%.o $(BINARY_DIR)/$(CFG)/$(TARGET)
 	$(DIR_GUARD)
 	$(CC) $(LFLAGS) $^ -o $@
 
