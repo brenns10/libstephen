@@ -53,6 +53,29 @@ struct Regex {
 };
 
 /**
+   A convenience data structure for getting copies of captured strings.
+
+   The recomp() function returns an array of start and end points for captured
+   strings, which is technically all you need. Functionally, though, you would
+   like a slightly more convenient way to access your captures. So, you can use
+   the recap() to convert the string and capture list to a list of freshly
+   allocated strings. Be sure to call recapfree() on the capture list when
+   you're done (or manually clean up).
+ */
+typedef struct {
+  /**
+     The number of captured strings.
+   */
+  size_t n;
+  /**
+     An array of length n captured strings. Each one is independently allocated,
+     so you'll need to free them when you're done.
+   */
+  char **cap;
+
+} Captures;
+
+/**
    Read in a program from a string.  This takes the "assembly like"
    representation and turns it into compiled instructions.  Every instruction
    must be on a single line, and spaces are used as delimiters.  Also, labels
@@ -94,7 +117,6 @@ void free_prog(Regex r);
  */
 Regex recomp(char *regex);
 
-
 /**
    Execute a regex on a string.
    @param r Compiled regular expression bytecode to execute.
@@ -109,6 +131,34 @@ ssize_t execute(Regex r, char *input, size_t **saved);
    @returns Number of slots.
  */
 size_t numsaves(Regex r);
+/**
+   Convert a string and a capture list into a list of strings.
+
+   This copies each capture into a newly allocated string, and returns them all
+   in a newly allocated array of strings. These things need to be freed when
+   you're done with them. You can either manually free each string and then the
+   array, or you can use recapfree() to do this for you.
+
+   @param s String to get strings from.
+   @param l List of captures returned from execute().
+   @param n Number of saves - use numsaves() if you don't know.
+   @returns A new Capture object.
+*/
+Captures recap(const char *s, const size_t *l, size_t n);
+/**
+   Free a capture list from recap()
+
+   Since the array and strings were all newly allocated by recap(), they need to
+   be cleaned up. This function does the cleanup. It's nothing complicated - you
+   can do it yourself, but it's convenient to have this to do it for you. Note
+   that if you want to keep one of the strings from the capture list, you'll
+   have to set its entry in the array to NULL (so free() does nothing), or else
+   do manual cleanup.
+
+   @param c Captures to free.
+ */
+void recapfree(Captures c);
+
 
 /**
    Macro for the number of elements of a statically allocated array.
