@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2016-05-29 23:34:49</td>
+            <td class="headerValue">2016-06-11 05:04:29</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">15</td>
@@ -350,7 +350,7 @@
 <span class="lineNum">     288 </span><span class="lineNoCov">          0 : void ad_print(smb_ad *data, FILE *f)</span>
 <span class="lineNum">     289 </span>            : {
 <span class="lineNum">     290 </span><span class="lineNoCov">          0 :   fprintf(f, &quot;Arg Data:\n&quot;);</span>
-<span class="lineNum">     291 </span><span class="lineNoCov">          0 :   fprintf(f, &quot;Flags: 0x%lX\n&quot;, data-&gt;flags);</span>
+<span class="lineNum">     291 </span><span class="lineNoCov">          0 :   fprintf(f, &quot;Flags: 0x%&quot; PRIx64 &quot;\n&quot;, data-&gt;flags);</span>
 <span class="lineNum">     292 </span><span class="lineNoCov">          0 :   for (int i = 0; i &lt; MAX_FLAGS; i++) {</span>
 <span class="lineNum">     293 </span><span class="lineNoCov">          0 :     if (data-&gt;flag_strings[i] != NULL) {</span>
 <span class="lineNum">     294 </span><span class="lineNoCov">          0 :       fprintf(f, &quot;%d: \&quot;%s\&quot;\n&quot;, i, data-&gt;flag_strings[i]);</span>
