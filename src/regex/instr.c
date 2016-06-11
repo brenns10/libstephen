@@ -182,7 +182,7 @@ static Instr read_instr(char *line, int lineno)
   // buffer.  We know we don't need more than like TODO
   size_t ntok;
   char **tokens = tokenize(line, &ntok);
-  Instr inst = {0};
+  Instr inst = {.code=0, .c=0, .s=0, .x=NULL, .y=NULL, .lastidx=0};
 
   if (strcmp(tokens[0], Opcodes[Char]) == 0) {
     if (ntok != 2) {

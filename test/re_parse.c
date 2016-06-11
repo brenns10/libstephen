@@ -37,7 +37,7 @@ static void expect(TSym s, Lexer *l)
 static int test_TERM_CharSym(void)
 {
   Lexer l;
-  l.tok = (Token){0};
+  l.tok = (Token){.sym=0, .c=0};
   l.input = "a";
   l.index = 0;
   l.nbuf = 0;
@@ -59,7 +59,7 @@ static int test_TERM_CharSym(void)
 static int test_TERM_Minus(void)
 {
   Lexer l;
-  l.tok = (Token){0};
+  l.tok = (Token){.sym=0, .c=0};
   l.input = "-";
   l.index = 0;
   l.nbuf = 0;
@@ -81,7 +81,7 @@ static int test_TERM_Minus(void)
 static int test_TERM_Caret(void)
 {
   Lexer l;
-  l.tok = (Token){0};
+  l.tok = (Token){.sym=0, .c=0};
   l.input = "^";
   l.index = 0;
   l.nbuf = 0;
@@ -103,7 +103,7 @@ static int test_TERM_Caret(void)
 static int test_TERM_Dot(void)
 {
   Lexer l;
-  l.tok = (Token){0};
+  l.tok = (Token){.sym=0, .c=0};
   l.input = ".";
   l.index = 0;
   l.nbuf = 0;
@@ -125,7 +125,7 @@ static int test_TERM_Dot(void)
 static int test_TERM_Special(void)
 {
   Lexer l;
-  l.tok = (Token){0};
+  l.tok = (Token){.sym=0, .c=0};
   l.input = "\\w";
   l.index = 0;
   l.nbuf = 0;
@@ -147,7 +147,7 @@ static int test_TERM_Special(void)
 static int test_TERM_Subexpr(void)
 {
   Lexer l;
-  l.tok = (Token){0};
+  l.tok = (Token){.sym=0, .c=0};
   l.input = "(a+)";
   l.index = 0;
   l.nbuf = 0;
@@ -168,7 +168,7 @@ static int test_TERM_Subexpr(void)
 static int test_TERM_Class(void)
 {
   Lexer l;
-  l.tok = (Token){0};
+  l.tok = (Token){.sym=0, .c=0};
   l.input = "[abc]";
   l.index = 0;
   l.nbuf = 0;
@@ -190,7 +190,7 @@ static int test_TERM_Class(void)
 static int test_TERM_NClass(void)
 {
   Lexer l;
-  l.tok = (Token){0};
+  l.tok = (Token){.sym=0, .c=0};
   l.input = "[^abc]";
   l.index = 0;
   l.nbuf = 0;
@@ -212,7 +212,7 @@ static int test_TERM_NClass(void)
 static int test_EXPR_Term(void)
 {
   Lexer l;
-  l.tok = (Token){0};
+  l.tok = (Token){.sym=0, .c=0};
   l.input = "a";
   l.index = 0;
   l.nbuf = 0;
@@ -234,7 +234,7 @@ static int test_EXPR_Term(void)
 static int test_EXPR_Plus(void)
 {
   Lexer l;
-  l.tok = (Token){0};
+  l.tok = (Token){.sym=0, .c=0};
   l.input = "a+";
   l.index = 0;
   l.nbuf = 0;
@@ -257,7 +257,7 @@ static int test_EXPR_Plus(void)
 static int test_EXPR_PlusQuestion(void)
 {
   Lexer l;
-  l.tok = (Token){0};
+  l.tok = (Token){.sym=0, .c=0};
   l.input = "a+?";
   l.index = 0;
   l.nbuf = 0;
@@ -281,7 +281,7 @@ static int test_EXPR_PlusQuestion(void)
 static int test_EXPR_Star(void)
 {
   Lexer l;
-  l.tok = (Token){0};
+  l.tok = (Token){.sym=0, .c=0};
   l.input = "a*";
   l.index = 0;
   l.nbuf = 0;
@@ -304,7 +304,7 @@ static int test_EXPR_Star(void)
 static int test_EXPR_StarQuestion(void)
 {
   Lexer l;
-  l.tok = (Token){0};
+  l.tok = (Token){.sym=0, .c=0};
   l.input = "a*?";
   l.index = 0;
   l.nbuf = 0;
@@ -328,7 +328,7 @@ static int test_EXPR_StarQuestion(void)
 static int test_EXPR_Question(void)
 {
   Lexer l;
-  l.tok = (Token){0};
+  l.tok = (Token){.sym=0, .c=0};
   l.input = "a?";
   l.index = 0;
   l.nbuf = 0;
@@ -351,7 +351,7 @@ static int test_EXPR_Question(void)
 static int test_EXPR_QuestionQuestion(void)
 {
   Lexer l;
-  l.tok = (Token){0};
+  l.tok = (Token){.sym=0, .c=0};
   l.input = "a??";
   l.index = 0;
   l.nbuf = 0;
@@ -375,7 +375,7 @@ static int test_EXPR_QuestionQuestion(void)
 static int test_SUB_Normal(void)
 {
   Lexer l;
-  l.tok = (Token){0};
+  l.tok = (Token){.sym=0, .c=0};
   l.input = "a";
   l.index = 0;
   l.nbuf = 0;
@@ -396,7 +396,7 @@ static int test_SUB_Normal(void)
 static int test_SUB_Concat(void)
 {
   Lexer l;
-  l.tok = (Token){0};
+  l.tok = (Token){.sym=0, .c=0};
   l.input = "ab";
   l.index = 0;
   l.nbuf = 0;
@@ -421,7 +421,7 @@ static int test_SUB_Concat(void)
 static int test_REGEX_Normal(void)
 {
   Lexer l;
-  l.tok = (Token){0};
+  l.tok = (Token){.sym=0, .c=0};
   l.input = "a";
   l.index = 0;
   l.nbuf = 0;
@@ -443,7 +443,7 @@ static int test_REGEX_Normal(void)
 static int test_REGEX_Alternate(void)
 {
   Lexer l;
-  l.tok = (Token){0};
+  l.tok = (Token){.sym=0, .c=0};
   l.input = "a|b";
   l.index = 0;
   l.nbuf = 0;
@@ -469,7 +469,7 @@ static int test_REGEX_Alternate(void)
 static int test_CLASS_range(void)
 {
   Lexer l;
-  l.tok = (Token){0};
+  l.tok = (Token){.sym=0, .c=0};
   l.input = "a-b";
   l.index = 0;
   l.nbuf = 0;
@@ -493,7 +493,7 @@ static int test_CLASS_range(void)
 static int test_CLASS_range_range(void)
 {
   Lexer l;
-  l.tok = (Token){0};
+  l.tok = (Token){.sym=0, .c=0};
   l.input = "a-b1-2";
   l.index = 0;
   l.nbuf = 0;
@@ -525,7 +525,7 @@ static int test_CLASS_single(void)
   char *accept[] = {".", "+", "*", "?", "(", ")", "|"};
   for (size_t i = 0; i < nelem(accept); i++) {
     Lexer l;
-    l.tok = (Token){0};
+    l.tok = (Token){.sym=0, .c=0};
     l.input = accept[i];
     l.index = 0;
     l.nbuf = 0;
@@ -548,7 +548,7 @@ static int test_CLASS_single(void)
 static int test_CLASS_single_hyphen(void)
 {
   Lexer l;
-  l.tok = (Token){0};
+  l.tok = (Token){.sym=0, .c=0};
   l.input = "a-";
   l.index = 0;
   l.nbuf = 0;

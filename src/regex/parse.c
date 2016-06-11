@@ -60,39 +60,6 @@ void free_tree(PTree *tree)
 }
 
 /*
-  Convenience printing functions.
- */
-
-static void print_indent(int indent)
-{
-  printf(";; ");
-  while (indent--) {
-    printf(" ");
-  }
-}
-
-static void print_tree(PTree *tree, int indent)
-{
-  print_indent(indent);
-  if (tree == NULL) {
-    printf("NULL\n");
-    return;
-  }
-
-  if (tree->nchildren == 0) {
-    // terminal
-    printf("%s:'%s'\n", names[tree->tok.sym], char_to_string(tree->tok.c));
-  } else {
-    printf("%s {\n", ntnames[tree->nt]);
-    for (size_t i = 0; i < tree->nchildren; i++) {
-      print_tree(tree->children[i], indent + 1);
-    }
-    print_indent(indent);
-    printf("}\n");
-  }
-}
-
-/*
   Simple convenience functions for a parser.
  */
 
@@ -279,7 +246,7 @@ PTree *reparse(char *regex)
   l.input = regex;
   l.index = 0;
   l.nbuf = 0;
-  l.tok = (Token){0};
+  l.tok = (Token){.sym=0, .c=0};
 
   // Create a parse tree!
   //printf(";; TOKENS:\n");

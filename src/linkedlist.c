@@ -193,8 +193,7 @@ DATA ll_pop_back(smb_ll *list, smb_status *status)
     return to_return;
   } else {
     *status = SMB_INDEX_ERROR;
-    DATA mock_data;
-    return mock_data;
+    return PTR(NULL);
   }
 }
 
@@ -206,8 +205,7 @@ DATA ll_peek_back(smb_ll *list, smb_status *status)
     return last_node->data;
   } else {
     *status = SMB_INDEX_ERROR;
-    DATA mock_data;
-    return mock_data;
+    return PTR(NULL);
   }
 }
 
@@ -227,8 +225,7 @@ DATA ll_pop_front(smb_ll *list, smb_status *status)
     return to_return;
   } else {
     *status = SMB_INDEX_ERROR; // The list is empty
-    DATA mock_data;
-    return mock_data;
+    return PTR(NULL);
   }
 }
 
@@ -240,8 +237,7 @@ DATA ll_peek_front(smb_ll *list, smb_status *status)
     return first_node->data;
   } else {
     *status = SMB_INDEX_ERROR; // The list is empty
-    DATA mock_data;
-    return mock_data;
+    return PTR(NULL);
   }
 }
 
@@ -252,8 +248,7 @@ DATA ll_get(const smb_ll *list, int index, smb_status *status)
   smb_ll_node * the_node = ll_navigate(list, index, status);
   if (*status == SMB_INDEX_ERROR) {
     // Return a dummy value.
-    DATA mock_data;
-    return mock_data;
+    return PTR(NULL);
   } else {
     return the_node->data;
   }
