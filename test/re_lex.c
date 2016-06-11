@@ -22,7 +22,7 @@
 static int test_lex_escapes(void)
 {
   Lexer l;
-  l.tok = (Token){0};
+  l.tok = (Token){.sym=0, .c=0};
   l.input = "\\(\\)\\[\\]\\+\\*\\?\\-\\^\\.\\n\\w\\|";
   l.index = 0;
   l.nbuf = 0;
@@ -73,7 +73,7 @@ static int test_lex_escapes(void)
 static int test_lex_tokens(void)
 {
   Lexer l;
-  l.tok = (Token){0};
+  l.tok = (Token){.sym=0, .c=0};
   l.input = "()[]+*?-^.|";
   l.index = 0;
   l.nbuf = 0;
@@ -118,7 +118,7 @@ static int test_lex_tokens(void)
 static int test_lex_buffer(void)
 {
   Lexer l;
-  l.tok = (Token){0};
+  l.tok = (Token){.sym=0, .c=0};
   l.input = "abcdef";
   l.index = 0;
   l.nbuf = 0;

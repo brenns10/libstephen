@@ -148,7 +148,7 @@ DATA al_get(const smb_al *list, int index, smb_status *status)
   *status = SMB_SUCCESS;
   if (index < 0 || index >= list->length) {
     *status = SMB_INDEX_ERROR;
-    DATA mockData;
+    DATA mockData = PTR(NULL);
     return mockData;
   }
 

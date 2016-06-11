@@ -288,7 +288,7 @@ char *get_long_flag_parameter(smb_ad *data, char *string)
 void ad_print(smb_ad *data, FILE *f)
 {
   fprintf(f, "Arg Data:\n");
-  fprintf(f, "Flags: 0x%lX\n", data->flags);
+  fprintf(f, "Flags: 0x%" PRIx64 "\n", data->flags);
   for (int i = 0; i < MAX_FLAGS; i++) {
     if (data->flag_strings[i] != NULL) {
       fprintf(f, "%d: \"%s\"\n", i, data->flag_strings[i]);
