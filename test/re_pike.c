@@ -184,7 +184,7 @@ static int test_save_discard_stash(void)
 
 void pike_test(void)
 {
-  smb_ut_group *group = su_create_test_group("test/pike.c");
+  smb_ut_group *group = su_create_test_group("test/re_pike.c");
 
   smb_ut_test *any = su_create_test("any", test_any);
   su_add_test(group, any);

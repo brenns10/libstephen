@@ -18,6 +18,7 @@
 
 #include <stdlib.h>
 #include <stdbool.h>
+#include <wchar.h>
 
 #include "re.h"
 
@@ -27,7 +28,7 @@ enum code {
 
 struct Instr {
   enum code code; // opcode
-  char c;         // character
+  wchar_t c;      // character
   size_t s;       // slot for "saving" a string index
   Instr *x, *y;   // targets for jump and split
   size_t lastidx; // used by Pike VM for fast membership testing
@@ -68,7 +69,7 @@ extern char *ntnames[];
 typedef struct Token Token;
 struct Token {
   TSym sym;
-  char c;
+  wchar_t c;
 };
 
 /**

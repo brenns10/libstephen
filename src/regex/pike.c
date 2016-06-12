@@ -24,6 +24,7 @@
 #include <string.h>
 #include <stdint.h>
 #include <unistd.h>
+#include <wchar.h>
 
 #include "libstephen/re.h"
 #include "libstephen/re_internals.h"
@@ -57,8 +58,8 @@ void printthreads(thread_list *tl, Instr *prog, size_t nsave) {
 
 // Helper evaluation functions for instructions
 
-bool range(Instr in, char test) {
-  if (test == '\0') {
+bool range(Instr in, wchar_t test) {
+  if (test == L'\0') {
     return false;
   }
   bool result = false;
@@ -146,7 +147,21 @@ void stash(size_t *new, size_t **destination)
   *destination = new;
 }
 
-ssize_t execute(Regex r, char *input, size_t **saved)
+struct Input {
+  const char *str;
+  const wchar_t *wstr;
+};
+
+wchar_t InputIdx(struct Input in, size_t idx)
+{
+  if (in.str) {
+    return (wchar_t)in.str[idx];
+  } else {
+    return in.wstr[idx];
+  }
+}
+
+static ssize_t execute_internal(Regex r, const struct Input input, size_t **saved)
 {
   // Can have at most n threads, where n is the length of the program.  This is
   // because (as it is now) the thread state is simply a program counter.
@@ -187,7 +202,7 @@ ssize_t execute(Regex r, char *input, size_t **saved)
 
       switch (pc->code) {
       case Char:
-        if (input[sp] != pc->c) {
+        if (InputIdx(input, sp) != pc->c) {
           free(curr.t[t].saved);
           break; // fail, don't continue executing this thread
         }
@@ -195,7 +210,7 @@ ssize_t execute(Regex r, char *input, size_t **saved)
         addthread(&next, pc+1, curr.t[t].saved, nsave, sp+1);
         break;
       case Any:
-        if (input[sp] == '\0') {
+        if (InputIdx(input, sp) == '\0') {
           free(curr.t[t].saved);
           break; // dot can't match end of string!
         }
@@ -204,7 +219,7 @@ ssize_t execute(Regex r, char *input, size_t **saved)
         break;
       case Range:
       case NRange:
-        if (!range(*pc, input[sp])) {
+        if (!range(*pc, InputIdx(input, sp))) {
           free(curr.t[t].saved);
           break;
         }
@@ -233,6 +248,12 @@ ssize_t execute(Regex r, char *input, size_t **saved)
   free(curr.t);
   free(next.t);
   return match;
+}
+
+ssize_t execute(Regex r, const char *input, size_t **saved)
+{
+  struct Input in = {.str=input, .wstr=NULL};
+  return execute_internal(r, in, saved);
 }
 
 size_t numsaves(Regex r)

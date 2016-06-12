@@ -124,7 +124,7 @@ Regex recomp(char *regex);
    @param saved Out pointer for captured indices.
    @returns Length of match, or -1 if no match.
  */
-ssize_t execute(Regex r, char *input, size_t **saved);
+ssize_t execute(Regex r, const char *input, size_t **saved);
 /**
    Return the number of saved index slots required by a regex.
    @param r The regular expression bytecode.
