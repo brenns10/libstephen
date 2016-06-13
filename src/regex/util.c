@@ -41,3 +41,12 @@ void recapfree(Captures c)
   }
   free(c.cap);
 }
+
+wchar_t InputIdx(struct Input in, size_t idx)
+{
+  if (in.str) {
+    return (wchar_t)in.str[idx];
+  } else {
+    return in.wstr[idx];
+  }
+}

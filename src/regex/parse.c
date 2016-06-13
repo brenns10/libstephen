@@ -238,12 +238,12 @@ PTree *CLASS(Lexer *l)
   return result;
 }
 
-PTree *reparse(char *regex)
+static PTree *reparse_internal(struct Input input)
 {
   Lexer l;
 
   // Initialize the lexer.
-  l.input = regex;
+  l.input = input;
   l.index = 0;
   l.nbuf = 0;
   l.tok = (Token){.sym=0, .c=0};
@@ -255,6 +255,18 @@ PTree *reparse(char *regex)
   expect(Eof, &l);
 
   return tree;
+}
+
+PTree *reparse(const char *input)
+{
+  struct Input in = {.str=input, .wstr=NULL};
+  return reparse_internal(in);
+}
+
+PTree *reparsew(const wchar_t *winput)
+{
+  struct Input in = {.str=NULL, .wstr=winput};
+  return reparse_internal(in);
 }
 
 Regex recomp(char *regex)

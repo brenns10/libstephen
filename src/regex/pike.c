@@ -147,20 +147,6 @@ void stash(size_t *new, size_t **destination)
   *destination = new;
 }
 
-struct Input {
-  const char *str;
-  const wchar_t *wstr;
-};
-
-wchar_t InputIdx(struct Input in, size_t idx)
-{
-  if (in.str) {
-    return (wchar_t)in.str[idx];
-  } else {
-    return in.wstr[idx];
-  }
-}
-
 static ssize_t execute_internal(Regex r, const struct Input input, size_t **saved)
 {
   // Can have at most n threads, where n is the length of the program.  This is

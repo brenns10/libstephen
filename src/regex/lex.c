@@ -19,45 +19,45 @@
 
 void escape(Lexer *l)
 {
-  switch (l->input[l->index]) {
-  case '(':
-    l->tok = (Token){CharSym, '('};
+  switch (InputIdx(l->input, l->index)) {
+  case L'(':
+    l->tok = (Token){CharSym, L'('};
     break;
-  case ')':
-    l->tok = (Token){CharSym, ')'};
+  case L')':
+    l->tok = (Token){CharSym, L')'};
     break;
-  case '[':
-    l->tok = (Token){CharSym, '['};
+  case L'[':
+    l->tok = (Token){CharSym, L'['};
     break;
-  case ']':
-    l->tok = (Token){CharSym, ']'};
+  case L']':
+    l->tok = (Token){CharSym, L']'};
     break;
-  case '+':
-    l->tok = (Token){CharSym, '+'};
+  case L'+':
+    l->tok = (Token){CharSym, L'+'};
     break;
-  case '-':
-    l->tok = (Token){CharSym, '-'};
+  case L'-':
+    l->tok = (Token){CharSym, L'-'};
     break;
-  case '*':
-    l->tok = (Token){CharSym, '*'};
+  case L'*':
+    l->tok = (Token){CharSym, L'*'};
     break;
-  case '?':
-    l->tok = (Token){CharSym, '?'};
+  case L'?':
+    l->tok = (Token){CharSym, L'?'};
     break;
-  case '^':
-    l->tok = (Token){CharSym, '^'};
+  case L'^':
+    l->tok = (Token){CharSym, L'^'};
     break;
-  case 'n':
-    l->tok = (Token){CharSym, '\n'};
+  case L'n':
+    l->tok = (Token){CharSym, L'\n'};
     break;
-  case '.':
-    l->tok = (Token){CharSym, '.'};
+  case L'.':
+    l->tok = (Token){CharSym, L'.'};
     break;
-  case '|':
-    l->tok = (Token){CharSym, '|'};
+  case L'|':
+    l->tok = (Token){CharSym, L'|'};
     break;
   default:
-    l->tok = (Token){Special, l->input[l->index]};
+    l->tok = (Token){Special, InputIdx(l->input, l->index)};
     break;
   }
 }
@@ -81,49 +81,49 @@ Token nextsym(Lexer *l)
     return l->tok;
   }
 
-  switch (l->input[l->index]) {
-  case '(':
-    l->tok = (Token){LParen, '('};
+  switch (InputIdx(l->input, l->index)) {
+  case L'(':
+    l->tok = (Token){LParen, L'('};
     break;
-  case ')':
-    l->tok = (Token){RParen, ')'};
+  case L')':
+    l->tok = (Token){RParen, L')'};
     break;
-  case '[':
-    l->tok = (Token){LBracket, '['};
+  case L'[':
+    l->tok = (Token){LBracket, L'['};
     break;
-  case ']':
-    l->tok = (Token){RBracket, ']'};
+  case L']':
+    l->tok = (Token){RBracket, L']'};
     break;
-  case '+':
-    l->tok = (Token){Plus, '+'};
+  case L'+':
+    l->tok = (Token){Plus, L'+'};
     break;
-  case '-':
-    l->tok = (Token){Minus, '-'};
+  case L'-':
+    l->tok = (Token){Minus, L'-'};
     break;
-  case '*':
-    l->tok = (Token){Star, '*'};
+  case L'*':
+    l->tok = (Token){Star, L'*'};
     break;
-  case '?':
-    l->tok = (Token){Question, '?'};
+  case L'?':
+    l->tok = (Token){Question, L'?'};
     break;
-  case '^':
-    l->tok = (Token){Caret, '^'};
+  case L'^':
+    l->tok = (Token){Caret, L'^'};
     break;
-  case '|':
-    l->tok = (Token){Pipe, '|'};
+  case L'|':
+    l->tok = (Token){Pipe, L'|'};
     break;
-  case '.':
-    l->tok = (Token){Dot, '.'};
+  case L'.':
+    l->tok = (Token){Dot, L'.'};
     break;
-  case '\\':
+  case L'\\':
     l->index++;
     escape(l);
     break;
-  case '\0':
-    l->tok = (Token){Eof, '\0'};
+  case L'\0':
+    l->tok = (Token){Eof, L'\0'};
     break;
   default:
-    l->tok = (Token){CharSym, l->input[l->index]};
+    l->tok = (Token){CharSym, InputIdx(l->input, l->index)};
     break;
   }
   l->index++;

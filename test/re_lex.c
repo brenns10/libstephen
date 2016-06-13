@@ -23,7 +23,8 @@ static int test_lex_escapes(void)
 {
   Lexer l;
   l.tok = (Token){.sym=0, .c=0};
-  l.input = "\\(\\)\\[\\]\\+\\*\\?\\-\\^\\.\\n\\w\\|";
+  l.input.str = "\\(\\)\\[\\]\\+\\*\\?\\-\\^\\.\\n\\w\\|";
+  l.input.wstr = NULL;
   l.index = 0;
   l.nbuf = 0;
 
@@ -74,7 +75,8 @@ static int test_lex_tokens(void)
 {
   Lexer l;
   l.tok = (Token){.sym=0, .c=0};
-  l.input = "()[]+*?-^.|";
+  l.input.str = "()[]+*?-^.|";
+  l.input.wstr = NULL;
   l.index = 0;
   l.nbuf = 0;
 
@@ -119,7 +121,8 @@ static int test_lex_buffer(void)
 {
   Lexer l;
   l.tok = (Token){.sym=0, .c=0};
-  l.input = "abcdef";
+  l.input.str = "abcdef";
+  l.input.wstr = NULL;
   l.index = 0;
   l.nbuf = 0;
 
@@ -169,6 +172,159 @@ static int test_lex_buffer(void)
   return 0;
 }
 
+static int test_lex_escapes_wide(void)
+{
+  Lexer l;
+  l.tok = (Token){.sym=0, .c=0};
+  l.input.wstr = L"\\(\\)\\[\\]\\+\\*\\?\\-\\^\\.\\n\\w\\|";
+  l.input.str = NULL;
+  l.index = 0;
+  l.nbuf = 0;
+
+  nextsym(&l);
+  TA_INT_EQ(l.tok.sym, CharSym);
+  TA_WCHAR_EQ(l.tok.c, L'(');
+  nextsym(&l);
+  TA_INT_EQ(l.tok.sym, CharSym);
+  TA_WCHAR_EQ(l.tok.c, L')');
+  nextsym(&l);
+  TA_INT_EQ(l.tok.sym, CharSym);
+  TA_WCHAR_EQ(l.tok.c, L'[');
+  nextsym(&l);
+  TA_INT_EQ(l.tok.sym, CharSym);
+  TA_WCHAR_EQ(l.tok.c, L']');
+  nextsym(&l);
+  TA_INT_EQ(l.tok.sym, CharSym);
+  TA_WCHAR_EQ(l.tok.c, L'+');
+  nextsym(&l);
+  TA_INT_EQ(l.tok.sym, CharSym);
+  TA_WCHAR_EQ(l.tok.c, L'*');
+  nextsym(&l);
+  TA_INT_EQ(l.tok.sym, CharSym);
+  TA_WCHAR_EQ(l.tok.c, L'?');
+  nextsym(&l);
+  TA_INT_EQ(l.tok.sym, CharSym);
+  TA_WCHAR_EQ(l.tok.c, L'-');
+  nextsym(&l);
+  TA_INT_EQ(l.tok.sym, CharSym);
+  TA_WCHAR_EQ(l.tok.c, L'^');
+  nextsym(&l);
+  TA_INT_EQ(l.tok.sym, CharSym);
+  TA_WCHAR_EQ(l.tok.c, L'.');
+  nextsym(&l);
+  TA_INT_EQ(l.tok.sym, CharSym);
+  TA_WCHAR_EQ(l.tok.c, L'\n');
+  nextsym(&l);
+  TA_INT_EQ(l.tok.sym, Special);
+  TA_WCHAR_EQ(l.tok.c, L'w');
+  nextsym(&l);
+  TA_INT_EQ(l.tok.sym, CharSym);
+  TA_WCHAR_EQ(l.tok.c, L'|');
+
+  return 0;
+}
+
+static int test_lex_tokens_wide(void)
+{
+  Lexer l;
+  l.tok = (Token){.sym=0, .c=0};
+  l.input.wstr = L"()[]+*?-^.|";
+  l.input.str = NULL;
+  l.index = 0;
+  l.nbuf = 0;
+
+  nextsym(&l);
+  TA_INT_EQ(l.tok.sym, LParen);
+  TA_WCHAR_EQ(l.tok.c, L'(');
+  nextsym(&l);
+  TA_INT_EQ(l.tok.sym, RParen);
+  TA_WCHAR_EQ(l.tok.c, L')');
+  nextsym(&l);
+  TA_INT_EQ(l.tok.sym, LBracket);
+  TA_WCHAR_EQ(l.tok.c, L'[');
+  nextsym(&l);
+  TA_INT_EQ(l.tok.sym, RBracket);
+  TA_WCHAR_EQ(l.tok.c, L']');
+  nextsym(&l);
+  TA_INT_EQ(l.tok.sym, Plus);
+  TA_WCHAR_EQ(l.tok.c, L'+');
+  nextsym(&l);
+  TA_INT_EQ(l.tok.sym, Star);
+  TA_WCHAR_EQ(l.tok.c, L'*');
+  nextsym(&l);
+  TA_INT_EQ(l.tok.sym, Question);
+  TA_WCHAR_EQ(l.tok.c, L'?');
+  nextsym(&l);
+  TA_INT_EQ(l.tok.sym, Minus);
+  TA_WCHAR_EQ(l.tok.c, L'-');
+  nextsym(&l);
+  TA_INT_EQ(l.tok.sym, Caret);
+  TA_WCHAR_EQ(l.tok.c, L'^');
+  nextsym(&l);
+  TA_INT_EQ(l.tok.sym, Dot);
+  TA_WCHAR_EQ(l.tok.c, L'.');
+  nextsym(&l);
+  TA_INT_EQ(l.tok.sym, Pipe);
+  TA_WCHAR_EQ(l.tok.c, L'|');
+
+  return 0;
+}
+
+static int test_lex_buffer_wide(void)
+{
+  Lexer l;
+  l.tok = (Token){.sym=0, .c=0};
+  l.input.wstr = L"abcdef";
+  l.input.str = NULL;
+  l.index = 0;
+  l.nbuf = 0;
+
+  nextsym(&l);
+  TA_INT_EQ(l.tok.sym, CharSym);
+  TA_WCHAR_EQ(l.tok.c, L'a');
+  nextsym(&l);
+  TA_INT_EQ(l.tok.sym, CharSym);
+  TA_WCHAR_EQ(l.tok.c, L'b');
+  nextsym(&l);
+  TA_INT_EQ(l.tok.sym, CharSym);
+  TA_WCHAR_EQ(l.tok.c, L'c');
+  nextsym(&l);
+  TA_INT_EQ(l.tok.sym, CharSym);
+  TA_WCHAR_EQ(l.tok.c, L'd');
+  nextsym(&l);
+  TA_INT_EQ(l.tok.sym, CharSym);
+  TA_WCHAR_EQ(l.tok.c, L'e');
+  nextsym(&l);
+  TA_INT_EQ(l.tok.sym, CharSym);
+  TA_WCHAR_EQ(l.tok.c, L'f');
+  unget((Token){CharSym, L'e'}, &l);
+  TA_INT_EQ(l.tok.sym, CharSym);
+  TA_WCHAR_EQ(l.tok.c, L'e');
+  unget((Token){CharSym, L'd'}, &l);
+  TA_INT_EQ(l.tok.sym, CharSym);
+  TA_WCHAR_EQ(l.tok.c, L'd');
+  unget((Token){CharSym, L'c'}, &l);
+  TA_INT_EQ(l.tok.sym, CharSym);
+  TA_WCHAR_EQ(l.tok.c, L'c');
+  unget((Token){CharSym, L'b'}, &l);
+  TA_INT_EQ(l.tok.sym, CharSym);
+  TA_WCHAR_EQ(l.tok.c, L'b');
+  nextsym(&l);
+  TA_INT_EQ(l.tok.sym, CharSym);
+  TA_WCHAR_EQ(l.tok.c, L'c');
+  nextsym(&l);
+  TA_INT_EQ(l.tok.sym, CharSym);
+  TA_WCHAR_EQ(l.tok.c, L'd');
+  nextsym(&l);
+  TA_INT_EQ(l.tok.sym, CharSym);
+  TA_WCHAR_EQ(l.tok.c, L'e');
+  nextsym(&l);
+  TA_INT_EQ(l.tok.sym, CharSym);
+  TA_WCHAR_EQ(l.tok.c, L'f');
+
+  return 0;
+}
+
 void lex_test(void)
 {
   smb_ut_group *group = su_create_test_group("test/lex.c");
@@ -181,6 +337,15 @@ void lex_test(void)
 
   smb_ut_test *lex_buffer = su_create_test("lex_buffer", test_lex_buffer);
   su_add_test(group, lex_buffer);
+
+  smb_ut_test *lex_escapes_wide = su_create_test("lex_escapes_wide", test_lex_escapes_wide);
+  su_add_test(group, lex_escapes_wide);
+
+  smb_ut_test *lex_tokens_wide = su_create_test("lex_tokens_wide", test_lex_tokens_wide);
+  su_add_test(group, lex_tokens_wide);
+
+  smb_ut_test *lex_buffer_wide = su_create_test("lex_buffer_wide", test_lex_buffer_wide);
+  su_add_test(group, lex_buffer_wide);
 
   su_run_group(group);
   su_delete_group(group);

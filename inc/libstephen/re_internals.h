@@ -73,6 +73,23 @@ struct Token {
 };
 
 /**
+   @brief Data structure that allows for simple swapping of input types.
+
+   This data structure allows functions to be written to not care whether they
+   are receiving wide character strings or "narrow" (or ascii, aka naive)
+   strings.  Which is useful.
+*/
+struct Input {
+  const char *str;
+  const wchar_t *wstr;
+};
+
+/**
+   @brief Read input from an existing index, regardless of string type.
+*/
+wchar_t InputIdx(struct Input in, size_t idx);
+
+/**
    @brief Tree data structure to store information parsed out of a regex.
  */
 typedef struct PTree PTree;
@@ -92,7 +109,7 @@ struct PTree {
  */
 typedef struct Lexer Lexer;
 struct Lexer {
-  char *input;
+  struct Input input;
   size_t index;
   Token tok, prev;
   Token buf[LEXER_BUFSIZE];
@@ -111,7 +128,8 @@ PTree *EXPR(Lexer *l);
 PTree *REGEX(Lexer *l);
 PTree *CLASS(Lexer *l);
 PTree *SUB(Lexer *l);
-PTree *reparse(char *regex);
+PTree *reparse(const char *regex);
+PTree *reparsew(const wchar_t *winput);
 
 /* Utitlites */
 void free_tree(PTree *tree);
