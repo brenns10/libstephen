@@ -18,6 +18,7 @@
 
 #include <stdio.h>
 #include <unistd.h>
+#include <wchar.h>
 
 // DEFINITIONS
 
@@ -115,7 +116,14 @@ void free_prog(Regex r);
    @param regex The text form of the regular expression.
    @returns The compiled bytecode for the regex.
  */
-Regex recomp(char *regex);
+Regex recomp(const char *regex);
+
+/**
+   Compile a wide regular expression!
+   @param regex The text form of the regular expression.
+   @returns The compiled bytecode for the regex.
+*/
+Regex recompw(const wchar_t *regex);
 
 /**
    Execute a regex on a string.
@@ -125,6 +133,14 @@ Regex recomp(char *regex);
    @returns Length of match, or -1 if no match.
  */
 ssize_t execute(Regex r, const char *input, size_t **saved);
+/**
+   Execute a regex on a string.
+   @param r Compiled regular expression bytecode to execute.
+   @param input Text to use as input.
+   @param saved Out pointer for captured indices.
+   @returns Length of match, or -1 if no match.
+*/
+ssize_t executew(Regex r, const wchar_t *input, size_t **saved);
 /**
    Return the number of saved index slots required by a regex.
    @param r The regular expression bytecode.

@@ -16,6 +16,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <wchar.h>
 
 #include "libstephen/re.h"
 #include "libstephen/re_internals.h"
@@ -269,18 +270,18 @@ PTree *reparsew(const wchar_t *winput)
   return reparse_internal(in);
 }
 
-Regex recomp(char *regex)
+Regex recomp(const char *regex)
 {
   PTree *tree = reparse(regex);
-  //printf(";; PARSE TREE:\n");
-  //print_tree(tree, 0);
-
-  // Generate code from parse tree.
   Regex code = codegen(tree);
-
-  // Free tree.
   free_tree(tree);
+  return code;
+}
 
-  // Return code.
+Regex recompw(const wchar_t *regex)
+{
+  PTree *tree = reparsew(regex);
+  Regex code = codegen(tree);
+  free_tree(tree);
   return code;
 }

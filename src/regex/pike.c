@@ -242,6 +242,12 @@ ssize_t execute(Regex r, const char *input, size_t **saved)
   return execute_internal(r, in, saved);
 }
 
+ssize_t executew(Regex r, const wchar_t *input, size_t **saved)
+{
+  struct Input in = {.str=NULL, .wstr=input};
+  return execute_internal(r, in, saved);
+}
+
 size_t numsaves(Regex r)
 {
   size_t ns = 0;
