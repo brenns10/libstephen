@@ -82,12 +82,12 @@ count.  So, you probably don't need to ever pass around pointers to these
 objects, since they're already pointers.  When you're done with a regex, free it
 with ``free_prog()``.
 
-If you want to use a regex, use the ``execute()`` function.  Here is its call
+If you want to use a regex, use the ``reexec()`` function.  Here is its call
 signature:
 
 .. code:: C
 
-   ssize_t execute(Regex r, char *input, size_t **saved);
+   ssize_t reexec(Regex r, char *input, size_t **saved);
 
 The first parameter is the regex returned by ``recomp()``.  The second is the
 text you'd like to execute the regex on.  The function returns the length of the
@@ -163,7 +163,7 @@ and tests it on the remaining ones.
 
      for (int i = 2; i < argc; i++) {
        size_t *saves = NULL;
-       ssize_t match = execute(code, argv[i], &saves);
+       ssize_t match = reexec(code, argv[i], &saves);
        if (match != -1) {
          // It matches, report the captured groups.
          printf(";; \"%s\": match(%zd) ", argv[i], match);

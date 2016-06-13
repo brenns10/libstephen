@@ -147,7 +147,7 @@ void stash(size_t *new, size_t **destination)
   *destination = new;
 }
 
-static ssize_t execute_internal(Regex r, const struct Input input, size_t **saved)
+static ssize_t reexec_internal(Regex r, const struct Input input, size_t **saved)
 {
   // Can have at most n threads, where n is the length of the program.  This is
   // because (as it is now) the thread state is simply a program counter.
@@ -236,16 +236,16 @@ static ssize_t execute_internal(Regex r, const struct Input input, size_t **save
   return match;
 }
 
-ssize_t execute(Regex r, const char *input, size_t **saved)
+ssize_t reexec(Regex r, const char *input, size_t **saved)
 {
   struct Input in = {.str=input, .wstr=NULL};
-  return execute_internal(r, in, saved);
+  return reexec_internal(r, in, saved);
 }
 
-ssize_t executew(Regex r, const wchar_t *input, size_t **saved)
+ssize_t reexecw(Regex r, const wchar_t *input, size_t **saved)
 {
   struct Input in = {.str=NULL, .wstr=input};
-  return execute_internal(r, in, saved);
+  return reexec_internal(r, in, saved);
 }
 
 size_t numsaves(Regex r)

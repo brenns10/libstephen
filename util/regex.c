@@ -49,7 +49,7 @@ int main(int argc, char **argv)
 
   for (int i = 2; i < argc; i++) {
     size_t *saves = NULL;
-    ssize_t match = execute(code, argv[i], &saves);
+    ssize_t match = reexec(code, argv[i], &saves);
     if (match != -1) {
       // It matches, report the captured groups.
       printf(";; \"%s\": match(%zd) ", argv[i], match);

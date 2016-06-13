@@ -132,7 +132,7 @@ Regex recompw(const wchar_t *regex);
    @param saved Out pointer for captured indices.
    @returns Length of match, or -1 if no match.
  */
-ssize_t execute(Regex r, const char *input, size_t **saved);
+ssize_t reexec(Regex r, const char *input, size_t **saved);
 /**
    Execute a regex on a string.
    @param r Compiled regular expression bytecode to execute.
@@ -140,7 +140,7 @@ ssize_t execute(Regex r, const char *input, size_t **saved);
    @param saved Out pointer for captured indices.
    @returns Length of match, or -1 if no match.
 */
-ssize_t executew(Regex r, const wchar_t *input, size_t **saved);
+ssize_t reexecw(Regex r, const wchar_t *input, size_t **saved);
 /**
    Return the number of saved index slots required by a regex.
    @param r The regular expression bytecode.
@@ -156,7 +156,7 @@ size_t numsaves(Regex r);
    array, or you can use recapfree() to do this for you.
 
    @param s String to get strings from.
-   @param l List of captures returned from execute().
+   @param l List of captures returned from reexec().
    @param n Number of saves - use numsaves() if you don't know.
    @returns A new Capture object.
 */

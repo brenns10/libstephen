@@ -23,13 +23,13 @@ static int test_any(void)
 {
   Regex r = recomp(".");
 
-  TA_INT_EQ(execute(r, "a", NULL), 1);
-  TA_INT_EQ(execute(r, "b", NULL), 1);
-  TA_INT_EQ(execute(r, "c", NULL), 1);
-  TA_INT_EQ(execute(r, "(", NULL), 1);
-  TA_INT_EQ(execute(r, "*", NULL), 1);
-  TA_INT_EQ(execute(r, ".", NULL), 1);
-  TA_INT_EQ(execute(r, "", NULL), -1);
+  TA_INT_EQ(reexec(r, "a", NULL), 1);
+  TA_INT_EQ(reexec(r, "b", NULL), 1);
+  TA_INT_EQ(reexec(r, "c", NULL), 1);
+  TA_INT_EQ(reexec(r, "(", NULL), 1);
+  TA_INT_EQ(reexec(r, "*", NULL), 1);
+  TA_INT_EQ(reexec(r, ".", NULL), 1);
+  TA_INT_EQ(reexec(r, "", NULL), -1);
 
   free_prog(r);
   return 0;
@@ -39,9 +39,9 @@ static int test_char(void)
 {
   Regex r = recomp("a");
 
-  TA_INT_EQ(execute(r, "a", NULL), 1);
-  TA_INT_EQ(execute(r, "b", NULL), -1);
-  TA_INT_EQ(execute(r, "c", NULL), -1);
+  TA_INT_EQ(reexec(r, "a", NULL), 1);
+  TA_INT_EQ(reexec(r, "b", NULL), -1);
+  TA_INT_EQ(reexec(r, "c", NULL), -1);
 
   free_prog(r);
   return 0;
@@ -51,14 +51,14 @@ static int test_range(void)
 {
   Regex r = recomp("[a-c -]");
 
-  TA_INT_EQ(execute(r, "a", NULL), 1);
-  TA_INT_EQ(execute(r, "b", NULL), 1);
-  TA_INT_EQ(execute(r, "c", NULL), 1);
-  TA_INT_EQ(execute(r, "d", NULL), -1);
-  TA_INT_EQ(execute(r, "e", NULL), -1);
-  TA_INT_EQ(execute(r, "A", NULL), -1);
-  TA_INT_EQ(execute(r, " ", NULL), 1);
-  TA_INT_EQ(execute(r, "-", NULL), 1);
+  TA_INT_EQ(reexec(r, "a", NULL), 1);
+  TA_INT_EQ(reexec(r, "b", NULL), 1);
+  TA_INT_EQ(reexec(r, "c", NULL), 1);
+  TA_INT_EQ(reexec(r, "d", NULL), -1);
+  TA_INT_EQ(reexec(r, "e", NULL), -1);
+  TA_INT_EQ(reexec(r, "A", NULL), -1);
+  TA_INT_EQ(reexec(r, " ", NULL), 1);
+  TA_INT_EQ(reexec(r, "-", NULL), 1);
 
   free_prog(r);
   return 0;
@@ -68,14 +68,14 @@ static int test_nrange(void)
 {
   Regex r = recomp("[^a-c -]");
 
-  TA_INT_EQ(execute(r, "a", NULL), -1);
-  TA_INT_EQ(execute(r, "b", NULL), -1);
-  TA_INT_EQ(execute(r, "c", NULL), -1);
-  TA_INT_EQ(execute(r, "d", NULL), 1);
-  TA_INT_EQ(execute(r, "e", NULL), 1);
-  TA_INT_EQ(execute(r, "A", NULL), 1);
-  TA_INT_EQ(execute(r, " ", NULL), -1);
-  TA_INT_EQ(execute(r, "-", NULL), -1);
+  TA_INT_EQ(reexec(r, "a", NULL), -1);
+  TA_INT_EQ(reexec(r, "b", NULL), -1);
+  TA_INT_EQ(reexec(r, "c", NULL), -1);
+  TA_INT_EQ(reexec(r, "d", NULL), 1);
+  TA_INT_EQ(reexec(r, "e", NULL), 1);
+  TA_INT_EQ(reexec(r, "A", NULL), 1);
+  TA_INT_EQ(reexec(r, " ", NULL), -1);
+  TA_INT_EQ(reexec(r, "-", NULL), -1);
 
   free_prog(r);
   return 0;
@@ -85,12 +85,12 @@ static int test_split_jump(void)
 {
   Regex r = recomp("a*");
 
-  TA_INT_EQ(execute(r, "", NULL), 0);
-  TA_INT_EQ(execute(r, "a", NULL), 1);
-  TA_INT_EQ(execute(r, "aa", NULL), 2);
-  TA_INT_EQ(execute(r, "aaa", NULL), 3);
-  TA_INT_EQ(execute(r, "aaaa", NULL), 4);
-  TA_INT_EQ(execute(r, "b", NULL), 0);
+  TA_INT_EQ(reexec(r, "", NULL), 0);
+  TA_INT_EQ(reexec(r, "a", NULL), 1);
+  TA_INT_EQ(reexec(r, "aa", NULL), 2);
+  TA_INT_EQ(reexec(r, "aaa", NULL), 3);
+  TA_INT_EQ(reexec(r, "aaaa", NULL), 4);
+  TA_INT_EQ(reexec(r, "b", NULL), 0);
 
   free_prog(r);
   return 0;
@@ -112,12 +112,12 @@ static int test_nondeterminism_freeing(void)
 {
   Regex r = recomp("a*a*");
 
-  TA_INT_EQ(execute(r, "", NULL), 0);
-  TA_INT_EQ(execute(r, "a", NULL), 1);
-  TA_INT_EQ(execute(r, "aa", NULL), 2);
-  TA_INT_EQ(execute(r, "aaa", NULL), 3);
-  TA_INT_EQ(execute(r, "aaaa", NULL), 4);
-  TA_INT_EQ(execute(r, "b", NULL), 0);
+  TA_INT_EQ(reexec(r, "", NULL), 0);
+  TA_INT_EQ(reexec(r, "a", NULL), 1);
+  TA_INT_EQ(reexec(r, "aa", NULL), 2);
+  TA_INT_EQ(reexec(r, "aaa", NULL), 3);
+  TA_INT_EQ(reexec(r, "aaaa", NULL), 4);
+  TA_INT_EQ(reexec(r, "b", NULL), 0);
 
   free_prog(r);
   return 0;
@@ -130,19 +130,19 @@ static int test_save(void)
 
   TA_INT_EQ(numsaves(r), 2);
 
-  TA_INT_EQ(execute(r, "b", &capture), 1);
+  TA_INT_EQ(reexec(r, "b", &capture), 1);
   TA_SIZE_EQ(capture[0], 0);
   TA_SIZE_EQ(capture[1], 0);
   free(capture);
-  TA_INT_EQ(execute(r, "ab", &capture), 2);
+  TA_INT_EQ(reexec(r, "ab", &capture), 2);
   TA_SIZE_EQ(capture[0], 0);
   TA_SIZE_EQ(capture[1], 1);
   free(capture);
-  TA_INT_EQ(execute(r, "aab", &capture), 3);
+  TA_INT_EQ(reexec(r, "aab", &capture), 3);
   TA_SIZE_EQ(capture[0], 0);
   TA_SIZE_EQ(capture[1], 2);
   free(capture);
-  TA_INT_EQ(execute(r, "aaab", &capture), 4);
+  TA_INT_EQ(reexec(r, "aaab", &capture), 4);
   TA_SIZE_EQ(capture[0], 0);
   TA_SIZE_EQ(capture[1], 3);
   free(capture);
@@ -158,10 +158,10 @@ static int test_save_null(void)
 
   TA_INT_EQ(numsaves(r), 2);
 
-  TA_INT_EQ(execute(r, "b", NULL), 1);
-  TA_INT_EQ(execute(r, "ab", NULL), 2);
-  TA_INT_EQ(execute(r, "aab", NULL), 3);
-  TA_INT_EQ(execute(r, "aaab", NULL), 4);
+  TA_INT_EQ(reexec(r, "b", NULL), 1);
+  TA_INT_EQ(reexec(r, "ab", NULL), 2);
+  TA_INT_EQ(reexec(r, "aab", NULL), 3);
+  TA_INT_EQ(reexec(r, "aaab", NULL), 4);
   free_prog(r);
   return 0;
 }
@@ -173,7 +173,7 @@ static int test_save_discard_stash(void)
 
   TA_INT_EQ(numsaves(r), 2);
 
-  TA_INT_EQ(execute(r, "aabbb", &capture), 5);
+  TA_INT_EQ(reexec(r, "aabbb", &capture), 5);
   TA_SIZE_EQ(capture[0], 0);
   TA_SIZE_EQ(capture[1], 2);
   free(capture);
@@ -186,13 +186,13 @@ static int test_any_wide(void)
 {
   Regex r = recompw(L".");
 
-  TA_INT_EQ(execute(r, "a", NULL), 1);
-  TA_INT_EQ(execute(r, "b", NULL), 1);
-  TA_INT_EQ(execute(r, "c", NULL), 1);
-  TA_INT_EQ(execute(r, "(", NULL), 1);
-  TA_INT_EQ(execute(r, "*", NULL), 1);
-  TA_INT_EQ(execute(r, ".", NULL), 1);
-  TA_INT_EQ(execute(r, "", NULL), -1);
+  TA_INT_EQ(reexec(r, "a", NULL), 1);
+  TA_INT_EQ(reexec(r, "b", NULL), 1);
+  TA_INT_EQ(reexec(r, "c", NULL), 1);
+  TA_INT_EQ(reexec(r, "(", NULL), 1);
+  TA_INT_EQ(reexec(r, "*", NULL), 1);
+  TA_INT_EQ(reexec(r, ".", NULL), 1);
+  TA_INT_EQ(reexec(r, "", NULL), -1);
 
   free_prog(r);
   return 0;
@@ -202,9 +202,9 @@ static int test_char_wide(void)
 {
   Regex r = recompw(L"a");
 
-  TA_INT_EQ(executew(r, L"a", NULL), 1);
-  TA_INT_EQ(executew(r, L"b", NULL), -1);
-  TA_INT_EQ(executew(r, L"c", NULL), -1);
+  TA_INT_EQ(reexecw(r, L"a", NULL), 1);
+  TA_INT_EQ(reexecw(r, L"b", NULL), -1);
+  TA_INT_EQ(reexecw(r, L"c", NULL), -1);
 
   free_prog(r);
   return 0;
@@ -214,14 +214,14 @@ static int test_range_wide(void)
 {
   Regex r = recompw(L"[a-c -]");
 
-  TA_INT_EQ(executew(r, L"a", NULL), 1);
-  TA_INT_EQ(executew(r, L"b", NULL), 1);
-  TA_INT_EQ(executew(r, L"c", NULL), 1);
-  TA_INT_EQ(executew(r, L"d", NULL), -1);
-  TA_INT_EQ(executew(r, L"e", NULL), -1);
-  TA_INT_EQ(executew(r, L"A", NULL), -1);
-  TA_INT_EQ(executew(r, L" ", NULL), 1);
-  TA_INT_EQ(executew(r, L"-", NULL), 1);
+  TA_INT_EQ(reexecw(r, L"a", NULL), 1);
+  TA_INT_EQ(reexecw(r, L"b", NULL), 1);
+  TA_INT_EQ(reexecw(r, L"c", NULL), 1);
+  TA_INT_EQ(reexecw(r, L"d", NULL), -1);
+  TA_INT_EQ(reexecw(r, L"e", NULL), -1);
+  TA_INT_EQ(reexecw(r, L"A", NULL), -1);
+  TA_INT_EQ(reexecw(r, L" ", NULL), 1);
+  TA_INT_EQ(reexecw(r, L"-", NULL), 1);
 
   free_prog(r);
   return 0;
@@ -231,14 +231,14 @@ static int test_nrange_wide(void)
 {
   Regex r = recompw(L"[^a-c -]");
 
-  TA_INT_EQ(executew(r, L"a", NULL), -1);
-  TA_INT_EQ(executew(r, L"b", NULL), -1);
-  TA_INT_EQ(executew(r, L"c", NULL), -1);
-  TA_INT_EQ(executew(r, L"d", NULL), 1);
-  TA_INT_EQ(executew(r, L"e", NULL), 1);
-  TA_INT_EQ(executew(r, L"A", NULL), 1);
-  TA_INT_EQ(executew(r, L" ", NULL), -1);
-  TA_INT_EQ(executew(r, L"-", NULL), -1);
+  TA_INT_EQ(reexecw(r, L"a", NULL), -1);
+  TA_INT_EQ(reexecw(r, L"b", NULL), -1);
+  TA_INT_EQ(reexecw(r, L"c", NULL), -1);
+  TA_INT_EQ(reexecw(r, L"d", NULL), 1);
+  TA_INT_EQ(reexecw(r, L"e", NULL), 1);
+  TA_INT_EQ(reexecw(r, L"A", NULL), 1);
+  TA_INT_EQ(reexecw(r, L" ", NULL), -1);
+  TA_INT_EQ(reexecw(r, L"-", NULL), -1);
 
   free_prog(r);
   return 0;
@@ -248,12 +248,12 @@ static int test_split_jump_wide(void)
 {
   Regex r = recompw(L"a*");
 
-  TA_INT_EQ(executew(r, L"", NULL), 0);
-  TA_INT_EQ(executew(r, L"a", NULL), 1);
-  TA_INT_EQ(executew(r, L"aa", NULL), 2);
-  TA_INT_EQ(executew(r, L"aaa", NULL), 3);
-  TA_INT_EQ(executew(r, L"aaaa", NULL), 4);
-  TA_INT_EQ(executew(r, L"b", NULL), 0);
+  TA_INT_EQ(reexecw(r, L"", NULL), 0);
+  TA_INT_EQ(reexecw(r, L"a", NULL), 1);
+  TA_INT_EQ(reexecw(r, L"aa", NULL), 2);
+  TA_INT_EQ(reexecw(r, L"aaa", NULL), 3);
+  TA_INT_EQ(reexecw(r, L"aaaa", NULL), 4);
+  TA_INT_EQ(reexecw(r, L"b", NULL), 0);
 
   free_prog(r);
   return 0;
@@ -275,12 +275,12 @@ static int test_nondeterminism_freeing_wide(void)
 {
   Regex r = recompw(L"a*a*");
 
-  TA_INT_EQ(executew(r, L"", NULL), 0);
-  TA_INT_EQ(executew(r, L"a", NULL), 1);
-  TA_INT_EQ(executew(r, L"aa", NULL), 2);
-  TA_INT_EQ(executew(r, L"aaa", NULL), 3);
-  TA_INT_EQ(executew(r, L"aaaa", NULL), 4);
-  TA_INT_EQ(executew(r, L"b", NULL), 0);
+  TA_INT_EQ(reexecw(r, L"", NULL), 0);
+  TA_INT_EQ(reexecw(r, L"a", NULL), 1);
+  TA_INT_EQ(reexecw(r, L"aa", NULL), 2);
+  TA_INT_EQ(reexecw(r, L"aaa", NULL), 3);
+  TA_INT_EQ(reexecw(r, L"aaaa", NULL), 4);
+  TA_INT_EQ(reexecw(r, L"b", NULL), 0);
 
   free_prog(r);
   return 0;
@@ -293,19 +293,19 @@ static int test_save_wide(void)
 
   TA_INT_EQ(numsaves(r), 2);
 
-  TA_INT_EQ(executew(r, L"b", &capture), 1);
+  TA_INT_EQ(reexecw(r, L"b", &capture), 1);
   TA_SIZE_EQ(capture[0], 0);
   TA_SIZE_EQ(capture[1], 0);
   free(capture);
-  TA_INT_EQ(executew(r, L"ab", &capture), 2);
+  TA_INT_EQ(reexecw(r, L"ab", &capture), 2);
   TA_SIZE_EQ(capture[0], 0);
   TA_SIZE_EQ(capture[1], 1);
   free(capture);
-  TA_INT_EQ(executew(r, L"aab", &capture), 3);
+  TA_INT_EQ(reexecw(r, L"aab", &capture), 3);
   TA_SIZE_EQ(capture[0], 0);
   TA_SIZE_EQ(capture[1], 2);
   free(capture);
-  TA_INT_EQ(executew(r, L"aaab", &capture), 4);
+  TA_INT_EQ(reexecw(r, L"aaab", &capture), 4);
   TA_SIZE_EQ(capture[0], 0);
   TA_SIZE_EQ(capture[1], 3);
   free(capture);
@@ -321,10 +321,10 @@ static int test_save_null_wide(void)
 
   TA_INT_EQ(numsaves(r), 2);
 
-  TA_INT_EQ(executew(r, L"b", NULL), 1);
-  TA_INT_EQ(executew(r, L"ab", NULL), 2);
-  TA_INT_EQ(executew(r, L"aab", NULL), 3);
-  TA_INT_EQ(executew(r, L"aaab", NULL), 4);
+  TA_INT_EQ(reexecw(r, L"b", NULL), 1);
+  TA_INT_EQ(reexecw(r, L"ab", NULL), 2);
+  TA_INT_EQ(reexecw(r, L"aab", NULL), 3);
+  TA_INT_EQ(reexecw(r, L"aaab", NULL), 4);
   free_prog(r);
   return 0;
 }
@@ -336,7 +336,7 @@ static int test_save_discard_stash_wide(void)
 
   TA_INT_EQ(numsaves(r), 2);
 
-  TA_INT_EQ(executew(r, L"aabbb", &capture), 5);
+  TA_INT_EQ(reexecw(r, L"aabbb", &capture), 5);
   TA_SIZE_EQ(capture[0], 0);
   TA_SIZE_EQ(capture[1], 2);
   free(capture);
