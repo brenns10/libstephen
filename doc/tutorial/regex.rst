@@ -119,8 +119,8 @@ implementation.  Here are the function signatures:
 
 .. code:: C
 
-   Regex read_prog(char *str);
-   Regex fread_prog(FILE *f);
+   Regex reread(char *str);
+   Regex refread(FILE *f);
    void write_prog(Regex r, FILE *f);
 
 Here is a complete example of a program that takes a regex as its first argument
@@ -153,7 +153,7 @@ and tests it on the remaining ones.
        printf(";; BEGIN GENERATED CODE:\n");
      } else {
        // Otherwise, open it and read the code from it.
-       code = fread_prog(in);
+       code = refread(in);
        printf(";; BEGIN READ CODE:\n");
      }
      write_prog(code, stdout);

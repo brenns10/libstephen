@@ -39,7 +39,7 @@ int main(int argc, char **argv)
     printf(";; BEGIN GENERATED CODE:\n");
   } else {
     // Otherwise, open it and read the code from it.
-    code = fread_prog(in);
+    code = refread(in);
     printf(";; BEGIN READ CODE:\n");
   }
   write_prog(code, stdout);

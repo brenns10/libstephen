@@ -270,7 +270,7 @@ static size_t gettarget(char **labels, size_t *labelindices, size_t nlabels,
    @param str Code
    @param[out] ninstr Where to put the number of instructions
  */
-Regex read_prog(char *str)
+Regex reread(char *str)
 {
   size_t nlines = 1;
   Instr *rv = NULL;
@@ -359,7 +359,7 @@ Regex read_prog(char *str)
 /**
    @brief Read a program from a file.
  */
-Regex fread_prog(FILE *f) {
+Regex refread(FILE *f) {
   size_t alloc = 4096;
   char *buf = malloc(alloc);
   size_t start = 0;
@@ -373,7 +373,7 @@ Regex fread_prog(FILE *f) {
     }
   }
 
-  Regex rv = read_prog(buf);
+  Regex rv = reread(buf);
   free(buf);
   return rv;
 }

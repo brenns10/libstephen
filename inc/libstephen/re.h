@@ -92,15 +92,15 @@ typedef struct {
    @param str The text representation of the program.
    @returns The bytecode of the program.
  */
-Regex read_prog(char *str);
+Regex reread(char *str);
 /**
    Reads in a program from a file instead of a string.
    @param f File to read from.
    @returns The regex bytecode.
  */
-Regex fread_prog(FILE *f);
+Regex refread(FILE *f);
 /**
-   Writes a program to the same format as the read_prog() functions do.
+   Writes a program to the same format as the reread() functions do.
    @param r The regex to write.
    @param f The file to write to.
  */
