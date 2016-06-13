@@ -29,7 +29,7 @@ static int test_dot(void)
   TA_INT_EQ(r.i[0].code, Any);
   TA_INT_EQ(r.i[1].code, Match);
 
-  free_prog(r);
+  refree(r);
   return 0;
 }
 
@@ -41,7 +41,7 @@ static int test_special(void)
   TA_SIZE_EQ(r.i[0].s, (size_t)1);
   TA_STRN_EQ("09", (char*)r.i[0].x, 2);
   TA_INT_EQ(r.i[1].code, Match);
-  free_prog(r);
+  refree(r);
 
   r = recomp("\\D");
   TA_SIZE_EQ(r.n, (size_t) 2);
@@ -49,7 +49,7 @@ static int test_special(void)
   TA_SIZE_EQ(r.i[0].s, (size_t)1);
   TA_STRN_EQ("09", (char*)r.i[0].x, 2);
   TA_INT_EQ(r.i[1].code, Match);
-  free_prog(r);
+  refree(r);
 
   r = recomp("\\w");
   TA_SIZE_EQ(r.n, (size_t) 2);
@@ -57,7 +57,7 @@ static int test_special(void)
   TA_SIZE_EQ(r.i[0].s, (size_t) 4);
   TA_STRN_EQ("azAZ09__", (char*)r.i[0].x, 8);
   TA_INT_EQ(r.i[1].code, Match);
-  free_prog(r);
+  refree(r);
 
   r = recomp("\\W");
   TA_SIZE_EQ(r.n, (size_t) 2);
@@ -65,7 +65,7 @@ static int test_special(void)
   TA_SIZE_EQ(r.i[0].s, (size_t) 4);
   TA_STRN_EQ("azAZ09__", (char*)r.i[0].x, 8);
   TA_INT_EQ(r.i[1].code, Match);
-  free_prog(r);
+  refree(r);
 
   r = recomp("\\s");
   TA_SIZE_EQ(r.n, (size_t) 2);
@@ -73,7 +73,7 @@ static int test_special(void)
   TA_SIZE_EQ(r.i[0].s, (size_t) 6);
   TA_STRN_EQ("  \t\t\n\n\r\r\f\f\v\v", (char*)r.i[0].x, 12);
   TA_INT_EQ(r.i[1].code, Match);
-  free_prog(r);
+  refree(r);
 
   r = recomp("\\S");
   TA_SIZE_EQ(r.n, (size_t) 2);
@@ -81,7 +81,7 @@ static int test_special(void)
   TA_SIZE_EQ(r.i[0].s, (size_t) 6);
   TA_STRN_EQ("  \t\t\n\n\r\r\f\f\v\v", (char*)r.i[0].x, 12);
   TA_INT_EQ(r.i[1].code, Match);
-  free_prog(r);
+  refree(r);
 
   return 0;
 }
@@ -98,7 +98,7 @@ static int test_plus(void)
   TA_PTR_EQ(r.i[1].y, r.i + 2);
   TA_INT_EQ(r.i[2].code, Match);
 
-  free_prog(r);
+  refree(r);
   return 0;
 }
 
@@ -114,7 +114,7 @@ static int test_plus_question(void)
   TA_PTR_EQ(r.i[1].y, r.i);
   TA_INT_EQ(r.i[2].code, Match);
 
-  free_prog(r);
+  refree(r);
   return 0;
 }
 
@@ -132,7 +132,7 @@ static int test_star(void)
   TA_PTR_EQ(r.i[2].x, r.i);
   TA_INT_EQ(r.i[3].code, Match);
 
-  free_prog(r);
+  refree(r);
   return 0;
 }
 
@@ -150,7 +150,7 @@ static int test_star_question(void)
   TA_PTR_EQ(r.i[2].x, r.i);
   TA_INT_EQ(r.i[3].code, Match);
 
-  free_prog(r);
+  refree(r);
   return 0;
 }
 
@@ -166,7 +166,7 @@ static int test_question(void)
   TA_CHAR_EQ(r.i[1].c, 'a');
   TA_INT_EQ(r.i[2].code, Match);
 
-  free_prog(r);
+  refree(r);
   return 0;
 }
 
@@ -182,7 +182,7 @@ static int test_question_question(void)
   TA_CHAR_EQ(r.i[1].c, 'a');
   TA_INT_EQ(r.i[2].code, Match);
 
-  free_prog(r);
+  refree(r);
   return 0;
 }
 
@@ -197,7 +197,7 @@ static int test_concat(void)
   TA_CHAR_EQ(r.i[1].c, 'b');
   TA_INT_EQ(r.i[2].code, Match);
 
-  free_prog(r);
+  refree(r);
   return 0;
 }
 
@@ -217,7 +217,7 @@ static int test_alternate(void)
   TA_CHAR_EQ(r.i[3].c, 'b');
   TA_INT_EQ(r.i[4].code, Match);
 
-  free_prog(r);
+  refree(r);
   return 0;
 }
 
@@ -234,7 +234,7 @@ static int test_capture(void)
   TA_SIZE_EQ(r.i[2].s, 1);
   TA_INT_EQ(r.i[3].code, Match);
 
-  free_prog(r);
+  refree(r);
   return 0;
 }
 
@@ -256,7 +256,7 @@ static int test_class(void)
   TA_CHAR_EQ(block[7], '-');
   TA_INT_EQ(r.i[1].code, Match);
 
-  free_prog(r);
+  refree(r);
   return 0;
 }
 
@@ -278,7 +278,7 @@ static int test_nclass(void)
   TA_CHAR_EQ(block[7], 'g');
   TA_INT_EQ(r.i[1].code, Match);
 
-  free_prog(r);
+  refree(r);
   return 0;
 }
 
@@ -294,7 +294,7 @@ static int test_join_complex(void)
   TA_INT_EQ(r.i[4].code, Split);
   TA_INT_EQ(r.i[5].code, Match);
 
-  free_prog(r);
+  refree(r);
   return 0;
 }
 

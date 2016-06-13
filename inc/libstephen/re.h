@@ -109,7 +109,7 @@ void write_prog(Regex r, FILE *f);
    Free a Regex object.  You must do this when you're done with it.
    @param r Regex to free.
  */
-void free_prog(Regex r);
+void refree(Regex r);
 
 /**
    Compile a regular expression!

@@ -80,7 +80,7 @@ this, use the ``recomp()`` function.  Its signature is:
 a pointer to a buffer of compiled instructions, as well as the instruction
 count.  So, you probably don't need to ever pass around pointers to these
 objects, since they're already pointers.  When you're done with a regex, free it
-with ``free_prog()``.
+with ``refree()``.
 
 If you want to use a regex, use the ``reexec()`` function.  Here is its call
 signature:
@@ -177,7 +177,7 @@ and tests it on the remaining ones.
        }
      }
 
-     free_prog(code, n);
+     refree(code, n);
    }
 
 Implementation

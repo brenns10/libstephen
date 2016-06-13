@@ -449,7 +449,7 @@ void write_prog(Regex r, FILE *f)
   free(labels);
 }
 
-void free_prog(Regex r)
+void refree(Regex r)
 {
   for (size_t i = 0; i < r.n; i++) {
     if (r.i[i].code == Range || r.i[i].code == NRange) {

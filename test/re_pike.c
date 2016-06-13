@@ -31,7 +31,7 @@ static int test_any(void)
   TA_INT_EQ(reexec(r, ".", NULL), 1);
   TA_INT_EQ(reexec(r, "", NULL), -1);
 
-  free_prog(r);
+  refree(r);
   return 0;
 }
 
@@ -43,7 +43,7 @@ static int test_char(void)
   TA_INT_EQ(reexec(r, "b", NULL), -1);
   TA_INT_EQ(reexec(r, "c", NULL), -1);
 
-  free_prog(r);
+  refree(r);
   return 0;
 }
 
@@ -60,7 +60,7 @@ static int test_range(void)
   TA_INT_EQ(reexec(r, " ", NULL), 1);
   TA_INT_EQ(reexec(r, "-", NULL), 1);
 
-  free_prog(r);
+  refree(r);
   return 0;
 }
 
@@ -77,7 +77,7 @@ static int test_nrange(void)
   TA_INT_EQ(reexec(r, " ", NULL), -1);
   TA_INT_EQ(reexec(r, "-", NULL), -1);
 
-  free_prog(r);
+  refree(r);
   return 0;
 }
 
@@ -92,7 +92,7 @@ static int test_split_jump(void)
   TA_INT_EQ(reexec(r, "aaaa", NULL), 4);
   TA_INT_EQ(reexec(r, "b", NULL), 0);
 
-  free_prog(r);
+  refree(r);
   return 0;
 }
 
@@ -119,7 +119,7 @@ static int test_nondeterminism_freeing(void)
   TA_INT_EQ(reexec(r, "aaaa", NULL), 4);
   TA_INT_EQ(reexec(r, "b", NULL), 0);
 
-  free_prog(r);
+  refree(r);
   return 0;
 }
 
@@ -147,7 +147,7 @@ static int test_save(void)
   TA_SIZE_EQ(capture[1], 3);
   free(capture);
 
-  free_prog(r);
+  refree(r);
   return 0;
 }
 
@@ -162,7 +162,7 @@ static int test_save_null(void)
   TA_INT_EQ(reexec(r, "ab", NULL), 2);
   TA_INT_EQ(reexec(r, "aab", NULL), 3);
   TA_INT_EQ(reexec(r, "aaab", NULL), 4);
-  free_prog(r);
+  refree(r);
   return 0;
 }
 
@@ -178,7 +178,7 @@ static int test_save_discard_stash(void)
   TA_SIZE_EQ(capture[1], 2);
   free(capture);
 
-  free_prog(r);
+  refree(r);
   return 0;
 }
 
@@ -194,7 +194,7 @@ static int test_any_wide(void)
   TA_INT_EQ(reexec(r, ".", NULL), 1);
   TA_INT_EQ(reexec(r, "", NULL), -1);
 
-  free_prog(r);
+  refree(r);
   return 0;
 }
 
@@ -206,7 +206,7 @@ static int test_char_wide(void)
   TA_INT_EQ(reexecw(r, L"b", NULL), -1);
   TA_INT_EQ(reexecw(r, L"c", NULL), -1);
 
-  free_prog(r);
+  refree(r);
   return 0;
 }
 
@@ -223,7 +223,7 @@ static int test_range_wide(void)
   TA_INT_EQ(reexecw(r, L" ", NULL), 1);
   TA_INT_EQ(reexecw(r, L"-", NULL), 1);
 
-  free_prog(r);
+  refree(r);
   return 0;
 }
 
@@ -240,7 +240,7 @@ static int test_nrange_wide(void)
   TA_INT_EQ(reexecw(r, L" ", NULL), -1);
   TA_INT_EQ(reexecw(r, L"-", NULL), -1);
 
-  free_prog(r);
+  refree(r);
   return 0;
 }
 
@@ -255,7 +255,7 @@ static int test_split_jump_wide(void)
   TA_INT_EQ(reexecw(r, L"aaaa", NULL), 4);
   TA_INT_EQ(reexecw(r, L"b", NULL), 0);
 
-  free_prog(r);
+  refree(r);
   return 0;
 }
 
@@ -282,7 +282,7 @@ static int test_nondeterminism_freeing_wide(void)
   TA_INT_EQ(reexecw(r, L"aaaa", NULL), 4);
   TA_INT_EQ(reexecw(r, L"b", NULL), 0);
 
-  free_prog(r);
+  refree(r);
   return 0;
 }
 
@@ -310,7 +310,7 @@ static int test_save_wide(void)
   TA_SIZE_EQ(capture[1], 3);
   free(capture);
 
-  free_prog(r);
+  refree(r);
   return 0;
 }
 
@@ -325,7 +325,7 @@ static int test_save_null_wide(void)
   TA_INT_EQ(reexecw(r, L"ab", NULL), 2);
   TA_INT_EQ(reexecw(r, L"aab", NULL), 3);
   TA_INT_EQ(reexecw(r, L"aaab", NULL), 4);
-  free_prog(r);
+  refree(r);
   return 0;
 }
 
@@ -341,7 +341,7 @@ static int test_save_discard_stash_wide(void)
   TA_SIZE_EQ(capture[1], 2);
   free(capture);
 
-  free_prog(r);
+  refree(r);
   return 0;
 }
 

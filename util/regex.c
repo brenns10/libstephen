@@ -63,5 +63,5 @@ int main(int argc, char **argv)
     }
   }
 
-  free_prog(code);
+  refree(code);
 }
