@@ -128,7 +128,7 @@ static int test_save(void)
   size_t *capture;
   Regex r = recomp("(a*)b");
 
-  TA_INT_EQ(numsaves(r), 2);
+  TA_INT_EQ(renumsaves(r), 2);
 
   TA_INT_EQ(reexec(r, "b", &capture), 1);
   TA_SIZE_EQ(capture[0], 0);
@@ -156,7 +156,7 @@ static int test_save_null(void)
 {
   Regex r = recomp("(a*)b");
 
-  TA_INT_EQ(numsaves(r), 2);
+  TA_INT_EQ(renumsaves(r), 2);
 
   TA_INT_EQ(reexec(r, "b", NULL), 1);
   TA_INT_EQ(reexec(r, "ab", NULL), 2);
@@ -171,7 +171,7 @@ static int test_save_discard_stash(void)
   size_t *capture;
   Regex r = recomp("(a*)b+");
 
-  TA_INT_EQ(numsaves(r), 2);
+  TA_INT_EQ(renumsaves(r), 2);
 
   TA_INT_EQ(reexec(r, "aabbb", &capture), 5);
   TA_SIZE_EQ(capture[0], 0);
@@ -291,7 +291,7 @@ static int test_save_wide(void)
   size_t *capture;
   Regex r = recompw(L"(a*)b");
 
-  TA_INT_EQ(numsaves(r), 2);
+  TA_INT_EQ(renumsaves(r), 2);
 
   TA_INT_EQ(reexecw(r, L"b", &capture), 1);
   TA_SIZE_EQ(capture[0], 0);
@@ -319,7 +319,7 @@ static int test_save_null_wide(void)
 {
   Regex r = recompw(L"(a*)b");
 
-  TA_INT_EQ(numsaves(r), 2);
+  TA_INT_EQ(renumsaves(r), 2);
 
   TA_INT_EQ(reexecw(r, L"b", NULL), 1);
   TA_INT_EQ(reexecw(r, L"ab", NULL), 2);
@@ -334,7 +334,7 @@ static int test_save_discard_stash_wide(void)
   size_t *capture;
   Regex r = recompw(L"(a*)b+");
 
-  TA_INT_EQ(numsaves(r), 2);
+  TA_INT_EQ(renumsaves(r), 2);
 
   TA_INT_EQ(reexecw(r, L"aabbb", &capture), 5);
   TA_SIZE_EQ(capture[0], 0);

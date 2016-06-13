@@ -248,7 +248,7 @@ ssize_t reexecw(Regex r, const wchar_t *input, size_t **saved)
   return reexec_internal(r, in, saved);
 }
 
-size_t numsaves(Regex r)
+size_t renumsaves(Regex r)
 {
   size_t ns = 0;
   for (size_t i = 0; i < r.n; i++) {

@@ -108,7 +108,7 @@ opening parenthesis in the regular expression.
 
 Please note that you'll need to free the capture buffer.  If you're not
 interested in captures, you can just set the third parameter to NULL.  If you
-want to know how many indices are in the buffer, you can call ``numsaves()`` on
+want to know how many indices are in the buffer, you can call ``renumsaves()`` on
 your regex.
 
 There are also functions for writing regex bytecode to a textual "assembly"
@@ -121,7 +121,7 @@ implementation.  Here are the function signatures:
 
    Regex reread(char *str);
    Regex refread(FILE *f);
-   void write_prog(Regex r, FILE *f);
+   void rewrite(Regex r, FILE *f);
 
 Here is a complete example of a program that takes a regex as its first argument
 and tests it on the remaining ones.
@@ -156,9 +156,9 @@ and tests it on the remaining ones.
        code = refread(in);
        printf(";; BEGIN READ CODE:\n");
      }
-     write_prog(code, stdout);
+     rewrite(code, stdout);
 
-     int ns = numsaves(code);
+     int ns = renumsaves(code);
      printf(";; BEGIN TEST RUNS:\n");
 
      for (int i = 2; i < argc; i++) {

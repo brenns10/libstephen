@@ -104,7 +104,7 @@ Regex refread(FILE *f);
    @param r The regex to write.
    @param f The file to write to.
  */
-void write_prog(Regex r, FILE *f);
+void rewrite(Regex r, FILE *f);
 /**
    Free a Regex object.  You must do this when you're done with it.
    @param r Regex to free.
@@ -146,7 +146,7 @@ ssize_t reexecw(Regex r, const wchar_t *input, size_t **saved);
    @param r The regular expression bytecode.
    @returns Number of slots.
  */
-size_t numsaves(Regex r);
+size_t renumsaves(Regex r);
 /**
    Convert a string and a capture list into a list of strings.
 
@@ -157,7 +157,7 @@ size_t numsaves(Regex r);
 
    @param s String to get strings from.
    @param l List of captures returned from reexec().
-   @param n Number of saves - use numsaves() if you don't know.
+   @param n Number of saves - use renumsaves() if you don't know.
    @returns A new Capture object.
 */
 Captures recap(const char *s, const size_t *l, size_t n);

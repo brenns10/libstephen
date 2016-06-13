@@ -42,9 +42,9 @@ int main(int argc, char **argv)
     code = refread(in);
     printf(";; BEGIN READ CODE:\n");
   }
-  write_prog(code, stdout);
+  rewrite(code, stdout);
 
-  int ns = numsaves(code);
+  int ns = renumsaves(code);
   printf(";; BEGIN TEST RUNS:\n");
 
   for (int i = 2; i < argc; i++) {

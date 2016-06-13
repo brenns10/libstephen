@@ -381,7 +381,7 @@ Regex refread(FILE *f) {
 /**
    @brief Write a program to a file.
  */
-void write_prog(Regex r, FILE *f)
+void rewrite(Regex r, FILE *f)
 {
   size_t *labels = calloc(r.n, sizeof(size_t));
 
