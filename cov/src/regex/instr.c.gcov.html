@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2016-06-11 05:04:29</td>
+            <td class="headerValue">2016-06-13 03:21:20</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">1</td>
@@ -332,7 +332,7 @@
 <span class="lineNum">     270 </span>            :    @param str Code
 <a name="271"><span class="lineNum">     271 </span>            :    @param[out] ninstr Where to put the number of instructions</a>
 <span class="lineNum">     272 </span>            :  */
-<span class="lineNum">     273 </span><span class="lineNoCov">          0 : Regex read_prog(char *str)</span>
+<span class="lineNum">     273 </span><span class="lineNoCov">          0 : Regex reread(char *str)</span>
 <span class="lineNum">     274 </span>            : {
 <span class="lineNum">     275 </span><span class="lineNoCov">          0 :   size_t nlines = 1;</span>
 <span class="lineNum">     276 </span><span class="lineNoCov">          0 :   Instr *rv = NULL;</span>
@@ -421,7 +421,7 @@
 <span class="lineNum">     359 </span>            : /**
 <a name="360"><span class="lineNum">     360 </span>            :    @brief Read a program from a file.</a>
 <span class="lineNum">     361 </span>            :  */
-<span class="lineNum">     362 </span><span class="lineNoCov">          0 : Regex fread_prog(FILE *f) {</span>
+<span class="lineNum">     362 </span><span class="lineNoCov">          0 : Regex refread(FILE *f) {</span>
 <span class="lineNum">     363 </span><span class="lineNoCov">          0 :   size_t alloc = 4096;</span>
 <span class="lineNum">     364 </span><span class="lineNoCov">          0 :   char *buf = malloc(alloc);</span>
 <span class="lineNum">     365 </span><span class="lineNoCov">          0 :   size_t start = 0;</span>
@@ -435,7 +435,7 @@
 <span class="lineNum">     373 </span>            :     }
 <span class="lineNum">     374 </span><span class="lineNoCov">          0 :   }</span>
 <span class="lineNum">     375 </span>            : 
-<span class="lineNum">     376 </span><span class="lineNoCov">          0 :   Regex rv = read_prog(buf);</span>
+<span class="lineNum">     376 </span><span class="lineNoCov">          0 :   Regex rv = reread(buf);</span>
 <span class="lineNum">     377 </span><span class="lineNoCov">          0 :   free(buf);</span>
 <span class="lineNum">     378 </span><span class="lineNoCov">          0 :   return rv;</span>
 <span class="lineNum">     379 </span>            : }
@@ -443,7 +443,7 @@
 <span class="lineNum">     381 </span>            : /**
 <a name="382"><span class="lineNum">     382 </span>            :    @brief Write a program to a file.</a>
 <span class="lineNum">     383 </span>            :  */
-<span class="lineNum">     384 </span><span class="lineNoCov">          0 : void write_prog(Regex r, FILE *f)</span>
+<span class="lineNum">     384 </span><span class="lineNoCov">          0 : void rewrite(Regex r, FILE *f)</span>
 <span class="lineNum">     385 </span>            : {
 <span class="lineNum">     386 </span><span class="lineNoCov">          0 :   size_t *labels = calloc(r.n, sizeof(size_t));</span>
 <span class="lineNum">     387 </span>            : 
@@ -511,15 +511,15 @@
 <span class="lineNum">     449 </span><span class="lineNoCov">          0 :   free(labels);</span>
 <a name="450"><span class="lineNum">     450 </span><span class="lineNoCov">          0 : }</span></a>
 <span class="lineNum">     451 </span>            : 
-<span class="lineNum">     452 </span><span class="lineCov">         28 : void free_prog(Regex r)</span>
+<span class="lineNum">     452 </span><span class="lineCov">         37 : void refree(Regex r)</span>
 <span class="lineNum">     453 </span>            : {
-<span class="lineNum">     454 </span><span class="lineCov">        125 :   for (size_t i = 0; i &lt; r.n; i++) {</span>
-<span class="lineNum">     455 </span><span class="lineCov">         97 :     if (r.i[i].code == Range || r.i[i].code == NRange) {</span>
-<span class="lineNum">     456 </span><span class="lineCov">         10 :       free(r.i[i].x);</span>
+<span class="lineNum">     454 </span><span class="lineCov">        175 :   for (size_t i = 0; i &lt; r.n; i++) {</span>
+<span class="lineNum">     455 </span><span class="lineCov">        138 :     if (r.i[i].code == Range || r.i[i].code == NRange) {</span>
+<span class="lineNum">     456 </span><span class="lineCov">         12 :       free(r.i[i].x);</span>
 <span class="lineNum">     457 </span>            :     }
 <span class="lineNum">     458 </span>            :   }
-<span class="lineNum">     459 </span><span class="lineCov">         28 :   free(r.i);</span>
-<span class="lineNum">     460 </span><span class="lineCov">         28 : }</span>
+<span class="lineNum">     459 </span><span class="lineCov">         37 :   free(r.i);</span>
+<span class="lineNum">     460 </span><span class="lineCov">         37 : }</span>
 </pre>
       </td>
     </tr>

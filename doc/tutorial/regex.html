@@ -220,10 +220,10 @@ this, use the <code class="docutils literal"><span class="pre">recomp()</span></
 a pointer to a buffer of compiled instructions, as well as the instruction
 count.  So, you probably don&#8217;t need to ever pass around pointers to these
 objects, since they&#8217;re already pointers.  When you&#8217;re done with a regex, free it
-with <code class="docutils literal"><span class="pre">free_prog()</span></code>.</p>
-<p>If you want to use a regex, use the <code class="docutils literal"><span class="pre">execute()</span></code> function.  Here is its call
+with <code class="docutils literal"><span class="pre">refree()</span></code>.</p>
+<p>If you want to use a regex, use the <code class="docutils literal"><span class="pre">reexec()</span></code> function.  Here is its call
 signature:</p>
-<div class="code C highlight-c"><div class="highlight"><pre><span></span><span class="kt">ssize_t</span> <span class="nf">execute</span><span class="p">(</span><span class="n">Regex</span> <span class="n">r</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">input</span><span class="p">,</span> <span class="kt">size_t</span> <span class="o">**</span><span class="n">saved</span><span class="p">);</span>
+<div class="code C highlight-c"><div class="highlight"><pre><span></span><span class="kt">ssize_t</span> <span class="nf">reexec</span><span class="p">(</span><span class="n">Regex</span> <span class="n">r</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">input</span><span class="p">,</span> <span class="kt">size_t</span> <span class="o">**</span><span class="n">saved</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>The first parameter is the regex returned by <code class="docutils literal"><span class="pre">recomp()</span></code>.  The second is the
@@ -243,16 +243,16 @@ not included in tho capture.  The order of the pairs is determined by the
 opening parenthesis in the regular expression.</p>
 <p>Please note that you&#8217;ll need to free the capture buffer.  If you&#8217;re not
 interested in captures, you can just set the third parameter to NULL.  If you
-want to know how many indices are in the buffer, you can call <code class="docutils literal"><span class="pre">numsaves()</span></code> on
+want to know how many indices are in the buffer, you can call <code class="docutils literal"><span class="pre">renumsaves()</span></code> on
 your regex.</p>
 <p>There are also functions for writing regex bytecode to a textual &#8220;assembly&#8221;
 representation.  This text representation can be read back in as well.  It&#8217;s
 actually pretty neat.  You can think of this as an implementation detail: not
 something to rely on, but very useful for debugging and learning about the regex
 implementation.  Here are the function signatures:</p>
-<div class="code C highlight-c"><div class="highlight"><pre><span></span><span class="n">Regex</span> <span class="nf">read_prog</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">str</span><span class="p">);</span>
-<span class="n">Regex</span> <span class="nf">fread_prog</span><span class="p">(</span><span class="kt">FILE</span> <span class="o">*</span><span class="n">f</span><span class="p">);</span>
-<span class="kt">void</span> <span class="nf">write_prog</span><span class="p">(</span><span class="n">Regex</span> <span class="n">r</span><span class="p">,</span> <span class="kt">FILE</span> <span class="o">*</span><span class="n">f</span><span class="p">);</span>
+<div class="code C highlight-c"><div class="highlight"><pre><span></span><span class="n">Regex</span> <span class="nf">reread</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">str</span><span class="p">);</span>
+<span class="n">Regex</span> <span class="nf">refread</span><span class="p">(</span><span class="kt">FILE</span> <span class="o">*</span><span class="n">f</span><span class="p">);</span>
+<span class="kt">void</span> <span class="nf">rewrite</span><span class="p">(</span><span class="n">Regex</span> <span class="n">r</span><span class="p">,</span> <span class="kt">FILE</span> <span class="o">*</span><span class="n">f</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>Here is a complete example of a program that takes a regex as its first argument
@@ -282,17 +282,17 @@ and tests it on the remaining ones.</p>
     <span class="n">printf</span><span class="p">(</span><span class="s">&quot;;; BEGIN GENERATED CODE:</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
   <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
     <span class="c1">// Otherwise, open it and read the code from it.</span>
-    <span class="n">code</span> <span class="o">=</span> <span class="n">fread_prog</span><span class="p">(</span><span class="n">in</span><span class="p">);</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">refread</span><span class="p">(</span><span class="n">in</span><span class="p">);</span>
     <span class="n">printf</span><span class="p">(</span><span class="s">&quot;;; BEGIN READ CODE:</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
   <span class="p">}</span>
-  <span class="n">write_prog</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">stdout</span><span class="p">);</span>
+  <span class="n">rewrite</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">stdout</span><span class="p">);</span>
 
-  <span class="kt">int</span> <span class="n">ns</span> <span class="o">=</span> <span class="n">numsaves</span><span class="p">(</span><span class="n">code</span><span class="p">);</span>
+  <span class="kt">int</span> <span class="n">ns</span> <span class="o">=</span> <span class="n">renumsaves</span><span class="p">(</span><span class="n">code</span><span class="p">);</span>
   <span class="n">printf</span><span class="p">(</span><span class="s">&quot;;; BEGIN TEST RUNS:</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
 
   <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">argc</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
     <span class="kt">size_t</span> <span class="o">*</span><span class="n">saves</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
-    <span class="kt">ssize_t</span> <span class="n">match</span> <span class="o">=</span> <span class="n">execute</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">argv</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">saves</span><span class="p">);</span>
+    <span class="kt">ssize_t</span> <span class="n">match</span> <span class="o">=</span> <span class="n">reexec</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">argv</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">saves</span><span class="p">);</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">match</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
       <span class="c1">// It matches, report the captured groups.</span>
       <span class="n">printf</span><span class="p">(</span><span class="s">&quot;;; </span><span class="se">\&quot;</span><span class="s">%s</span><span class="se">\&quot;</span><span class="s">: match(%zd) &quot;</span><span class="p">,</span> <span class="n">argv</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">match</span><span class="p">);</span>
@@ -306,7 +306,7 @@ and tests it on the remaining ones.</p>
     <span class="p">}</span>
   <span class="p">}</span>
 
-  <span class="n">free_prog</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">n</span><span class="p">);</span>
+  <span class="n">refree</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">n</span><span class="p">);</span>
 <span class="p">}</span>
 </pre></div>
 </div>

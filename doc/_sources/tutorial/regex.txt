@@ -80,14 +80,14 @@ this, use the ``recomp()`` function.  Its signature is:
 a pointer to a buffer of compiled instructions, as well as the instruction
 count.  So, you probably don't need to ever pass around pointers to these
 objects, since they're already pointers.  When you're done with a regex, free it
-with ``free_prog()``.
+with ``refree()``.
 
-If you want to use a regex, use the ``execute()`` function.  Here is its call
+If you want to use a regex, use the ``reexec()`` function.  Here is its call
 signature:
 
 .. code:: C
 
-   ssize_t execute(Regex r, char *input, size_t **saved);
+   ssize_t reexec(Regex r, char *input, size_t **saved);
 
 The first parameter is the regex returned by ``recomp()``.  The second is the
 text you'd like to execute the regex on.  The function returns the length of the
@@ -108,7 +108,7 @@ opening parenthesis in the regular expression.
 
 Please note that you'll need to free the capture buffer.  If you're not
 interested in captures, you can just set the third parameter to NULL.  If you
-want to know how many indices are in the buffer, you can call ``numsaves()`` on
+want to know how many indices are in the buffer, you can call ``renumsaves()`` on
 your regex.
 
 There are also functions for writing regex bytecode to a textual "assembly"
@@ -119,9 +119,9 @@ implementation.  Here are the function signatures:
 
 .. code:: C
 
-   Regex read_prog(char *str);
-   Regex fread_prog(FILE *f);
-   void write_prog(Regex r, FILE *f);
+   Regex reread(char *str);
+   Regex refread(FILE *f);
+   void rewrite(Regex r, FILE *f);
 
 Here is a complete example of a program that takes a regex as its first argument
 and tests it on the remaining ones.
@@ -153,17 +153,17 @@ and tests it on the remaining ones.
        printf(";; BEGIN GENERATED CODE:\n");
      } else {
        // Otherwise, open it and read the code from it.
-       code = fread_prog(in);
+       code = refread(in);
        printf(";; BEGIN READ CODE:\n");
      }
-     write_prog(code, stdout);
+     rewrite(code, stdout);
 
-     int ns = numsaves(code);
+     int ns = renumsaves(code);
      printf(";; BEGIN TEST RUNS:\n");
 
      for (int i = 2; i < argc; i++) {
        size_t *saves = NULL;
-       ssize_t match = execute(code, argv[i], &saves);
+       ssize_t match = reexec(code, argv[i], &saves);
        if (match != -1) {
          // It matches, report the captured groups.
          printf(";; \"%s\": match(%zd) ", argv[i], match);
@@ -177,7 +177,7 @@ and tests it on the remaining ones.
        }
      }
 
-     free_prog(code, n);
+     refree(code, n);
    }
 
 Implementation

@@ -31,18 +31,18 @@
             <td class="headerValue">coverage.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">0</td>
-            <td class="headerCovTableEntry">16</td>
-            <td class="headerCovTableEntryLo">0.0 %</td>
+            <td class="headerCovTableEntry">4</td>
+            <td class="headerCovTableEntry">36</td>
+            <td class="headerCovTableEntryLo">11.1 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2016-06-11 05:04:29</td>
+            <td class="headerValue">2016-06-13 03:21:20</td>
             <td></td>
             <td class="headerItem">Functions:</td>
-            <td class="headerCovTableEntry">0</td>
-            <td class="headerCovTableEntry">2</td>
-            <td class="headerCovTableEntryLo">0.0 %</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntry">5</td>
+            <td class="headerCovTableEntryLo">20.0 %</td>
           </tr>
           <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
         </table>
@@ -102,7 +102,40 @@
 <span class="lineNum">      40 </span><span class="lineNoCov">          0 :     free(c.cap[i]);</span>
 <span class="lineNum">      41 </span>            :   }
 <span class="lineNum">      42 </span><span class="lineNoCov">          0 :   free(c.cap);</span>
-<span class="lineNum">      43 </span><span class="lineNoCov">          0 : }</span>
+<a name="43"><span class="lineNum">      43 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">      44 </span>            : 
+<span class="lineNum">      45 </span><span class="lineNoCov">          0 : WCaptures recapw(const wchar_t *s, const size_t *l, size_t n)</span>
+<span class="lineNum">      46 </span>            : {
+<span class="lineNum">      47 </span>            :   WCaptures c;
+<span class="lineNum">      48 </span><span class="lineNoCov">          0 :   c.n = n/2;</span>
+<span class="lineNum">      49 </span><span class="lineNoCov">          0 :   c.cap = calloc(c.n, sizeof(wchar_t *));</span>
+<span class="lineNum">      50 </span><span class="lineNoCov">          0 :   for (size_t i = 0; i &lt; n / 2; i++) {</span>
+<span class="lineNum">      51 </span><span class="lineNoCov">          0 :     size_t start = l[i*2];</span>
+<span class="lineNum">      52 </span><span class="lineNoCov">          0 :     size_t end = l[i*2 + 1];</span>
+<span class="lineNum">      53 </span><span class="lineNoCov">          0 :     size_t length = end - start + 1;</span>
+<span class="lineNum">      54 </span><span class="lineNoCov">          0 :     c.cap[i] = malloc((end - start + 1) * sizeof(wchar_t));</span>
+<span class="lineNum">      55 </span><span class="lineNoCov">          0 :     wcsncpy(c.cap[i], s + start, length);</span>
+<span class="lineNum">      56 </span><span class="lineNoCov">          0 :     c.cap[i][length-1] = '\0';</span>
+<span class="lineNum">      57 </span>            :   }
+<span class="lineNum">      58 </span><span class="lineNoCov">          0 :   return c;</span>
+<a name="59"><span class="lineNum">      59 </span>            : }</a>
+<span class="lineNum">      60 </span>            : 
+<span class="lineNum">      61 </span><span class="lineNoCov">          0 : void recapwfree(WCaptures c)</span>
+<span class="lineNum">      62 </span>            : {
+<span class="lineNum">      63 </span><span class="lineNoCov">          0 :   for (size_t i = 0; i &lt; c.n; i++) {</span>
+<span class="lineNum">      64 </span><span class="lineNoCov">          0 :     free(c.cap[i]);</span>
+<span class="lineNum">      65 </span>            :   }
+<span class="lineNum">      66 </span><span class="lineNoCov">          0 :   free(c.cap);</span>
+<a name="67"><span class="lineNum">      67 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">      68 </span>            : 
+<span class="lineNum">      69 </span><span class="lineCov">        837 : wchar_t InputIdx(struct Input in, size_t idx)</span>
+<span class="lineNum">      70 </span>            : {
+<span class="lineNum">      71 </span><span class="lineCov">        837 :   if (in.str) {</span>
+<span class="lineNum">      72 </span><span class="lineCov">        479 :     return (wchar_t)in.str[idx];</span>
+<span class="lineNum">      73 </span>            :   } else {
+<span class="lineNum">      74 </span><span class="lineCov">        358 :     return in.wstr[idx];</span>
+<span class="lineNum">      75 </span>            :   }
+<span class="lineNum">      76 </span>            : }
 </pre>
       </td>
     </tr>

@@ -31,17 +31,17 @@
             <td class="headerValue">coverage.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">147</td>
-            <td class="headerCovTableEntry">151</td>
-            <td class="headerCovTableEntryHi">97.4 %</td>
+            <td class="headerCovTableEntry">158</td>
+            <td class="headerCovTableEntry">162</td>
+            <td class="headerCovTableEntryHi">97.5 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2016-06-11 05:04:29</td>
+            <td class="headerValue">2016-06-13 03:21:20</td>
             <td></td>
             <td class="headerItem">Functions:</td>
-            <td class="headerCovTableEntry">13</td>
-            <td class="headerCovTableEntry">13</td>
+            <td class="headerCovTableEntry">16</td>
+            <td class="headerCovTableEntry">16</td>
             <td class="headerCovTableEntryHi">100.0 %</td>
           </tr>
           <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
@@ -78,262 +78,275 @@
 <span class="lineNum">      16 </span>            : #include &lt;stdio.h&gt;
 <span class="lineNum">      17 </span>            : #include &lt;stdbool.h&gt;
 <span class="lineNum">      18 </span>            : #include &lt;stdlib.h&gt;
-<span class="lineNum">      19 </span>            : 
-<span class="lineNum">      20 </span>            : #include &quot;libstephen/re.h&quot;
-<span class="lineNum">      21 </span>            : #include &quot;libstephen/re_internals.h&quot;
-<span class="lineNum">      22 </span>            : 
-<span class="lineNum">      23 </span>            : char *names[] = {
-<span class="lineNum">      24 </span>            :   &quot;CharSym&quot;, &quot;Special&quot;, &quot;Eof&quot;, &quot;LParen&quot;, &quot;RParen&quot;, &quot;LBracket&quot;, &quot;RBracket&quot;,
-<span class="lineNum">      25 </span>            :   &quot;Plus&quot;, &quot;Minus&quot;, &quot;Star&quot;, &quot;Question&quot;, &quot;Caret&quot;, &quot;Pipe&quot;, &quot;Dot&quot;
-<span class="lineNum">      26 </span>            : };
-<span class="lineNum">      27 </span>            : 
-<span class="lineNum">      28 </span>            : char *ntnames[] = {
-<span class="lineNum">      29 </span>            :   &quot;TERM&quot;, &quot;EXPR&quot;, &quot;REGEX&quot;, &quot;CLASS&quot;, &quot;SUB&quot;
-<span class="lineNum">      30 </span>            : };
-<span class="lineNum">      31 </span>            : 
-<span class="lineNum">      32 </span>            : /*
-<span class="lineNum">      33 </span>            :   Convenience functions for parse trees.
-<a name="34"><span class="lineNum">      34 </span>            :  */</a>
-<span class="lineNum">      35 </span>            : 
-<span class="lineNum">      36 </span><span class="lineCov">        147 : static PTree *terminal_tree(Token tok)</span>
-<span class="lineNum">      37 </span>            : {
-<span class="lineNum">      38 </span><span class="lineCov">        147 :   PTree *tree = calloc(1, sizeof(PTree));</span>
-<span class="lineNum">      39 </span><span class="lineCov">        147 :   tree-&gt;nchildren = 0;</span>
-<span class="lineNum">      40 </span><span class="lineCov">        147 :   tree-&gt;production = 0; // marks this as terminal</span>
-<span class="lineNum">      41 </span><span class="lineCov">        147 :   tree-&gt;tok = tok;</span>
-<span class="lineNum">      42 </span><span class="lineCov">        147 :   return tree;</span>
-<a name="43"><span class="lineNum">      43 </span>            : }</a>
-<span class="lineNum">      44 </span>            : 
-<span class="lineNum">      45 </span><span class="lineCov">        290 : static PTree *nonterminal_tree(NTSym nt, size_t nchildren)</span>
-<span class="lineNum">      46 </span>            : {
-<span class="lineNum">      47 </span><span class="lineCov">        290 :   PTree *tree = calloc(1, sizeof(PTree));</span>
-<span class="lineNum">      48 </span><span class="lineCov">        290 :   tree-&gt;nchildren = nchildren;</span>
-<span class="lineNum">      49 </span><span class="lineCov">        290 :   tree-&gt;production = 1; // update this on return.</span>
-<span class="lineNum">      50 </span><span class="lineCov">        290 :   tree-&gt;nt = nt;</span>
-<span class="lineNum">      51 </span><span class="lineCov">        290 :   return tree;</span>
-<a name="52"><span class="lineNum">      52 </span>            : }</a>
-<span class="lineNum">      53 </span>            : 
-<span class="lineNum">      54 </span><span class="lineCov">        384 : void free_tree(PTree *tree)</span>
-<span class="lineNum">      55 </span>            : {
-<span class="lineNum">      56 </span><span class="lineCov">        710 :   for (size_t i = 0; i &lt; tree-&gt;nchildren; i++) {</span>
-<span class="lineNum">      57 </span><span class="lineCov">        326 :     free_tree(tree-&gt;children[i]);</span>
-<span class="lineNum">      58 </span>            :   }
-<span class="lineNum">      59 </span><span class="lineCov">        384 :   free(tree);</span>
-<span class="lineNum">      60 </span><span class="lineCov">        384 : }</span>
-<span class="lineNum">      61 </span>            : 
-<span class="lineNum">      62 </span>            : /*
-<span class="lineNum">      63 </span>            :   Simple convenience functions for a parser.
-<a name="64"><span class="lineNum">      64 </span>            :  */</a>
-<span class="lineNum">      65 </span>            : 
-<span class="lineNum">      66 </span><span class="lineCov">        622 : static bool accept(TSym s, Lexer *l)</span>
-<span class="lineNum">      67 </span>            : {
-<span class="lineNum">      68 </span><span class="lineCov">        622 :   if (l-&gt;tok.sym == s) {</span>
-<span class="lineNum">      69 </span><span class="lineCov">        151 :     nextsym(l);</span>
-<span class="lineNum">      70 </span><span class="lineCov">        151 :     return true;</span>
-<span class="lineNum">      71 </span>            :   }
-<span class="lineNum">      72 </span><span class="lineCov">        471 :   return false;</span>
-<a name="73"><span class="lineNum">      73 </span>            : }</a>
-<span class="lineNum">      74 </span>            : 
-<span class="lineNum">      75 </span><span class="lineCov">         40 : static void expect(TSym s, Lexer *l)</span>
-<span class="lineNum">      76 </span>            : {
-<span class="lineNum">      77 </span><span class="lineCov">         40 :   if (l-&gt;tok.sym == s) {</span>
-<span class="lineNum">      78 </span><span class="lineCov">         40 :     nextsym(l);</span>
-<span class="lineNum">      79 </span><span class="lineCov">         40 :     return;</span>
-<span class="lineNum">      80 </span>            :   }
-<span class="lineNum">      81 </span><span class="lineNoCov">          0 :   fprintf(stderr, &quot;error: expected %s, got %s\n&quot;, names[s], names[l-&gt;tok.sym]);</span>
-<span class="lineNum">      82 </span><span class="lineNoCov">          0 :   exit(1);</span>
-<a name="83"><span class="lineNum">      83 </span>            : }</a>
-<span class="lineNum">      84 </span>            : 
-<span class="lineNum">      85 </span><span class="lineCov">         63 : PTree *TERM(Lexer *l)</span>
-<span class="lineNum">      86 </span>            : {
-<span class="lineNum">      87 </span><span class="lineCov">         76 :   if (accept(CharSym, l) || accept(Dot, l) || accept(Special, l) ||</span>
-<span class="lineNum">      88 </span><span class="lineCov">         25 :       accept(Caret, l) || accept(Minus, l)) {</span>
-<span class="lineNum">      89 </span><span class="lineCov">         52 :     PTree *result = nonterminal_tree(TERMnt, 1);</span>
-<span class="lineNum">      90 </span><span class="lineCov">         52 :     result-&gt;children[0] = terminal_tree(l-&gt;prev);</span>
-<span class="lineNum">      91 </span><span class="lineCov">         52 :     result-&gt;production = 1;</span>
-<span class="lineNum">      92 </span><span class="lineCov">         52 :     return result;</span>
-<span class="lineNum">      93 </span><span class="lineCov">         11 :   } else if (accept(LParen, l)) {</span>
-<span class="lineNum">      94 </span><span class="lineCov">          5 :     PTree *result = nonterminal_tree(TERMnt, 3);</span>
-<span class="lineNum">      95 </span><span class="lineCov">          5 :     result-&gt;children[0] = terminal_tree(l-&gt;prev);</span>
-<span class="lineNum">      96 </span><span class="lineCov">          5 :     result-&gt;children[1] = REGEX(l);</span>
-<span class="lineNum">      97 </span><span class="lineCov">          5 :     expect(RParen, l);</span>
-<span class="lineNum">      98 </span><span class="lineCov">          5 :     result-&gt;children[2] = terminal_tree(l-&gt;prev);</span>
-<span class="lineNum">      99 </span><span class="lineCov">          5 :     result-&gt;production = 2;</span>
-<span class="lineNum">     100 </span><span class="lineCov">          5 :     return result;</span>
-<span class="lineNum">     101 </span><span class="lineCov">          6 :   } else if (accept(LBracket, l)) {</span>
-<span class="lineNum">     102 </span>            :     PTree *result;
-<span class="lineNum">     103 </span><span class="lineCov">          6 :     if (accept(Caret, l)) {</span>
-<span class="lineNum">     104 </span><span class="lineCov">          3 :       result = nonterminal_tree(TERMnt, 3);</span>
-<span class="lineNum">     105 </span><span class="lineCov">          3 :       result-&gt;children[0] = terminal_tree((Token){LBracket, '['});</span>
-<span class="lineNum">     106 </span><span class="lineCov">          3 :       result-&gt;children[1] = CLASS(l);</span>
-<span class="lineNum">     107 </span><span class="lineCov">          3 :       expect(RBracket, l);</span>
-<span class="lineNum">     108 </span><span class="lineCov">          3 :       result-&gt;children[2] = terminal_tree(l-&gt;prev);</span>
-<span class="lineNum">     109 </span><span class="lineCov">          3 :       result-&gt;production = 4;</span>
-<span class="lineNum">     110 </span>            :     } else {
-<span class="lineNum">     111 </span><span class="lineCov">          3 :       result = nonterminal_tree(TERMnt, 3);</span>
-<span class="lineNum">     112 </span><span class="lineCov">          3 :       result-&gt;children[0] = terminal_tree((Token){LBracket, '['});</span>
-<span class="lineNum">     113 </span><span class="lineCov">          3 :       result-&gt;children[1] = CLASS(l);</span>
-<span class="lineNum">     114 </span><span class="lineCov">          3 :       expect(RBracket, l);</span>
-<span class="lineNum">     115 </span><span class="lineCov">          3 :       result-&gt;children[2] = terminal_tree(l-&gt;prev);</span>
-<span class="lineNum">     116 </span><span class="lineCov">          3 :       result-&gt;production = 3;</span>
-<span class="lineNum">     117 </span>            :     }
-<span class="lineNum">     118 </span><span class="lineCov">          6 :     return result;</span>
-<span class="lineNum">     119 </span>            :   } else {
-<span class="lineNum">     120 </span><span class="lineNoCov">          0 :     fprintf(stderr, &quot;error: TERM: syntax error\n&quot;);</span>
-<span class="lineNum">     121 </span><span class="lineNoCov">          0 :     exit(1);</span>
-<span class="lineNum">     122 </span>            :   }
-<a name="123"><span class="lineNum">     123 </span>            : }</a>
-<span class="lineNum">     124 </span>            : 
-<span class="lineNum">     125 </span><span class="lineCov">         55 : PTree *EXPR(Lexer *l)</span>
-<span class="lineNum">     126 </span>            : {
-<span class="lineNum">     127 </span><span class="lineCov">         55 :   PTree *result = nonterminal_tree(EXPRnt, 1);</span>
-<span class="lineNum">     128 </span><span class="lineCov">         55 :   result-&gt;children[0] = TERM(l);</span>
-<span class="lineNum">     129 </span><span class="lineCov">         55 :   if (accept(Plus, l) || accept(Star, l) || accept(Question, l)) {</span>
-<span class="lineNum">     130 </span><span class="lineCov">         24 :     result-&gt;nchildren++;</span>
-<span class="lineNum">     131 </span><span class="lineCov">         24 :     result-&gt;children[1] = terminal_tree(l-&gt;prev);</span>
-<span class="lineNum">     132 </span><span class="lineCov">         24 :     if (accept(Question, l)) {</span>
-<span class="lineNum">     133 </span><span class="lineCov">          6 :       result-&gt;nchildren++;</span>
-<span class="lineNum">     134 </span><span class="lineCov">          6 :       result-&gt;children[2] = terminal_tree((Token){Question, '?'});</span>
-<span class="lineNum">     135 </span>            :     }
-<span class="lineNum">     136 </span>            :   }
-<span class="lineNum">     137 </span><span class="lineCov">         55 :   return result;</span>
-<a name="138"><span class="lineNum">     138 </span>            : }</a>
-<span class="lineNum">     139 </span>            : 
-<span class="lineNum">     140 </span><span class="lineCov">         41 : PTree *SUB(Lexer *l)</span>
-<span class="lineNum">     141 </span>            : {
-<span class="lineNum">     142 </span><span class="lineCov">         41 :   PTree *result = nonterminal_tree(SUBnt, 1);</span>
-<span class="lineNum">     143 </span><span class="lineCov">         41 :   PTree *orig = result, *prev = result;</span>
-<span class="lineNum">     144 </span>            : 
-<span class="lineNum">     145 </span><span class="lineCov">        130 :   while (l-&gt;tok.sym != Eof &amp;&amp; l-&gt;tok.sym != RParen &amp;&amp; l-&gt;tok.sym != Pipe) { // seems like a bit of a hack</span>
-<span class="lineNum">     146 </span><span class="lineCov">         48 :     result-&gt;children[0] = EXPR(l);</span>
-<span class="lineNum">     147 </span><span class="lineCov">         48 :     result-&gt;children[1] = nonterminal_tree(SUBnt, 0);</span>
-<span class="lineNum">     148 </span><span class="lineCov">         48 :     result-&gt;nchildren = 2;</span>
-<span class="lineNum">     149 </span><span class="lineCov">         48 :     prev = result;</span>
-<span class="lineNum">     150 </span><span class="lineCov">         48 :     result = result-&gt;children[1];</span>
-<span class="lineNum">     151 </span>            :   }
-<span class="lineNum">     152 </span>            : 
-<span class="lineNum">     153 </span>            :   // This prevents SUB nonterminals with no children in the final parse tree.
-<span class="lineNum">     154 </span><span class="lineCov">         41 :   if (prev != result) {</span>
-<span class="lineNum">     155 </span><span class="lineCov">         41 :     prev-&gt;nchildren = 1;</span>
-<span class="lineNum">     156 </span><span class="lineCov">         41 :     free(result);</span>
-<span class="lineNum">     157 </span>            :   }
-<span class="lineNum">     158 </span><span class="lineCov">         41 :   return orig;</span>
-<a name="159"><span class="lineNum">     159 </span>            : }</a>
-<span class="lineNum">     160 </span>            : 
-<span class="lineNum">     161 </span><span class="lineCov">         39 : PTree *REGEX(Lexer *l)</span>
-<span class="lineNum">     162 </span>            : {
-<span class="lineNum">     163 </span><span class="lineCov">         39 :   PTree *result = nonterminal_tree(REGEXnt, 1);</span>
-<span class="lineNum">     164 </span><span class="lineCov">         39 :   result-&gt;children[0] = SUB(l);</span>
-<span class="lineNum">     165 </span>            : 
-<span class="lineNum">     166 </span><span class="lineCov">         39 :   if (accept(Pipe, l)) {</span>
-<span class="lineNum">     167 </span><span class="lineCov">          3 :     result-&gt;nchildren = 3;</span>
-<span class="lineNum">     168 </span><span class="lineCov">          3 :     result-&gt;children[1] = terminal_tree(l-&gt;prev);</span>
-<span class="lineNum">     169 </span><span class="lineCov">          3 :     result-&gt;children[2] = REGEX(l);</span>
-<span class="lineNum">     170 </span>            :   }
-<span class="lineNum">     171 </span><span class="lineCov">         39 :   return result;</span>
-<a name="172"><span class="lineNum">     172 </span>            : }</a>
-<span class="lineNum">     173 </span>            : 
-<span class="lineNum">     174 </span><span class="lineCov">         56 : bool CCHAR(Lexer *l)</span>
-<span class="lineNum">     175 </span>            : {
-<span class="lineNum">     176 </span><span class="lineCov">         56 :   TSym acceptable[] = {CharSym, Dot, LParen, RParen, Plus, Star, Question, Pipe};</span>
-<span class="lineNum">     177 </span><span class="lineCov">        244 :   for (size_t i = 0; i &lt; nelem(acceptable); i++) {</span>
-<span class="lineNum">     178 </span><span class="lineCov">        224 :     if (accept(acceptable[i], l)) {</span>
-<span class="lineNum">     179 </span><span class="lineCov">         36 :       l-&gt;prev.sym = CharSym;</span>
-<span class="lineNum">     180 </span><span class="lineCov">         36 :       return true;</span>
-<span class="lineNum">     181 </span>            :     }
-<span class="lineNum">     182 </span>            :   }
-<span class="lineNum">     183 </span><span class="lineCov">         20 :   return false;</span>
-<a name="184"><span class="lineNum">     184 </span>            : }</a>
-<span class="lineNum">     185 </span>            : 
-<span class="lineNum">     186 </span><span class="lineCov">         16 : PTree *CLASS(Lexer *l)</span>
-<span class="lineNum">     187 </span>            : {
-<span class="lineNum">     188 </span><span class="lineCov">         16 :   PTree *result = nonterminal_tree(CLASSnt, 0), *curr, *prev;</span>
-<span class="lineNum">     189 </span>            :   Token t1, t2, t3;
-<span class="lineNum">     190 </span><span class="lineCov">         16 :   curr = result;</span>
-<span class="lineNum">     191 </span>            : 
-<span class="lineNum">     192 </span>            :   while (true) {
-<span class="lineNum">     193 </span><span class="lineCov">         44 :     if (CCHAR(l)) {</span>
-<span class="lineNum">     194 </span><span class="lineCov">         28 :       prev = curr;</span>
-<span class="lineNum">     195 </span><span class="lineCov">         28 :       t1 = l-&gt;prev;</span>
-<span class="lineNum">     196 </span><span class="lineCov">         28 :       if (accept(Minus, l)) {</span>
-<span class="lineNum">     197 </span><span class="lineCov">         12 :         t2 = l-&gt;prev;</span>
-<span class="lineNum">     198 </span><span class="lineCov">         12 :         if (CCHAR(l)) {</span>
-<span class="lineNum">     199 </span><span class="lineCov">          8 :           t3 = l-&gt;prev;</span>
-<span class="lineNum">     200 </span>            :           // We have ourselves a range!  Parse it.
-<span class="lineNum">     201 </span><span class="lineCov">          8 :           curr-&gt;children[0] = terminal_tree(t1);</span>
-<span class="lineNum">     202 </span><span class="lineCov">          8 :           curr-&gt;children[1] = terminal_tree(t3);</span>
-<span class="lineNum">     203 </span><span class="lineCov">          8 :           curr-&gt;children[2] = nonterminal_tree(CLASSnt, 0);</span>
-<span class="lineNum">     204 </span><span class="lineCov">          8 :           curr-&gt;nchildren = 3;</span>
-<span class="lineNum">     205 </span><span class="lineCov">          8 :           curr-&gt;production = 1;</span>
-<span class="lineNum">     206 </span><span class="lineCov">          8 :           curr = curr-&gt;children[2];</span>
-<span class="lineNum">     207 </span>            :         } else {
-<span class="lineNum">     208 </span>            :           // character followed by minus, but not range.
-<span class="lineNum">     209 </span><span class="lineCov">          4 :           unget(t2, l);</span>
-<span class="lineNum">     210 </span><span class="lineCov">          4 :           curr-&gt;children[0] = terminal_tree(t1);</span>
-<span class="lineNum">     211 </span><span class="lineCov">          4 :           curr-&gt;children[1] = nonterminal_tree(CLASSnt, 0);</span>
-<span class="lineNum">     212 </span><span class="lineCov">          4 :           curr-&gt;nchildren = 2;</span>
-<span class="lineNum">     213 </span><span class="lineCov">          4 :           curr-&gt;production = 3;</span>
-<span class="lineNum">     214 </span><span class="lineCov">          4 :           curr = curr-&gt;children[1];</span>
-<span class="lineNum">     215 </span>            :         }
-<span class="lineNum">     216 </span>            :       } else {
-<span class="lineNum">     217 </span>            :         // just a character
-<span class="lineNum">     218 </span><span class="lineCov">         16 :         curr-&gt;children[0] = terminal_tree(t1);</span>
-<span class="lineNum">     219 </span><span class="lineCov">         16 :         curr-&gt;children[1] = nonterminal_tree(CLASSnt, 0);</span>
-<span class="lineNum">     220 </span><span class="lineCov">         16 :         curr-&gt;nchildren = 2;</span>
-<span class="lineNum">     221 </span><span class="lineCov">         16 :         curr-&gt;production = 3;</span>
-<span class="lineNum">     222 </span><span class="lineCov">         16 :         curr = curr-&gt;children[1];</span>
-<span class="lineNum">     223 </span>            :       }
-<span class="lineNum">     224 </span><span class="lineCov">         16 :     } else if (accept(Minus, l)) {</span>
-<span class="lineNum">     225 </span>            :       // just a minus
-<span class="lineNum">     226 </span><span class="lineCov">          4 :       prev = curr;</span>
-<span class="lineNum">     227 </span><span class="lineCov">          4 :       curr-&gt;children[0] = terminal_tree(l-&gt;prev);</span>
-<span class="lineNum">     228 </span><span class="lineCov">          4 :       curr-&gt;nchildren = 1;</span>
-<span class="lineNum">     229 </span><span class="lineCov">          4 :       curr-&gt;production = 5;</span>
-<span class="lineNum">     230 </span><span class="lineCov">          4 :       break;</span>
-<span class="lineNum">     231 </span>            :     } else {
-<span class="lineNum">     232 </span><span class="lineCov">         12 :       free(curr);</span>
-<span class="lineNum">     233 </span><span class="lineCov">         12 :       prev-&gt;nchildren--;</span>
-<span class="lineNum">     234 </span><span class="lineCov">         12 :       prev-&gt;production++;</span>
-<span class="lineNum">     235 </span><span class="lineCov">         12 :       break;</span>
-<span class="lineNum">     236 </span>            :     }
-<span class="lineNum">     237 </span><span class="lineCov">         28 :   }</span>
-<span class="lineNum">     238 </span><span class="lineCov">         16 :   return result;</span>
-<a name="239"><span class="lineNum">     239 </span>            : }</a>
-<span class="lineNum">     240 </span>            : 
-<span class="lineNum">     241 </span><span class="lineCov">         29 : PTree *reparse(char *regex)</span>
-<span class="lineNum">     242 </span>            : {
-<span class="lineNum">     243 </span>            :   Lexer l;
-<span class="lineNum">     244 </span>            : 
-<span class="lineNum">     245 </span>            :   // Initialize the lexer.
-<span class="lineNum">     246 </span><span class="lineCov">         29 :   l.input = regex;</span>
-<span class="lineNum">     247 </span><span class="lineCov">         29 :   l.index = 0;</span>
-<span class="lineNum">     248 </span><span class="lineCov">         29 :   l.nbuf = 0;</span>
-<span class="lineNum">     249 </span><span class="lineCov">         29 :   l.tok = (Token){.sym=0, .c=0};</span>
-<span class="lineNum">     250 </span>            : 
-<span class="lineNum">     251 </span>            :   // Create a parse tree!
-<span class="lineNum">     252 </span>            :   //printf(&quot;;; TOKENS:\n&quot;);
-<span class="lineNum">     253 </span><span class="lineCov">         29 :   nextsym(&amp;l);</span>
-<span class="lineNum">     254 </span><span class="lineCov">         29 :   PTree *tree = REGEX(&amp;l);</span>
-<span class="lineNum">     255 </span><span class="lineCov">         29 :   expect(Eof, &amp;l);</span>
-<span class="lineNum">     256 </span>            : 
-<span class="lineNum">     257 </span><span class="lineCov">         29 :   return tree;</span>
-<a name="258"><span class="lineNum">     258 </span>            : }</a>
-<span class="lineNum">     259 </span>            : 
-<span class="lineNum">     260 </span><span class="lineCov">         28 : Regex recomp(char *regex)</span>
-<span class="lineNum">     261 </span>            : {
-<span class="lineNum">     262 </span><span class="lineCov">         28 :   PTree *tree = reparse(regex);</span>
-<span class="lineNum">     263 </span>            :   //printf(&quot;;; PARSE TREE:\n&quot;);
-<span class="lineNum">     264 </span>            :   //print_tree(tree, 0);
-<span class="lineNum">     265 </span>            : 
-<span class="lineNum">     266 </span>            :   // Generate code from parse tree.
-<span class="lineNum">     267 </span><span class="lineCov">         28 :   Regex code = codegen(tree);</span>
-<span class="lineNum">     268 </span>            : 
-<span class="lineNum">     269 </span>            :   // Free tree.
-<span class="lineNum">     270 </span><span class="lineCov">         28 :   free_tree(tree);</span>
-<span class="lineNum">     271 </span>            : 
-<span class="lineNum">     272 </span>            :   // Return code.
-<span class="lineNum">     273 </span><span class="lineCov">         28 :   return code;</span>
-<span class="lineNum">     274 </span>            : }
+<span class="lineNum">      19 </span>            : #include &lt;wchar.h&gt;
+<span class="lineNum">      20 </span>            : 
+<span class="lineNum">      21 </span>            : #include &quot;libstephen/re.h&quot;
+<span class="lineNum">      22 </span>            : #include &quot;libstephen/re_internals.h&quot;
+<span class="lineNum">      23 </span>            : 
+<span class="lineNum">      24 </span>            : char *names[] = {
+<span class="lineNum">      25 </span>            :   &quot;CharSym&quot;, &quot;Special&quot;, &quot;Eof&quot;, &quot;LParen&quot;, &quot;RParen&quot;, &quot;LBracket&quot;, &quot;RBracket&quot;,
+<span class="lineNum">      26 </span>            :   &quot;Plus&quot;, &quot;Minus&quot;, &quot;Star&quot;, &quot;Question&quot;, &quot;Caret&quot;, &quot;Pipe&quot;, &quot;Dot&quot;
+<span class="lineNum">      27 </span>            : };
+<span class="lineNum">      28 </span>            : 
+<span class="lineNum">      29 </span>            : char *ntnames[] = {
+<span class="lineNum">      30 </span>            :   &quot;TERM&quot;, &quot;EXPR&quot;, &quot;REGEX&quot;, &quot;CLASS&quot;, &quot;SUB&quot;
+<span class="lineNum">      31 </span>            : };
+<span class="lineNum">      32 </span>            : 
+<span class="lineNum">      33 </span>            : /*
+<span class="lineNum">      34 </span>            :   Convenience functions for parse trees.
+<a name="35"><span class="lineNum">      35 </span>            :  */</a>
+<span class="lineNum">      36 </span>            : 
+<span class="lineNum">      37 </span><span class="lineCov">        245 : static PTree *terminal_tree(Token tok)</span>
+<span class="lineNum">      38 </span>            : {
+<span class="lineNum">      39 </span><span class="lineCov">        245 :   PTree *tree = calloc(1, sizeof(PTree));</span>
+<span class="lineNum">      40 </span><span class="lineCov">        245 :   tree-&gt;nchildren = 0;</span>
+<span class="lineNum">      41 </span><span class="lineCov">        245 :   tree-&gt;production = 0; // marks this as terminal</span>
+<span class="lineNum">      42 </span><span class="lineCov">        245 :   tree-&gt;tok = tok;</span>
+<span class="lineNum">      43 </span><span class="lineCov">        245 :   return tree;</span>
+<a name="44"><span class="lineNum">      44 </span>            : }</a>
+<span class="lineNum">      45 </span>            : 
+<span class="lineNum">      46 </span><span class="lineCov">        460 : static PTree *nonterminal_tree(NTSym nt, size_t nchildren)</span>
+<span class="lineNum">      47 </span>            : {
+<span class="lineNum">      48 </span><span class="lineCov">        460 :   PTree *tree = calloc(1, sizeof(PTree));</span>
+<span class="lineNum">      49 </span><span class="lineCov">        460 :   tree-&gt;nchildren = nchildren;</span>
+<span class="lineNum">      50 </span><span class="lineCov">        460 :   tree-&gt;production = 1; // update this on return.</span>
+<span class="lineNum">      51 </span><span class="lineCov">        460 :   tree-&gt;nt = nt;</span>
+<span class="lineNum">      52 </span><span class="lineCov">        460 :   return tree;</span>
+<a name="53"><span class="lineNum">      53 </span>            : }</a>
+<span class="lineNum">      54 </span>            : 
+<span class="lineNum">      55 </span><span class="lineCov">        621 : void free_tree(PTree *tree)</span>
+<span class="lineNum">      56 </span>            : {
+<span class="lineNum">      57 </span><span class="lineCov">       1145 :   for (size_t i = 0; i &lt; tree-&gt;nchildren; i++) {</span>
+<span class="lineNum">      58 </span><span class="lineCov">        524 :     free_tree(tree-&gt;children[i]);</span>
+<span class="lineNum">      59 </span>            :   }
+<span class="lineNum">      60 </span><span class="lineCov">        621 :   free(tree);</span>
+<span class="lineNum">      61 </span><span class="lineCov">        621 : }</span>
+<span class="lineNum">      62 </span>            : 
+<span class="lineNum">      63 </span>            : /*
+<span class="lineNum">      64 </span>            :   Simple convenience functions for a parser.
+<a name="65"><span class="lineNum">      65 </span>            :  */</a>
+<span class="lineNum">      66 </span>            : 
+<span class="lineNum">      67 </span><span class="lineCov">       1057 : static bool accept(TSym s, Lexer *l)</span>
+<span class="lineNum">      68 </span>            : {
+<span class="lineNum">      69 </span><span class="lineCov">       1057 :   if (l-&gt;tok.sym == s) {</span>
+<span class="lineNum">      70 </span><span class="lineCov">        251 :     nextsym(l);</span>
+<span class="lineNum">      71 </span><span class="lineCov">        251 :     return true;</span>
+<span class="lineNum">      72 </span>            :   }
+<span class="lineNum">      73 </span><span class="lineCov">        806 :   return false;</span>
+<a name="74"><span class="lineNum">      74 </span>            : }</a>
+<span class="lineNum">      75 </span>            : 
+<span class="lineNum">      76 </span><span class="lineCov">         58 : static void expect(TSym s, Lexer *l)</span>
+<span class="lineNum">      77 </span>            : {
+<span class="lineNum">      78 </span><span class="lineCov">         58 :   if (l-&gt;tok.sym == s) {</span>
+<span class="lineNum">      79 </span><span class="lineCov">         58 :     nextsym(l);</span>
+<span class="lineNum">      80 </span><span class="lineCov">         58 :     return;</span>
+<span class="lineNum">      81 </span>            :   }
+<span class="lineNum">      82 </span><span class="lineNoCov">          0 :   fprintf(stderr, &quot;error: expected %s, got %s\n&quot;, names[s], names[l-&gt;tok.sym]);</span>
+<span class="lineNum">      83 </span><span class="lineNoCov">          0 :   exit(1);</span>
+<a name="84"><span class="lineNum">      84 </span>            : }</a>
+<span class="lineNum">      85 </span>            : 
+<span class="lineNum">      86 </span><span class="lineCov">        103 : PTree *TERM(Lexer *l)</span>
+<span class="lineNum">      87 </span>            : {
+<span class="lineNum">      88 </span><span class="lineCov">        126 :   if (accept(CharSym, l) || accept(Dot, l) || accept(Special, l) ||</span>
+<span class="lineNum">      89 </span><span class="lineCov">         44 :       accept(Caret, l) || accept(Minus, l)) {</span>
+<span class="lineNum">      90 </span><span class="lineCov">         84 :     PTree *result = nonterminal_tree(TERMnt, 1);</span>
+<span class="lineNum">      91 </span><span class="lineCov">         84 :     result-&gt;children[0] = terminal_tree(l-&gt;prev);</span>
+<span class="lineNum">      92 </span><span class="lineCov">         84 :     result-&gt;production = 1;</span>
+<span class="lineNum">      93 </span><span class="lineCov">         84 :     return result;</span>
+<span class="lineNum">      94 </span><span class="lineCov">         19 :   } else if (accept(LParen, l)) {</span>
+<span class="lineNum">      95 </span><span class="lineCov">          9 :     PTree *result = nonterminal_tree(TERMnt, 3);</span>
+<span class="lineNum">      96 </span><span class="lineCov">          9 :     result-&gt;children[0] = terminal_tree(l-&gt;prev);</span>
+<span class="lineNum">      97 </span><span class="lineCov">          9 :     result-&gt;children[1] = REGEX(l);</span>
+<span class="lineNum">      98 </span><span class="lineCov">          9 :     expect(RParen, l);</span>
+<span class="lineNum">      99 </span><span class="lineCov">          9 :     result-&gt;children[2] = terminal_tree(l-&gt;prev);</span>
+<span class="lineNum">     100 </span><span class="lineCov">          9 :     result-&gt;production = 2;</span>
+<span class="lineNum">     101 </span><span class="lineCov">          9 :     return result;</span>
+<span class="lineNum">     102 </span><span class="lineCov">         10 :   } else if (accept(LBracket, l)) {</span>
+<span class="lineNum">     103 </span>            :     PTree *result;
+<span class="lineNum">     104 </span><span class="lineCov">         10 :     if (accept(Caret, l)) {</span>
+<span class="lineNum">     105 </span><span class="lineCov">          5 :       result = nonterminal_tree(TERMnt, 3);</span>
+<span class="lineNum">     106 </span><span class="lineCov">          5 :       result-&gt;children[0] = terminal_tree((Token){LBracket, '['});</span>
+<span class="lineNum">     107 </span><span class="lineCov">          5 :       result-&gt;children[1] = CLASS(l);</span>
+<span class="lineNum">     108 </span><span class="lineCov">          5 :       expect(RBracket, l);</span>
+<span class="lineNum">     109 </span><span class="lineCov">          5 :       result-&gt;children[2] = terminal_tree(l-&gt;prev);</span>
+<span class="lineNum">     110 </span><span class="lineCov">          5 :       result-&gt;production = 4;</span>
+<span class="lineNum">     111 </span>            :     } else {
+<span class="lineNum">     112 </span><span class="lineCov">          5 :       result = nonterminal_tree(TERMnt, 3);</span>
+<span class="lineNum">     113 </span><span class="lineCov">          5 :       result-&gt;children[0] = terminal_tree((Token){LBracket, '['});</span>
+<span class="lineNum">     114 </span><span class="lineCov">          5 :       result-&gt;children[1] = CLASS(l);</span>
+<span class="lineNum">     115 </span><span class="lineCov">          5 :       expect(RBracket, l);</span>
+<span class="lineNum">     116 </span><span class="lineCov">          5 :       result-&gt;children[2] = terminal_tree(l-&gt;prev);</span>
+<span class="lineNum">     117 </span><span class="lineCov">          5 :       result-&gt;production = 3;</span>
+<span class="lineNum">     118 </span>            :     }
+<span class="lineNum">     119 </span><span class="lineCov">         10 :     return result;</span>
+<span class="lineNum">     120 </span>            :   } else {
+<span class="lineNum">     121 </span><span class="lineNoCov">          0 :     fprintf(stderr, &quot;error: TERM: syntax error\n&quot;);</span>
+<span class="lineNum">     122 </span><span class="lineNoCov">          0 :     exit(1);</span>
+<span class="lineNum">     123 </span>            :   }
+<a name="124"><span class="lineNum">     124 </span>            : }</a>
+<span class="lineNum">     125 </span>            : 
+<span class="lineNum">     126 </span><span class="lineCov">         87 : PTree *EXPR(Lexer *l)</span>
+<span class="lineNum">     127 </span>            : {
+<span class="lineNum">     128 </span><span class="lineCov">         87 :   PTree *result = nonterminal_tree(EXPRnt, 1);</span>
+<span class="lineNum">     129 </span><span class="lineCov">         87 :   result-&gt;children[0] = TERM(l);</span>
+<span class="lineNum">     130 </span><span class="lineCov">         87 :   if (accept(Plus, l) || accept(Star, l) || accept(Question, l)) {</span>
+<span class="lineNum">     131 </span><span class="lineCov">         40 :     result-&gt;nchildren++;</span>
+<span class="lineNum">     132 </span><span class="lineCov">         40 :     result-&gt;children[1] = terminal_tree(l-&gt;prev);</span>
+<span class="lineNum">     133 </span><span class="lineCov">         40 :     if (accept(Question, l)) {</span>
+<span class="lineNum">     134 </span><span class="lineCov">          9 :       result-&gt;nchildren++;</span>
+<span class="lineNum">     135 </span><span class="lineCov">          9 :       result-&gt;children[2] = terminal_tree((Token){Question, '?'});</span>
+<span class="lineNum">     136 </span>            :     }
+<span class="lineNum">     137 </span>            :   }
+<span class="lineNum">     138 </span><span class="lineCov">         87 :   return result;</span>
+<a name="139"><span class="lineNum">     139 </span>            : }</a>
+<span class="lineNum">     140 </span>            : 
+<span class="lineNum">     141 </span><span class="lineCov">         61 : PTree *SUB(Lexer *l)</span>
+<span class="lineNum">     142 </span>            : {
+<span class="lineNum">     143 </span><span class="lineCov">         61 :   PTree *result = nonterminal_tree(SUBnt, 1);</span>
+<span class="lineNum">     144 </span><span class="lineCov">         61 :   PTree *orig = result, *prev = result;</span>
+<span class="lineNum">     145 </span>            : 
+<span class="lineNum">     146 </span><span class="lineCov">        195 :   while (l-&gt;tok.sym != Eof &amp;&amp; l-&gt;tok.sym != RParen &amp;&amp; l-&gt;tok.sym != Pipe) { // seems like a bit of a hack</span>
+<span class="lineNum">     147 </span><span class="lineCov">         73 :     result-&gt;children[0] = EXPR(l);</span>
+<span class="lineNum">     148 </span><span class="lineCov">         73 :     result-&gt;children[1] = nonterminal_tree(SUBnt, 0);</span>
+<span class="lineNum">     149 </span><span class="lineCov">         73 :     result-&gt;nchildren = 2;</span>
+<span class="lineNum">     150 </span><span class="lineCov">         73 :     prev = result;</span>
+<span class="lineNum">     151 </span><span class="lineCov">         73 :     result = result-&gt;children[1];</span>
+<span class="lineNum">     152 </span>            :   }
+<span class="lineNum">     153 </span>            : 
+<span class="lineNum">     154 </span>            :   // This prevents SUB nonterminals with no children in the final parse tree.
+<span class="lineNum">     155 </span><span class="lineCov">         61 :   if (prev != result) {</span>
+<span class="lineNum">     156 </span><span class="lineCov">         61 :     prev-&gt;nchildren = 1;</span>
+<span class="lineNum">     157 </span><span class="lineCov">         61 :     free(result);</span>
+<span class="lineNum">     158 </span>            :   }
+<span class="lineNum">     159 </span><span class="lineCov">         61 :   return orig;</span>
+<a name="160"><span class="lineNum">     160 </span>            : }</a>
+<span class="lineNum">     161 </span>            : 
+<span class="lineNum">     162 </span><span class="lineCov">         57 : PTree *REGEX(Lexer *l)</span>
+<span class="lineNum">     163 </span>            : {
+<span class="lineNum">     164 </span><span class="lineCov">         57 :   PTree *result = nonterminal_tree(REGEXnt, 1);</span>
+<span class="lineNum">     165 </span><span class="lineCov">         57 :   result-&gt;children[0] = SUB(l);</span>
+<span class="lineNum">     166 </span>            : 
+<span class="lineNum">     167 </span><span class="lineCov">         57 :   if (accept(Pipe, l)) {</span>
+<span class="lineNum">     168 </span><span class="lineCov">          5 :     result-&gt;nchildren = 3;</span>
+<span class="lineNum">     169 </span><span class="lineCov">          5 :     result-&gt;children[1] = terminal_tree(l-&gt;prev);</span>
+<span class="lineNum">     170 </span><span class="lineCov">          5 :     result-&gt;children[2] = REGEX(l);</span>
+<span class="lineNum">     171 </span>            :   }
+<span class="lineNum">     172 </span><span class="lineCov">         57 :   return result;</span>
+<a name="173"><span class="lineNum">     173 </span>            : }</a>
+<span class="lineNum">     174 </span>            : 
+<span class="lineNum">     175 </span><span class="lineCov">         99 : bool CCHAR(Lexer *l)</span>
+<span class="lineNum">     176 </span>            : {
+<span class="lineNum">     177 </span><span class="lineCov">         99 :   TSym acceptable[] = {CharSym, Dot, LParen, RParen, Plus, Star, Question, Pipe};</span>
+<span class="lineNum">     178 </span><span class="lineCov">        451 :   for (size_t i = 0; i &lt; nelem(acceptable); i++) {</span>
+<span class="lineNum">     179 </span><span class="lineCov">        414 :     if (accept(acceptable[i], l)) {</span>
+<span class="lineNum">     180 </span><span class="lineCov">         62 :       l-&gt;prev.sym = CharSym;</span>
+<span class="lineNum">     181 </span><span class="lineCov">         62 :       return true;</span>
+<span class="lineNum">     182 </span>            :     }
+<span class="lineNum">     183 </span>            :   }
+<span class="lineNum">     184 </span><span class="lineCov">         37 :   return false;</span>
+<a name="185"><span class="lineNum">     185 </span>            : }</a>
+<span class="lineNum">     186 </span>            : 
+<span class="lineNum">     187 </span><span class="lineCov">         30 : PTree *CLASS(Lexer *l)</span>
+<span class="lineNum">     188 </span>            : {
+<span class="lineNum">     189 </span><span class="lineCov">         30 :   PTree *result = nonterminal_tree(CLASSnt, 0), *curr, *prev;</span>
+<span class="lineNum">     190 </span>            :   Token t1, t2, t3;
+<span class="lineNum">     191 </span><span class="lineCov">         30 :   curr = result;</span>
+<span class="lineNum">     192 </span>            : 
+<span class="lineNum">     193 </span>            :   while (true) {
+<span class="lineNum">     194 </span><span class="lineCov">         79 :     if (CCHAR(l)) {</span>
+<span class="lineNum">     195 </span><span class="lineCov">         49 :       prev = curr;</span>
+<span class="lineNum">     196 </span><span class="lineCov">         49 :       t1 = l-&gt;prev;</span>
+<span class="lineNum">     197 </span><span class="lineCov">         49 :       if (accept(Minus, l)) {</span>
+<span class="lineNum">     198 </span><span class="lineCov">         20 :         t2 = l-&gt;prev;</span>
+<span class="lineNum">     199 </span><span class="lineCov">         20 :         if (CCHAR(l)) {</span>
+<span class="lineNum">     200 </span><span class="lineCov">         13 :           t3 = l-&gt;prev;</span>
+<span class="lineNum">     201 </span>            :           // We have ourselves a range!  Parse it.
+<span class="lineNum">     202 </span><span class="lineCov">         13 :           curr-&gt;children[0] = terminal_tree(t1);</span>
+<span class="lineNum">     203 </span><span class="lineCov">         13 :           curr-&gt;children[1] = terminal_tree(t3);</span>
+<span class="lineNum">     204 </span><span class="lineCov">         13 :           curr-&gt;children[2] = nonterminal_tree(CLASSnt, 0);</span>
+<span class="lineNum">     205 </span><span class="lineCov">         13 :           curr-&gt;nchildren = 3;</span>
+<span class="lineNum">     206 </span><span class="lineCov">         13 :           curr-&gt;production = 1;</span>
+<span class="lineNum">     207 </span><span class="lineCov">         13 :           curr = curr-&gt;children[2];</span>
+<span class="lineNum">     208 </span>            :         } else {
+<span class="lineNum">     209 </span>            :           // character followed by minus, but not range.
+<span class="lineNum">     210 </span><span class="lineCov">          7 :           unget(t2, l);</span>
+<span class="lineNum">     211 </span><span class="lineCov">          7 :           curr-&gt;children[0] = terminal_tree(t1);</span>
+<span class="lineNum">     212 </span><span class="lineCov">          7 :           curr-&gt;children[1] = nonterminal_tree(CLASSnt, 0);</span>
+<span class="lineNum">     213 </span><span class="lineCov">          7 :           curr-&gt;nchildren = 2;</span>
+<span class="lineNum">     214 </span><span class="lineCov">          7 :           curr-&gt;production = 3;</span>
+<span class="lineNum">     215 </span><span class="lineCov">          7 :           curr = curr-&gt;children[1];</span>
+<span class="lineNum">     216 </span>            :         }
+<span class="lineNum">     217 </span>            :       } else {
+<span class="lineNum">     218 </span>            :         // just a character
+<span class="lineNum">     219 </span><span class="lineCov">         29 :         curr-&gt;children[0] = terminal_tree(t1);</span>
+<span class="lineNum">     220 </span><span class="lineCov">         29 :         curr-&gt;children[1] = nonterminal_tree(CLASSnt, 0);</span>
+<span class="lineNum">     221 </span><span class="lineCov">         29 :         curr-&gt;nchildren = 2;</span>
+<span class="lineNum">     222 </span><span class="lineCov">         29 :         curr-&gt;production = 3;</span>
+<span class="lineNum">     223 </span><span class="lineCov">         29 :         curr = curr-&gt;children[1];</span>
+<span class="lineNum">     224 </span>            :       }
+<span class="lineNum">     225 </span><span class="lineCov">         30 :     } else if (accept(Minus, l)) {</span>
+<span class="lineNum">     226 </span>            :       // just a minus
+<span class="lineNum">     227 </span><span class="lineCov">          7 :       prev = curr;</span>
+<span class="lineNum">     228 </span><span class="lineCov">          7 :       curr-&gt;children[0] = terminal_tree(l-&gt;prev);</span>
+<span class="lineNum">     229 </span><span class="lineCov">          7 :       curr-&gt;nchildren = 1;</span>
+<span class="lineNum">     230 </span><span class="lineCov">          7 :       curr-&gt;production = 5;</span>
+<span class="lineNum">     231 </span><span class="lineCov">          7 :       break;</span>
+<span class="lineNum">     232 </span>            :     } else {
+<span class="lineNum">     233 </span><span class="lineCov">         23 :       free(curr);</span>
+<span class="lineNum">     234 </span><span class="lineCov">         23 :       prev-&gt;nchildren--;</span>
+<span class="lineNum">     235 </span><span class="lineCov">         23 :       prev-&gt;production++;</span>
+<span class="lineNum">     236 </span><span class="lineCov">         23 :       break;</span>
+<span class="lineNum">     237 </span>            :     }
+<span class="lineNum">     238 </span><span class="lineCov">         49 :   }</span>
+<span class="lineNum">     239 </span><span class="lineCov">         30 :   return result;</span>
+<a name="240"><span class="lineNum">     240 </span>            : }</a>
+<span class="lineNum">     241 </span>            : 
+<span class="lineNum">     242 </span><span class="lineCov">         39 : static PTree *reparse_internal(struct Input input)</span>
+<span class="lineNum">     243 </span>            : {
+<span class="lineNum">     244 </span>            :   Lexer l;
+<span class="lineNum">     245 </span>            : 
+<span class="lineNum">     246 </span>            :   // Initialize the lexer.
+<span class="lineNum">     247 </span><span class="lineCov">         39 :   l.input = input;</span>
+<span class="lineNum">     248 </span><span class="lineCov">         39 :   l.index = 0;</span>
+<span class="lineNum">     249 </span><span class="lineCov">         39 :   l.nbuf = 0;</span>
+<span class="lineNum">     250 </span><span class="lineCov">         39 :   l.tok = (Token){.sym=0, .c=0};</span>
+<span class="lineNum">     251 </span>            : 
+<span class="lineNum">     252 </span>            :   // Create a parse tree!
+<span class="lineNum">     253 </span>            :   //printf(&quot;;; TOKENS:\n&quot;);
+<span class="lineNum">     254 </span><span class="lineCov">         39 :   nextsym(&amp;l);</span>
+<span class="lineNum">     255 </span><span class="lineCov">         39 :   PTree *tree = REGEX(&amp;l);</span>
+<span class="lineNum">     256 </span><span class="lineCov">         39 :   expect(Eof, &amp;l);</span>
+<span class="lineNum">     257 </span>            : 
+<span class="lineNum">     258 </span><span class="lineCov">         39 :   return tree;</span>
+<a name="259"><span class="lineNum">     259 </span>            : }</a>
+<span class="lineNum">     260 </span>            : 
+<span class="lineNum">     261 </span><span class="lineCov">         29 : PTree *reparse(const char *input)</span>
+<span class="lineNum">     262 </span>            : {
+<span class="lineNum">     263 </span><span class="lineCov">         29 :   struct Input in = {.str=input, .wstr=NULL};</span>
+<span class="lineNum">     264 </span><span class="lineCov">         29 :   return reparse_internal(in);</span>
+<a name="265"><span class="lineNum">     265 </span>            : }</a>
+<span class="lineNum">     266 </span>            : 
+<span class="lineNum">     267 </span><span class="lineCov">         10 : PTree *reparsew(const wchar_t *winput)</span>
+<span class="lineNum">     268 </span>            : {
+<span class="lineNum">     269 </span><span class="lineCov">         10 :   struct Input in = {.str=NULL, .wstr=winput};</span>
+<span class="lineNum">     270 </span><span class="lineCov">         10 :   return reparse_internal(in);</span>
+<a name="271"><span class="lineNum">     271 </span>            : }</a>
+<span class="lineNum">     272 </span>            : 
+<span class="lineNum">     273 </span><span class="lineCov">         28 : Regex recomp(const char *regex)</span>
+<span class="lineNum">     274 </span>            : {
+<span class="lineNum">     275 </span><span class="lineCov">         28 :   PTree *tree = reparse(regex);</span>
+<span class="lineNum">     276 </span><span class="lineCov">         28 :   Regex code = codegen(tree);</span>
+<span class="lineNum">     277 </span><span class="lineCov">         28 :   free_tree(tree);</span>
+<span class="lineNum">     278 </span><span class="lineCov">         28 :   return code;</span>
+<a name="279"><span class="lineNum">     279 </span>            : }</a>
+<span class="lineNum">     280 </span>            : 
+<span class="lineNum">     281 </span><span class="lineCov">          9 : Regex recompw(const wchar_t *regex)</span>
+<span class="lineNum">     282 </span>            : {
+<span class="lineNum">     283 </span><span class="lineCov">          9 :   PTree *tree = reparsew(regex);</span>
+<span class="lineNum">     284 </span><span class="lineCov">          9 :   Regex code = codegen(tree);</span>
+<span class="lineNum">     285 </span><span class="lineCov">          9 :   free_tree(tree);</span>
+<span class="lineNum">     286 </span><span class="lineCov">          9 :   return code;</span>
+<span class="lineNum">     287 </span>            : }
 </pre>
       </td>
     </tr>

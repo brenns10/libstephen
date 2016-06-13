@@ -169,8 +169,8 @@
 <div class="breathe-sectiondef container">
 <p class="breathe-sectiondef-title rubric">Functions</p>
 <dl class="function">
-<dt id="c.read_prog">
-<span class="target" id="libstephenre_8h_1ac7374a69338cffaec9304be14bf3981a"></span><a class="reference internal" href="#c.Regex" title="Regex">Regex</a> <code class="descname">read_prog</code><span class="sig-paren">(</span>char *<em>&nbsp;str</em><span class="sig-paren">)</span><a class="headerlink" href="#c.read_prog" title="Permalink to this definition">¶</a></dt>
+<dt id="c.reread">
+<span class="target" id="libstephenre_8h_1abc4b98adf269fe132d6e64ed4614b25f"></span><a class="reference internal" href="#c.Regex" title="Regex">Regex</a> <code class="descname">reread</code><span class="sig-paren">(</span>char *<em>&nbsp;str</em><span class="sig-paren">)</span><a class="headerlink" href="#c.reread" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read in a program from a string. This takes the &#8220;assembly like&#8221; representation and turns it into compiled instructions. Every instruction must be on a single line, and spaces are used as delimiters. Also, labels must be on their own lines. Here is an example of code in this format:</p>
 <p>save 0 L1: char a split L1 L2 L2: match</p>
 <p><dl class="docutils">
@@ -187,8 +187,8 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="c.fread_prog">
-<span class="target" id="libstephenre_8h_1ab3480ede761dc6ec7c9d5aa9862d3597"></span><a class="reference internal" href="#c.Regex" title="Regex">Regex</a> <code class="descname">fread_prog</code><span class="sig-paren">(</span>FILE *<em>&nbsp;f</em><span class="sig-paren">)</span><a class="headerlink" href="#c.fread_prog" title="Permalink to this definition">¶</a></dt>
+<dt id="c.refread">
+<span class="target" id="libstephenre_8h_1afbd02bb2c393391de3b78ee9ec5d6d07"></span><a class="reference internal" href="#c.Regex" title="Regex">Regex</a> <code class="descname">refread</code><span class="sig-paren">(</span>FILE *<em>&nbsp;f</em><span class="sig-paren">)</span><a class="headerlink" href="#c.refread" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reads in a program from a file instead of a string. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd>The regex bytecode. </dd>
@@ -203,9 +203,9 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="c.write_prog">
-<span class="target" id="libstephenre_8h_1a013497b4a62578fd019926acd9b6a538"></span>void <code class="descname">write_prog</code><span class="sig-paren">(</span><a class="reference internal" href="#c.Regex" title="Regex">Regex</a><em>&nbsp;r</em>, FILE *<em>&nbsp;f</em><span class="sig-paren">)</span><a class="headerlink" href="#c.write_prog" title="Permalink to this definition">¶</a></dt>
-<dd><p>Writes a program to the same format as the read_prog() functions do. <dl class="docutils">
+<dt id="c.rewrite">
+<span class="target" id="libstephenre_8h_1afbe1a8683afaa245e30f7249dd4b8956"></span>void <code class="descname">rewrite</code><span class="sig-paren">(</span><a class="reference internal" href="#c.Regex" title="Regex">Regex</a><em>&nbsp;r</em>, FILE *<em>&nbsp;f</em><span class="sig-paren">)</span><a class="headerlink" href="#c.rewrite" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes a program to the same format as the reread() functions do. <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last">
 <li><code class="first docutils literal"><span class="pre">r</span></code> - <p>The regex to write. </p>
@@ -219,8 +219,8 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="c.free_prog">
-<span class="target" id="libstephenre_8h_1a84b8878075214c72dfd2803f6f98efb2"></span>void <code class="descname">free_prog</code><span class="sig-paren">(</span><a class="reference internal" href="#c.Regex" title="Regex">Regex</a><em>&nbsp;r</em><span class="sig-paren">)</span><a class="headerlink" href="#c.free_prog" title="Permalink to this definition">¶</a></dt>
+<dt id="c.refree">
+<span class="target" id="libstephenre_8h_1a92240e82578880c2daffb95173a38ce7"></span>void <code class="descname">refree</code><span class="sig-paren">(</span><a class="reference internal" href="#c.Regex" title="Regex">Regex</a><em>&nbsp;r</em><span class="sig-paren">)</span><a class="headerlink" href="#c.refree" title="Permalink to this definition">¶</a></dt>
 <dd><p>Free a <a class="reference internal" href="#libstephenstruct_regex"><span class="std std-ref">Regex</span></a> object. You must do this when you&#8217;re done with it. <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last">
@@ -234,7 +234,7 @@
 
 <dl class="function">
 <dt id="c.recomp">
-<span class="target" id="libstephenre_8h_1ab75d374a092d94685835c7a1576bbb11"></span><a class="reference internal" href="#c.Regex" title="Regex">Regex</a> <code class="descname">recomp</code><span class="sig-paren">(</span>char *<em>&nbsp;regex</em><span class="sig-paren">)</span><a class="headerlink" href="#c.recomp" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="libstephenre_8h_1abf2024e15a73256e164611a5374f78e1"></span><a class="reference internal" href="#c.Regex" title="Regex">Regex</a> <code class="descname">recomp</code><span class="sig-paren">(</span>const char *<em>&nbsp;regex</em><span class="sig-paren">)</span><a class="headerlink" href="#c.recomp" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compile a regular expression! <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd>The compiled bytecode for the regex. </dd>
@@ -249,8 +249,24 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="c.execute">
-<span class="target" id="libstephenre_8h_1a252ee0883215023ab7f2ff0c0a1a7a46"></span>ssize_t <code class="descname">execute</code><span class="sig-paren">(</span><a class="reference internal" href="#c.Regex" title="Regex">Regex</a><em>&nbsp;r</em>, char *<em>&nbsp;input</em>, size_t **<em>&nbsp;saved</em><span class="sig-paren">)</span><a class="headerlink" href="#c.execute" title="Permalink to this definition">¶</a></dt>
+<dt id="c.recompw">
+<span class="target" id="libstephenre_8h_1ad0211c62b072e1efd0700606f41351bc"></span><a class="reference internal" href="#c.Regex" title="Regex">Regex</a> <code class="descname">recompw</code><span class="sig-paren">(</span>const wchar_t *<em>&nbsp;regex</em><span class="sig-paren">)</span><a class="headerlink" href="#c.recompw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compile a wide regular expression! <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>The compiled bytecode for the regex. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">regex</span></code> - <p>The text form of the regular expression. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.reexec">
+<span class="target" id="libstephenre_8h_1a322ef4d499247b0a9f9c084fab58b645"></span>ssize_t <code class="descname">reexec</code><span class="sig-paren">(</span><a class="reference internal" href="#c.Regex" title="Regex">Regex</a><em>&nbsp;r</em>, const char *<em>&nbsp;input</em>, size_t **<em>&nbsp;saved</em><span class="sig-paren">)</span><a class="headerlink" href="#c.reexec" title="Permalink to this definition">¶</a></dt>
 <dd><p>Execute a regex on a string. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd>Length of match, or -1 if no match. </dd>
@@ -269,8 +285,28 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="c.numsaves">
-<span class="target" id="libstephenre_8h_1ade9c2b97f135c086b5fbb793d5d04c0f"></span>size_t <code class="descname">numsaves</code><span class="sig-paren">(</span><a class="reference internal" href="#c.Regex" title="Regex">Regex</a><em>&nbsp;r</em><span class="sig-paren">)</span><a class="headerlink" href="#c.numsaves" title="Permalink to this definition">¶</a></dt>
+<dt id="c.reexecw">
+<span class="target" id="libstephenre_8h_1a62347ee73b3cd447762d8c98b4632649"></span>ssize_t <code class="descname">reexecw</code><span class="sig-paren">(</span><a class="reference internal" href="#c.Regex" title="Regex">Regex</a><em>&nbsp;r</em>, const wchar_t *<em>&nbsp;input</em>, size_t **<em>&nbsp;saved</em><span class="sig-paren">)</span><a class="headerlink" href="#c.reexecw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute a regex on a string. <dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>Length of match, or -1 if no match. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">r</span></code> - <p>Compiled regular expression bytecode to execute. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">input</span></code> - <p>Text to use as input. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">saved</span></code> - <p>Out pointer for captured indices. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.renumsaves">
+<span class="target" id="libstephenre_8h_1a7dd7d645fb85390539ca9ebc7670c68e"></span>size_t <code class="descname">renumsaves</code><span class="sig-paren">(</span><a class="reference internal" href="#c.Regex" title="Regex">Regex</a><em>&nbsp;r</em><span class="sig-paren">)</span><a class="headerlink" href="#c.renumsaves" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the number of saved index slots required by a regex. <dl class="docutils">
 <dt><strong>Return</strong></dt>
 <dd>Number of slots. </dd>
@@ -296,9 +332,9 @@
 <dd><ul class="breatheparameterlist first last">
 <li><code class="first docutils literal"><span class="pre">s</span></code> - <p>String to get strings from. </p>
 </li>
-<li><code class="first docutils literal"><span class="pre">l</span></code> - <p>List of captures returned from execute(). </p>
+<li><code class="first docutils literal"><span class="pre">l</span></code> - <p>List of captures returned from reexec(). </p>
 </li>
-<li><code class="first docutils literal"><span class="pre">n</span></code> - <p>Number of saves - use numsaves() if you don&#8217;t know. </p>
+<li><code class="first docutils literal"><span class="pre">n</span></code> - <p>Number of saves - use renumsaves() if you don&#8217;t know. </p>
 </li>
 </ul>
 </dd>
@@ -309,6 +345,44 @@
 <dl class="function">
 <dt id="c.recapfree">
 <span class="target" id="libstephenre_8h_1aba41a1e600d4e5c201798913c4044dcd"></span>void <code class="descname">recapfree</code><span class="sig-paren">(</span><a class="reference internal" href="#c.Captures" title="Captures">Captures</a><em>&nbsp;c</em><span class="sig-paren">)</span><a class="headerlink" href="#c.recapfree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Free a capture list from recap()</p>
+<p>Since the array and strings were all newly allocated by recap(), they need to be cleaned up. This function does the cleanup. It&#8217;s nothing complicated - you can do it yourself, but it&#8217;s convenient to have this to do it for you. Note that if you want to keep one of the strings from the capture list, you&#8217;ll have to set its entry in the array to NULL (so free() does nothing), or else do manual cleanup.</p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">c</span></code> - <p><a class="reference internal" href="#libstephenstruct_captures"><span class="std std-ref">Captures</span></a> to free. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.recapw">
+<span class="target" id="libstephenre_8h_1a9d25c669bb598d7040a7c269b6e676fb"></span><a class="reference internal" href="#c.WCaptures" title="WCaptures">WCaptures</a> <code class="descname">recapw</code><span class="sig-paren">(</span>const wchar_t *<em>&nbsp;s</em>, const size_t *<em>&nbsp;l</em>, size_t<em>&nbsp;n</em><span class="sig-paren">)</span><a class="headerlink" href="#c.recapw" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a string and a capture list into a list of strings.</p>
+<p>This copies each capture into a newly allocated string, and returns them all in a newly allocated array of strings. These things need to be freed when you&#8217;re done with them. You can either manually free each string and then the array, or you can use recapfree() to do this for you.</p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>A new Capture object. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">s</span></code> - <p>String to get strings from. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">l</span></code> - <p>List of captures returned from reexec(). </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">n</span></code> - <p>Number of saves - use renumsaves() if you don&#8217;t know. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.recapwfree">
+<span class="target" id="libstephenre_8h_1ac5ee4cedc25bbd89bab7ea0d50b5c256"></span>void <code class="descname">recapwfree</code><span class="sig-paren">(</span><a class="reference internal" href="#c.WCaptures" title="WCaptures">WCaptures</a><em>&nbsp;c</em><span class="sig-paren">)</span><a class="headerlink" href="#c.recapwfree" title="Permalink to this definition">¶</a></dt>
 <dd><p>Free a capture list from recap()</p>
 <p>Since the array and strings were all newly allocated by recap(), they need to be cleaned up. This function does the cleanup. It&#8217;s nothing complicated - you can do it yourself, but it&#8217;s convenient to have this to do it for you. Note that if you want to keep one of the strings from the capture list, you&#8217;ll have to set its entry in the array to NULL (so free() does nothing), or else do manual cleanup.</p>
 <p><dl class="docutils">
@@ -360,6 +434,27 @@
 <dl class="variable">
 <dt id="c.cap">
 <span class="target" id="libstephenstruct_captures_1a693da01083a54bb3bb0e2945e100879f"></span>char** <code class="descname">cap</code><a class="headerlink" href="#c.cap" title="Permalink to this definition">¶</a></dt>
+<dd><p>An array of length n captured strings. Each one is independently allocated, so you&#8217;ll need to free them when you&#8217;re done. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="struct">
+<dt id="c.WCaptures">
+<span class="target" id="libstephenstruct_w_captures"></span><em class="property">struct </em><code class="descname">WCaptures</code><a class="headerlink" href="#c.WCaptures" title="Permalink to this definition">¶</a></dt>
+<dd><em>#include &lt;re.h&gt;</em><p>A convenience data structure for getting copies of captured wide strings. This is just a wide version of <a class="reference internal" href="#libstephenstruct_captures"><span class="std std-ref">Captures</span></a>. </p>
+<div class="breathe-sectiondef container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt>
+<span class="target" id="libstephenstruct_w_captures_1a3d05cf6aa68b03e254d70afbe869e305"></span>size_t <code class="descname">n</code></dt>
+<dd><p>The number of captured strings. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt>
+<span class="target" id="libstephenstruct_w_captures_1a81cfa0670d8bf2d63a5790c5dcc040ae"></span>wchar_t** <code class="descname">cap</code></dt>
 <dd><p>An array of length n captured strings. Each one is independently allocated, so you&#8217;ll need to free them when you&#8217;re done. </p>
 </dd></dl>
 
