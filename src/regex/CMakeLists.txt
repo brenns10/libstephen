@@ -1,0 +1,8 @@
+list(APPEND libstephen_SOURCES
+  ${CMAKE_CURRENT_LIST_DIR}/codegen.c
+  ${CMAKE_CURRENT_LIST_DIR}/instr.c
+  ${CMAKE_CURRENT_LIST_DIR}/lex.c
+  ${CMAKE_CURRENT_LIST_DIR}/parse.c
+  ${CMAKE_CURRENT_LIST_DIR}/pike.c
+  ${CMAKE_CURRENT_LIST_DIR}/util.c
+  )

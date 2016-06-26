@@ -28,6 +28,21 @@ features include:
 - Logging framework
 - Regular expressions
 
+## Build
+
+This project is built with CMake. Typical usage involves creating a build
+directory (`mkdir build`), entering it (`cd build`), running CMake on the source
+directory (`cmake ..`), and finally compiling with make (`make`).
+
+The more compact way is to run:
+
+    cmake -Bbuild -H. && cmake --build build
+
+Even though I use CMake, I still have a Makefile to automate CMake tasks, so you
+can do `make release` and `make debug` to automatically CMake and build those
+configurations, and `make test` to CMake, build, and run some tests in the debug
+configuration.
+
 ## Documentation
 
 If you want documentation on this library, well you're in luck!  One of the
@@ -37,9 +52,9 @@ the [documentation section][doc] of the tool site.  This includes both
 tutorial/commentary style documentation, as well as function-level documentation
 generated from the code.
 
-You can generate this documentation yourself by running the command "make docs"
-in the project root directory.  This requires Doxygen, as well as Python,
-Sphinx, and the sphinx-rtd-theme to be installed.
+You can generate this documentation yourself by running the command `make doc`
+in the project root directory. This requires CMake, Doxygen, Python, Sphinx, and
+the sphinx-rtd-theme to be installed.
 
 ## Test Coverage
 
@@ -49,7 +64,7 @@ and converted into a very nice HTML file by `genhtml`.  This is very useful for
 detecting what code needs tests.  To generate test coverage information, run the
 following command. at the project root:
 
-    $ make CFG=coverage cov
+    $ make cov
 
 At which point you can open the file `cov/index.html` in a browser and view the
 test coverage info.  Alternatively, you can find the latest test coverage

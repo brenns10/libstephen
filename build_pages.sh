@@ -10,7 +10,7 @@ set -e
 COMMIT=$(git rev-parse HEAD)
 
 # Generate coverage information.
-make CFG=coverage cov
+make cov
 
 # Generate documentation.
 make doc
