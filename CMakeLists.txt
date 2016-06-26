@@ -1,7 +1,9 @@
-cmake_minimum_required (VERSION 2.8)
+cmake_minimum_required (VERSION 3.1)
 
 # Stuff for making coverage builds.
 include("coverage.cmake")
+set(CMAKE_C_STANDARD 99)
+set(CMAKE_C_STANDARD_REQUIRED ON)
 
 # Project metadata
 project (libstephen)
@@ -21,9 +23,6 @@ add_executable(test_libstephen ${libstephen_TEST_SOURCES})
 add_executable(regex util/regex.c)
 target_link_libraries(test_libstephen stephen)
 target_link_libraries(regex stephen)
-
-set(CMAKE_C_STANDARD 99)
-set(CMAKE_C_STANDARD_REQUIRED ON)
 
 # Tests (using CMake)
 file(COPY res DESTINATION ${CMAKE_BINARY_DIR})
