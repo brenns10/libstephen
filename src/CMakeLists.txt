@@ -13,3 +13,4 @@ list(APPEND libstephen_SOURCES
   )
 
 include("${CMAKE_CURRENT_LIST_DIR}/regex/CMakeLists.txt")
+include("${CMAKE_CURRENT_LIST_DIR}/lisp/CMakeLists.txt")
