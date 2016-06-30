@@ -33,7 +33,14 @@ typedef struct lisp_value {
 typedef struct lisp_scope {
   LISP_VALUE_HEAD;
   smb_ht scope;
+  struct lisp_scope *up;
 } lisp_scope;
+
+typedef struct {
+  LISP_VALUE_HEAD;
+  lisp_value *left;
+  lisp_value *right;
+} lisp_list;
 
 typedef struct {
   LISP_VALUE_HEAD;
@@ -42,13 +49,8 @@ typedef struct {
   lisp_value * (*new)(void);
   void (*free)(void *value);
   lisp_value * (*eval)(lisp_scope *scope, lisp_value *value);
+  lisp_value * (*call)(lisp_scope *scope, lisp_value *callable, lisp_value *arg);
 } lisp_type;
-
-typedef struct {
-  LISP_VALUE_HEAD;
-  lisp_value *left;
-  lisp_value *right;
-} lisp_list;
 
 typedef struct {
   LISP_VALUE_HEAD;
@@ -61,22 +63,46 @@ typedef struct {
 
 typedef struct {
   LISP_VALUE_HEAD;
+  char *message;
+} lisp_error;
+
+typedef struct {
+  LISP_VALUE_HEAD;
   int x;
 } lisp_integer;
+
+typedef struct {
+  LISP_VALUE_HEAD;
+  lisp_value * (*call)(lisp_scope *scope, lisp_value *arguments);
+  char *name;
+} lisp_builtin;
 
 void lisp_print(FILE *f, lisp_value *value);
 void lisp_free(lisp_value *value);
 lisp_value *lisp_eval(lisp_scope *scope, lisp_value *value);
+lisp_value *lisp_call(lisp_scope *scope, lisp_value *callable,
+                      lisp_value *arguments);
 void lisp_incref(lisp_value *value);
 void lisp_decref(lisp_value *value);
 lisp_value *lisp_parse(char *input);
 
+lisp_symbol *lisp_symbol_new(char *string);
+lisp_error *lisp_error_new(char *message);
+
+void lisp_scope_bind(lisp_scope *scope, lisp_symbol *symbol, lisp_value *value);
+lisp_value *lisp_scope_lookup(lisp_scope *scope, lisp_symbol *symbol);
+void lisp_scope_populate_builtins(lisp_scope *scope);
+lisp_value *lisp_eval_list(lisp_scope *scope, lisp_value *list);
+
 extern lisp_value *lisp_nilv;
 
 extern lisp_type *type_type;
+extern lisp_type *type_scope;
 extern lisp_type *type_list;
 extern lisp_type *type_symbol;
+extern lisp_type *type_error;
 extern lisp_type *type_integer;
 extern lisp_type *type_nil;
+extern lisp_type *type_builtin;
 
 #endif//SMB_LIBSTEPHEN_LISP_H

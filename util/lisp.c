@@ -5,22 +5,20 @@
 
 int main(int argc, char **argv)
 {
-  char *input = read_file(stdin);
-  lisp_value *v = lisp_parse(input);
-  fprintf(stdout, "parsed:\n");
-  lisp_print(stdout, v);
-  fprintf(stdout, "\ntype:\n");
-  lisp_print(stdout, (lisp_value *)v->type);
-  printf("\n");
+  lisp_scope *scope = (lisp_scope*)type_scope->new();
+  lisp_scope_populate_builtins(scope);
 
-  lisp_value *r = lisp_eval((lisp_scope*)v, v);
-  fprintf(stdout, "eval'd:\n");
-  lisp_print(stdout, r);
-  fprintf(stdout, "\ntype:\n");
-  lisp_print(stdout, (lisp_value *)r->type);
-  fprintf(stdout, "\n");
+  while (true) {
+    fprintf(stdout, "> ");
+    char *input = read_line(stdin);
+    lisp_value *value = lisp_parse(input);
+    lisp_value *result = lisp_eval(scope, value);
+    lisp_print(stdout, result);
+    fprintf(stdout, "\n");
+    lisp_decref(value);
+    lisp_decref(result);
+  }
 
-  lisp_decref(v);
-  lisp_decref(r);
+  lisp_decref((lisp_value*)scope);
   return 0;
 }
