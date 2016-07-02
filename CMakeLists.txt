@@ -16,6 +16,8 @@ include("test/CMakeLists.txt")
 
 # Add an include directory.
 include_directories("inc")
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}")
+find_package(Libedit)
 
 # Declare targets and dependencies among them.
 add_library(stephen SHARED ${libstephen_SOURCES})
@@ -25,6 +27,7 @@ add_executable(lisp util/lisp.c)
 target_link_libraries(test_libstephen stephen)
 target_link_libraries(regex stephen)
 target_link_libraries(lisp stephen)
+target_link_libraries(lisp ${LIBEDIT_LIBRARIES})
 
 # Tests (using CMake)
 file(COPY res DESTINATION ${CMAKE_BINARY_DIR})

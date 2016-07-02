@@ -1,6 +1,6 @@
+#include <editline/readline.h>
 #include <stdio.h>
 
-#include "libstephen/str.h"
 #include "libstephen/lisp.h"
 
 int main(int argc, char **argv)
@@ -9,13 +9,17 @@ int main(int argc, char **argv)
   lisp_scope_populate_builtins(scope);
 
   while (true) {
-    fprintf(stdout, "> ");
-    char *input = read_line(stdin);
+    char *input = readline("> ");
+    if (input == NULL) {
+      break;
+    }
     lisp_value *value = lisp_parse(input);
+    add_history(input);
+    free(input);
     lisp_value *result = lisp_eval(scope, value);
+    lisp_decref(value);
     lisp_print(stdout, result);
     fprintf(stdout, "\n");
-    lisp_decref(value);
     lisp_decref(result);
   }
 

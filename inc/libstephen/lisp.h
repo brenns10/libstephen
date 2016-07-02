@@ -22,10 +22,11 @@
 
 #define LISP_VALUE_HEAD             \
   struct {                          \
-    const struct lisp_value *type;  \
+    struct lisp_type *type;   \
     unsigned int refcount;          \
   }
 
+// Type declarations.
 typedef struct lisp_value {
   LISP_VALUE_HEAD;
 } lisp_value;
@@ -42,7 +43,7 @@ typedef struct {
   lisp_value *right;
 } lisp_list;
 
-typedef struct {
+typedef struct lisp_type {
   LISP_VALUE_HEAD;
   const char *name;
   void (*print)(FILE *f, lisp_value *value);
@@ -77,6 +78,7 @@ typedef struct {
   char *name;
 } lisp_builtin;
 
+// Shortcuts for type operations.
 void lisp_print(FILE *f, lisp_value *value);
 void lisp_free(lisp_value *value);
 lisp_value *lisp_eval(lisp_scope *scope, lisp_value *value);
@@ -84,15 +86,18 @@ lisp_value *lisp_call(lisp_scope *scope, lisp_value *callable,
                       lisp_value *arguments);
 void lisp_incref(lisp_value *value);
 void lisp_decref(lisp_value *value);
-lisp_value *lisp_parse(char *input);
 
+// Shortcuts for creation of objects
 lisp_symbol *lisp_symbol_new(char *string);
 lisp_error *lisp_error_new(char *message);
+lisp_builtin *lisp_builtin_new(char *name, lisp_value *(*call)(lisp_scope *, lisp_value *));
 
+// Helper functions
 void lisp_scope_bind(lisp_scope *scope, lisp_symbol *symbol, lisp_value *value);
 lisp_value *lisp_scope_lookup(lisp_scope *scope, lisp_symbol *symbol);
 void lisp_scope_populate_builtins(lisp_scope *scope);
 lisp_value *lisp_eval_list(lisp_scope *scope, lisp_value *list);
+lisp_value *lisp_parse(char *input);
 
 extern lisp_value *lisp_nilv;
 

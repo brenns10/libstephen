@@ -82,11 +82,7 @@ result lisp_parse_quote(char *input, int index)
   //printf("lisp_parse_quote(%s, %d)\n", input, index);
   // ' VALUE => (quote VALUE)
   lisp_list *l = (lisp_list*) type_list->new();
-  char *quote = "quote";
-  lisp_symbol *q = (lisp_symbol*) type_symbol->new();
-  q->sym = malloc(6);
-  strcpy(q->sym, quote);
-  q->sym[5] = '\0';
+  lisp_symbol *q = lisp_symbol_new("quote");
   l->left = (lisp_value*)q;
   lisp_list *s = (lisp_list*) type_list->new();
   s->right = type_nil->new();
