@@ -1,4 +1,5 @@
 #include <assert.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -27,6 +28,14 @@ static lisp_value *call_error(lisp_scope *s, lisp_value *c, lisp_value *v)
   (void)c;
   (void)v;
   return (lisp_value*) lisp_error_new("not callable!");
+}
+
+static lisp_value *call_same(lisp_scope *s, lisp_value *c, lisp_value *v)
+{
+  (void)s;
+  (void)v;
+  lisp_incref(c);
+  return c;
 }
 
 static void nop_free(void *v)
@@ -160,6 +169,14 @@ static lisp_type type_list_obj = {
 };
 lisp_type *type_list = &type_list_obj;
 
+lisp_list lisp_nilv_obj = {
+  .type=&type_list_obj,
+  .refcount=1,
+  .left=NULL,
+  .right=NULL,
+};
+lisp_list *lisp_nilv = &lisp_nilv_obj;
+
 static lisp_value *list_eval(lisp_scope *scope, lisp_value *v)
 {
   lisp_list *list = (lisp_list*) v;
@@ -172,10 +189,11 @@ static lisp_value *list_eval(lisp_scope *scope, lisp_value *v)
 
 static void list_print_internal(FILE *f, lisp_list *list)
 {
-  lisp_print(f, list->left);
-  if (list->right == lisp_nilv) {
+  if (list == lisp_nilv) {
     return;
-  } else if (list->right->type != type_list) {
+  }
+  lisp_print(f, list->left);
+  if (list->right->type != type_list) {
     fprintf(f, " . ");
     lisp_print(f, list->right);
     return;
@@ -208,6 +226,11 @@ static void list_free(void *l)
   lisp_decref(list->left);
   lisp_decref(list->right);
   free(l);
+}
+
+bool lisp_nil_p(lisp_value *l)
+{
+  return (l->type == type_list) && ((lisp_list*)l == lisp_nilv);
 }
 
 // symbol
@@ -271,7 +294,7 @@ static lisp_type type_error_obj = {
   .new=error_new,
   .eval=eval_same,
   .free=error_free,
-  .call=call_error,
+  .call=call_same,
 };
 lisp_type *type_error = &type_error_obj;
 
@@ -283,7 +306,7 @@ static void error_print(FILE *f, lisp_value *v)
 
 static lisp_value *error_new(void)
 {
-  lisp_error *error = malloc(sizeof(lisp_error*));
+  lisp_error *error = malloc(sizeof(lisp_error));
   error->refcount = 1;
   error->type = type_error;
   error->message = NULL;
@@ -329,46 +352,10 @@ static lisp_value *integer_new(void)
   return (lisp_value*)integer;
 }
 
-// nil
-
-static void nil_print(FILE *f, lisp_value *v);
-static lisp_value *nil_new();
-
-static lisp_type type_nil_obj = {
-  .type=&type_type_obj,
-  .refcount=1,
-  .name="nil",
-  .print=nil_print,
-  .new=nil_new,
-  .eval=eval_error,
-  .free=nop_free,
-  .call=call_error,
-};
-lisp_type *type_nil = &type_nil_obj;
-
-static lisp_nil lisp_nil_obj = {
-  .type=&type_nil_obj,
-  .refcount=1,
-};
-lisp_value *lisp_nilv = (lisp_value*) &lisp_nil_obj;
-
-static void nil_print(FILE *f, lisp_value *v)
-{
-  (void)v;
-  fprintf(f, "'()");
-}
-
-static lisp_value *nil_new(void)
-{
-  lisp_incref(lisp_nilv);
-  return lisp_nilv;
-}
-
 // builtin
 
 static void builtin_print(FILE *f, lisp_value *v);
 static lisp_value *builtin_new(void);
-static void builtin_free(void*);
 static lisp_value *builtin_call(lisp_scope *scope, lisp_value *c,
                                 lisp_value *arguments);
 
@@ -411,43 +398,38 @@ static lisp_value *builtin_call(lisp_scope *scope, lisp_value *c,
 
 void lisp_print(FILE *f, lisp_value *value)
 {
-  lisp_type *type = (lisp_type*) value->type;
-  type->print(f, value);
+  value->type->print(f, value);
 }
 
 void lisp_free(lisp_value *value)
 {
-  lisp_type *type = (lisp_type*) value->type;
-  type->free(value);
+  value->type->free(value);
 }
 
 lisp_value *lisp_eval(lisp_scope *scope, lisp_value *value)
 {
-  lisp_type *type = (lisp_type*) value->type;
-  return type->eval(scope, value);
+  return value->type->eval(scope, value);
 }
 
 lisp_value *lisp_call(lisp_scope *scope, lisp_value *callable, lisp_value *args)
 {
-  lisp_type *type = (lisp_type*) callable->type;
-
   if (callable->type == type_error) {
     return callable;
   }
 
-  return type->call(scope, callable, args);
+  return callable->type->call(scope, callable, args);
 }
 
-void lisp_incref(lisp_value *value)
+lisp_value *lisp_incref(lisp_value *value)
 {
   value->refcount++;
+  return value;
 }
 
 void lisp_decref(lisp_value *value)
 {
-  lisp_type *type = (lisp_type*) value->type;
   value->refcount--;
   if (value->refcount <= 0) {
-    type->free(value);
+    value->type->free(value);
   }
 }

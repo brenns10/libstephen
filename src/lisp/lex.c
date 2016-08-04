@@ -26,8 +26,8 @@ result lisp_parse_list_or_sexp(char *input, int index)
   result r = lisp_parse_value(input, index);
   index = r.index;
 
-  if (r.result == lisp_nilv) {
-    return (result){type_nil->new(), index};
+  if (r.result == (lisp_value*)lisp_nilv) {
+    return (result){(lisp_value*)lisp_nil_new(), index};
   }
 
   lisp_list *rv = (lisp_list*)type_list->new();
@@ -49,7 +49,7 @@ result lisp_parse_list_or_sexp(char *input, int index)
     } else {
       result r = lisp_parse_value(input, index);
       index = r.index;
-      if (r.result == lisp_nilv) {
+      if (r.result == (lisp_value*)lisp_nilv) {
         l->right = r.result;
         return (result){(lisp_value*)rv, index};
       } else {
@@ -85,7 +85,7 @@ result lisp_parse_quote(char *input, int index)
   lisp_symbol *q = lisp_symbol_new("quote");
   l->left = (lisp_value*)q;
   lisp_list *s = (lisp_list*) type_list->new();
-  s->right = type_nil->new();
+  s->right = lisp_nil_new();
   l->right = (lisp_value*)s;
   result r = lisp_parse_value(input, index + 1);
   s->left = r.result;
@@ -104,7 +104,7 @@ result lisp_parse_value(char *input, int index)
     return (result){NULL, index};
   }
   if (input[index] == ')') {
-    return (result){type_nil->new(), index + 1};
+    return (result){lisp_nil_new(), index + 1};
   }
   if (input[index] == '(') {
     return lisp_parse_list_or_sexp(input, index + 1);
