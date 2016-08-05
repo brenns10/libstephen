@@ -70,6 +70,11 @@ typedef struct {
 
 typedef struct {
   LISP_VALUE_HEAD;
+  char *s;
+} lisp_string;
+
+typedef struct {
+  LISP_VALUE_HEAD;
   lisp_value * (*call)(lisp_scope *scope, lisp_value *arguments);
   char *name;
 } lisp_builtin;
@@ -108,6 +113,7 @@ extern lisp_type *type_list;
 extern lisp_type *type_symbol;
 extern lisp_type *type_error;
 extern lisp_type *type_integer;
+extern lisp_type *type_string;
 extern lisp_type *type_builtin;
 
 #endif//SMB_LIBSTEPHEN_LISP_H

@@ -2,6 +2,7 @@
 #include <ctype.h>
 #include <string.h>
 #include "libstephen/lisp.h"
+#include "libstephen/cb.h"
 
 typedef struct {
   lisp_value *result;
@@ -17,6 +18,47 @@ result lisp_parse_integer(char *input, int index)
   lisp_integer *v = (lisp_integer*)type_integer->new();
   sscanf(input + index, "%d%n", &v->x, &n);
   return (result){(lisp_value*)v, index + n};
+}
+
+char lisp_escape(char escape)
+{
+  switch (escape) {
+  case 'a':
+    return '\a';
+  case 'b':
+    return '\b';
+  case 'f':
+    return '\f';
+  case 'n':
+    return '\n';
+  case 'r':
+    return '\b';
+  case 't':
+    return '\t';
+  case 'v':
+    return '\v';
+  default:
+    return escape;
+  }
+}
+
+result lisp_parse_string(char *input, int index)
+{
+  int i = index + 1;
+  cbuf cb;
+  cb_init(&cb, 16);
+  while (input[i] && input[i] != '"') {
+    if (input[i] == '\\') {
+      cb_append(&cb, lisp_escape(input[++i]));
+    } else {
+      cb_append(&cb, input[i]);
+    }
+    i++;
+  }
+  cb_trim(&cb);
+  lisp_string *str = (lisp_string*)type_string->new();
+  str->s = cb.buf;
+  return (result){(lisp_value*)str, ++i};
 }
 
 result lisp_parse_list_or_sexp(char *input, int index)
@@ -100,6 +142,9 @@ result lisp_parse_value(char *input, int index)
     index++;
   }
 
+  if (input[index] == '"') {
+    return lisp_parse_string(input, index);
+  }
   if (input[index] == '\0') {
     return (result){NULL, index};
   }

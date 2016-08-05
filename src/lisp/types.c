@@ -345,11 +345,51 @@ static void integer_print(FILE *f, lisp_value *v)
 
 static lisp_value *integer_new(void)
 {
-  lisp_integer *integer = malloc(sizeof(lisp_integer*));
+  lisp_integer *integer = malloc(sizeof(lisp_integer));
   integer->refcount = 1;
   integer->type = type_integer;
   integer->x = 0;
   return (lisp_value*)integer;
+}
+
+// string
+
+static void string_print(FILE *f, lisp_value *v);
+static lisp_value *string_new(void);
+static void string_free(void *v);
+
+static lisp_type type_string_obj = {
+  .type=&type_type_obj,
+  .refcount=1,
+  .name="string",
+  .print=string_print,
+  .new=string_new,
+  .eval=eval_same,
+  .free=string_free,
+  .call=call_error,
+};
+lisp_type *type_string = &type_string_obj;
+
+static void string_print(FILE *f, lisp_value *v)
+{
+  lisp_string *str = (lisp_string*) v;
+  fprintf(f, "%s", str->s);
+}
+
+static lisp_value *string_new(void)
+{
+  lisp_string *str = malloc(sizeof(lisp_string));
+  str->refcount = 1;
+  str->type = type_string;
+  str->s = NULL;
+  return (lisp_value*)str;
+}
+
+static void string_free(void *v)
+{
+  lisp_string *str = (lisp_string*) v;
+  free(str->s);
+  free(str);
 }
 
 // builtin
