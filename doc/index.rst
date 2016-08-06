@@ -30,6 +30,7 @@ Contents:
 
    tutorial/index.rst
    api/index.rst
+   lisp/index.rst
 
 
 Indices and tables
@@ -37,5 +38,3 @@ Indices and tables
 
 * :ref:`genindex`
 * :ref:`search`
-
-
