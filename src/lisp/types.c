@@ -110,6 +110,7 @@ static lisp_value *scope_new(void)
   lisp_scope *scope = malloc(sizeof(lisp_scope));
   scope->type = type_scope;
   scope->refcount = 1;
+  scope->up = NULL;
   ht_init(&scope->scope, symbol_hash, symbol_compare);
   return (lisp_value*)scope;
 }
@@ -128,6 +129,9 @@ static void scope_free(void *v)
     lisp_decref(value);
   }
   ht_destroy(&scope->scope);
+  if(scope->up) {
+    lisp_decref((lisp_value*)scope->up);
+  }
   free(scope);
 }
 
@@ -184,7 +188,9 @@ static lisp_value *list_eval(lisp_scope *scope, lisp_value *v)
     return (lisp_value*) lisp_error_new("bad function call syntax");
   }
   lisp_value *callable = lisp_eval(scope, list->left);
-  return lisp_call(scope, callable, list->right);
+  lisp_value *rv = lisp_call(scope, callable, list->right);
+  lisp_decref(callable);
+  return rv;
 }
 
 static void list_print_internal(FILE *f, lisp_list *list)
@@ -270,7 +276,7 @@ static lisp_value *symbol_new(void)
 static lisp_value *symbol_eval(lisp_scope *scope, lisp_value *value)
 {
   lisp_symbol *symbol = (lisp_symbol*) value;
-  return lisp_scope_lookup(scope, symbol);
+  return lisp_incref(lisp_scope_lookup(scope, symbol));
 }
 
 static void symbol_free(void *v)
@@ -432,6 +438,84 @@ static lisp_value *builtin_call(lisp_scope *scope, lisp_value *c,
 {
   lisp_builtin *builtin = (lisp_builtin*) c;
   return builtin->call(scope, arguments);
+}
+
+// lambda
+
+static void lambda_print(FILE *f, lisp_value *v);
+static lisp_value *lambda_new(void);
+static void lambda_free(void *v);
+static lisp_value *lambda_call(lisp_scope *scope, lisp_value *c,
+                               lisp_value *arguments);
+
+static lisp_type type_lambda_obj = {
+  .type=&type_type_obj,
+  .refcount=1,
+  .name="lambda",
+  .print=lambda_print,
+  .new=lambda_new,
+  .eval=eval_error,
+  .free=lambda_free,
+  .call=lambda_call,
+};
+lisp_type *type_lambda = &type_lambda_obj;
+
+static void lambda_print(FILE *f, lisp_value *v)
+{
+  fprintf(f, "<lambda function>");
+}
+
+static lisp_value *lambda_new()
+{
+  lisp_lambda *lambda = malloc(sizeof(lisp_lambda));
+  lambda->refcount = 1;
+  lambda->type = type_lambda;
+  lambda->args = NULL;
+  lambda->code = NULL;
+  return (lisp_value*) lambda;
+}
+
+static void lambda_free(void *v)
+{
+  lisp_lambda *lambda = (lisp_lambda*) v;
+  lisp_decref((lisp_value*)lambda->args);
+  lisp_decref(lambda->code);
+  free(lambda);
+}
+
+static lisp_value *lambda_call(lisp_scope *scope, lisp_value *c,
+                               lisp_value *arguments)
+{
+  lisp_lambda *lambda = (lisp_lambda*) c;
+  lisp_list *argvalues = (lisp_list*)lisp_eval_list(scope, arguments);
+  lisp_scope *inner = (lisp_scope*)type_scope->new();
+  lisp_value *rv;
+  lisp_incref((lisp_value*)scope);
+  inner->up = scope;
+
+  lisp_list *it1 = lambda->args, *it2 = argvalues;
+  while (!lisp_nil_p((lisp_value*)it1) && !lisp_nil_p((lisp_value*)it2)) {
+    lisp_incref(it1->left); // we are about to give a new reference to the scope
+    lisp_incref(it2->left);
+    lisp_scope_bind(inner, (lisp_symbol*) it1->left, it2->left);
+    it1 = (lisp_list*) it1->right;
+    it2 = (lisp_list*) it2->right;
+  }
+
+  if (!lisp_nil_p((lisp_value*)it1)) {
+    rv = (lisp_value*) lisp_error_new("not enough arguments");
+    goto cleanup; // oh I really love using goto
+  }
+  if (!lisp_nil_p((lisp_value*)it2)) {
+    rv = (lisp_value*) lisp_error_new("too many arguments");
+    goto cleanup;
+  }
+
+  rv = lisp_eval(inner, lambda->code);
+ cleanup:
+  lisp_decref((lisp_value*)inner);
+  lisp_decref((lisp_value*)argvalues);
+  return rv;
 }
 
 // Shortcuts for type objects.

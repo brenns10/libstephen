@@ -213,6 +213,49 @@ static lisp_value *lisp_builtin_cons(lisp_scope *scope, lisp_value *a)
   return (lisp_value*)new;
 }
 
+static lisp_value *lisp_builtin_lambda(lisp_scope *scope, lisp_value *a)
+{
+  lisp_list *argnames;
+  lisp_value *code;
+  lisp_list *our_args = (lisp_list*)a;
+  (void)scope;
+
+  if (!lisp_get_args(our_args, "l*", &argnames, &code)) {
+    return (lisp_value*) lisp_error_new("expected argument list and code");
+  }
+
+  lisp_list *it = argnames;
+  while (!lisp_nil_p((lisp_value*)it)) {
+    if (it->left->type != type_symbol) {
+      lisp_decref((lisp_value*)our_args);
+      return (lisp_value*) lisp_error_new("argument names must be symbols");
+    }
+    it = (lisp_list*) it->right;
+  }
+
+  lisp_lambda *lambda = (lisp_lambda*)type_lambda->new();
+  lambda->args = argnames;
+  lambda->code = code;
+  lisp_incref((lisp_value*)lambda->args);
+  lisp_incref(lambda->code);
+  return (lisp_value*) lambda;
+}
+
+static lisp_value *lisp_builtin_define(lisp_scope *scope, lisp_value *a)
+{
+  lisp_symbol *s;
+  lisp_value *expr;
+
+  if (!lisp_get_args((lisp_list*)a, "s*", &s, &expr)) {
+    return (lisp_value*) lisp_error_new("expected name and expression");
+  }
+
+  lisp_value *evald = lisp_eval(scope, expr);
+  lisp_incref((lisp_value*)s);
+  lisp_scope_bind(scope, s, evald);
+  return lisp_incref(evald); // this reference is owned by the caller
+}
+
 void lisp_scope_populate_builtins(lisp_scope *scope)
 {
   lisp_scope_add_builtin(scope, "eval", lisp_builtin_eval);
@@ -220,4 +263,6 @@ void lisp_scope_populate_builtins(lisp_scope *scope)
   lisp_scope_add_builtin(scope, "cdr", lisp_builtin_cdr);
   lisp_scope_add_builtin(scope, "quote", lisp_builtin_quote);
   lisp_scope_add_builtin(scope, "cons", lisp_builtin_cons);
+  lisp_scope_add_builtin(scope, "lambda", lisp_builtin_lambda);
+  lisp_scope_add_builtin(scope, "define", lisp_builtin_define);
 }

@@ -79,6 +79,12 @@ typedef struct {
   char *name;
 } lisp_builtin;
 
+typedef struct {
+  LISP_VALUE_HEAD;
+  lisp_list *args;
+  lisp_value *code;
+} lisp_lambda;
+
 // Shortcuts for type operations.
 void lisp_print(FILE *f, lisp_value *value);
 void lisp_free(lisp_value *value);
@@ -115,5 +121,6 @@ extern lisp_type *type_error;
 extern lisp_type *type_integer;
 extern lisp_type *type_string;
 extern lisp_type *type_builtin;
+extern lisp_type *type_lambda;
 
 #endif//SMB_LIBSTEPHEN_LISP_H
