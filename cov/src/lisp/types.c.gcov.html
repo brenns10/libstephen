@@ -32,16 +32,16 @@
             <td></td>
             <td class="headerItem">Lines:</td>
             <td class="headerCovTableEntry">0</td>
-            <td class="headerCovTableEntry">238</td>
+            <td class="headerCovTableEntry">236</td>
             <td class="headerCovTableEntryLo">0.0 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2016-06-30 07:23:30</td>
+            <td class="headerValue">2016-08-06 17:01:24</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">0</td>
-            <td class="headerCovTableEntry">47</td>
+            <td class="headerCovTableEntry">43</td>
             <td class="headerCovTableEntryLo">0.0 %</td>
           </tr>
           <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
@@ -61,332 +61,332 @@
 <pre class="sourceHeading">          Line data    Source code</pre>
 <pre class="source">
 <a name="1"><span class="lineNum">       1 </span>            : #include &lt;assert.h&gt;</a>
-<span class="lineNum">       2 </span>            : #include &lt;stdio.h&gt;
-<span class="lineNum">       3 </span>            : #include &lt;stdlib.h&gt;
-<span class="lineNum">       4 </span>            : #include &lt;string.h&gt;
-<span class="lineNum">       5 </span>            : 
-<span class="lineNum">       6 </span>            : #include &quot;libstephen/lisp.h&quot;
-<a name="7"><span class="lineNum">       7 </span>            : #include &quot;libstephen/ht.h&quot;</a>
-<span class="lineNum">       8 </span>            : 
-<span class="lineNum">       9 </span><span class="lineNoCov">          0 : static lisp_value *eval_error(lisp_scope *s, lisp_value *v)</span>
-<span class="lineNum">      10 </span>            : {
-<span class="lineNum">      11 </span>            :   (void)s;
-<span class="lineNum">      12 </span><span class="lineNoCov">          0 :   return (lisp_value*) lisp_error_new(&quot;cannot evaluate this object&quot;);</span>
-<a name="13"><span class="lineNum">      13 </span>            : }</a>
-<span class="lineNum">      14 </span>            : 
-<span class="lineNum">      15 </span><span class="lineNoCov">          0 : static lisp_value *eval_same(lisp_scope *s, lisp_value *v)</span>
-<span class="lineNum">      16 </span>            : {
-<span class="lineNum">      17 </span>            :   (void)s;
-<span class="lineNum">      18 </span><span class="lineNoCov">          0 :   lisp_incref(v);</span>
-<span class="lineNum">      19 </span><span class="lineNoCov">          0 :   return v;</span>
-<a name="20"><span class="lineNum">      20 </span>            : }</a>
-<span class="lineNum">      21 </span>            : 
-<span class="lineNum">      22 </span><span class="lineNoCov">          0 : static lisp_value *call_error(lisp_scope *s, lisp_value *c, lisp_value *v)</span>
-<span class="lineNum">      23 </span>            : {
-<span class="lineNum">      24 </span>            :   (void)s;
-<span class="lineNum">      25 </span>            :   (void)c;
-<span class="lineNum">      26 </span>            :   (void)v;
-<span class="lineNum">      27 </span><span class="lineNoCov">          0 :   return (lisp_value*) lisp_error_new(&quot;not callable!&quot;);</span>
-<a name="28"><span class="lineNum">      28 </span>            : }</a>
-<span class="lineNum">      29 </span>            : 
-<span class="lineNum">      30 </span><span class="lineNoCov">          0 : static void nop_free(void *v)</span>
-<span class="lineNum">      31 </span>            : {
-<span class="lineNum">      32 </span>            :   (void)v;
-<span class="lineNum">      33 </span><span class="lineNoCov">          0 : }</span>
-<span class="lineNum">      34 </span>            : 
-<span class="lineNum">      35 </span>            : // type
-<span class="lineNum">      36 </span>            : 
-<span class="lineNum">      37 </span>            : static void type_print(FILE *f, lisp_value *v);
-<span class="lineNum">      38 </span>            : static lisp_value *type_new(void);
-<span class="lineNum">      39 </span>            : 
-<span class="lineNum">      40 </span>            : static lisp_type type_type_obj = {
-<span class="lineNum">      41 </span>            :   .type=(lisp_value*)&amp;type_type_obj,
-<span class="lineNum">      42 </span>            :   .refcount=1,
-<span class="lineNum">      43 </span>            :   .name=&quot;type&quot;,
-<span class="lineNum">      44 </span>            :   .print=type_print,
-<span class="lineNum">      45 </span>            :   .new=type_new,
-<span class="lineNum">      46 </span>            :   .eval=eval_error,
-<span class="lineNum">      47 </span>            :   .free=free,
-<span class="lineNum">      48 </span>            :   .call=call_error,
-<span class="lineNum">      49 </span>            : };
-<a name="50"><span class="lineNum">      50 </span>            : lisp_type *type_type = &amp;type_type_obj;</a>
-<span class="lineNum">      51 </span>            : 
-<span class="lineNum">      52 </span><span class="lineNoCov">          0 : static void type_print(FILE *f, lisp_value *v)</span>
-<span class="lineNum">      53 </span>            : {
-<span class="lineNum">      54 </span><span class="lineNoCov">          0 :   lisp_type *value = (lisp_type*) v;</span>
-<span class="lineNum">      55 </span><span class="lineNoCov">          0 :   fprintf(f, &quot;%s&quot;, value-&gt;name);</span>
-<a name="56"><span class="lineNum">      56 </span><span class="lineNoCov">          0 : }</span></a>
-<span class="lineNum">      57 </span>            : 
-<span class="lineNum">      58 </span><span class="lineNoCov">          0 : static lisp_value *type_new(void)</span>
-<span class="lineNum">      59 </span>            : {
-<span class="lineNum">      60 </span><span class="lineNoCov">          0 :   lisp_type *type = malloc(sizeof(lisp_type));</span>
-<span class="lineNum">      61 </span><span class="lineNoCov">          0 :   type-&gt;refcount = 1;</span>
-<span class="lineNum">      62 </span><span class="lineNoCov">          0 :   type-&gt;type = (lisp_value*)type_type;</span>
-<span class="lineNum">      63 </span><span class="lineNoCov">          0 :   return (lisp_value*)type;</span>
-<span class="lineNum">      64 </span>            : }
-<span class="lineNum">      65 </span>            : 
-<span class="lineNum">      66 </span>            : // scope
-<span class="lineNum">      67 </span>            : 
-<span class="lineNum">      68 </span>            : static void scope_print(FILE *f, lisp_value*v);
-<span class="lineNum">      69 </span>            : static lisp_value *scope_new(void);
-<span class="lineNum">      70 </span>            : static void scope_free(lisp_value *v);
-<span class="lineNum">      71 </span>            : 
-<span class="lineNum">      72 </span>            : static lisp_type type_scope_obj = {
-<span class="lineNum">      73 </span>            :   .type=(lisp_value*)&amp;type_type_obj,
-<span class="lineNum">      74 </span>            :   .refcount=1,
-<span class="lineNum">      75 </span>            :   .name=&quot;scope&quot;,
-<span class="lineNum">      76 </span>            :   .print=scope_print,
-<span class="lineNum">      77 </span>            :   .new=scope_new,
-<span class="lineNum">      78 </span>            :   .eval=eval_error,
-<span class="lineNum">      79 </span>            :   .free=free,
-<span class="lineNum">      80 </span>            :   .call=call_error,
-<span class="lineNum">      81 </span>            : };
-<a name="82"><span class="lineNum">      82 </span>            : lisp_type *type_scope = &amp;type_scope_obj;</a>
-<span class="lineNum">      83 </span>            : 
-<span class="lineNum">      84 </span><span class="lineNoCov">          0 : static unsigned int symbol_hash(DATA symbol)</span>
-<span class="lineNum">      85 </span>            : {
-<span class="lineNum">      86 </span><span class="lineNoCov">          0 :   lisp_symbol *sym = symbol.data_ptr;</span>
-<span class="lineNum">      87 </span><span class="lineNoCov">          0 :   return ht_string_hash(PTR(sym-&gt;sym));</span>
-<a name="88"><span class="lineNum">      88 </span>            : }</a>
-<span class="lineNum">      89 </span>            : 
-<span class="lineNum">      90 </span><span class="lineNoCov">          0 : static int symbol_compare(DATA d1, DATA d2)</span>
-<span class="lineNum">      91 </span>            : {
-<span class="lineNum">      92 </span><span class="lineNoCov">          0 :   lisp_symbol *sym1 = d1.data_ptr;</span>
-<span class="lineNum">      93 </span><span class="lineNoCov">          0 :   lisp_symbol *sym2 = d2.data_ptr;</span>
-<span class="lineNum">      94 </span><span class="lineNoCov">          0 :   return data_compare_string(PTR(sym1-&gt;sym), PTR(sym2-&gt;sym));;</span>
-<a name="95"><span class="lineNum">      95 </span>            : }</a>
-<span class="lineNum">      96 </span>            : 
-<span class="lineNum">      97 </span><span class="lineNoCov">          0 : static lisp_value *scope_new(void)</span>
-<span class="lineNum">      98 </span>            : {
-<span class="lineNum">      99 </span><span class="lineNoCov">          0 :   lisp_scope *scope = malloc(sizeof(lisp_scope));</span>
-<span class="lineNum">     100 </span><span class="lineNoCov">          0 :   scope-&gt;type = (lisp_value*)type_scope;</span>
-<span class="lineNum">     101 </span><span class="lineNoCov">          0 :   scope-&gt;refcount = 1;</span>
-<span class="lineNum">     102 </span><span class="lineNoCov">          0 :   ht_init(&amp;scope-&gt;scope, symbol_hash, symbol_compare);</span>
-<span class="lineNum">     103 </span><span class="lineNoCov">          0 :   return (lisp_value*)scope;</span>
-<a name="104"><span class="lineNum">     104 </span>            : }</a>
-<span class="lineNum">     105 </span>            : 
-<span class="lineNum">     106 </span><span class="lineNoCov">          0 : static void scope_free(lisp_value *v)</span>
-<span class="lineNum">     107 </span>            : {
-<span class="lineNum">     108 </span><span class="lineNoCov">          0 :   lisp_scope *scope = (lisp_scope*) v;</span>
-<span class="lineNum">     109 </span><span class="lineNoCov">          0 :   smb_iter it = ht_get_iter(&amp;scope-&gt;scope);</span>
-<span class="lineNum">     110 </span><span class="lineNoCov">          0 :   while (it.has_next(&amp;it)) {</span>
-<span class="lineNum">     111 </span><span class="lineNoCov">          0 :     smb_status status = SMB_SUCCESS;</span>
-<span class="lineNum">     112 </span><span class="lineNoCov">          0 :     lisp_value *key = it.next(&amp;it, &amp;status).data_ptr;</span>
-<span class="lineNum">     113 </span><span class="lineNoCov">          0 :     assert(status == SMB_SUCCESS);</span>
-<span class="lineNum">     114 </span><span class="lineNoCov">          0 :     lisp_value *value = ht_get(&amp;scope-&gt;scope, PTR(key), &amp;status).data_ptr;</span>
-<span class="lineNum">     115 </span><span class="lineNoCov">          0 :     assert(status == SMB_SUCCESS);</span>
-<span class="lineNum">     116 </span><span class="lineNoCov">          0 :     lisp_decref(key);</span>
-<span class="lineNum">     117 </span><span class="lineNoCov">          0 :     lisp_decref(value);</span>
-<span class="lineNum">     118 </span>            :   }
-<span class="lineNum">     119 </span><span class="lineNoCov">          0 :   ht_destroy(&amp;scope-&gt;scope);</span>
-<span class="lineNum">     120 </span><span class="lineNoCov">          0 :   free(scope);</span>
-<a name="121"><span class="lineNum">     121 </span><span class="lineNoCov">          0 : }</span></a>
-<span class="lineNum">     122 </span>            : 
-<span class="lineNum">     123 </span><span class="lineNoCov">          0 : static void scope_print(FILE *f, lisp_value *v)</span>
-<span class="lineNum">     124 </span>            : {
-<span class="lineNum">     125 </span><span class="lineNoCov">          0 :   lisp_scope *scope = (lisp_scope*) v;</span>
-<span class="lineNum">     126 </span><span class="lineNoCov">          0 :   smb_iter it = ht_get_iter(&amp;scope-&gt;scope);</span>
-<span class="lineNum">     127 </span><span class="lineNoCov">          0 :   fprintf(f, &quot;(scope:&quot;);</span>
-<span class="lineNum">     128 </span><span class="lineNoCov">          0 :   while (it.has_next(&amp;it)) {</span>
-<span class="lineNum">     129 </span><span class="lineNoCov">          0 :     smb_status status = SMB_SUCCESS;</span>
-<span class="lineNum">     130 </span><span class="lineNoCov">          0 :     lisp_value *key = it.next(&amp;it, &amp;status).data_ptr;</span>
-<span class="lineNum">     131 </span><span class="lineNoCov">          0 :     assert(status == SMB_SUCCESS);</span>
-<span class="lineNum">     132 </span><span class="lineNoCov">          0 :     lisp_value *value = ht_get(&amp;scope-&gt;scope, PTR(key), &amp;status).data_ptr;</span>
-<span class="lineNum">     133 </span><span class="lineNoCov">          0 :     assert(status == SMB_SUCCESS);</span>
-<span class="lineNum">     134 </span><span class="lineNoCov">          0 :     fprintf(f, &quot; &quot;);</span>
-<span class="lineNum">     135 </span><span class="lineNoCov">          0 :     lisp_print(f, key);</span>
-<span class="lineNum">     136 </span><span class="lineNoCov">          0 :     fprintf(f, &quot;=&gt;&quot;);</span>
-<span class="lineNum">     137 </span><span class="lineNoCov">          0 :     lisp_print(f, value);</span>
-<span class="lineNum">     138 </span>            :   }
-<span class="lineNum">     139 </span><span class="lineNoCov">          0 :   fprintf(f, &quot;)&quot;);</span>
-<a name="140"><span class="lineNum">     140 </span><span class="lineNoCov">          0 : }</span></a>
-<span class="lineNum">     141 </span>            : 
-<span class="lineNum">     142 </span><span class="lineNoCov">          0 : void lisp_scope_bind(lisp_scope *scope, lisp_symbol *symbol, lisp_value *value)</span>
-<span class="lineNum">     143 </span>            : {
-<span class="lineNum">     144 </span><span class="lineNoCov">          0 :   ht_insert(&amp;scope-&gt;scope, PTR(symbol), PTR(value));</span>
-<a name="145"><span class="lineNum">     145 </span><span class="lineNoCov">          0 : }</span></a>
-<span class="lineNum">     146 </span>            : 
-<span class="lineNum">     147 </span><span class="lineNoCov">          0 : lisp_value *lisp_scope_lookup(lisp_scope *scope, lisp_symbol *symbol)</span>
-<span class="lineNum">     148 </span>            : {
-<span class="lineNum">     149 </span><span class="lineNoCov">          0 :   smb_status status = SMB_SUCCESS;</span>
-<span class="lineNum">     150 </span><span class="lineNoCov">          0 :   lisp_value *v = ht_get(&amp;scope-&gt;scope, PTR(symbol), &amp;status).data_ptr;</span>
-<span class="lineNum">     151 </span><span class="lineNoCov">          0 :   if (status == SMB_NOT_FOUND_ERROR) {</span>
-<span class="lineNum">     152 </span><span class="lineNoCov">          0 :     if (scope-&gt;up) {</span>
-<span class="lineNum">     153 </span><span class="lineNoCov">          0 :       return lisp_scope_lookup(scope-&gt;up, symbol);</span>
-<span class="lineNum">     154 </span>            :     } else {
-<span class="lineNum">     155 </span><span class="lineNoCov">          0 :       return (lisp_value*)lisp_error_new(&quot;symbol not found in scope&quot;);</span>
-<span class="lineNum">     156 </span>            :     }
-<span class="lineNum">     157 </span>            :   } else {
-<span class="lineNum">     158 </span><span class="lineNoCov">          0 :     return v;</span>
-<span class="lineNum">     159 </span>            :   }
-<span class="lineNum">     160 </span>            : }
-<span class="lineNum">     161 </span>            : 
-<span class="lineNum">     162 </span>            : // list
+<span class="lineNum">       2 </span>            : #include &lt;stdbool.h&gt;
+<span class="lineNum">       3 </span>            : #include &lt;stdio.h&gt;
+<span class="lineNum">       4 </span>            : #include &lt;stdlib.h&gt;
+<span class="lineNum">       5 </span>            : #include &lt;string.h&gt;
+<span class="lineNum">       6 </span>            : 
+<span class="lineNum">       7 </span>            : #include &quot;libstephen/lisp.h&quot;
+<span class="lineNum">       8 </span>            : #include &quot;libstephen/ht.h&quot;
+<span class="lineNum">       9 </span>            : 
+<a name="10"><span class="lineNum">      10 </span>            : // General functions for types.</a>
+<span class="lineNum">      11 </span>            : 
+<span class="lineNum">      12 </span><span class="lineNoCov">          0 : static lisp_value *eval_error(lisp_scope *s, lisp_value *v)</span>
+<span class="lineNum">      13 </span>            : {
+<span class="lineNum">      14 </span>            :   (void)s;
+<span class="lineNum">      15 </span><span class="lineNoCov">          0 :   return (lisp_value*) lisp_error_new(&quot;cannot evaluate this object&quot;);</span>
+<a name="16"><span class="lineNum">      16 </span>            : }</a>
+<span class="lineNum">      17 </span>            : 
+<span class="lineNum">      18 </span><span class="lineNoCov">          0 : static lisp_value *eval_same(lisp_scope *s, lisp_value *v)</span>
+<span class="lineNum">      19 </span>            : {
+<span class="lineNum">      20 </span>            :   (void)s;
+<span class="lineNum">      21 </span><span class="lineNoCov">          0 :   lisp_incref(v);</span>
+<span class="lineNum">      22 </span><span class="lineNoCov">          0 :   return v;</span>
+<a name="23"><span class="lineNum">      23 </span>            : }</a>
+<span class="lineNum">      24 </span>            : 
+<span class="lineNum">      25 </span><span class="lineNoCov">          0 : static lisp_value *call_error(lisp_scope *s, lisp_value *c, lisp_value *v)</span>
+<span class="lineNum">      26 </span>            : {
+<span class="lineNum">      27 </span>            :   (void)s;
+<span class="lineNum">      28 </span>            :   (void)c;
+<span class="lineNum">      29 </span>            :   (void)v;
+<span class="lineNum">      30 </span><span class="lineNoCov">          0 :   return (lisp_value*) lisp_error_new(&quot;not callable!&quot;);</span>
+<a name="31"><span class="lineNum">      31 </span>            : }</a>
+<span class="lineNum">      32 </span>            : 
+<span class="lineNum">      33 </span><span class="lineNoCov">          0 : static lisp_value *call_same(lisp_scope *s, lisp_value *c, lisp_value *v)</span>
+<span class="lineNum">      34 </span>            : {
+<span class="lineNum">      35 </span>            :   (void)s;
+<span class="lineNum">      36 </span>            :   (void)v;
+<span class="lineNum">      37 </span><span class="lineNoCov">          0 :   lisp_incref(c);</span>
+<span class="lineNum">      38 </span><span class="lineNoCov">          0 :   return c;</span>
+<a name="39"><span class="lineNum">      39 </span>            : }</a>
+<span class="lineNum">      40 </span>            : 
+<span class="lineNum">      41 </span><span class="lineNoCov">          0 : static void nop_free(void *v)</span>
+<span class="lineNum">      42 </span>            : {
+<span class="lineNum">      43 </span>            :   (void)v;
+<span class="lineNum">      44 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">      45 </span>            : 
+<span class="lineNum">      46 </span>            : // type
+<span class="lineNum">      47 </span>            : 
+<span class="lineNum">      48 </span>            : static void type_print(FILE *f, lisp_value *v);
+<span class="lineNum">      49 </span>            : static lisp_value *type_new(void);
+<span class="lineNum">      50 </span>            : 
+<span class="lineNum">      51 </span>            : static lisp_type type_type_obj = {
+<span class="lineNum">      52 </span>            :   .type=&amp;type_type_obj,
+<span class="lineNum">      53 </span>            :   .refcount=1,
+<span class="lineNum">      54 </span>            :   .name=&quot;type&quot;,
+<span class="lineNum">      55 </span>            :   .print=type_print,
+<span class="lineNum">      56 </span>            :   .new=type_new,
+<span class="lineNum">      57 </span>            :   .eval=eval_error,
+<span class="lineNum">      58 </span>            :   .free=free,
+<span class="lineNum">      59 </span>            :   .call=call_error,
+<span class="lineNum">      60 </span>            : };
+<a name="61"><span class="lineNum">      61 </span>            : lisp_type *type_type = &amp;type_type_obj;</a>
+<span class="lineNum">      62 </span>            : 
+<span class="lineNum">      63 </span><span class="lineNoCov">          0 : static void type_print(FILE *f, lisp_value *v)</span>
+<span class="lineNum">      64 </span>            : {
+<span class="lineNum">      65 </span><span class="lineNoCov">          0 :   lisp_type *value = (lisp_type*) v;</span>
+<span class="lineNum">      66 </span><span class="lineNoCov">          0 :   fprintf(f, &quot;%s&quot;, value-&gt;name);</span>
+<a name="67"><span class="lineNum">      67 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">      68 </span>            : 
+<span class="lineNum">      69 </span><span class="lineNoCov">          0 : static lisp_value *type_new(void)</span>
+<span class="lineNum">      70 </span>            : {
+<span class="lineNum">      71 </span><span class="lineNoCov">          0 :   lisp_type *type = malloc(sizeof(lisp_type));</span>
+<span class="lineNum">      72 </span><span class="lineNoCov">          0 :   type-&gt;refcount = 1;</span>
+<span class="lineNum">      73 </span><span class="lineNoCov">          0 :   type-&gt;type = type;</span>
+<span class="lineNum">      74 </span><span class="lineNoCov">          0 :   return (lisp_value*)type;</span>
+<span class="lineNum">      75 </span>            : }
+<span class="lineNum">      76 </span>            : 
+<span class="lineNum">      77 </span>            : // scope
+<span class="lineNum">      78 </span>            : 
+<span class="lineNum">      79 </span>            : static void scope_print(FILE *f, lisp_value*v);
+<span class="lineNum">      80 </span>            : static lisp_value *scope_new(void);
+<span class="lineNum">      81 </span>            : static void scope_free(void *v);
+<span class="lineNum">      82 </span>            : 
+<span class="lineNum">      83 </span>            : static lisp_type type_scope_obj = {
+<span class="lineNum">      84 </span>            :   .type=&amp;type_type_obj,
+<span class="lineNum">      85 </span>            :   .refcount=1,
+<span class="lineNum">      86 </span>            :   .name=&quot;scope&quot;,
+<span class="lineNum">      87 </span>            :   .print=scope_print,
+<span class="lineNum">      88 </span>            :   .new=scope_new,
+<span class="lineNum">      89 </span>            :   .eval=eval_error,
+<span class="lineNum">      90 </span>            :   .free=scope_free,
+<span class="lineNum">      91 </span>            :   .call=call_error,
+<span class="lineNum">      92 </span>            : };
+<a name="93"><span class="lineNum">      93 </span>            : lisp_type *type_scope = &amp;type_scope_obj;</a>
+<span class="lineNum">      94 </span>            : 
+<span class="lineNum">      95 </span><span class="lineNoCov">          0 : static unsigned int symbol_hash(DATA symbol)</span>
+<span class="lineNum">      96 </span>            : {
+<span class="lineNum">      97 </span><span class="lineNoCov">          0 :   lisp_symbol *sym = symbol.data_ptr;</span>
+<span class="lineNum">      98 </span><span class="lineNoCov">          0 :   return ht_string_hash(PTR(sym-&gt;sym));</span>
+<a name="99"><span class="lineNum">      99 </span>            : }</a>
+<span class="lineNum">     100 </span>            : 
+<span class="lineNum">     101 </span><span class="lineNoCov">          0 : static int symbol_compare(DATA d1, DATA d2)</span>
+<span class="lineNum">     102 </span>            : {
+<span class="lineNum">     103 </span><span class="lineNoCov">          0 :   lisp_symbol *sym1 = d1.data_ptr;</span>
+<span class="lineNum">     104 </span><span class="lineNoCov">          0 :   lisp_symbol *sym2 = d2.data_ptr;</span>
+<span class="lineNum">     105 </span><span class="lineNoCov">          0 :   return data_compare_string(PTR(sym1-&gt;sym), PTR(sym2-&gt;sym));;</span>
+<a name="106"><span class="lineNum">     106 </span>            : }</a>
+<span class="lineNum">     107 </span>            : 
+<span class="lineNum">     108 </span><span class="lineNoCov">          0 : static lisp_value *scope_new(void)</span>
+<span class="lineNum">     109 </span>            : {
+<span class="lineNum">     110 </span><span class="lineNoCov">          0 :   lisp_scope *scope = malloc(sizeof(lisp_scope));</span>
+<span class="lineNum">     111 </span><span class="lineNoCov">          0 :   scope-&gt;type = type_scope;</span>
+<span class="lineNum">     112 </span><span class="lineNoCov">          0 :   scope-&gt;refcount = 1;</span>
+<span class="lineNum">     113 </span><span class="lineNoCov">          0 :   scope-&gt;up = NULL;</span>
+<span class="lineNum">     114 </span><span class="lineNoCov">          0 :   ht_init(&amp;scope-&gt;scope, symbol_hash, symbol_compare);</span>
+<span class="lineNum">     115 </span><span class="lineNoCov">          0 :   return (lisp_value*)scope;</span>
+<a name="116"><span class="lineNum">     116 </span>            : }</a>
+<span class="lineNum">     117 </span>            : 
+<span class="lineNum">     118 </span><span class="lineNoCov">          0 : static void scope_free(void *v)</span>
+<span class="lineNum">     119 </span>            : {
+<span class="lineNum">     120 </span><span class="lineNoCov">          0 :   lisp_scope *scope = (lisp_scope*) v;</span>
+<span class="lineNum">     121 </span><span class="lineNoCov">          0 :   smb_iter it = ht_get_iter(&amp;scope-&gt;scope);</span>
+<span class="lineNum">     122 </span><span class="lineNoCov">          0 :   while (it.has_next(&amp;it)) {</span>
+<span class="lineNum">     123 </span><span class="lineNoCov">          0 :     smb_status status = SMB_SUCCESS;</span>
+<span class="lineNum">     124 </span><span class="lineNoCov">          0 :     lisp_value *key = it.next(&amp;it, &amp;status).data_ptr;</span>
+<span class="lineNum">     125 </span><span class="lineNoCov">          0 :     assert(status == SMB_SUCCESS);</span>
+<span class="lineNum">     126 </span><span class="lineNoCov">          0 :     lisp_value *value = ht_get(&amp;scope-&gt;scope, PTR(key), &amp;status).data_ptr;</span>
+<span class="lineNum">     127 </span><span class="lineNoCov">          0 :     assert(status == SMB_SUCCESS);</span>
+<span class="lineNum">     128 </span><span class="lineNoCov">          0 :     lisp_decref(key);</span>
+<span class="lineNum">     129 </span><span class="lineNoCov">          0 :     lisp_decref(value);</span>
+<span class="lineNum">     130 </span>            :   }
+<span class="lineNum">     131 </span><span class="lineNoCov">          0 :   ht_destroy(&amp;scope-&gt;scope);</span>
+<span class="lineNum">     132 </span><span class="lineNoCov">          0 :   if(scope-&gt;up) {</span>
+<span class="lineNum">     133 </span><span class="lineNoCov">          0 :     lisp_decref((lisp_value*)scope-&gt;up);</span>
+<span class="lineNum">     134 </span>            :   }
+<span class="lineNum">     135 </span><span class="lineNoCov">          0 :   free(scope);</span>
+<a name="136"><span class="lineNum">     136 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     137 </span>            : 
+<span class="lineNum">     138 </span><span class="lineNoCov">          0 : static void scope_print(FILE *f, lisp_value *v)</span>
+<span class="lineNum">     139 </span>            : {
+<span class="lineNum">     140 </span><span class="lineNoCov">          0 :   lisp_scope *scope = (lisp_scope*) v;</span>
+<span class="lineNum">     141 </span><span class="lineNoCov">          0 :   smb_iter it = ht_get_iter(&amp;scope-&gt;scope);</span>
+<span class="lineNum">     142 </span><span class="lineNoCov">          0 :   fprintf(f, &quot;(scope:&quot;);</span>
+<span class="lineNum">     143 </span><span class="lineNoCov">          0 :   while (it.has_next(&amp;it)) {</span>
+<span class="lineNum">     144 </span><span class="lineNoCov">          0 :     smb_status status = SMB_SUCCESS;</span>
+<span class="lineNum">     145 </span><span class="lineNoCov">          0 :     lisp_value *key = it.next(&amp;it, &amp;status).data_ptr;</span>
+<span class="lineNum">     146 </span><span class="lineNoCov">          0 :     assert(status == SMB_SUCCESS);</span>
+<span class="lineNum">     147 </span><span class="lineNoCov">          0 :     lisp_value *value = ht_get(&amp;scope-&gt;scope, PTR(key), &amp;status).data_ptr;</span>
+<span class="lineNum">     148 </span><span class="lineNoCov">          0 :     assert(status == SMB_SUCCESS);</span>
+<span class="lineNum">     149 </span><span class="lineNoCov">          0 :     fprintf(f, &quot; &quot;);</span>
+<span class="lineNum">     150 </span><span class="lineNoCov">          0 :     lisp_print(f, key);</span>
+<span class="lineNum">     151 </span><span class="lineNoCov">          0 :     fprintf(f, &quot;: &quot;);</span>
+<span class="lineNum">     152 </span><span class="lineNoCov">          0 :     lisp_print(f, value);</span>
+<span class="lineNum">     153 </span>            :   }
+<span class="lineNum">     154 </span><span class="lineNoCov">          0 :   fprintf(f, &quot;)&quot;);</span>
+<span class="lineNum">     155 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     156 </span>            : 
+<span class="lineNum">     157 </span>            : // list
+<span class="lineNum">     158 </span>            : 
+<span class="lineNum">     159 </span>            : static void list_print(FILE *f, lisp_value *v);
+<span class="lineNum">     160 </span>            : static lisp_value *list_new(void);
+<span class="lineNum">     161 </span>            : static void list_free(void *);
+<span class="lineNum">     162 </span>            : static lisp_value *list_eval(lisp_scope *scope, lisp_value *list);
 <span class="lineNum">     163 </span>            : 
-<span class="lineNum">     164 </span>            : static void list_print(FILE *f, lisp_value *v);
-<span class="lineNum">     165 </span>            : static lisp_value *list_new(void);
-<span class="lineNum">     166 </span>            : static lisp_value *list_eval(lisp_scope *scope, lisp_value *list);
-<span class="lineNum">     167 </span>            : 
-<span class="lineNum">     168 </span>            : static lisp_type type_list_obj = {
-<span class="lineNum">     169 </span>            :   .type=(lisp_value*)&amp;type_type_obj,
-<span class="lineNum">     170 </span>            :   .refcount=1,
-<span class="lineNum">     171 </span>            :   .name=&quot;list&quot;,
-<span class="lineNum">     172 </span>            :   .print=list_print,
-<span class="lineNum">     173 </span>            :   .new=list_new,
-<span class="lineNum">     174 </span>            :   .eval=list_eval,
-<span class="lineNum">     175 </span>            :   .free=free,
-<span class="lineNum">     176 </span>            :   .call=call_error,
-<span class="lineNum">     177 </span>            : };
-<a name="178"><span class="lineNum">     178 </span>            : lisp_type *type_list = &amp;type_list_obj;</a>
-<span class="lineNum">     179 </span>            : 
-<span class="lineNum">     180 </span><span class="lineNoCov">          0 : static lisp_value *list_eval(lisp_scope *scope, lisp_value *v)</span>
-<span class="lineNum">     181 </span>            : {
-<span class="lineNum">     182 </span><span class="lineNoCov">          0 :   lisp_list *list = (lisp_list*) v;</span>
-<span class="lineNum">     183 </span><span class="lineNoCov">          0 :   if (list-&gt;right-&gt;type != (lisp_value*) type_list) {</span>
-<span class="lineNum">     184 </span><span class="lineNoCov">          0 :     return (lisp_value*) lisp_error_new(&quot;bad function call syntax&quot;);</span>
-<span class="lineNum">     185 </span>            :   }
-<span class="lineNum">     186 </span><span class="lineNoCov">          0 :   lisp_value *callable = lisp_eval(scope, list-&gt;left);</span>
-<span class="lineNum">     187 </span><span class="lineNoCov">          0 :   return lisp_call(scope, callable,(lisp_list*) list-&gt;right);</span>
-<a name="188"><span class="lineNum">     188 </span>            : }</a>
-<span class="lineNum">     189 </span>            : 
-<span class="lineNum">     190 </span><span class="lineNoCov">          0 : static void list_print_internal(FILE *f, lisp_list *list)</span>
-<span class="lineNum">     191 </span>            : {
-<span class="lineNum">     192 </span><span class="lineNoCov">          0 :   lisp_print(f, list-&gt;left);</span>
-<span class="lineNum">     193 </span><span class="lineNoCov">          0 :   if (list-&gt;right == lisp_nilv) {</span>
-<span class="lineNum">     194 </span><span class="lineNoCov">          0 :     return;</span>
-<span class="lineNum">     195 </span><span class="lineNoCov">          0 :   } else if (list-&gt;right-&gt;type != (lisp_value*)type_list) {</span>
-<span class="lineNum">     196 </span><span class="lineNoCov">          0 :     fprintf(f, &quot; . &quot;);</span>
-<span class="lineNum">     197 </span><span class="lineNoCov">          0 :     lisp_print(f, list-&gt;right);</span>
-<span class="lineNum">     198 </span><span class="lineNoCov">          0 :     return;</span>
-<span class="lineNum">     199 </span>            :   } else {
-<span class="lineNum">     200 </span><span class="lineNoCov">          0 :     fprintf(f, &quot; &quot;);</span>
-<span class="lineNum">     201 </span><span class="lineNoCov">          0 :     list_print_internal(f, (lisp_list*)list-&gt;right);</span>
-<span class="lineNum">     202 </span>            :   }
-<a name="203"><span class="lineNum">     203 </span>            : }</a>
-<span class="lineNum">     204 </span>            : 
-<span class="lineNum">     205 </span><span class="lineNoCov">          0 : static void list_print(FILE *f, lisp_value *v)</span>
-<span class="lineNum">     206 </span>            : {
-<span class="lineNum">     207 </span><span class="lineNoCov">          0 :   fprintf(f, &quot;(&quot;);</span>
-<span class="lineNum">     208 </span><span class="lineNoCov">          0 :   list_print_internal(f, (lisp_list*)v);</span>
-<span class="lineNum">     209 </span><span class="lineNoCov">          0 :   fprintf(f, &quot;)&quot;);</span>
-<a name="210"><span class="lineNum">     210 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     164 </span>            : static lisp_type type_list_obj = {
+<span class="lineNum">     165 </span>            :   .type=&amp;type_type_obj,
+<span class="lineNum">     166 </span>            :   .refcount=1,
+<span class="lineNum">     167 </span>            :   .name=&quot;list&quot;,
+<span class="lineNum">     168 </span>            :   .print=list_print,
+<span class="lineNum">     169 </span>            :   .new=list_new,
+<span class="lineNum">     170 </span>            :   .eval=list_eval,
+<span class="lineNum">     171 </span>            :   .free=list_free,
+<span class="lineNum">     172 </span>            :   .call=call_error,
+<span class="lineNum">     173 </span>            : };
+<span class="lineNum">     174 </span>            : lisp_type *type_list = &amp;type_list_obj;
+<span class="lineNum">     175 </span>            : 
+<span class="lineNum">     176 </span>            : lisp_list lisp_nilv_obj = {
+<span class="lineNum">     177 </span>            :   .type=&amp;type_list_obj,
+<span class="lineNum">     178 </span>            :   .refcount=1,
+<span class="lineNum">     179 </span>            :   .left=NULL,
+<span class="lineNum">     180 </span>            :   .right=NULL,
+<span class="lineNum">     181 </span>            : };
+<a name="182"><span class="lineNum">     182 </span>            : lisp_list *lisp_nilv = &amp;lisp_nilv_obj;</a>
+<span class="lineNum">     183 </span>            : 
+<span class="lineNum">     184 </span><span class="lineNoCov">          0 : static lisp_value *list_eval(lisp_scope *scope, lisp_value *v)</span>
+<span class="lineNum">     185 </span>            : {
+<span class="lineNum">     186 </span><span class="lineNoCov">          0 :   lisp_list *list = (lisp_list*) v;</span>
+<span class="lineNum">     187 </span><span class="lineNoCov">          0 :   if (list-&gt;right-&gt;type != type_list) {</span>
+<span class="lineNum">     188 </span><span class="lineNoCov">          0 :     return (lisp_value*) lisp_error_new(&quot;bad function call syntax&quot;);</span>
+<span class="lineNum">     189 </span>            :   }
+<span class="lineNum">     190 </span><span class="lineNoCov">          0 :   lisp_value *callable = lisp_eval(scope, list-&gt;left);</span>
+<span class="lineNum">     191 </span><span class="lineNoCov">          0 :   lisp_value *rv = lisp_call(scope, callable, list-&gt;right);</span>
+<span class="lineNum">     192 </span><span class="lineNoCov">          0 :   lisp_decref(callable);</span>
+<span class="lineNum">     193 </span><span class="lineNoCov">          0 :   return rv;</span>
+<a name="194"><span class="lineNum">     194 </span>            : }</a>
+<span class="lineNum">     195 </span>            : 
+<span class="lineNum">     196 </span><span class="lineNoCov">          0 : static void list_print_internal(FILE *f, lisp_list *list)</span>
+<span class="lineNum">     197 </span>            : {
+<span class="lineNum">     198 </span><span class="lineNoCov">          0 :   if (list == lisp_nilv) {</span>
+<span class="lineNum">     199 </span><span class="lineNoCov">          0 :     return;</span>
+<span class="lineNum">     200 </span>            :   }
+<span class="lineNum">     201 </span><span class="lineNoCov">          0 :   lisp_print(f, list-&gt;left);</span>
+<span class="lineNum">     202 </span><span class="lineNoCov">          0 :   if (list-&gt;right-&gt;type != type_list) {</span>
+<span class="lineNum">     203 </span><span class="lineNoCov">          0 :     fprintf(f, &quot; . &quot;);</span>
+<span class="lineNum">     204 </span><span class="lineNoCov">          0 :     lisp_print(f, list-&gt;right);</span>
+<span class="lineNum">     205 </span><span class="lineNoCov">          0 :     return;</span>
+<span class="lineNum">     206 </span>            :   } else {
+<span class="lineNum">     207 </span><span class="lineNoCov">          0 :     fprintf(f, &quot; &quot;);</span>
+<span class="lineNum">     208 </span><span class="lineNoCov">          0 :     list_print_internal(f, (lisp_list*)list-&gt;right);</span>
+<span class="lineNum">     209 </span>            :   }
+<a name="210"><span class="lineNum">     210 </span>            : }</a>
 <span class="lineNum">     211 </span>            : 
-<span class="lineNum">     212 </span><span class="lineNoCov">          0 : static lisp_value *list_new(void)</span>
+<span class="lineNum">     212 </span><span class="lineNoCov">          0 : static void list_print(FILE *f, lisp_value *v)</span>
 <span class="lineNum">     213 </span>            : {
-<span class="lineNum">     214 </span><span class="lineNoCov">          0 :   lisp_list *list = malloc(sizeof(lisp_list));</span>
-<span class="lineNum">     215 </span><span class="lineNoCov">          0 :   list-&gt;refcount = 1;</span>
-<span class="lineNum">     216 </span><span class="lineNoCov">          0 :   list-&gt;type = (lisp_value*) type_list;</span>
-<span class="lineNum">     217 </span><span class="lineNoCov">          0 :   list-&gt;left = NULL;</span>
-<span class="lineNum">     218 </span><span class="lineNoCov">          0 :   list-&gt;right = NULL;</span>
-<span class="lineNum">     219 </span><span class="lineNoCov">          0 :   return (lisp_value*) list;</span>
-<span class="lineNum">     220 </span>            : }
-<span class="lineNum">     221 </span>            : 
-<span class="lineNum">     222 </span>            : // symbol
-<span class="lineNum">     223 </span>            : 
-<span class="lineNum">     224 </span>            : static void symbol_print(FILE *f, lisp_value *v);
-<span class="lineNum">     225 </span>            : static lisp_value *symbol_new(void);
-<span class="lineNum">     226 </span>            : static lisp_value *symbol_eval(lisp_scope *scope, lisp_value *value);
-<span class="lineNum">     227 </span>            : static void symbol_free(void *v);
+<span class="lineNum">     214 </span><span class="lineNoCov">          0 :   fprintf(f, &quot;(&quot;);</span>
+<span class="lineNum">     215 </span><span class="lineNoCov">          0 :   list_print_internal(f, (lisp_list*)v);</span>
+<span class="lineNum">     216 </span><span class="lineNoCov">          0 :   fprintf(f, &quot;)&quot;);</span>
+<a name="217"><span class="lineNum">     217 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     218 </span>            : 
+<span class="lineNum">     219 </span><span class="lineNoCov">          0 : static lisp_value *list_new(void)</span>
+<span class="lineNum">     220 </span>            : {
+<span class="lineNum">     221 </span><span class="lineNoCov">          0 :   lisp_list *list = malloc(sizeof(lisp_list));</span>
+<span class="lineNum">     222 </span><span class="lineNoCov">          0 :   list-&gt;refcount = 1;</span>
+<span class="lineNum">     223 </span><span class="lineNoCov">          0 :   list-&gt;type = type_list;</span>
+<span class="lineNum">     224 </span><span class="lineNoCov">          0 :   list-&gt;left = NULL;</span>
+<span class="lineNum">     225 </span><span class="lineNoCov">          0 :   list-&gt;right = NULL;</span>
+<span class="lineNum">     226 </span><span class="lineNoCov">          0 :   return (lisp_value*) list;</span>
+<a name="227"><span class="lineNum">     227 </span>            : }</a>
 <span class="lineNum">     228 </span>            : 
-<span class="lineNum">     229 </span>            : static lisp_type type_symbol_obj = {
-<span class="lineNum">     230 </span>            :   .type=(lisp_value*)&amp;type_type_obj,
-<span class="lineNum">     231 </span>            :   .refcount=1,
-<span class="lineNum">     232 </span>            :   .name=&quot;symbol&quot;,
-<span class="lineNum">     233 </span>            :   .print=symbol_print,
-<span class="lineNum">     234 </span>            :   .new=symbol_new,
-<span class="lineNum">     235 </span>            :   .eval=symbol_eval,
-<span class="lineNum">     236 </span>            :   .free=symbol_free,
-<span class="lineNum">     237 </span>            :   .call=call_error,
-<span class="lineNum">     238 </span>            : };
-<a name="239"><span class="lineNum">     239 </span>            : lisp_type *type_symbol = &amp;type_symbol_obj;</a>
-<span class="lineNum">     240 </span>            : 
-<span class="lineNum">     241 </span><span class="lineNoCov">          0 : static void symbol_print(FILE *f, lisp_value *v)</span>
-<span class="lineNum">     242 </span>            : {
-<span class="lineNum">     243 </span><span class="lineNoCov">          0 :   lisp_symbol *symbol = (lisp_symbol*) v;</span>
-<span class="lineNum">     244 </span><span class="lineNoCov">          0 :   fprintf(f, &quot;%s&quot;, symbol-&gt;sym);</span>
-<a name="245"><span class="lineNum">     245 </span><span class="lineNoCov">          0 : }</span></a>
-<span class="lineNum">     246 </span>            : 
-<span class="lineNum">     247 </span><span class="lineNoCov">          0 : static lisp_value *symbol_new(void)</span>
-<span class="lineNum">     248 </span>            : {
-<span class="lineNum">     249 </span><span class="lineNoCov">          0 :   lisp_symbol *symbol = malloc(sizeof(lisp_symbol*));</span>
-<span class="lineNum">     250 </span><span class="lineNoCov">          0 :   symbol-&gt;refcount = 1;</span>
-<span class="lineNum">     251 </span><span class="lineNoCov">          0 :   symbol-&gt;type = (lisp_value*) type_symbol;</span>
-<span class="lineNum">     252 </span><span class="lineNoCov">          0 :   symbol-&gt;sym = NULL;</span>
-<span class="lineNum">     253 </span><span class="lineNoCov">          0 :   return (lisp_value*)symbol;</span>
-<a name="254"><span class="lineNum">     254 </span>            : }</a>
-<span class="lineNum">     255 </span>            : 
-<span class="lineNum">     256 </span><span class="lineNoCov">          0 : static lisp_value *symbol_eval(lisp_scope *scope, lisp_value *value)</span>
-<span class="lineNum">     257 </span>            : {
-<span class="lineNum">     258 </span><span class="lineNoCov">          0 :   lisp_symbol *symbol = (lisp_symbol*) value;</span>
-<span class="lineNum">     259 </span><span class="lineNoCov">          0 :   return lisp_scope_lookup(scope, symbol);</span>
-<a name="260"><span class="lineNum">     260 </span>            : }</a>
-<span class="lineNum">     261 </span>            : 
-<span class="lineNum">     262 </span><span class="lineNoCov">          0 : static void symbol_free(void *v)</span>
-<span class="lineNum">     263 </span>            : {
-<span class="lineNum">     264 </span><span class="lineNoCov">          0 :   lisp_symbol *symbol = (lisp_symbol*) v;</span>
-<span class="lineNum">     265 </span><span class="lineNoCov">          0 :   free(symbol-&gt;sym);</span>
-<span class="lineNum">     266 </span><span class="lineNoCov">          0 :   free(symbol);</span>
-<a name="267"><span class="lineNum">     267 </span><span class="lineNoCov">          0 : }</span></a>
-<span class="lineNum">     268 </span>            : 
-<span class="lineNum">     269 </span><span class="lineNoCov">          0 : lisp_symbol *lisp_symbol_new(char *sym)</span>
-<span class="lineNum">     270 </span>            : {
-<span class="lineNum">     271 </span><span class="lineNoCov">          0 :   lisp_symbol *err = (lisp_symbol*)type_symbol-&gt;new();</span>
-<span class="lineNum">     272 </span><span class="lineNoCov">          0 :   int len = strlen(sym);</span>
-<span class="lineNum">     273 </span><span class="lineNoCov">          0 :   err-&gt;sym = malloc(len + 1);</span>
-<span class="lineNum">     274 </span><span class="lineNoCov">          0 :   strncpy(err-&gt;sym, sym, len);</span>
-<span class="lineNum">     275 </span><span class="lineNoCov">          0 :   err-&gt;sym[len] = '\0';</span>
-<span class="lineNum">     276 </span><span class="lineNoCov">          0 :   return err;</span>
-<span class="lineNum">     277 </span>            : }
-<span class="lineNum">     278 </span>            : 
-<span class="lineNum">     279 </span>            : // error
-<span class="lineNum">     280 </span>            : 
-<span class="lineNum">     281 </span>            : static void error_print(FILE *f, lisp_value *v);
-<span class="lineNum">     282 </span>            : static lisp_value *error_new(void);
-<span class="lineNum">     283 </span>            : static void error_free(void *v);
-<span class="lineNum">     284 </span>            : 
-<span class="lineNum">     285 </span>            : static lisp_type type_error_obj = {
-<span class="lineNum">     286 </span>            :   .type=(lisp_value*)&amp;type_type_obj,
-<span class="lineNum">     287 </span>            :   .refcount=1,
-<span class="lineNum">     288 </span>            :   .name=&quot;error&quot;,
-<span class="lineNum">     289 </span>            :   .print=error_print,
-<span class="lineNum">     290 </span>            :   .new=error_new,
-<span class="lineNum">     291 </span>            :   .eval=eval_same,
-<span class="lineNum">     292 </span>            :   .free=error_free,
-<span class="lineNum">     293 </span>            :   .call=call_error,
-<span class="lineNum">     294 </span>            : };
-<a name="295"><span class="lineNum">     295 </span>            : lisp_type *type_error = &amp;type_error_obj;</a>
-<span class="lineNum">     296 </span>            : 
-<span class="lineNum">     297 </span><span class="lineNoCov">          0 : static void error_print(FILE *f, lisp_value *v)</span>
-<span class="lineNum">     298 </span>            : {
-<span class="lineNum">     299 </span><span class="lineNoCov">          0 :   lisp_error *error = (lisp_error*) v;</span>
-<span class="lineNum">     300 </span><span class="lineNoCov">          0 :   fprintf(f, &quot;'%s'&quot;, error-&gt;message);</span>
-<a name="301"><span class="lineNum">     301 </span><span class="lineNoCov">          0 : }</span></a>
-<span class="lineNum">     302 </span>            : 
-<span class="lineNum">     303 </span><span class="lineNoCov">          0 : static lisp_value *error_new(void)</span>
-<span class="lineNum">     304 </span>            : {
-<span class="lineNum">     305 </span><span class="lineNoCov">          0 :   lisp_error *error = malloc(sizeof(lisp_error*));</span>
-<span class="lineNum">     306 </span><span class="lineNoCov">          0 :   error-&gt;refcount = 1;</span>
-<span class="lineNum">     307 </span><span class="lineNoCov">          0 :   error-&gt;type = (lisp_value*) type_error;</span>
-<span class="lineNum">     308 </span><span class="lineNoCov">          0 :   error-&gt;message = NULL;</span>
-<span class="lineNum">     309 </span><span class="lineNoCov">          0 :   return (lisp_value*)error;</span>
-<a name="310"><span class="lineNum">     310 </span>            : }</a>
-<span class="lineNum">     311 </span>            : 
-<span class="lineNum">     312 </span><span class="lineNoCov">          0 : static void error_free(void *v)</span>
-<span class="lineNum">     313 </span>            : {
-<span class="lineNum">     314 </span><span class="lineNoCov">          0 :   lisp_error *error = (lisp_error*) v;</span>
-<span class="lineNum">     315 </span><span class="lineNoCov">          0 :   free(error-&gt;message);</span>
-<span class="lineNum">     316 </span><span class="lineNoCov">          0 :   free(error);</span>
-<a name="317"><span class="lineNum">     317 </span><span class="lineNoCov">          0 : }</span></a>
-<span class="lineNum">     318 </span>            : 
-<span class="lineNum">     319 </span><span class="lineNoCov">          0 : lisp_error *lisp_error_new(char *message)</span>
-<span class="lineNum">     320 </span>            : {
-<span class="lineNum">     321 </span><span class="lineNoCov">          0 :   lisp_error *err = (lisp_error*)type_error-&gt;new();</span>
-<span class="lineNum">     322 </span><span class="lineNoCov">          0 :   int len = strlen(message);</span>
-<span class="lineNum">     323 </span><span class="lineNoCov">          0 :   err-&gt;message = malloc(len + 1);</span>
-<span class="lineNum">     324 </span><span class="lineNoCov">          0 :   strncpy(err-&gt;message, message, len);</span>
-<span class="lineNum">     325 </span><span class="lineNoCov">          0 :   err-&gt;message[len] = '\0';</span>
-<span class="lineNum">     326 </span><span class="lineNoCov">          0 :   return err;</span>
-<span class="lineNum">     327 </span>            : }
+<span class="lineNum">     229 </span><span class="lineNoCov">          0 : static void list_free(void *l)</span>
+<span class="lineNum">     230 </span>            : {
+<span class="lineNum">     231 </span><span class="lineNoCov">          0 :   lisp_list *list = (lisp_list*) l;</span>
+<span class="lineNum">     232 </span><span class="lineNoCov">          0 :   lisp_decref(list-&gt;left);</span>
+<span class="lineNum">     233 </span><span class="lineNoCov">          0 :   lisp_decref(list-&gt;right);</span>
+<span class="lineNum">     234 </span><span class="lineNoCov">          0 :   free(l);</span>
+<a name="235"><span class="lineNum">     235 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     236 </span>            : 
+<span class="lineNum">     237 </span><span class="lineNoCov">          0 : bool lisp_nil_p(lisp_value *l)</span>
+<span class="lineNum">     238 </span>            : {
+<span class="lineNum">     239 </span><span class="lineNoCov">          0 :   return (l-&gt;type == type_list) &amp;&amp; ((lisp_list*)l == lisp_nilv);</span>
+<span class="lineNum">     240 </span>            : }
+<span class="lineNum">     241 </span>            : 
+<span class="lineNum">     242 </span>            : // symbol
+<span class="lineNum">     243 </span>            : 
+<span class="lineNum">     244 </span>            : static void symbol_print(FILE *f, lisp_value *v);
+<span class="lineNum">     245 </span>            : static lisp_value *symbol_new(void);
+<span class="lineNum">     246 </span>            : static lisp_value *symbol_eval(lisp_scope *scope, lisp_value *value);
+<span class="lineNum">     247 </span>            : static void symbol_free(void *v);
+<span class="lineNum">     248 </span>            : 
+<span class="lineNum">     249 </span>            : static lisp_type type_symbol_obj = {
+<span class="lineNum">     250 </span>            :   .type=&amp;type_type_obj,
+<span class="lineNum">     251 </span>            :   .refcount=1,
+<span class="lineNum">     252 </span>            :   .name=&quot;symbol&quot;,
+<span class="lineNum">     253 </span>            :   .print=symbol_print,
+<span class="lineNum">     254 </span>            :   .new=symbol_new,
+<span class="lineNum">     255 </span>            :   .eval=symbol_eval,
+<span class="lineNum">     256 </span>            :   .free=symbol_free,
+<span class="lineNum">     257 </span>            :   .call=call_error,
+<span class="lineNum">     258 </span>            : };
+<a name="259"><span class="lineNum">     259 </span>            : lisp_type *type_symbol = &amp;type_symbol_obj;</a>
+<span class="lineNum">     260 </span>            : 
+<span class="lineNum">     261 </span><span class="lineNoCov">          0 : static void symbol_print(FILE *f, lisp_value *v)</span>
+<span class="lineNum">     262 </span>            : {
+<span class="lineNum">     263 </span><span class="lineNoCov">          0 :   lisp_symbol *symbol = (lisp_symbol*) v;</span>
+<span class="lineNum">     264 </span><span class="lineNoCov">          0 :   fprintf(f, &quot;%s&quot;, symbol-&gt;sym);</span>
+<a name="265"><span class="lineNum">     265 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     266 </span>            : 
+<span class="lineNum">     267 </span><span class="lineNoCov">          0 : static lisp_value *symbol_new(void)</span>
+<span class="lineNum">     268 </span>            : {
+<span class="lineNum">     269 </span><span class="lineNoCov">          0 :   lisp_symbol *symbol = malloc(sizeof(lisp_symbol));</span>
+<span class="lineNum">     270 </span><span class="lineNoCov">          0 :   symbol-&gt;refcount = 1;</span>
+<span class="lineNum">     271 </span><span class="lineNoCov">          0 :   symbol-&gt;type = type_symbol;</span>
+<span class="lineNum">     272 </span><span class="lineNoCov">          0 :   symbol-&gt;sym = NULL;</span>
+<span class="lineNum">     273 </span><span class="lineNoCov">          0 :   return (lisp_value*)symbol;</span>
+<a name="274"><span class="lineNum">     274 </span>            : }</a>
+<span class="lineNum">     275 </span>            : 
+<span class="lineNum">     276 </span><span class="lineNoCov">          0 : static lisp_value *symbol_eval(lisp_scope *scope, lisp_value *value)</span>
+<span class="lineNum">     277 </span>            : {
+<span class="lineNum">     278 </span><span class="lineNoCov">          0 :   lisp_symbol *symbol = (lisp_symbol*) value;</span>
+<span class="lineNum">     279 </span><span class="lineNoCov">          0 :   return lisp_incref(lisp_scope_lookup(scope, symbol));</span>
+<a name="280"><span class="lineNum">     280 </span>            : }</a>
+<span class="lineNum">     281 </span>            : 
+<span class="lineNum">     282 </span><span class="lineNoCov">          0 : static void symbol_free(void *v)</span>
+<span class="lineNum">     283 </span>            : {
+<span class="lineNum">     284 </span><span class="lineNoCov">          0 :   lisp_symbol *symbol = (lisp_symbol*) v;</span>
+<span class="lineNum">     285 </span><span class="lineNoCov">          0 :   free(symbol-&gt;sym);</span>
+<span class="lineNum">     286 </span><span class="lineNoCov">          0 :   free(symbol);</span>
+<span class="lineNum">     287 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     288 </span>            : 
+<span class="lineNum">     289 </span>            : // error
+<span class="lineNum">     290 </span>            : 
+<span class="lineNum">     291 </span>            : static void error_print(FILE *f, lisp_value *v);
+<span class="lineNum">     292 </span>            : static lisp_value *error_new(void);
+<span class="lineNum">     293 </span>            : static void error_free(void *v);
+<span class="lineNum">     294 </span>            : 
+<span class="lineNum">     295 </span>            : static lisp_type type_error_obj = {
+<span class="lineNum">     296 </span>            :   .type=&amp;type_type_obj,
+<span class="lineNum">     297 </span>            :   .refcount=1,
+<span class="lineNum">     298 </span>            :   .name=&quot;error&quot;,
+<span class="lineNum">     299 </span>            :   .print=error_print,
+<span class="lineNum">     300 </span>            :   .new=error_new,
+<span class="lineNum">     301 </span>            :   .eval=eval_same,
+<span class="lineNum">     302 </span>            :   .free=error_free,
+<span class="lineNum">     303 </span>            :   .call=call_same,
+<span class="lineNum">     304 </span>            : };
+<a name="305"><span class="lineNum">     305 </span>            : lisp_type *type_error = &amp;type_error_obj;</a>
+<span class="lineNum">     306 </span>            : 
+<span class="lineNum">     307 </span><span class="lineNoCov">          0 : static void error_print(FILE *f, lisp_value *v)</span>
+<span class="lineNum">     308 </span>            : {
+<span class="lineNum">     309 </span><span class="lineNoCov">          0 :   lisp_error *error = (lisp_error*) v;</span>
+<span class="lineNum">     310 </span><span class="lineNoCov">          0 :   fprintf(f, &quot;error: %s&quot;, error-&gt;message);</span>
+<a name="311"><span class="lineNum">     311 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     312 </span>            : 
+<span class="lineNum">     313 </span><span class="lineNoCov">          0 : static lisp_value *error_new(void)</span>
+<span class="lineNum">     314 </span>            : {
+<span class="lineNum">     315 </span><span class="lineNoCov">          0 :   lisp_error *error = malloc(sizeof(lisp_error));</span>
+<span class="lineNum">     316 </span><span class="lineNoCov">          0 :   error-&gt;refcount = 1;</span>
+<span class="lineNum">     317 </span><span class="lineNoCov">          0 :   error-&gt;type = type_error;</span>
+<span class="lineNum">     318 </span><span class="lineNoCov">          0 :   error-&gt;message = NULL;</span>
+<span class="lineNum">     319 </span><span class="lineNoCov">          0 :   return (lisp_value*)error;</span>
+<a name="320"><span class="lineNum">     320 </span>            : }</a>
+<span class="lineNum">     321 </span>            : 
+<span class="lineNum">     322 </span><span class="lineNoCov">          0 : static void error_free(void *v)</span>
+<span class="lineNum">     323 </span>            : {
+<span class="lineNum">     324 </span><span class="lineNoCov">          0 :   lisp_error *error = (lisp_error*) v;</span>
+<span class="lineNum">     325 </span><span class="lineNoCov">          0 :   free(error-&gt;message);</span>
+<span class="lineNum">     326 </span><span class="lineNoCov">          0 :   free(error);</span>
+<span class="lineNum">     327 </span><span class="lineNoCov">          0 : }</span>
 <span class="lineNum">     328 </span>            : 
 <span class="lineNum">     329 </span>            : // integer
 <span class="lineNum">     330 </span>            : 
@@ -394,7 +394,7 @@
 <span class="lineNum">     332 </span>            : static lisp_value *integer_new(void);
 <span class="lineNum">     333 </span>            : 
 <span class="lineNum">     334 </span>            : static lisp_type type_integer_obj = {
-<span class="lineNum">     335 </span>            :   .type=(lisp_value*)&amp;type_type_obj,
+<span class="lineNum">     335 </span>            :   .type=&amp;type_type_obj,
 <span class="lineNum">     336 </span>            :   .refcount=1,
 <span class="lineNum">     337 </span>            :   .name=&quot;integer&quot;,
 <span class="lineNum">     338 </span>            :   .print=integer_print,
@@ -413,188 +413,212 @@
 <span class="lineNum">     351 </span>            : 
 <span class="lineNum">     352 </span><span class="lineNoCov">          0 : static lisp_value *integer_new(void)</span>
 <span class="lineNum">     353 </span>            : {
-<span class="lineNum">     354 </span><span class="lineNoCov">          0 :   lisp_integer *integer = malloc(sizeof(lisp_integer*));</span>
+<span class="lineNum">     354 </span><span class="lineNoCov">          0 :   lisp_integer *integer = malloc(sizeof(lisp_integer));</span>
 <span class="lineNum">     355 </span><span class="lineNoCov">          0 :   integer-&gt;refcount = 1;</span>
-<span class="lineNum">     356 </span><span class="lineNoCov">          0 :   integer-&gt;type = (lisp_value*)type_integer;</span>
+<span class="lineNum">     356 </span><span class="lineNoCov">          0 :   integer-&gt;type = type_integer;</span>
 <span class="lineNum">     357 </span><span class="lineNoCov">          0 :   integer-&gt;x = 0;</span>
 <span class="lineNum">     358 </span><span class="lineNoCov">          0 :   return (lisp_value*)integer;</span>
 <span class="lineNum">     359 </span>            : }
 <span class="lineNum">     360 </span>            : 
-<span class="lineNum">     361 </span>            : // nil
+<span class="lineNum">     361 </span>            : // string
 <span class="lineNum">     362 </span>            : 
-<span class="lineNum">     363 </span>            : static void nil_print(FILE *f, lisp_value *v);
-<span class="lineNum">     364 </span>            : static lisp_value *nil_new();
-<span class="lineNum">     365 </span>            : 
-<span class="lineNum">     366 </span>            : static lisp_type type_nil_obj = {
-<span class="lineNum">     367 </span>            :   .type=(lisp_value*)&amp;type_type_obj,
-<span class="lineNum">     368 </span>            :   .refcount=1,
-<span class="lineNum">     369 </span>            :   .name=&quot;nil&quot;,
-<span class="lineNum">     370 </span>            :   .print=nil_print,
-<span class="lineNum">     371 </span>            :   .new=nil_new,
-<span class="lineNum">     372 </span>            :   .eval=eval_error,
-<span class="lineNum">     373 </span>            :   .free=nop_free,
-<span class="lineNum">     374 </span>            :   .call=call_error,
-<span class="lineNum">     375 </span>            : };
-<span class="lineNum">     376 </span>            : lisp_type *type_nil = &amp;type_nil_obj;
-<span class="lineNum">     377 </span>            : 
-<span class="lineNum">     378 </span>            : static lisp_nil lisp_nil_obj = {
-<span class="lineNum">     379 </span>            :   .type=(lisp_value*)&amp;type_nil_obj,
-<span class="lineNum">     380 </span>            :   .refcount=1,
-<span class="lineNum">     381 </span>            : };
-<a name="382"><span class="lineNum">     382 </span>            : lisp_value *lisp_nilv = (lisp_value*) &amp;lisp_nil_obj;</a>
-<span class="lineNum">     383 </span>            : 
-<span class="lineNum">     384 </span><span class="lineNoCov">          0 : static void nil_print(FILE *f, lisp_value *v)</span>
-<span class="lineNum">     385 </span>            : {
-<span class="lineNum">     386 </span>            :   (void)v;
-<span class="lineNum">     387 </span><span class="lineNoCov">          0 :   fprintf(f, &quot;'()&quot;);</span>
-<a name="388"><span class="lineNum">     388 </span><span class="lineNoCov">          0 : }</span></a>
-<span class="lineNum">     389 </span>            : 
-<span class="lineNum">     390 </span><span class="lineNoCov">          0 : static lisp_value *nil_new(void)</span>
-<span class="lineNum">     391 </span>            : {
-<span class="lineNum">     392 </span><span class="lineNoCov">          0 :   return lisp_nilv;</span>
-<span class="lineNum">     393 </span>            : }
-<span class="lineNum">     394 </span>            : 
-<span class="lineNum">     395 </span>            : // builtin
-<span class="lineNum">     396 </span>            : 
-<span class="lineNum">     397 </span>            : static void builtin_print(FILE *f, lisp_value *v);
-<span class="lineNum">     398 </span>            : static lisp_value *builtin_new();
-<span class="lineNum">     399 </span>            : static lisp_value *builtin_call(lisp_scope *scope, lisp_value *c,
-<span class="lineNum">     400 </span>            :                                 lisp_value *arguments);
-<span class="lineNum">     401 </span>            : 
-<span class="lineNum">     402 </span>            : static lisp_type type_builtin_obj = {
-<span class="lineNum">     403 </span>            :   .type=(lisp_value*)&amp;type_type_obj,
-<span class="lineNum">     404 </span>            :   .refcount=1,
-<span class="lineNum">     405 </span>            :   .name=&quot;builtin&quot;,
-<span class="lineNum">     406 </span>            :   .print=builtin_print,
-<span class="lineNum">     407 </span>            :   .new=builtin_new,
-<span class="lineNum">     408 </span>            :   .eval=eval_error,
-<span class="lineNum">     409 </span>            :   .free=nop_free,
-<span class="lineNum">     410 </span>            :   .call=builtin_call,
-<span class="lineNum">     411 </span>            : };
-<a name="412"><span class="lineNum">     412 </span>            : lisp_type *type_builtin = &amp;type_builtin_obj;</a>
-<span class="lineNum">     413 </span>            : 
-<span class="lineNum">     414 </span><span class="lineNoCov">          0 : static void builtin_print(FILE *f, lisp_value *v)</span>
-<span class="lineNum">     415 </span>            : {
-<span class="lineNum">     416 </span><span class="lineNoCov">          0 :   lisp_builtin *builtin = (lisp_builtin*) v;</span>
-<span class="lineNum">     417 </span><span class="lineNoCov">          0 :   fprintf(f, &quot;&lt;builtin function %s&gt;&quot;, builtin-&gt;name);</span>
-<a name="418"><span class="lineNum">     418 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     363 </span>            : static void string_print(FILE *f, lisp_value *v);
+<span class="lineNum">     364 </span>            : static lisp_value *string_new(void);
+<span class="lineNum">     365 </span>            : static void string_free(void *v);
+<span class="lineNum">     366 </span>            : 
+<span class="lineNum">     367 </span>            : static lisp_type type_string_obj = {
+<span class="lineNum">     368 </span>            :   .type=&amp;type_type_obj,
+<span class="lineNum">     369 </span>            :   .refcount=1,
+<span class="lineNum">     370 </span>            :   .name=&quot;string&quot;,
+<span class="lineNum">     371 </span>            :   .print=string_print,
+<span class="lineNum">     372 </span>            :   .new=string_new,
+<span class="lineNum">     373 </span>            :   .eval=eval_same,
+<span class="lineNum">     374 </span>            :   .free=string_free,
+<span class="lineNum">     375 </span>            :   .call=call_error,
+<span class="lineNum">     376 </span>            : };
+<a name="377"><span class="lineNum">     377 </span>            : lisp_type *type_string = &amp;type_string_obj;</a>
+<span class="lineNum">     378 </span>            : 
+<span class="lineNum">     379 </span><span class="lineNoCov">          0 : static void string_print(FILE *f, lisp_value *v)</span>
+<span class="lineNum">     380 </span>            : {
+<span class="lineNum">     381 </span><span class="lineNoCov">          0 :   lisp_string *str = (lisp_string*) v;</span>
+<span class="lineNum">     382 </span><span class="lineNoCov">          0 :   fprintf(f, &quot;%s&quot;, str-&gt;s);</span>
+<a name="383"><span class="lineNum">     383 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     384 </span>            : 
+<span class="lineNum">     385 </span><span class="lineNoCov">          0 : static lisp_value *string_new(void)</span>
+<span class="lineNum">     386 </span>            : {
+<span class="lineNum">     387 </span><span class="lineNoCov">          0 :   lisp_string *str = malloc(sizeof(lisp_string));</span>
+<span class="lineNum">     388 </span><span class="lineNoCov">          0 :   str-&gt;refcount = 1;</span>
+<span class="lineNum">     389 </span><span class="lineNoCov">          0 :   str-&gt;type = type_string;</span>
+<span class="lineNum">     390 </span><span class="lineNoCov">          0 :   str-&gt;s = NULL;</span>
+<span class="lineNum">     391 </span><span class="lineNoCov">          0 :   return (lisp_value*)str;</span>
+<a name="392"><span class="lineNum">     392 </span>            : }</a>
+<span class="lineNum">     393 </span>            : 
+<span class="lineNum">     394 </span><span class="lineNoCov">          0 : static void string_free(void *v)</span>
+<span class="lineNum">     395 </span>            : {
+<span class="lineNum">     396 </span><span class="lineNoCov">          0 :   lisp_string *str = (lisp_string*) v;</span>
+<span class="lineNum">     397 </span><span class="lineNoCov">          0 :   free(str-&gt;s);</span>
+<span class="lineNum">     398 </span><span class="lineNoCov">          0 :   free(str);</span>
+<span class="lineNum">     399 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     400 </span>            : 
+<span class="lineNum">     401 </span>            : // builtin
+<span class="lineNum">     402 </span>            : 
+<span class="lineNum">     403 </span>            : static void builtin_print(FILE *f, lisp_value *v);
+<span class="lineNum">     404 </span>            : static lisp_value *builtin_new(void);
+<span class="lineNum">     405 </span>            : static lisp_value *builtin_call(lisp_scope *scope, lisp_value *c,
+<span class="lineNum">     406 </span>            :                                 lisp_value *arguments);
+<span class="lineNum">     407 </span>            : 
+<span class="lineNum">     408 </span>            : static lisp_type type_builtin_obj = {
+<span class="lineNum">     409 </span>            :   .type=&amp;type_type_obj,
+<span class="lineNum">     410 </span>            :   .refcount=1,
+<span class="lineNum">     411 </span>            :   .name=&quot;builtin&quot;,
+<span class="lineNum">     412 </span>            :   .print=builtin_print,
+<span class="lineNum">     413 </span>            :   .new=builtin_new,
+<span class="lineNum">     414 </span>            :   .eval=eval_error,
+<span class="lineNum">     415 </span>            :   .free=free,
+<span class="lineNum">     416 </span>            :   .call=builtin_call,
+<span class="lineNum">     417 </span>            : };
+<a name="418"><span class="lineNum">     418 </span>            : lisp_type *type_builtin = &amp;type_builtin_obj;</a>
 <span class="lineNum">     419 </span>            : 
-<span class="lineNum">     420 </span><span class="lineNoCov">          0 : static lisp_value *builtin_new()</span>
+<span class="lineNum">     420 </span><span class="lineNoCov">          0 : static void builtin_print(FILE *f, lisp_value *v)</span>
 <span class="lineNum">     421 </span>            : {
-<span class="lineNum">     422 </span><span class="lineNoCov">          0 :   lisp_builtin *builtin = malloc(sizeof(lisp_builtin));</span>
-<span class="lineNum">     423 </span><span class="lineNoCov">          0 :   builtin-&gt;refcount = 1;</span>
-<span class="lineNum">     424 </span><span class="lineNoCov">          0 :   builtin-&gt;type = (lisp_value*) type_builtin;</span>
-<span class="lineNum">     425 </span><span class="lineNoCov">          0 :   builtin-&gt;call = NULL;</span>
-<span class="lineNum">     426 </span><span class="lineNoCov">          0 :   builtin-&gt;name = NULL;</span>
-<span class="lineNum">     427 </span><span class="lineNoCov">          0 :   return (lisp_value*) builtin;</span>
-<a name="428"><span class="lineNum">     428 </span>            : }</a>
-<span class="lineNum">     429 </span>            : 
-<span class="lineNum">     430 </span><span class="lineNoCov">          0 : static lisp_value *builtin_call(lisp_scope *scope, lisp_value *c,</span>
-<span class="lineNum">     431 </span>            :                                 lisp_value *arguments)
-<span class="lineNum">     432 </span>            : {
-<span class="lineNum">     433 </span><span class="lineNoCov">          0 :   lisp_builtin *builtin = (lisp_builtin*) c;</span>
-<span class="lineNum">     434 </span><span class="lineNoCov">          0 :   return builtin-&gt;call(scope, arguments);</span>
-<a name="435"><span class="lineNum">     435 </span>            : }</a>
-<span class="lineNum">     436 </span>            : 
-<span class="lineNum">     437 </span><span class="lineNoCov">          0 : lisp_builtin *lisp_builtin_new(char *name, lisp_value *(*call)(lisp_scope *, lisp_value *))</span>
+<span class="lineNum">     422 </span><span class="lineNoCov">          0 :   lisp_builtin *builtin = (lisp_builtin*) v;</span>
+<span class="lineNum">     423 </span><span class="lineNoCov">          0 :   fprintf(f, &quot;&lt;builtin function %s&gt;&quot;, builtin-&gt;name);</span>
+<a name="424"><span class="lineNum">     424 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     425 </span>            : 
+<span class="lineNum">     426 </span><span class="lineNoCov">          0 : static lisp_value *builtin_new()</span>
+<span class="lineNum">     427 </span>            : {
+<span class="lineNum">     428 </span><span class="lineNoCov">          0 :   lisp_builtin *builtin = malloc(sizeof(lisp_builtin));</span>
+<span class="lineNum">     429 </span><span class="lineNoCov">          0 :   builtin-&gt;refcount = 1;</span>
+<span class="lineNum">     430 </span><span class="lineNoCov">          0 :   builtin-&gt;type = type_builtin;</span>
+<span class="lineNum">     431 </span><span class="lineNoCov">          0 :   builtin-&gt;call = NULL;</span>
+<span class="lineNum">     432 </span><span class="lineNoCov">          0 :   builtin-&gt;name = NULL;</span>
+<span class="lineNum">     433 </span><span class="lineNoCov">          0 :   return (lisp_value*) builtin;</span>
+<a name="434"><span class="lineNum">     434 </span>            : }</a>
+<span class="lineNum">     435 </span>            : 
+<span class="lineNum">     436 </span><span class="lineNoCov">          0 : static lisp_value *builtin_call(lisp_scope *scope, lisp_value *c,</span>
+<span class="lineNum">     437 </span>            :                                 lisp_value *arguments)
 <span class="lineNum">     438 </span>            : {
-<span class="lineNum">     439 </span><span class="lineNoCov">          0 :   lisp_builtin *builtin = (lisp_builtin*)type_builtin-&gt;new();</span>
-<span class="lineNum">     440 </span><span class="lineNoCov">          0 :   builtin-&gt;call = call;</span>
-<span class="lineNum">     441 </span><span class="lineNoCov">          0 :   builtin-&gt;name = name;</span>
-<span class="lineNum">     442 </span><span class="lineNoCov">          0 :   return builtin;</span>
-<a name="443"><span class="lineNum">     443 </span>            : }</a>
+<span class="lineNum">     439 </span><span class="lineNoCov">          0 :   lisp_builtin *builtin = (lisp_builtin*) c;</span>
+<span class="lineNum">     440 </span><span class="lineNoCov">          0 :   return builtin-&gt;call(scope, arguments);</span>
+<span class="lineNum">     441 </span>            : }
+<span class="lineNum">     442 </span>            : 
+<span class="lineNum">     443 </span>            : // lambda
 <span class="lineNum">     444 </span>            : 
-<span class="lineNum">     445 </span><span class="lineNoCov">          0 : lisp_value *lisp_eval_list(lisp_scope *scope, lisp_value *l)</span>
-<span class="lineNum">     446 </span>            : {
-<span class="lineNum">     447 </span><span class="lineNoCov">          0 :   if (l == lisp_nilv) {</span>
-<span class="lineNum">     448 </span><span class="lineNoCov">          0 :     lisp_incref(l);</span>
-<span class="lineNum">     449 </span><span class="lineNoCov">          0 :     return l;</span>
-<span class="lineNum">     450 </span>            :   }
-<span class="lineNum">     451 </span><span class="lineNoCov">          0 :   lisp_list *list = (lisp_list*) l;</span>
-<span class="lineNum">     452 </span><span class="lineNoCov">          0 :   lisp_list *result = (lisp_list*) type_list-&gt;new();</span>
-<span class="lineNum">     453 </span><span class="lineNoCov">          0 :   result-&gt;left = lisp_eval(scope, list-&gt;left);</span>
-<span class="lineNum">     454 </span><span class="lineNoCov">          0 :   result-&gt;right = lisp_eval_list(scope, list-&gt;right);</span>
-<span class="lineNum">     455 </span><span class="lineNoCov">          0 :   return (lisp_value*) result;</span>
-<a name="456"><span class="lineNum">     456 </span>            : }</a>
-<span class="lineNum">     457 </span>            : 
-<span class="lineNum">     458 </span><span class="lineNoCov">          0 : static lisp_value *lisp_builtin_eval(lisp_scope *scope, lisp_value *arguments)</span>
-<span class="lineNum">     459 </span>            : {
-<span class="lineNum">     460 </span><span class="lineNoCov">          0 :   lisp_list *evald = (lisp_list*)lisp_eval_list(scope, arguments);</span>
-<span class="lineNum">     461 </span><span class="lineNoCov">          0 :   return lisp_eval(scope, evald-&gt;left);</span>
-<a name="462"><span class="lineNum">     462 </span>            : }</a>
-<span class="lineNum">     463 </span>            : 
-<span class="lineNum">     464 </span><span class="lineNoCov">          0 : static lisp_value *lisp_builtin_car(lisp_scope *scope, lisp_value *a)</span>
-<span class="lineNum">     465 </span>            : {
-<span class="lineNum">     466 </span><span class="lineNoCov">          0 :   lisp_list *arglist = (lisp_list*) lisp_eval_list(scope, a);</span>
-<span class="lineNum">     467 </span><span class="lineNoCov">          0 :   lisp_list *firstarg = (lisp_list*) arglist-&gt;left;</span>
-<span class="lineNum">     468 </span><span class="lineNoCov">          0 :   return firstarg-&gt;left;</span>
-<a name="469"><span class="lineNum">     469 </span>            : }</a>
-<span class="lineNum">     470 </span>            : 
-<span class="lineNum">     471 </span><span class="lineNoCov">          0 : static lisp_value *lisp_builtin_cdr(lisp_scope *scope, lisp_value *a)</span>
-<span class="lineNum">     472 </span>            : {
-<span class="lineNum">     473 </span><span class="lineNoCov">          0 :   lisp_list *arglist = (lisp_list*) lisp_eval_list(scope, a);</span>
-<span class="lineNum">     474 </span><span class="lineNoCov">          0 :   lisp_list *firstarg = (lisp_list*) arglist-&gt;left;</span>
-<span class="lineNum">     475 </span><span class="lineNoCov">          0 :   return firstarg-&gt;right;</span>
+<span class="lineNum">     445 </span>            : static void lambda_print(FILE *f, lisp_value *v);
+<span class="lineNum">     446 </span>            : static lisp_value *lambda_new(void);
+<span class="lineNum">     447 </span>            : static void lambda_free(void *v);
+<span class="lineNum">     448 </span>            : static lisp_value *lambda_call(lisp_scope *scope, lisp_value *c,
+<span class="lineNum">     449 </span>            :                                lisp_value *arguments);
+<span class="lineNum">     450 </span>            : 
+<span class="lineNum">     451 </span>            : static lisp_type type_lambda_obj = {
+<span class="lineNum">     452 </span>            :   .type=&amp;type_type_obj,
+<span class="lineNum">     453 </span>            :   .refcount=1,
+<span class="lineNum">     454 </span>            :   .name=&quot;lambda&quot;,
+<span class="lineNum">     455 </span>            :   .print=lambda_print,
+<span class="lineNum">     456 </span>            :   .new=lambda_new,
+<span class="lineNum">     457 </span>            :   .eval=eval_error,
+<span class="lineNum">     458 </span>            :   .free=lambda_free,
+<span class="lineNum">     459 </span>            :   .call=lambda_call,
+<span class="lineNum">     460 </span>            : };
+<a name="461"><span class="lineNum">     461 </span>            : lisp_type *type_lambda = &amp;type_lambda_obj;</a>
+<span class="lineNum">     462 </span>            : 
+<span class="lineNum">     463 </span><span class="lineNoCov">          0 : static void lambda_print(FILE *f, lisp_value *v)</span>
+<span class="lineNum">     464 </span>            : {
+<span class="lineNum">     465 </span><span class="lineNoCov">          0 :   fprintf(f, &quot;&lt;lambda function&gt;&quot;);</span>
+<a name="466"><span class="lineNum">     466 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     467 </span>            : 
+<span class="lineNum">     468 </span><span class="lineNoCov">          0 : static lisp_value *lambda_new()</span>
+<span class="lineNum">     469 </span>            : {
+<span class="lineNum">     470 </span><span class="lineNoCov">          0 :   lisp_lambda *lambda = malloc(sizeof(lisp_lambda));</span>
+<span class="lineNum">     471 </span><span class="lineNoCov">          0 :   lambda-&gt;refcount = 1;</span>
+<span class="lineNum">     472 </span><span class="lineNoCov">          0 :   lambda-&gt;type = type_lambda;</span>
+<span class="lineNum">     473 </span><span class="lineNoCov">          0 :   lambda-&gt;args = NULL;</span>
+<span class="lineNum">     474 </span><span class="lineNoCov">          0 :   lambda-&gt;code = NULL;</span>
+<span class="lineNum">     475 </span><span class="lineNoCov">          0 :   return (lisp_value*) lambda;</span>
 <a name="476"><span class="lineNum">     476 </span>            : }</a>
 <span class="lineNum">     477 </span>            : 
-<span class="lineNum">     478 </span><span class="lineNoCov">          0 : static lisp_value *lisp_builtin_quote(lisp_scope *scope, lisp_value *a)</span>
+<span class="lineNum">     478 </span><span class="lineNoCov">          0 : static void lambda_free(void *v)</span>
 <span class="lineNum">     479 </span>            : {
-<span class="lineNum">     480 </span><span class="lineNoCov">          0 :   lisp_list *arglist = (lisp_list*) a;</span>
-<span class="lineNum">     481 </span><span class="lineNoCov">          0 :   return arglist-&gt;left;</span>
-<a name="482"><span class="lineNum">     482 </span>            : }</a>
-<span class="lineNum">     483 </span>            : 
-<span class="lineNum">     484 </span><span class="lineNoCov">          0 : static void lisp_scope_add_builtin(lisp_scope *scope, char *name, lisp_value * (*call)(lisp_scope*,lisp_value*))</span>
-<span class="lineNum">     485 </span>            : {
-<span class="lineNum">     486 </span><span class="lineNoCov">          0 :   lisp_symbol *symbol = lisp_symbol_new(name);</span>
-<span class="lineNum">     487 </span><span class="lineNoCov">          0 :   lisp_builtin *builtin = lisp_builtin_new(name, call);</span>
-<span class="lineNum">     488 </span><span class="lineNoCov">          0 :   lisp_scope_bind(scope, symbol, (lisp_value*)builtin);</span>
-<a name="489"><span class="lineNum">     489 </span><span class="lineNoCov">          0 : }</span></a>
-<span class="lineNum">     490 </span>            : 
-<span class="lineNum">     491 </span><span class="lineNoCov">          0 : void lisp_scope_populate_builtins(lisp_scope *scope)</span>
-<span class="lineNum">     492 </span>            : {
-<span class="lineNum">     493 </span><span class="lineNoCov">          0 :   lisp_scope_add_builtin(scope, &quot;eval&quot;, lisp_builtin_eval);</span>
-<span class="lineNum">     494 </span><span class="lineNoCov">          0 :   lisp_scope_add_builtin(scope, &quot;car&quot;, lisp_builtin_car);</span>
-<span class="lineNum">     495 </span><span class="lineNoCov">          0 :   lisp_scope_add_builtin(scope, &quot;cdr&quot;, lisp_builtin_cdr);</span>
-<span class="lineNum">     496 </span><span class="lineNoCov">          0 :   lisp_scope_add_builtin(scope, &quot;quote&quot;, lisp_builtin_quote);</span>
-<a name="497"><span class="lineNum">     497 </span><span class="lineNoCov">          0 : }</span></a>
-<span class="lineNum">     498 </span>            : 
-<span class="lineNum">     499 </span><span class="lineNoCov">          0 : void lisp_print(FILE *f, lisp_value *value)</span>
-<span class="lineNum">     500 </span>            : {
-<span class="lineNum">     501 </span><span class="lineNoCov">          0 :   lisp_type *type = (lisp_type*) value-&gt;type;</span>
-<span class="lineNum">     502 </span><span class="lineNoCov">          0 :   type-&gt;print(f, value);</span>
-<a name="503"><span class="lineNum">     503 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     480 </span><span class="lineNoCov">          0 :   lisp_lambda *lambda = (lisp_lambda*) v;</span>
+<span class="lineNum">     481 </span><span class="lineNoCov">          0 :   lisp_decref((lisp_value*)lambda-&gt;args);</span>
+<span class="lineNum">     482 </span><span class="lineNoCov">          0 :   lisp_decref(lambda-&gt;code);</span>
+<span class="lineNum">     483 </span><span class="lineNoCov">          0 :   free(lambda);</span>
+<a name="484"><span class="lineNum">     484 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     485 </span>            : 
+<span class="lineNum">     486 </span><span class="lineNoCov">          0 : static lisp_value *lambda_call(lisp_scope *scope, lisp_value *c,</span>
+<span class="lineNum">     487 </span>            :                                lisp_value *arguments)
+<span class="lineNum">     488 </span>            : {
+<span class="lineNum">     489 </span><span class="lineNoCov">          0 :   lisp_lambda *lambda = (lisp_lambda*) c;</span>
+<span class="lineNum">     490 </span><span class="lineNoCov">          0 :   lisp_list *argvalues = (lisp_list*)lisp_eval_list(scope, arguments);</span>
+<span class="lineNum">     491 </span><span class="lineNoCov">          0 :   lisp_scope *inner = (lisp_scope*)type_scope-&gt;new();</span>
+<span class="lineNum">     492 </span>            :   lisp_value *rv;
+<span class="lineNum">     493 </span><span class="lineNoCov">          0 :   lisp_incref((lisp_value*)scope);</span>
+<span class="lineNum">     494 </span><span class="lineNoCov">          0 :   inner-&gt;up = scope;</span>
+<span class="lineNum">     495 </span>            : 
+<span class="lineNum">     496 </span><span class="lineNoCov">          0 :   lisp_list *it1 = lambda-&gt;args, *it2 = argvalues;</span>
+<span class="lineNum">     497 </span><span class="lineNoCov">          0 :   while (!lisp_nil_p((lisp_value*)it1) &amp;&amp; !lisp_nil_p((lisp_value*)it2)) {</span>
+<span class="lineNum">     498 </span><span class="lineNoCov">          0 :     lisp_incref(it1-&gt;left); // we are about to give a new reference to the scope</span>
+<span class="lineNum">     499 </span><span class="lineNoCov">          0 :     lisp_incref(it2-&gt;left);</span>
+<span class="lineNum">     500 </span><span class="lineNoCov">          0 :     lisp_scope_bind(inner, (lisp_symbol*) it1-&gt;left, it2-&gt;left);</span>
+<span class="lineNum">     501 </span><span class="lineNoCov">          0 :     it1 = (lisp_list*) it1-&gt;right;</span>
+<span class="lineNum">     502 </span><span class="lineNoCov">          0 :     it2 = (lisp_list*) it2-&gt;right;</span>
+<span class="lineNum">     503 </span>            :   }
 <span class="lineNum">     504 </span>            : 
-<span class="lineNum">     505 </span><span class="lineNoCov">          0 : void lisp_free(lisp_value *value)</span>
-<span class="lineNum">     506 </span>            : {
-<span class="lineNum">     507 </span><span class="lineNoCov">          0 :   lisp_type *type = (lisp_type*) value-&gt;type;</span>
-<span class="lineNum">     508 </span><span class="lineNoCov">          0 :   type-&gt;free(value);</span>
-<a name="509"><span class="lineNum">     509 </span><span class="lineNoCov">          0 : }</span></a>
-<span class="lineNum">     510 </span>            : 
-<span class="lineNum">     511 </span><span class="lineNoCov">          0 : lisp_value *lisp_eval(lisp_scope *scope, lisp_value *value)</span>
-<span class="lineNum">     512 </span>            : {
-<span class="lineNum">     513 </span><span class="lineNoCov">          0 :   lisp_type *type = (lisp_type*) value-&gt;type;</span>
-<span class="lineNum">     514 </span><span class="lineNoCov">          0 :   return type-&gt;eval(scope, value);</span>
-<a name="515"><span class="lineNum">     515 </span>            : }</a>
-<span class="lineNum">     516 </span>            : 
-<span class="lineNum">     517 </span><span class="lineNoCov">          0 : lisp_value *lisp_call(lisp_scope *scope, lisp_value *callable, lisp_value *args)</span>
-<span class="lineNum">     518 </span>            : {
-<span class="lineNum">     519 </span><span class="lineNoCov">          0 :   lisp_type *type = (lisp_type*) callable-&gt;type;</span>
-<span class="lineNum">     520 </span><span class="lineNoCov">          0 :   return type-&gt;call(scope, callable, args);</span>
-<a name="521"><span class="lineNum">     521 </span>            : }</a>
+<span class="lineNum">     505 </span><span class="lineNoCov">          0 :   if (!lisp_nil_p((lisp_value*)it1)) {</span>
+<span class="lineNum">     506 </span><span class="lineNoCov">          0 :     rv = (lisp_value*) lisp_error_new(&quot;not enough arguments&quot;);</span>
+<span class="lineNum">     507 </span><span class="lineNoCov">          0 :     goto cleanup; // oh I really love using goto</span>
+<span class="lineNum">     508 </span>            :   }
+<span class="lineNum">     509 </span><span class="lineNoCov">          0 :   if (!lisp_nil_p((lisp_value*)it2)) {</span>
+<span class="lineNum">     510 </span><span class="lineNoCov">          0 :     rv = (lisp_value*) lisp_error_new(&quot;too many arguments&quot;);</span>
+<span class="lineNum">     511 </span><span class="lineNoCov">          0 :     goto cleanup;</span>
+<span class="lineNum">     512 </span>            :   }
+<span class="lineNum">     513 </span>            : 
+<span class="lineNum">     514 </span><span class="lineNoCov">          0 :   rv = lisp_eval(inner, lambda-&gt;code);</span>
+<span class="lineNum">     515 </span>            :  cleanup:
+<span class="lineNum">     516 </span><span class="lineNoCov">          0 :   lisp_decref((lisp_value*)inner);</span>
+<span class="lineNum">     517 </span><span class="lineNoCov">          0 :   lisp_decref((lisp_value*)argvalues);</span>
+<span class="lineNum">     518 </span><span class="lineNoCov">          0 :   return rv;</span>
+<span class="lineNum">     519 </span>            : }
+<span class="lineNum">     520 </span>            : 
+<a name="521"><span class="lineNum">     521 </span>            : // Shortcuts for type objects.</a>
 <span class="lineNum">     522 </span>            : 
-<span class="lineNum">     523 </span><span class="lineNoCov">          0 : void lisp_incref(lisp_value *value)</span>
+<span class="lineNum">     523 </span><span class="lineNoCov">          0 : void lisp_print(FILE *f, lisp_value *value)</span>
 <span class="lineNum">     524 </span>            : {
-<span class="lineNum">     525 </span><span class="lineNoCov">          0 :   value-&gt;refcount++;</span>
+<span class="lineNum">     525 </span><span class="lineNoCov">          0 :   value-&gt;type-&gt;print(f, value);</span>
 <a name="526"><span class="lineNum">     526 </span><span class="lineNoCov">          0 : }</span></a>
 <span class="lineNum">     527 </span>            : 
-<span class="lineNum">     528 </span><span class="lineNoCov">          0 : void lisp_decref(lisp_value *value)</span>
+<span class="lineNum">     528 </span><span class="lineNoCov">          0 : void lisp_free(lisp_value *value)</span>
 <span class="lineNum">     529 </span>            : {
-<span class="lineNum">     530 </span><span class="lineNoCov">          0 :   lisp_type *type = (lisp_type*) value-&gt;type;</span>
-<span class="lineNum">     531 </span><span class="lineNoCov">          0 :   value-&gt;refcount--;</span>
-<span class="lineNum">     532 </span><span class="lineNoCov">          0 :   if (value-&gt;refcount &lt;= 0) {</span>
-<span class="lineNum">     533 </span><span class="lineNoCov">          0 :     type-&gt;free(value);</span>
-<span class="lineNum">     534 </span>            :   }
-<span class="lineNum">     535 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     530 </span><span class="lineNoCov">          0 :   value-&gt;type-&gt;free(value);</span>
+<a name="531"><span class="lineNum">     531 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     532 </span>            : 
+<span class="lineNum">     533 </span><span class="lineNoCov">          0 : lisp_value *lisp_eval(lisp_scope *scope, lisp_value *value)</span>
+<span class="lineNum">     534 </span>            : {
+<span class="lineNum">     535 </span><span class="lineNoCov">          0 :   return value-&gt;type-&gt;eval(scope, value);</span>
+<a name="536"><span class="lineNum">     536 </span>            : }</a>
+<span class="lineNum">     537 </span>            : 
+<span class="lineNum">     538 </span><span class="lineNoCov">          0 : lisp_value *lisp_call(lisp_scope *scope, lisp_value *callable, lisp_value *args)</span>
+<span class="lineNum">     539 </span>            : {
+<span class="lineNum">     540 </span><span class="lineNoCov">          0 :   if (callable-&gt;type == type_error) {</span>
+<span class="lineNum">     541 </span><span class="lineNoCov">          0 :     return callable;</span>
+<span class="lineNum">     542 </span>            :   }
+<span class="lineNum">     543 </span>            : 
+<span class="lineNum">     544 </span><span class="lineNoCov">          0 :   return callable-&gt;type-&gt;call(scope, callable, args);</span>
+<a name="545"><span class="lineNum">     545 </span>            : }</a>
+<span class="lineNum">     546 </span>            : 
+<span class="lineNum">     547 </span><span class="lineNoCov">          0 : lisp_value *lisp_incref(lisp_value *value)</span>
+<span class="lineNum">     548 </span>            : {
+<span class="lineNum">     549 </span><span class="lineNoCov">          0 :   value-&gt;refcount++;</span>
+<span class="lineNum">     550 </span><span class="lineNoCov">          0 :   return value;</span>
+<a name="551"><span class="lineNum">     551 </span>            : }</a>
+<span class="lineNum">     552 </span>            : 
+<span class="lineNum">     553 </span><span class="lineNoCov">          0 : void lisp_decref(lisp_value *value)</span>
+<span class="lineNum">     554 </span>            : {
+<span class="lineNum">     555 </span><span class="lineNoCov">          0 :   value-&gt;refcount--;</span>
+<span class="lineNum">     556 </span><span class="lineNoCov">          0 :   if (value-&gt;refcount &lt;= 0) {</span>
+<span class="lineNum">     557 </span><span class="lineNoCov">          0 :     value-&gt;type-&gt;free(value);</span>
+<span class="lineNum">     558 </span>            :   }
+<span class="lineNum">     559 </span><span class="lineNoCov">          0 : }</span>
 </pre>
       </td>
     </tr>
