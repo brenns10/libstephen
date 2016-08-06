@@ -16,6 +16,7 @@
 #ifndef SMB_LIBSTEPHEN_LISP_H
 #define SMB_LIBSTEPHEN_LISP_H
 
+#include <stdbool.h>
 #include <stdio.h>
 
 #include "libstephen/ht.h"
@@ -103,10 +104,11 @@ lisp_value *lisp_nil_new();
 // Helper functions
 void lisp_scope_bind(lisp_scope *scope, lisp_symbol *symbol, lisp_value *value);
 lisp_value *lisp_scope_lookup(lisp_scope *scope, lisp_symbol *symbol);
+void lisp_scope_add_builtin(lisp_scope *scope, char *name, lisp_value * (*call)(lisp_scope*,lisp_value*));
 void lisp_scope_populate_builtins(lisp_scope *scope);
 lisp_value *lisp_eval_list(lisp_scope *scope, lisp_value *list);
 lisp_value *lisp_parse(char *input);
-
+bool lisp_get_args(lisp_list *list, char *format, ...);
 // List functions
 int lisp_list_length(lisp_list *list);
 bool lisp_nil_p(lisp_value *l);

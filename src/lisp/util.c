@@ -23,7 +23,7 @@ lisp_value *lisp_scope_lookup(lisp_scope *scope, lisp_symbol *symbol)
   }
 }
 
-static void lisp_scope_add_builtin(lisp_scope *scope, char *name, lisp_value * (*call)(lisp_scope*,lisp_value*))
+void lisp_scope_add_builtin(lisp_scope *scope, char *name, lisp_value * (*call)(lisp_scope*,lisp_value*))
 {
   lisp_symbol *symbol = lisp_symbol_new(name);
   lisp_builtin *builtin = lisp_builtin_new(name, call);
@@ -110,6 +110,8 @@ static lisp_type *lisp_get_type(char c)
     return type_list;
   case 's':
     return type_symbol;
+  case 'S':
+    return type_string;
   case 'o':
     return type_scope;
   case 'e':
@@ -198,9 +200,9 @@ static lisp_value *lisp_builtin_quote(lisp_scope *scope, lisp_value *a)
 static lisp_value *lisp_builtin_cons(lisp_scope *scope, lisp_value *a)
 {
   lisp_value *a1;
-  lisp_list *l;
+  lisp_value *l;
   lisp_list *arglist = (lisp_list*) lisp_eval_list(scope, a);
-  if (!lisp_get_args(arglist, "*l", &a1, &l)) {
+  if (!lisp_get_args(arglist, "**", &a1, &l)) {
     lisp_decref((lisp_value*)arglist);
     return (lisp_value*) lisp_error_new("wrong arguments to cons");
   }
