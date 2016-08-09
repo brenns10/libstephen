@@ -5,24 +5,26 @@
 
 int main(int argc, char **argv)
 {
-  lisp_scope *scope = (lisp_scope*)type_scope->new();
-  lisp_scope_populate_builtins(scope);
+  lisp_runtime rt;
+  lisp_init(&rt);
+  lisp_scope *scope = (lisp_scope*)lisp_new(&rt, type_scope);
+  lisp_scope_populate_builtins(&rt, scope);
 
   while (true) {
     char *input = readline("> ");
     if (input == NULL) {
       break;
     }
-    lisp_value *value = lisp_parse(input);
+    lisp_value *value = lisp_parse(&rt, input);
     add_history(input);
     free(input);
-    lisp_value *result = lisp_eval(scope, value);
-    lisp_decref(value);
+    lisp_value *result = lisp_eval(&rt, scope, value);
     lisp_print(stdout, result);
     fprintf(stdout, "\n");
-    lisp_decref(result);
+    lisp_mark(&rt, (lisp_value*)scope);
+    lisp_sweep(&rt);
   }
 
-  lisp_decref((lisp_value*)scope);
+  lisp_sweep(&rt);
   return 0;
 }

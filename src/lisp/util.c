@@ -9,40 +9,38 @@ void lisp_scope_bind(lisp_scope *scope, lisp_symbol *symbol, lisp_value *value)
   ht_insert(&scope->scope, PTR(symbol), PTR(value));
 }
 
-lisp_value *lisp_scope_lookup(lisp_scope *scope, lisp_symbol *symbol)
+lisp_value *lisp_scope_lookup(lisp_runtime *rt, lisp_scope *scope,
+                              lisp_symbol *symbol)
 {
   smb_status status = SMB_SUCCESS;
   lisp_value *v = ht_get(&scope->scope, PTR(symbol), &status).data_ptr;
   if (status == SMB_NOT_FOUND_ERROR) {
     if (scope->up) {
-      return lisp_scope_lookup(scope->up, symbol);
+      return lisp_scope_lookup(rt, scope->up, symbol);
     } else {
-      return (lisp_value*)lisp_error_new("symbol not found in scope");
+      return (lisp_value*)lisp_error_new(rt, "symbol not found in scope");
     }
   } else {
     return v;
   }
 }
 
-void lisp_scope_add_builtin(lisp_scope *scope, char *name, lisp_value * (*call)(lisp_scope*,lisp_value*))
+void lisp_scope_add_builtin(lisp_runtime *rt, lisp_scope *scope, char *name,
+                            lisp_builtin_func call)
 {
-  lisp_symbol *symbol = lisp_symbol_new(name);
-  lisp_builtin *builtin = lisp_builtin_new(name, call);
+  lisp_symbol *symbol = lisp_symbol_new(rt, name);
+  lisp_builtin *builtin = lisp_builtin_new(rt, name, call);
   lisp_scope_bind(scope, symbol, (lisp_value*)builtin);
 }
 
 void lisp_scope_replace_or_insert(lisp_scope *scope, lisp_symbol *key, lisp_value *value)
 {
-  smb_status status = SMB_SUCCESS;
   lisp_scope *s = scope;
 
   // First go up the chain checking for the name.
   while (s) {
     if (ht_contains(&s->scope, PTR(key))) {
       // If we find it, replace it.
-      lisp_value *v = ht_get(&s->scope, PTR(key), &status).data_ptr;
-      assert(status == SMB_SUCCESS);
-      lisp_decref(v);
       ht_insert(&s->scope, PTR(key), PTR(value));
       return;
     }
@@ -53,9 +51,9 @@ void lisp_scope_replace_or_insert(lisp_scope *scope, lisp_symbol *key, lisp_valu
   ht_insert(&scope->scope, PTR(key), PTR(value));
 }
 
-lisp_symbol *lisp_symbol_new(char *sym)
+lisp_symbol *lisp_symbol_new(lisp_runtime *rt, char *sym)
 {
-  lisp_symbol *err = (lisp_symbol*)type_symbol->new();
+  lisp_symbol *err = (lisp_symbol*)lisp_new(rt, type_symbol);
   int len = strlen(sym);
   err->sym = malloc(len + 1);
   strncpy(err->sym, sym, len);
@@ -63,9 +61,9 @@ lisp_symbol *lisp_symbol_new(char *sym)
   return err;
 }
 
-lisp_error *lisp_error_new(char *message)
+lisp_error *lisp_error_new(lisp_runtime *rt, char *message)
 {
-  lisp_error *err = (lisp_error*)type_error->new();
+  lisp_error *err = (lisp_error*)lisp_new(rt, type_error);
   int len = strlen(message);
   err->message = malloc(len + 1);
   strncpy(err->message, message, len);
@@ -73,45 +71,33 @@ lisp_error *lisp_error_new(char *message)
   return err;
 }
 
-lisp_builtin *lisp_builtin_new(char *name, lisp_value *(*call)(lisp_scope *, lisp_value *))
+lisp_builtin *lisp_builtin_new(lisp_runtime *rt, char *name,
+                               lisp_builtin_func call)
 {
-  lisp_builtin *builtin = (lisp_builtin*)type_builtin->new();
+  lisp_builtin *builtin = (lisp_builtin*)lisp_new(rt, type_builtin);
   builtin->call = call;
   builtin->name = name;
   return builtin;
 }
 
-lisp_value *lisp_nil_new()
+lisp_value *lisp_nil_new(lisp_runtime *rt)
 {
-  return lisp_incref((lisp_value*)lisp_nilv);
+  if (rt->nil == NULL) {
+    rt->nil = lisp_new(rt, type_list);
+  }
+  return rt->nil;
 }
 
-lisp_value *lisp_eval_list(lisp_scope *scope, lisp_value *l)
+lisp_value *lisp_eval_list(lisp_runtime *rt, lisp_scope *scope, lisp_value *l)
 {
   if (lisp_nil_p(l)) {
-    return lisp_incref(l);
+    return l;
   }
   lisp_list *list = (lisp_list*) l;
-  lisp_list *result = (lisp_list*) type_list->new();
-  result->left = lisp_eval(scope, list->left);
-  result->right = lisp_eval_list(scope, list->right);
+  lisp_list *result = (lisp_list*)lisp_new(rt, type_list);
+  result->left = lisp_eval(rt, scope, list->left);
+  result->right = lisp_eval_list(rt, scope, list->right);
   return (lisp_value*) result;
-}
-
-/**
-   Given a list of arguments to a function, check for errors. If one exists,
-   return it.  Otherwise, return null.
- */
-lisp_value *lisp_find_errors(lisp_value *l)
-{
-  while (l->type == type_list && l != (lisp_value*)lisp_nilv) {
-    lisp_list *list = (lisp_list *) l;
-    if (list->left->type == type_error) {
-      return list->left;
-    }
-    l = list->right;
-  }
-  return NULL;
 }
 
 int lisp_list_length(lisp_list *list)
@@ -152,7 +138,7 @@ bool lisp_get_args(lisp_list *list, char *format, ...)
   va_list va;
   va_start(va, format);
   lisp_value **v;
-  while (list != lisp_nilv && *format != '\0') {
+  while (!lisp_nil_p((lisp_value*)list) && *format != '\0') {
     lisp_type *type = lisp_get_type(*format);
     if (type != NULL && type != list->left->type) {
       return false;
@@ -162,83 +148,75 @@ bool lisp_get_args(lisp_list *list, char *format, ...)
     list = (lisp_list*)list->right;
     format += 1;
   }
-  if (strlen(format) != 0 || list != lisp_nilv) {
+  if (strlen(format) != 0 || !lisp_nil_p((lisp_value*)list)) {
     return false;
   }
   return true;
 }
 
-static lisp_value *lisp_builtin_eval(lisp_scope *scope, lisp_value *arguments)
+static lisp_value *lisp_builtin_eval(lisp_runtime *rt, lisp_scope *scope,
+                                     lisp_value *arguments)
 {
-  lisp_list *evald = (lisp_list*)lisp_eval_list(scope, arguments);
-  lisp_value *result = lisp_eval(scope, evald->left);
-  lisp_decref((lisp_value*)evald);
+  lisp_list *evald = (lisp_list*)lisp_eval_list(rt, scope, arguments);
+  lisp_value *result = lisp_eval(rt, scope, evald->left);
   return result;
 }
 
-static lisp_value *lisp_builtin_car(lisp_scope *scope, lisp_value *a)
+static lisp_value *lisp_builtin_car(lisp_runtime *rt, lisp_scope *scope,
+                                    lisp_value *a)
 {
   lisp_list *firstarg;
-  lisp_list *arglist = (lisp_list*) lisp_eval_list(scope, a);
+  lisp_list *arglist = (lisp_list*) lisp_eval_list(rt, scope, a);
   if (!lisp_get_args(arglist, "l", &firstarg)) {
-    lisp_decref((lisp_value*)arglist);
-    return (lisp_value*)lisp_error_new("wrong arguments to car");
+    return (lisp_value*)lisp_error_new(rt, "wrong arguments to car");
   }
   if (lisp_list_length(firstarg) == 0) {
-    lisp_decref((lisp_value*)arglist);
-    return (lisp_value*)lisp_error_new("expected at least one item");
+    return (lisp_value*)lisp_error_new(rt, "expected at least one item");
   }
-  // save rv because firstarg may be deleted after decref
-  lisp_value *rv = lisp_incref(firstarg->left);
-  lisp_decref((lisp_value*)arglist);
-  return rv;
+  return firstarg->left;
 }
 
-static lisp_value *lisp_builtin_cdr(lisp_scope *scope, lisp_value *a)
+static lisp_value *lisp_builtin_cdr(lisp_runtime *rt, lisp_scope *scope,
+                                    lisp_value *a)
 {
   lisp_list *firstarg;
-  lisp_list *arglist = (lisp_list*) lisp_eval_list(scope, a);
+  lisp_list *arglist = (lisp_list*) lisp_eval_list(rt, scope, a);
   if (!lisp_get_args(arglist, "l", &firstarg)) {
-    lisp_decref((lisp_value*)arglist);
-    return (lisp_value*) lisp_error_new("wrong arguments to cdr");
+    return (lisp_value*) lisp_error_new(rt, "wrong arguments to cdr");
   }
   // save rv because firstarg may be deleted after decref
-  lisp_value *rv = lisp_incref(firstarg->right);
-  lisp_decref((lisp_value*)arglist);
-  return rv;
+  return firstarg->right;
 }
 
-static lisp_value *lisp_builtin_quote(lisp_scope *scope, lisp_value *a)
+static lisp_value *lisp_builtin_quote(lisp_runtime *rt, lisp_scope *scope,
+                                      lisp_value *a)
 {
   (void)scope;
   lisp_value *firstarg;
   lisp_list *arglist = (lisp_list*) a;
   if (!lisp_get_args(arglist, "*", &firstarg)) {
-    lisp_decref((lisp_value*)arglist);
-    return (lisp_value*) lisp_error_new("wrong arguments to quote");
+    return (lisp_value*) lisp_error_new(rt, "wrong arguments to quote");
   }
-  return lisp_incref(arglist->left);
+  return arglist->left;
 }
 
-static lisp_value *lisp_builtin_cons(lisp_scope *scope, lisp_value *a)
+static lisp_value *lisp_builtin_cons(lisp_runtime *rt, lisp_scope *scope,
+                                     lisp_value *a)
 {
   lisp_value *a1;
   lisp_value *l;
-  lisp_list *arglist = (lisp_list*) lisp_eval_list(scope, a);
+  lisp_list *arglist = (lisp_list*) lisp_eval_list(rt, scope, a);
   if (!lisp_get_args(arglist, "**", &a1, &l)) {
-    lisp_decref((lisp_value*)arglist);
-    return (lisp_value*) lisp_error_new("wrong arguments to cons");
+    return (lisp_value*) lisp_error_new(rt, "wrong arguments to cons");
   }
-  lisp_list *new = (lisp_list*) type_list->new();
+  lisp_list *new = (lisp_list*)lisp_new(rt, type_list);
   new->left = a1;
-  lisp_incref(a1);
   new->right = (lisp_value*)l;
-  lisp_incref((lisp_value*)l);
-  lisp_decref((lisp_value*)arglist);
   return (lisp_value*)new;
 }
 
-static lisp_value *lisp_builtin_lambda(lisp_scope *scope, lisp_value *a)
+static lisp_value *lisp_builtin_lambda(lisp_runtime *rt, lisp_scope *scope,
+                                       lisp_value *a)
 {
   lisp_list *argnames;
   lisp_value *code;
@@ -246,51 +224,47 @@ static lisp_value *lisp_builtin_lambda(lisp_scope *scope, lisp_value *a)
   (void)scope;
 
   if (!lisp_get_args(our_args, "l*", &argnames, &code)) {
-    return (lisp_value*) lisp_error_new("expected argument list and code");
+    return (lisp_value*) lisp_error_new(rt, "expected argument list and code");
   }
 
   lisp_list *it = argnames;
   while (!lisp_nil_p((lisp_value*)it)) {
     if (it->left->type != type_symbol) {
-      lisp_decref((lisp_value*)our_args);
-      return (lisp_value*) lisp_error_new("argument names must be symbols");
+      return (lisp_value*) lisp_error_new(rt, "argument names must be symbols");
     }
     it = (lisp_list*) it->right;
   }
 
-  lisp_lambda *lambda = (lisp_lambda*)type_lambda->new();
+  lisp_lambda *lambda = (lisp_lambda*)lisp_new(rt, type_lambda);
   lambda->args = argnames;
   lambda->code = code;
   lambda->closure = scope;
-  lisp_incref((lisp_value*)lambda->args);
-  lisp_incref(lambda->code);
-  lisp_incref((lisp_value*)lambda->closure);
   return (lisp_value*) lambda;
 }
 
-static lisp_value *lisp_builtin_define(lisp_scope *scope, lisp_value *a)
+static lisp_value *lisp_builtin_define(lisp_runtime *rt, lisp_scope *scope,
+                                       lisp_value *a)
 {
   lisp_symbol *s;
   lisp_value *expr;
 
   if (!lisp_get_args((lisp_list*)a, "s*", &s, &expr)) {
-    return (lisp_value*) lisp_error_new("expected name and expression");
+    return (lisp_value*) lisp_error_new(rt, "expected name and expression");
   }
 
-  lisp_value *evald = lisp_eval(scope, expr);
-  lisp_incref((lisp_value*)s);
+  lisp_value *evald = lisp_eval(rt, scope, expr);
   lisp_scope_replace_or_insert(scope, s, evald);
   //lisp_scope_bind(scope, s, evald);
-  return lisp_incref(evald); // this reference is owned by the caller
+  return evald;
 }
 
-void lisp_scope_populate_builtins(lisp_scope *scope)
+void lisp_scope_populate_builtins(lisp_runtime *rt, lisp_scope *scope)
 {
-  lisp_scope_add_builtin(scope, "eval", lisp_builtin_eval);
-  lisp_scope_add_builtin(scope, "car", lisp_builtin_car);
-  lisp_scope_add_builtin(scope, "cdr", lisp_builtin_cdr);
-  lisp_scope_add_builtin(scope, "quote", lisp_builtin_quote);
-  lisp_scope_add_builtin(scope, "cons", lisp_builtin_cons);
-  lisp_scope_add_builtin(scope, "lambda", lisp_builtin_lambda);
-  lisp_scope_add_builtin(scope, "define", lisp_builtin_define);
+  lisp_scope_add_builtin(rt, scope, "eval", lisp_builtin_eval);
+  lisp_scope_add_builtin(rt, scope, "car", lisp_builtin_car);
+  lisp_scope_add_builtin(rt, scope, "cdr", lisp_builtin_cdr);
+  lisp_scope_add_builtin(rt, scope, "quote", lisp_builtin_quote);
+  lisp_scope_add_builtin(rt, scope, "cons", lisp_builtin_cons);
+  lisp_scope_add_builtin(rt, scope, "lambda", lisp_builtin_lambda);
+  lisp_scope_add_builtin(rt, scope, "define", lisp_builtin_define);
 }
