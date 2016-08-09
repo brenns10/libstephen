@@ -63,15 +63,13 @@ result lisp_parse_string(char *input, int index)
 
 result lisp_parse_list_or_sexp(char *input, int index)
 {
-  //printf("lisp_parse_list_or_sexp(%s, %d)\n", input, index);
-  bool sexpr = false;
-  result r = lisp_parse_value(input, index);
-  index = r.index;
-
-  if (r.result == (lisp_value*)lisp_nilv) {
-    return (result){(lisp_value*)lisp_nil_new(), index};
+  while (isspace(input[index])) {index++;}
+  if (input[index] == ')') {
+    return (result){(lisp_value*)lisp_nil_new(), index + 1};
   }
 
+  result r = lisp_parse_value(input, index);
+  index = r.index;
   lisp_list *rv = (lisp_list*)type_list->new();
   rv->left = r.result;
   lisp_list *l = rv;
@@ -82,30 +80,27 @@ result lisp_parse_list_or_sexp(char *input, int index)
     }
 
     if (input[index] == '.') {
-      sexpr=true;
       index++;
       result r = lisp_parse_value(input, index);
       index = r.index;
       l->right = r.result;
       return (result){(lisp_value*)rv, index};
+    } else if (input[index] == ')') {
+      index++;
+      l->right = lisp_nil_new();
+      return (result){(lisp_value*)rv, index};
     } else {
       result r = lisp_parse_value(input, index);
+      l->right = type_list->new();
+      l = (lisp_list*)l->right;
+      l->left = r.result;
       index = r.index;
-      if (r.result == (lisp_value*)lisp_nilv) {
-        l->right = r.result;
-        return (result){(lisp_value*)rv, index};
-      } else {
-        l->right = type_list->new();
-        l = (lisp_list*)l->right;
-        l->left = r.result;
-      }
     }
   }
 }
 
 result lisp_parse_symbol(char *input, int index)
 {
-  //printf("lisp_parse_symbol(%s, %d)\n", input, index);
   int n = 0;
   while (input[index + n] && !isspace(input[index + n]) &&
          input[index + n] != ')' && input[index + n] != '.' &&
@@ -121,8 +116,6 @@ result lisp_parse_symbol(char *input, int index)
 
 result lisp_parse_quote(char *input, int index)
 {
-  //printf("lisp_parse_quote(%s, %d)\n", input, index);
-  // ' VALUE => (quote VALUE)
   lisp_list *l = (lisp_list*) type_list->new();
   lisp_symbol *q = lisp_symbol_new("quote");
   l->left = (lisp_value*)q;
@@ -137,7 +130,6 @@ result lisp_parse_quote(char *input, int index)
 
 result lisp_parse_value(char *input, int index)
 {
-  //printf("lisp_parse_value(%s, %d)\n", input, index);
   while (isspace(input[index])) {
     index++;
   }
