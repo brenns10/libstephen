@@ -10,6 +10,7 @@ list(APPEND libstephen_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/smbunit.c
   ${CMAKE_CURRENT_LIST_DIR}/string.c
   ${CMAKE_CURRENT_LIST_DIR}/util.c
+  ${CMAKE_CURRENT_LIST_DIR}/ringbuf.c
   )
 
 include("${CMAKE_CURRENT_LIST_DIR}/regex/CMakeLists.txt")

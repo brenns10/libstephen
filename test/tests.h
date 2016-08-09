@@ -70,6 +70,7 @@ void parse_test(void);
 void lex_test(void);
 void codegen_test(void);
 void pike_test(void);
+void ringbuf_test(void);
 
 
 /**

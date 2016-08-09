@@ -41,5 +41,6 @@ int main(int argc, char ** argv)
   codegen_test();
   pike_test();
   log_test();
+  ringbuf_test();
   // return args_test_main(argc, argv);
 }

@@ -14,4 +14,5 @@ list(APPEND libstephen_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/re_parse.c
   ${CMAKE_CURRENT_LIST_DIR}/re_pike.c
   ${CMAKE_CURRENT_LIST_DIR}/stringtest.c
+  ${CMAKE_CURRENT_LIST_DIR}/ringbuftest.c
   )
