@@ -84,6 +84,7 @@ typedef struct {
   LISP_VALUE_HEAD;
   lisp_list *args;
   lisp_value *code;
+  lisp_scope *closure;
 } lisp_lambda;
 
 // Shortcuts for type operations.

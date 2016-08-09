@@ -261,8 +261,10 @@ static lisp_value *lisp_builtin_lambda(lisp_scope *scope, lisp_value *a)
   lisp_lambda *lambda = (lisp_lambda*)type_lambda->new();
   lambda->args = argnames;
   lambda->code = code;
+  lambda->closure = scope;
   lisp_incref((lisp_value*)lambda->args);
   lisp_incref(lambda->code);
+  lisp_incref((lisp_value*)lambda->closure);
   return (lisp_value*) lambda;
 }
 

@@ -38,11 +38,6 @@ static lisp_value *call_same(lisp_scope *s, lisp_value *c, lisp_value *v)
   return c;
 }
 
-static void nop_free(void *v)
-{
-  (void)v;
-}
-
 // type
 
 static void type_print(FILE *f, lisp_value *v);
@@ -480,6 +475,7 @@ static void lambda_free(void *v)
   lisp_lambda *lambda = (lisp_lambda*) v;
   lisp_decref((lisp_value*)lambda->args);
   lisp_decref(lambda->code);
+  lisp_decref((lisp_value*)lambda->closure);
   free(lambda);
 }
 
@@ -490,8 +486,8 @@ static lisp_value *lambda_call(lisp_scope *scope, lisp_value *c,
   lisp_list *argvalues = (lisp_list*)lisp_eval_list(scope, arguments);
   lisp_scope *inner = (lisp_scope*)type_scope->new();
   lisp_value *rv;
-  lisp_incref((lisp_value*)scope);
-  inner->up = scope;
+  lisp_incref((lisp_value*)lambda->closure);
+  inner->up = lambda->closure;
 
   lisp_list *it1 = lambda->args, *it2 = argvalues;
   while (!lisp_nil_p((lisp_value*)it1) && !lisp_nil_p((lisp_value*)it2)) {
