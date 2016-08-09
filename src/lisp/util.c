@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdarg.h>
 #include <string.h>
 
@@ -28,6 +29,28 @@ void lisp_scope_add_builtin(lisp_scope *scope, char *name, lisp_value * (*call)(
   lisp_symbol *symbol = lisp_symbol_new(name);
   lisp_builtin *builtin = lisp_builtin_new(name, call);
   lisp_scope_bind(scope, symbol, (lisp_value*)builtin);
+}
+
+void lisp_scope_replace_or_insert(lisp_scope *scope, lisp_symbol *key, lisp_value *value)
+{
+  smb_status status = SMB_SUCCESS;
+  lisp_scope *s = scope;
+
+  // First go up the chain checking for the name.
+  while (s) {
+    if (ht_contains(&s->scope, PTR(key))) {
+      // If we find it, replace it.
+      lisp_value *v = ht_get(&s->scope, PTR(key), &status).data_ptr;
+      assert(status == SMB_SUCCESS);
+      lisp_decref(v);
+      ht_insert(&s->scope, PTR(key), PTR(value));
+      return;
+    }
+    s = s->up;
+  }
+
+  // If we never find it, insert it in the "lowest" scope.
+  ht_insert(&scope->scope, PTR(key), PTR(value));
 }
 
 lisp_symbol *lisp_symbol_new(char *sym)
@@ -254,7 +277,8 @@ static lisp_value *lisp_builtin_define(lisp_scope *scope, lisp_value *a)
 
   lisp_value *evald = lisp_eval(scope, expr);
   lisp_incref((lisp_value*)s);
-  lisp_scope_bind(scope, s, evald);
+  lisp_scope_replace_or_insert(scope, s, evald);
+  //lisp_scope_bind(scope, s, evald);
   return lisp_incref(evald); // this reference is owned by the caller
 }
 
