@@ -25,6 +25,6 @@ int main(int argc, char **argv)
     lisp_sweep(&rt);
   }
 
-  lisp_sweep(&rt);
+  lisp_destroy(&rt);
   return 0;
 }

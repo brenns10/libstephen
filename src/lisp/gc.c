@@ -13,6 +13,13 @@ void lisp_init(lisp_runtime *rt)
   rb_init(&rt->rb, sizeof(lisp_value*), 16);
 }
 
+void lisp_destroy(lisp_runtime *rt)
+{
+  lisp_sweep(rt);
+  rb_destroy(&rt->rb);
+  lisp_free(rt->nil);
+}
+
 void lisp_mark(lisp_runtime *rt, lisp_value *v)
 {
   smb_status status = SMB_SUCCESS;

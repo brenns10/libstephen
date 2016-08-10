@@ -111,6 +111,7 @@ typedef struct {
 void lisp_init(lisp_runtime *rt);
 void lisp_mark(lisp_runtime *rt, lisp_value *v);
 void lisp_sweep(lisp_runtime *rt);
+void lisp_destroy(lisp_runtime *rt);
 
 // Shortcuts for type operations.
 void lisp_print(FILE *f, lisp_value *value);
