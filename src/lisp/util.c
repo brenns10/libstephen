@@ -258,6 +258,59 @@ static lisp_value *lisp_builtin_define(lisp_runtime *rt, lisp_scope *scope,
   return evald;
 }
 
+static lisp_value *lisp_builtin_plus(lisp_runtime *rt, lisp_scope *scope,
+                                     lisp_value *a)
+{
+  lisp_integer *i;
+  lisp_list *args = (lisp_list*)lisp_eval_list(rt, scope, a);
+  int sum = 0;
+
+  while (!lisp_nil_p((lisp_value*)args)) {
+    if (args->left->type != type_integer) {
+      return (lisp_value*) lisp_error_new(rt, "expect integers for addition");
+    }
+    i = (lisp_integer*) args->left;
+    sum += i->x;
+    args = (lisp_list*)args->right;
+  }
+
+  i = (lisp_integer*)lisp_new(rt, type_integer);
+  i->x = sum;
+  return (lisp_value*)i;
+}
+
+static lisp_value *lisp_builtin_minus(lisp_runtime *rt, lisp_scope *scope,
+                                      lisp_value *a)
+{
+  lisp_integer *i;
+  lisp_list *args = (lisp_list*)lisp_eval_list(rt, scope, a);
+  int val = 0;
+  int len = lisp_list_length(args);
+
+  if (len < 1) {
+    return (lisp_value*) lisp_error_new(rt, "expected at least one arg");
+  } else if (len == 1) {
+    i = (lisp_integer*) args->left;
+    val = - i->x;
+  } else {
+    i = (lisp_integer*) args->left;
+    val = i->x;
+    args = (lisp_list*)args->right;
+    while (!lisp_nil_p((lisp_value*)args)) {
+      if (!args->left->type == type_integer) {
+        return (lisp_value*)lisp_error_new(rt, "expected integer");
+      }
+      i = (lisp_integer*) args->left;
+      val -= i->x;
+      args = (lisp_list*) args->right;
+    }
+  }
+
+  i = (lisp_integer*)lisp_new(rt, type_integer);
+  i->x = val;
+  return (lisp_value*)i;
+}
+
 void lisp_scope_populate_builtins(lisp_runtime *rt, lisp_scope *scope)
 {
   lisp_scope_add_builtin(rt, scope, "eval", lisp_builtin_eval);
@@ -267,4 +320,6 @@ void lisp_scope_populate_builtins(lisp_runtime *rt, lisp_scope *scope)
   lisp_scope_add_builtin(rt, scope, "cons", lisp_builtin_cons);
   lisp_scope_add_builtin(rt, scope, "lambda", lisp_builtin_lambda);
   lisp_scope_add_builtin(rt, scope, "define", lisp_builtin_define);
+  lisp_scope_add_builtin(rt, scope, "+", lisp_builtin_plus);
+  lisp_scope_add_builtin(rt, scope, "-", lisp_builtin_minus);
 }
