@@ -33,7 +33,7 @@
     <link rel="top" title="libstephen 0.1 documentation" href="../index.html"/>
         <link rel="up" title="Lisp Implementation Documentation" href="index.html"/>
         <link rel="next" title="Type System" href="types.html"/>
-        <link rel="prev" title="Intro to Reference Counting" href="refcount.html"/> 
+        <link rel="prev" title="Lisp Implementation Documentation" href="index.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -86,8 +86,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../tutorial/index.html">Libstephen Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api/index.html">Libstephen API Documentation</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="index.html">Lisp Implementation Documentation</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="refcount.html">Intro to Reference Counting</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Embedding the Interpreter</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#basic-components">Basic Components</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#the-repl">The REPL</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#writing-builtins">Writing Builtins</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#basics-of-lisp-types">Basics of Lisp Types</a></li>
@@ -145,35 +145,49 @@
             
   <div class="section" id="embedding-the-interpreter">
 <h1>Embedding the Interpreter<a class="headerlink" href="#embedding-the-interpreter" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="basic-components">
+<h2>Basic Components<a class="headerlink" href="#basic-components" title="Permalink to this headline">¶</a></h2>
+<p>To use the lisp interpreter, there are a few basic concepts to understand.</p>
+<p>The interpreter has a &#8220;runtime&#8221; object associated with it. It holds some
+information about garbage collection. Most functions related to the interpreter
+take a pointer to a <code class="docutils literal"><span class="pre">lisp_runtime</span></code> as their first argument. You can initialize
+a runtime with <code class="docutils literal"><span class="pre">lisp_init()</span></code> and once initialized, you must destroy it with
+<code class="docutils literal"><span class="pre">lisp_destroy()</span></code>. Note that destroying a runtime also ends up garbage
+collecting all language objects created within that runtime, so if you want to
+access language objects, do it before destroying the runtime.</p>
+<p>In order to run any code, you will need to have a global scope. This object
+binds names to values, including several of the critical built in functions for
+the language. You can create scopes like this: <code class="docutils literal"><span class="pre">lisp_new(rt,</span> <span class="pre">type_scope)</span></code>,
+where <code class="docutils literal"><span class="pre">rt</span></code> is your lisp runtime. The scope is managed by the runtime and
+should not be freed, since the garbage collector frees it when you call
+<code class="docutils literal"><span class="pre">lisp_destroy()</span></code>. Once you have a scope, you typically will want to use
+<code class="docutils literal"><span class="pre">lisp_scope_populate_builtins()</span></code> to add all the critical builtins to your
+global scope.</p>
+<p>Finally, you need to know a little bit about garbage collection. The lisp
+interpreter uses a mark and sweep garbage collector. This means that every so
+often the application must pause the program, mark all reachable language
+objects, and free everything that is unreachable. To do this, you need a &#8220;root
+set&#8221; of objects, which is typically your global scope. You should call
+<code class="docutils literal"><span class="pre">lisp_mark()</span></code> on this root set, followed by <code class="docutils literal"><span class="pre">lisp_sweep()</span></code> on the runtime to
+free up all memory that is not reachable from your root set.</p>
+</div>
 <div class="section" id="the-repl">
 <h2>The REPL<a class="headerlink" href="#the-repl" title="Permalink to this headline">¶</a></h2>
-<p>With a working understanding of the basics of the reference counting system, the
-basic read-eval-print loop for the interpreter is simple. Taking it in steps:</p>
+<p>A basic REPL with libstephen lisp is fairly simple:</p>
 <ol class="arabic simple">
+<li>First, create a language runtime and a global scope.</li>
 <li>Read a line of input.</li>
 <li>Parse the input. Parsed code is simply a <code class="docutils literal"><span class="pre">lisp_value</span></code> like any other
-language object, and so the REPL now owns a reference to the input.</li>
-<li>Free the line of input.</li>
-<li>Evaluate the input. Similar to the above, the REPL now owns references to the
-result.</li>
-<li>Decref the code, since it is no longer needed.</li>
+language object.</li>
+<li>Evaluate the input within the global scope.</li>
 <li>Print the output, and a trailing newline.</li>
-<li>Decref the output, since it is no longer needed.</li>
+<li>Mark everything in scope, then sweep unreachable objects.</li>
+<li>Repeat steps 2-7 for each line of input.</li>
+<li>Destroy the language runtime to finish cleaning up memory.</li>
 </ol>
-<p>One major issue is overlooked in these steps: scope. The scope is simply a
-mapping of names (i.e. <code class="docutils literal"><span class="pre">lisp_symbol</span></code> objects) to values (any <code class="docutils literal"><span class="pre">lisp_value</span></code>).
-A scope is required to evaluate any code. The scope contains most of the
-critical builtin functions for lisp, such as <code class="docutils literal"><span class="pre">car</span></code>, <code class="docutils literal"><span class="pre">cdr</span></code>, <code class="docutils literal"><span class="pre">cons</span></code>, etc.
-The scope may also be modified by the builtin function <code class="docutils literal"><span class="pre">define</span></code>, so that code
-can bind a name to a value it creates (such as a function).</p>
-<p>Before an interpreter can evaluate any code, it must instantiate a scope and
-populate it with the basic built-in functions for lisp. Once the interpreter has
-exited, we can decref it, which should free every key and value that was stored
-in the scope.</p>
-<p>With the scope in mind, here is some basic code that demonstrates embedding a
-simple lisp interpreter, without any custom functions. It uses the <code class="docutils literal"><span class="pre">editline</span></code>
-implementation of the <code class="docutils literal"><span class="pre">readline</span></code> library for reading input (and allowing line
-editing).</p>
+<p>Here is some basic code that demonstrates embedding a simple lisp interpreter,
+without any custom functions. It uses the <code class="docutils literal"><span class="pre">editline</span></code> implementation of the
+<code class="docutils literal"><span class="pre">readline</span></code> library for reading input (and allowing line editing).</p>
 <div class="code C highlight-c"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;editline/readline.h&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
 
@@ -181,27 +195,36 @@ editing).</p>
 
 <span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">Argo</span><span class="p">)</span>
 <span class="p">{</span>
-  <span class="n">lisp_scope</span> <span class="o">*</span><span class="n">scope</span> <span class="o">=</span> <span class="p">(</span><span class="n">lisp_scope</span><span class="o">*</span><span class="p">)</span><span class="n">type_scope</span><span class="o">-&gt;</span><span class="n">new</span><span class="p">();</span>
-  <span class="n">lisp_scope_populate_builtins</span><span class="p">(</span><span class="n">scope</span><span class="p">);</span>
+  <span class="c1">// 1. Create runtime &amp; scope</span>
+  <span class="n">lisp_runtime</span> <span class="n">rt</span><span class="p">;</span>
+  <span class="n">lisp_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rt</span><span class="p">);</span>
+  <span class="n">lisp_scope</span> <span class="o">*</span><span class="n">scope</span> <span class="o">=</span> <span class="p">(</span><span class="n">lisp_scope</span><span class="o">*</span><span class="p">)</span><span class="n">lisp_new</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rt</span><span class="p">,</span> <span class="n">type_scope</span><span class="p">);</span>
+  <span class="n">lisp_scope_populate_builtins</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rt</span><span class="p">,</span> <span class="n">scope</span><span class="p">);</span>
 
   <span class="c1">// Add your own builtins here?</span>
 
   <span class="k">while</span> <span class="p">(</span><span class="nb">true</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// 2. Read a line of input</span>
     <span class="kt">char</span> <span class="o">*</span><span class="n">input</span> <span class="o">=</span> <span class="n">readline</span><span class="p">(</span><span class="s">&quot;&gt; &quot;</span><span class="p">);</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">input</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
       <span class="k">break</span><span class="p">;</span>
     <span class="p">}</span>
-    <span class="n">lisp_value</span> <span class="o">*</span><span class="n">value</span> <span class="o">=</span> <span class="n">lisp_parse</span><span class="p">(</span><span class="n">input</span><span class="p">);</span>
+    <span class="c1">// 3. Parse input</span>
+    <span class="n">lisp_value</span> <span class="o">*</span><span class="n">value</span> <span class="o">=</span> <span class="n">lisp_parse</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rt</span><span class="p">,</span> <span class="n">input</span><span class="p">);</span>
     <span class="n">add_history</span><span class="p">(</span><span class="n">input</span><span class="p">);</span> <span class="c1">// for editline history only</span>
     <span class="n">free</span><span class="p">(</span><span class="n">input</span><span class="p">);</span>
-    <span class="n">lisp_value</span> <span class="o">*</span><span class="n">result</span> <span class="o">=</span> <span class="n">lisp_eval</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">value</span><span class="p">);</span>
-    <span class="n">lisp_decref</span><span class="p">(</span><span class="n">value</span><span class="p">);</span>
+    <span class="c1">// 4. Evaluate input within global scope.</span>
+    <span class="n">lisp_value</span> <span class="o">*</span><span class="n">result</span> <span class="o">=</span> <span class="n">lisp_eval</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rt</span><span class="p">,</span> <span class="n">scope</span><span class="p">,</span> <span class="n">value</span><span class="p">);</span>
+    <span class="c1">// 5. Print output and a trailing newline.</span>
     <span class="n">lisp_print</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="n">result</span><span class="p">);</span>
     <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
-    <span class="n">lisp_decref</span><span class="p">(</span><span class="n">result</span><span class="p">);</span>
+    <span class="c1">// 6. Call garbage collector.</span>
+    <span class="n">lisp_mark</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rt</span><span class="p">,</span> <span class="p">(</span><span class="n">lisp_value</span><span class="o">*</span><span class="p">)</span><span class="n">scope</span><span class="p">);</span>
+    <span class="n">lisp_sweep</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rt</span><span class="p">);</span>
   <span class="p">}</span>
 
-  <span class="n">lisp_decref</span><span class="p">((</span><span class="n">lisp_value</span><span class="o">*</span><span class="p">)</span><span class="n">scope</span><span class="p">);</span>
+  <span class="c1">// 8. Destroy the language runtime.</span>
+  <span class="n">lisp_destroy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rt</span><span class="p">);</span>
   <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
@@ -214,7 +237,9 @@ unless you can also add functions to the global scope. The most straightforward
 way to add your own functionality to the interpreter is by writing a &#8220;builtin&#8221;.
 This is a C function which may be called by lisp code. Builtins must have the
 following signature:</p>
-<div class="code C highlight-c"><div class="highlight"><pre><span></span><span class="n">lisp_value</span> <span class="o">*</span><span class="nf">lisp_builtin_somename</span><span class="p">(</span><span class="n">lisp_scope</span> <span class="o">*</span><span class="n">scope</span><span class="p">,</span> <span class="n">lisp_value</span> <span class="o">*</span><span class="n">arglist</span><span class="p">);</span>
+<div class="code C highlight-c"><div class="highlight"><pre><span></span><span class="n">lisp_value</span> <span class="o">*</span><span class="nf">lisp_builtin_somename</span><span class="p">(</span><span class="n">lisp_runtime</span> <span class="o">*</span><span class="n">rt</span><span class="p">,</span>
+                                  <span class="n">lisp_scope</span> <span class="o">*</span><span class="n">scope</span><span class="p">,</span>
+                                  <span class="n">lisp_value</span> <span class="o">*</span><span class="n">arglist</span><span class="p">);</span>
 </pre></div>
 </div>
 <p>The scope argument contains the current binding of names to values, and the
@@ -232,7 +257,7 @@ on the value of the expression.</p>
 but this process gets annoying very fast. To simplify this process, there is
 <code class="docutils literal"><span class="pre">lisp_get_args()</span></code>, a function which takes a list of (evaluated or unevaluated)
 arguments and a format string, along with a list of pointers to result
-variables. Similar to <code class="docutils literal"><span class="pre">Scan()</span></code>, it reads a type code from the format string
+variables. Similar to <code class="docutils literal"><span class="pre">sscanf()</span></code>, it reads a type code from the format string
 and attempts to take the next object off of the list, verify the type, and
 assign it to the current variable in the list. The current format string
 characters are:</p>
@@ -252,12 +277,8 @@ string for the <code class="docutils literal"><span class="pre">cons</span></cod
 together in an s-expression. If nothing else, the <code class="docutils literal"><span class="pre">lisp_get_args()</span></code> function
 can help you verify the number of arguments, if not their types. When it fails,
 it returns false, which you should typically handle by returning an error
-(<code class="docutils literal"><span class="pre">lisp_error_new()</span></code>). You should be sure to decref anything you have allocated
-as you parsed your arguments (such as the return value from
-<code class="docutils literal"><span class="pre">lisp_eval_list()</span></code>). Even when an error has occurred!</p>
-<p>At this point, your function is free to do whatever logic you&#8217;d like. Keep in
-mind that the return value of <code class="docutils literal"><span class="pre">lisp_eval_list()</span></code> must be decref&#8217;d when you&#8217;re
-done with it, and also that your return values must be new references.</p>
+(<code class="docutils literal"><span class="pre">lisp_error_new()</span></code>). If it doesn&#8217;t fail, your function is free to do whatever
+logic you&#8217;d like.</p>
 </div>
 <div class="section" id="basics-of-lisp-types">
 <h2>Basics of Lisp Types<a class="headerlink" href="#basics-of-lisp-types" title="Permalink to this headline">¶</a></h2>
@@ -295,11 +316,9 @@ types!  But you probably won&#8217;t use them in your average code.</p>
 not applicable):</p>
 <ul class="simple">
 <li><code class="docutils literal"><span class="pre">lisp_print(FILE</span> <span class="pre">*f,</span> <span class="pre">lisp_value</span> <span class="pre">*v)</span></code></li>
-<li><code class="docutils literal"><span class="pre">lisp_eval(lisp_scope</span> <span class="pre">*s,</span> <span class="pre">lisp_value</span> <span class="pre">*v)</span></code></li>
-<li><code class="docutils literal"><span class="pre">lisp_call(lisp_scope</span> <span class="pre">*s,</span> <span class="pre">lisp_value</span> <span class="pre">*callable,</span> <span class="pre">lisp_value</span> <span class="pre">*arguments)</span></code>
+<li><code class="docutils literal"><span class="pre">lisp_eval(lisp_runtime</span> <span class="pre">*rt,</span> <span class="pre">lisp_scope</span> <span class="pre">*s,</span> <span class="pre">lisp_value</span> <span class="pre">*v)</span></code></li>
+<li><code class="docutils literal"><span class="pre">lisp_call(lisp_runtime</span> <span class="pre">*rt,</span> <span class="pre">lisp_scope</span> <span class="pre">*s,</span> <span class="pre">lisp_value</span> <span class="pre">*callable,</span> <span class="pre">lisp_value</span> <span class="pre">*arguments)</span></code>
 - invokes <code class="docutils literal"><span class="pre">callable</span></code> on <code class="docutils literal"><span class="pre">arguments</span></code> in scope <code class="docutils literal"><span class="pre">s</span></code>.</li>
-<li>Of course, <code class="docutils literal"><span class="pre">lisp_incref</span></code> and <code class="docutils literal"><span class="pre">lisp_decref</span></code>. There is also <code class="docutils literal"><span class="pre">lisp_free</span></code>,
-but that shouldn&#8217;t ever be used.</li>
 </ul>
 </div>
 <div class="section" id="adding-builtins-to-the-scope">
@@ -325,44 +344,42 @@ above.</p>
   <span class="c1">// Check our number and type of arguments.</span>
   <span class="n">lisp_string</span> <span class="o">*</span><span class="n">s</span><span class="p">;</span>
   <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">lisp_get_args</span><span class="p">((</span><span class="n">lisp_list</span><span class="o">*</span><span class="p">)</span><span class="n">arglist</span><span class="p">,</span> <span class="s">&quot;S&quot;</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">s</span><span class="p">))</span> <span class="p">{</span>
-    <span class="c1">// Don&#39;t forget to decref on error.</span>
-    <span class="n">lisp_decref</span><span class="p">(</span><span class="n">arglist</span><span class="p">);</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">lisp_value</span><span class="o">*</span><span class="p">)</span><span class="n">lisp_error_new</span><span class="p">(</span><span class="s">&quot;error: expected a string!&quot;</span><span class="p">);</span>
   <span class="p">}</span>
 
   <span class="c1">// Perform our logic.</span>
   <span class="n">printf</span><span class="p">(</span><span class="s">&quot;Hello, %s!</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">s</span><span class="o">-&gt;</span><span class="n">s</span><span class="p">);</span>
 
-  <span class="c1">// Decref the evaluated arguments, which we owned.</span>
-  <span class="n">lisp_decref</span><span class="p">(</span><span class="n">arglist</span><span class="p">);</span>
-
   <span class="c1">// we have to return something...</span>
   <span class="k">return</span> <span class="p">(</span><span class="n">lisp_value</span><span class="o">*</span><span class="p">)</span> <span class="n">lisp_nil_new</span><span class="p">();</span>
 <span class="p">}</span>
 
-<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
-<span class="p">{</span>
-  <span class="n">lisp_scope</span> <span class="o">*</span><span class="n">scope</span> <span class="o">=</span> <span class="p">(</span><span class="n">lisp_scope</span><span class="o">*</span><span class="p">)</span><span class="n">type_scope</span><span class="o">-&gt;</span><span class="n">new</span><span class="p">();</span>
-  <span class="n">lisp_scope_populate_builtins</span><span class="p">(</span><span class="n">scope</span><span class="p">);</span>
 
-  <span class="n">lisp_scope_add_builtin</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="s">&quot;hello&quot;</span><span class="p">,</span> <span class="n">say_hello</span><span class="p">);</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">Argo</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="n">lisp_runtime</span> <span class="n">rt</span><span class="p">;</span>
+  <span class="n">lisp_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rt</span><span class="p">);</span>
+  <span class="n">lisp_scope</span> <span class="o">*</span><span class="n">scope</span> <span class="o">=</span> <span class="p">(</span><span class="n">lisp_scope</span><span class="o">*</span><span class="p">)</span><span class="n">lisp_new</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rt</span><span class="p">,</span> <span class="n">type_scope</span><span class="p">);</span>
+  <span class="n">lisp_scope_populate_builtins</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rt</span><span class="p">,</span> <span class="n">scope</span><span class="p">);</span>
+
+  <span class="n">lisp_scope_add_builtin</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rt</span><span class="p">,</span> <span class="n">scope</span><span class="p">,</span> <span class="s">&quot;hello&quot;</span><span class="p">,</span> <span class="n">say_hello</span><span class="p">);</span>
 
   <span class="k">while</span> <span class="p">(</span><span class="nb">true</span><span class="p">)</span> <span class="p">{</span>
     <span class="kt">char</span> <span class="o">*</span><span class="n">input</span> <span class="o">=</span> <span class="n">readline</span><span class="p">(</span><span class="s">&quot;&gt; &quot;</span><span class="p">);</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">input</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
       <span class="k">break</span><span class="p">;</span>
     <span class="p">}</span>
-    <span class="n">lisp_value</span> <span class="o">*</span><span class="n">value</span> <span class="o">=</span> <span class="n">lisp_parse</span><span class="p">(</span><span class="n">input</span><span class="p">);</span>
-    <span class="n">add_history</span><span class="p">(</span><span class="n">input</span><span class="p">);</span>
+    <span class="n">lisp_value</span> <span class="o">*</span><span class="n">value</span> <span class="o">=</span> <span class="n">lisp_parse</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rt</span><span class="p">,</span> <span class="n">input</span><span class="p">);</span>
+    <span class="n">add_history</span><span class="p">(</span><span class="n">input</span><span class="p">);</span> <span class="c1">// for editline history only</span>
     <span class="n">free</span><span class="p">(</span><span class="n">input</span><span class="p">);</span>
-    <span class="n">lisp_value</span> <span class="o">*</span><span class="n">result</span> <span class="o">=</span> <span class="n">lisp_eval</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">value</span><span class="p">);</span>
-    <span class="n">lisp_decref</span><span class="p">(</span><span class="n">value</span><span class="p">);</span>
+    <span class="n">lisp_value</span> <span class="o">*</span><span class="n">result</span> <span class="o">=</span> <span class="n">lisp_eval</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rt</span><span class="p">,</span> <span class="n">scope</span><span class="p">,</span> <span class="n">value</span><span class="p">);</span>
     <span class="n">lisp_print</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="n">result</span><span class="p">);</span>
     <span class="n">fprintf</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
-    <span class="n">lisp_decref</span><span class="p">(</span><span class="n">result</span><span class="p">);</span>
+    <span class="n">lisp_mark</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rt</span><span class="p">,</span> <span class="p">(</span><span class="n">lisp_value</span><span class="o">*</span><span class="p">)</span><span class="n">scope</span><span class="p">);</span>
+    <span class="n">lisp_sweep</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rt</span><span class="p">);</span>
   <span class="p">}</span>
 
-  <span class="n">lisp_decref</span><span class="p">((</span><span class="n">lisp_value</span><span class="o">*</span><span class="p">)</span><span class="n">scope</span><span class="p">);</span>
+  <span class="n">lisp_destroy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">rt</span><span class="p">);</span>
   <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
 <span class="p">}</span>
 </pre></div>
@@ -390,7 +407,7 @@ error: error: expected a string!
         <a href="types.html" class="btn btn-neutral float-right" title="Type System" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="refcount.html" class="btn btn-neutral" title="Intro to Reference Counting" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="index.html" class="btn btn-neutral" title="Lisp Implementation Documentation" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

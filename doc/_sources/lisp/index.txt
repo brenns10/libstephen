@@ -21,6 +21,5 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-   refcount.rst
    embedding.rst
    types.rst

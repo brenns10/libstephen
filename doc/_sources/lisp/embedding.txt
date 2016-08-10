@@ -1,38 +1,54 @@
 Embedding the Interpreter
 =========================
 
+Basic Components
+----------------
+
+To use the lisp interpreter, there are a few basic concepts to understand.
+
+The interpreter has a "runtime" object associated with it. It holds some
+information about garbage collection. Most functions related to the interpreter
+take a pointer to a ``lisp_runtime`` as their first argument. You can initialize
+a runtime with ``lisp_init()`` and once initialized, you must destroy it with
+``lisp_destroy()``. Note that destroying a runtime also ends up garbage
+collecting all language objects created within that runtime, so if you want to
+access language objects, do it before destroying the runtime.
+
+In order to run any code, you will need to have a global scope. This object
+binds names to values, including several of the critical built in functions for
+the language. You can create scopes like this: ``lisp_new(rt, type_scope)``,
+where ``rt`` is your lisp runtime. The scope is managed by the runtime and
+should not be freed, since the garbage collector frees it when you call
+``lisp_destroy()``. Once you have a scope, you typically will want to use
+``lisp_scope_populate_builtins()`` to add all the critical builtins to your
+global scope.
+
+Finally, you need to know a little bit about garbage collection. The lisp
+interpreter uses a mark and sweep garbage collector. This means that every so
+often the application must pause the program, mark all reachable language
+objects, and free everything that is unreachable. To do this, you need a "root
+set" of objects, which is typically your global scope. You should call
+``lisp_mark()`` on this root set, followed by ``lisp_sweep()`` on the runtime to
+free up all memory that is not reachable from your root set.
+
 The REPL
 --------
 
-With a working understanding of the basics of the reference counting system, the
-basic read-eval-print loop for the interpreter is simple. Taking it in steps:
+A basic REPL with libstephen lisp is fairly simple:
 
-1. Read a line of input.
-2. Parse the input. Parsed code is simply a ``lisp_value`` like any other
-   language object, and so the REPL now owns a reference to the input.
-3. Free the line of input.
-4. Evaluate the input. Similar to the above, the REPL now owns references to the
-   result.
-5. Decref the code, since it is no longer needed.
-6. Print the output, and a trailing newline.
-7. Decref the output, since it is no longer needed.
+1. First, create a language runtime and a global scope.
+2. Read a line of input.
+3. Parse the input. Parsed code is simply a ``lisp_value`` like any other
+   language object.
+4. Evaluate the input within the global scope.
+5. Print the output, and a trailing newline.
+6. Mark everything in scope, then sweep unreachable objects.
+7. Repeat steps 2-7 for each line of input.
+8. Destroy the language runtime to finish cleaning up memory.
 
-One major issue is overlooked in these steps: scope. The scope is simply a
-mapping of names (i.e. ``lisp_symbol`` objects) to values (any ``lisp_value``).
-A scope is required to evaluate any code. The scope contains most of the
-critical builtin functions for lisp, such as ``car``, ``cdr``, ``cons``, etc.
-The scope may also be modified by the builtin function ``define``, so that code
-can bind a name to a value it creates (such as a function).
-
-Before an interpreter can evaluate any code, it must instantiate a scope and
-populate it with the basic built-in functions for lisp. Once the interpreter has
-exited, we can decref it, which should free every key and value that was stored
-in the scope.
-
-With the scope in mind, here is some basic code that demonstrates embedding a
-simple lisp interpreter, without any custom functions. It uses the ``editline``
-implementation of the ``readline`` library for reading input (and allowing line
-editing).
+Here is some basic code that demonstrates embedding a simple lisp interpreter,
+without any custom functions. It uses the ``editline`` implementation of the
+``readline`` library for reading input (and allowing line editing).
 
 .. code:: C
 
@@ -43,27 +59,36 @@ editing).
 
    int main(int argc, char **Argo)
    {
-     lisp_scope *scope = (lisp_scope*)type_scope->new();
-     lisp_scope_populate_builtins(scope);
+     // 1. Create runtime & scope
+     lisp_runtime rt;
+     lisp_init(&rt);
+     lisp_scope *scope = (lisp_scope*)lisp_new(&rt, type_scope);
+     lisp_scope_populate_builtins(&rt, scope);
 
      // Add your own builtins here?
 
      while (true) {
+       // 2. Read a line of input
        char *input = readline("> ");
        if (input == NULL) {
          break;
        }
-       lisp_value *value = lisp_parse(input);
+       // 3. Parse input
+       lisp_value *value = lisp_parse(&rt, input);
        add_history(input); // for editline history only
        free(input);
-       lisp_value *result = lisp_eval(scope, value);
-       lisp_decref(value);
+       // 4. Evaluate input within global scope.
+       lisp_value *result = lisp_eval(&rt, scope, value);
+       // 5. Print output and a trailing newline.
        lisp_print(stdout, result);
        fprintf(stdout, "\n");
-       lisp_decref(result);
+       // 6. Call garbage collector.
+       lisp_mark(&rt, (lisp_value*)scope);
+       lisp_sweep(&rt);
      }
 
-     lisp_decref((lisp_value*)scope);
+     // 8. Destroy the language runtime.
+     lisp_destroy(&rt);
      return 0;
    }
 
@@ -78,7 +103,9 @@ following signature:
 
 .. code:: C
 
-   lisp_value *lisp_builtin_somename(lisp_scope *scope, lisp_value *arglist);
+   lisp_value *lisp_builtin_somename(lisp_runtime *rt,
+                                     lisp_scope *scope,
+                                     lisp_value *arglist);
 
 The scope argument contains the current binding of names to values, and the
 arglist is a list of arguments to your function, which **have not been
@@ -97,7 +124,7 @@ Finally, when you have your argument list, you could verify them all manually,
 but this process gets annoying very fast. To simplify this process, there is
 ``lisp_get_args()``, a function which takes a list of (evaluated or unevaluated)
 arguments and a format string, along with a list of pointers to result
-variables. Similar to ``Scan()``, it reads a type code from the format string
+variables. Similar to ``sscanf()``, it reads a type code from the format string
 and attempts to take the next object off of the list, verify the type, and
 assign it to the current variable in the list. The current format string
 characters are:
@@ -117,13 +144,8 @@ string for the ``cons`` function is ``"**"``, because any two things may be put
 together in an s-expression. If nothing else, the ``lisp_get_args()`` function
 can help you verify the number of arguments, if not their types. When it fails,
 it returns false, which you should typically handle by returning an error
-(``lisp_error_new()``). You should be sure to decref anything you have allocated
-as you parsed your arguments (such as the return value from
-``lisp_eval_list()``). Even when an error has occurred!
-
-At this point, your function is free to do whatever logic you'd like. Keep in
-mind that the return value of ``lisp_eval_list()`` must be decref'd when you're
-done with it, and also that your return values must be new references.
+(``lisp_error_new()``). If it doesn't fail, your function is free to do whatever
+logic you'd like.
 
 Basics of Lisp Types
 --------------------
@@ -164,11 +186,9 @@ The following functions can be called on any lisp type (they may raise errors if
 not applicable):
 
 - ``lisp_print(FILE *f, lisp_value *v)``
-- ``lisp_eval(lisp_scope *s, lisp_value *v)``
-- ``lisp_call(lisp_scope *s, lisp_value *callable, lisp_value *arguments)``
+- ``lisp_eval(lisp_runtime *rt, lisp_scope *s, lisp_value *v)``
+- ``lisp_call(lisp_runtime *rt, lisp_scope *s, lisp_value *callable, lisp_value *arguments)``
   - invokes ``callable`` on ``arguments`` in scope ``s``.
-- Of course, ``lisp_incref`` and ``lisp_decref``. There is also ``lisp_free``,
-  but that shouldn't ever be used.
 
 Adding Builtins to the Scope
 ----------------------------
@@ -198,47 +218,44 @@ above.
      // Check our number and type of arguments.
      lisp_string *s;
      if (!lisp_get_args((lisp_list*)arglist, "S", &s)) {
-       // Don't forget to decref on error.
-       lisp_decref(arglist);
        return (lisp_value*)lisp_error_new("error: expected a string!");
      }
 
      // Perform our logic.
      printf("Hello, %s!\n", s->s);
 
-     // Decref the evaluated arguments, which we owned.
-     lisp_decref(arglist);
-
      // we have to return something...
      return (lisp_value*) lisp_nil_new();
    }
 
-   int main(int argc, char **argv)
-   {
-     lisp_scope *scope = (lisp_scope*)type_scope->new();
-     lisp_scope_populate_builtins(scope);
 
-     lisp_scope_add_builtin(scope, "hello", say_hello);
+   int main(int argc, char **Argo)
+   {
+     lisp_runtime rt;
+     lisp_init(&rt);
+     lisp_scope *scope = (lisp_scope*)lisp_new(&rt, type_scope);
+     lisp_scope_populate_builtins(&rt, scope);
+
+     lisp_scope_add_builtin(&rt, scope, "hello", say_hello);
 
      while (true) {
        char *input = readline("> ");
        if (input == NULL) {
          break;
        }
-       lisp_value *value = lisp_parse(input);
-       add_history(input);
+       lisp_value *value = lisp_parse(&rt, input);
+       add_history(input); // for editline history only
        free(input);
-       lisp_value *result = lisp_eval(scope, value);
-       lisp_decref(value);
+       lisp_value *result = lisp_eval(&rt, scope, value);
        lisp_print(stdout, result);
        fprintf(stdout, "\n");
-       lisp_decref(result);
+       lisp_mark(&rt, (lisp_value*)scope);
+       lisp_sweep(&rt);
      }
 
-     lisp_decref((lisp_value*)scope);
+     lisp_destroy(&rt);
      return 0;
    }
-
 
 An example session using the builtin:
 
