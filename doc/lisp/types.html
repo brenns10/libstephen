@@ -137,15 +137,16 @@
             
   <div class="section" id="type-system">
 <h1>Type System<a class="headerlink" href="#type-system" title="Permalink to this headline">¶</a></h1>
-<p>As previous pages have described, lisp objects rely on a reference counting
-garbage collection system to manage their lifetimes. This page describes how the
-type system is implemented, which includes the garbage collection
-implementation.</p>
+<p>As previous pages have mentions, lisp objects rely on a mark and sweep garbage
+collection system to manage their lifetimes. This page describes how the type
+system is implemented, which includes the garbage collection implementation.</p>
 <p>In Java, everything is an object. In this language, everything is a
 <code class="docutils literal"><span class="pre">lisp_value</span></code>.  This means two things:</p>
 <ol class="arabic simple">
-<li>Every object contains a <code class="docutils literal"><span class="pre">refcount</span></code>.</li>
 <li>Every object contains a <code class="docutils literal"><span class="pre">type</span></code> pointer.</li>
+<li>Every object has a variable to store its <code class="docutils literal"><span class="pre">mark</span></code>.</li>
+<li>Every object has a pointer to the object allocated after it, forming a linked
+list.</li>
 </ol>
 <p>Every type declares these using the <code class="docutils literal"><span class="pre">LISP_VALUE_HEAD</span></code> macro, like so:</p>
 <div class="code C highlight-c"><div class="highlight"><pre><span></span><span class="k">typedef</span> <span class="k">struct</span> <span class="p">{</span>
@@ -155,13 +156,14 @@ implementation.</p>
 </pre></div>
 </div>
 <p>You can cast pointers to these objects to <code class="docutils literal"><span class="pre">lisp_value*</span></code> and still access the
-refcount and type object. All objects are passed around as <code class="docutils literal"><span class="pre">lisp_value*</span></code>.</p>
+type object. All objects are passed around as <code class="docutils literal"><span class="pre">lisp_value*</span></code>.</p>
 <p>In order to allow objects to be treated differently based on their type (but in
 a generic way to calling code), we use the type object.</p>
-<p>A type object is just another object, with type <code class="docutils literal"><span class="pre">lisp_type</span></code>. It contains the
-string name of a type, along with pointers to implementations for the following
-functions: print, new, free, eval, and call. Therefore, if you have <code class="docutils literal"><span class="pre">lisp_value</span>
-<span class="pre">*object</span></code> and you want to print it, you can do:</p>
+<p>A type object is just another object, with type <code class="docutils literal"><span class="pre">lisp_type</span></code>. However, it is
+NOT managed by the garbage collector. It contains the string name of a type,
+along with pointers to implementations for the following functions: print, new,
+free, eval, call, and expand. Therefore, if you have <code class="docutils literal"><span class="pre">lisp_value</span> <span class="pre">*object</span></code> and
+you want to print it, you can do:</p>
 <div class="code C highlight-c"><div class="highlight"><pre><span></span><span class="n">object</span><span class="o">-&gt;</span><span class="n">type</span><span class="o">-&gt;</span><span class="n">print</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="n">object</span><span class="p">);</span>
 </pre></div>
 </div>
@@ -188,17 +190,18 @@ libstephen&#8217;s regex implementation:</p>
 <span class="k">static</span> <span class="kt">void</span> <span class="nf">regex_print</span><span class="p">(</span><span class="kt">FILE</span> <span class="o">*</span><span class="n">f</span><span class="p">,</span> <span class="n">lisp_value</span> <span class="o">*</span><span class="n">v</span><span class="p">);</span>
 <span class="k">static</span> <span class="n">lisp_value</span> <span class="o">*</span><span class="nf">regex_new</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
 <span class="k">static</span> <span class="kt">void</span> <span class="nf">lisp_value_free</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">v</span><span class="p">);</span>
-<span class="k">static</span> <span class="n">lisp_value</span> <span class="o">*</span><span class="nf">regex_eval</span><span class="p">(</span><span class="n">lisp_scope</span> <span class="o">*</span><span class="n">s</span><span class="p">,</span> <span class="n">lisp_value</span> <span class="o">*</span><span class="n">re</span><span class="p">);</span>
-<span class="k">static</span> <span class="n">lisp_value</span> <span class="o">*</span><span class="nf">regex_call</span><span class="p">(</span><span class="n">lisp_scope</span> <span class="o">*</span><span class="n">s</span><span class="p">,</span> <span class="n">lisp_value</span> <span class="o">*</span><span class="n">c</span><span class="p">,</span> <span class="n">lisp_value</span> <span class="o">*</span><span class="n">a</span><span class="p">);</span>
+<span class="k">static</span> <span class="n">lisp_value</span> <span class="o">*</span><span class="nf">regex_eval</span><span class="p">(</span><span class="n">lisp_runtime</span> <span class="o">*</span><span class="n">rt</span><span class="p">,</span> <span class="n">lisp_scope</span> <span class="o">*</span><span class="n">s</span><span class="p">,</span> <span class="n">lisp_value</span> <span class="o">*</span><span class="n">re</span><span class="p">);</span>
+<span class="k">static</span> <span class="n">lisp_value</span> <span class="o">*</span><span class="nf">regex_call</span><span class="p">(</span><span class="n">lisp_runtime</span> <span class="o">*</span><span class="n">rt</span><span class="p">,</span> <span class="n">lisp_scope</span> <span class="o">*</span><span class="n">s</span><span class="p">,</span> <span class="n">lisp_value</span> <span class="o">*</span><span class="n">c</span><span class="p">,</span> <span class="n">lisp_value</span> <span class="o">*</span><span class="n">a</span><span class="p">);</span>
+<span class="k">static</span> <span class="n">smb_iter</span> <span class="nf">regex_expand</span><span class="p">(</span><span class="n">lisp_value</span> <span class="o">*</span><span class="n">v</span><span class="p">);</span>
 
 <span class="k">static</span> <span class="n">lisp_type</span> <span class="o">*</span><span class="n">type_regex_obj</span> <span class="o">=</span> <span class="p">{</span>
   <span class="p">.</span><span class="n">type</span><span class="o">=</span><span class="n">type_type</span><span class="p">,</span>
-  <span class="p">.</span><span class="n">refcount</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
   <span class="p">.</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;regex&quot;</span><span class="p">,</span>
   <span class="p">.</span><span class="n">print</span><span class="o">=</span><span class="n">regex_print</span><span class="p">,</span>
   <span class="p">.</span><span class="n">new</span><span class="o">=</span><span class="n">regex_new</span><span class="p">,</span>
   <span class="p">.</span><span class="n">free</span><span class="o">=</span><span class="n">regex_free</span><span class="p">,</span>
   <span class="p">.</span><span class="n">call</span><span class="o">=</span><span class="n">regex_call</span><span class="p">,</span>
+  <span class="p">.</span><span class="n">expand</span><span class="o">=</span><span class="n">regex_expand</span><span class="p">,</span>
 <span class="p">};</span>
 <span class="n">lisp_type</span> <span class="o">*</span><span class="n">type_regex</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">type_regex_obj</span><span class="p">;</span>
 
@@ -209,11 +212,11 @@ libstephen&#8217;s regex implementation:</p>
 rather important to get right:</p>
 <ul class="simple">
 <li>The print function should not print a newline.</li>
-<li>The new function should take no arguments. The caller will populate the
-allocated object. You may want to write a helper function named
-<code class="docutils literal"><span class="pre">lisp_regex_new(char</span> <span class="pre">*re)</span></code> to do this all for you.</li>
-<li>The free function ought to first clean up any resources, decref any objects,
-and only then should it free the pointer.</li>
+<li>The new function should take no arguments. It does not need to bother to
+populate the <code class="docutils literal"><span class="pre">lisp_value</span></code> fields such as <code class="docutils literal"><span class="pre">type</span></code> or <code class="docutils literal"><span class="pre">next</span></code>. Instead,
+these will be called by the <code class="docutils literal"><span class="pre">lisp_new()</span></code> wrapper function. It may be wise to
+write a <code class="docutils literal"><span class="pre">lisp_new_TYPENAME(args...)</span></code> function so users can easily create an
+instance of a type from some arguments.</li>
 <li>The eval function is tricky. Many things just don&#8217;t get evaluated. For
 instance, a regex object would probably be returned by a builtin function, but
 never produced as raw code to be evaluated. So its eval function should
@@ -222,6 +225,10 @@ probably return an error.</li>
 worst thing to make creative use of function call syntax. For instance, it
 would be interesting to have a regex type that, when called, matches on a
 string and returns the match object.</li>
+<li>The most critical function to implement correctly is expand. This must return
+a generator, which yields pointers to other <code class="docutils literal"><span class="pre">lisp_value</span></code> objects contained
+by this object. For simple objects, this will be trivial, but for data
+structures it is incredibly important to get right.</li>
 </ul>
 </div>
 
