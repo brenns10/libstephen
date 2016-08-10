@@ -5,7 +5,7 @@ release:
 	cmake --build release
 
 debug:
-	cmake -Bdebug -H.
+	cmake -DCMAKE_BUILD_TYPE=Debug -Bdebug -H.
 	cmake --build debug
 
 test: debug

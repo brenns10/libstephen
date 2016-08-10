@@ -312,6 +312,16 @@ static DATA list_expand_next(smb_iter *it, smb_status *status)
   }
 }
 
+static bool list_has_next(smb_iter *it)
+{
+  lisp_value *l = (lisp_value*)it->ds;
+  if (lisp_nil_p(l)) {
+    return false;
+  } else {
+    return it->index < it->state.data_llint;
+  }
+}
+
 static smb_iter list_expand(lisp_value *v)
 {
   smb_iter it = {
@@ -319,7 +329,7 @@ static smb_iter list_expand(lisp_value *v)
     .state=LLINT(2),
     .index=0,
     .next=list_expand_next,
-    .has_next=has_next_index_lt_state,
+    .has_next=list_has_next,
     .destroy=destroy_nop,
     .delete=delete_filler,
   };
@@ -601,8 +611,8 @@ static smb_iter lambda_expand(lisp_value *v)
 {
   smb_iter it = {
     .ds=v,
-    .state=LLINT(1),
-    .index=3,
+    .state=LLINT(3),
+    .index=0,
     .next=lambda_expand_next,
     .has_next=has_next_index_lt_state,
     .destroy=destroy_nop,
