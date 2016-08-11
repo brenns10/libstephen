@@ -23,7 +23,7 @@
    @brief An initial amount of rows in the hash table.  Something just off of a
    power of 2.
  */
-#define HASH_TABLE_INITIAL_SIZE 257
+#define HASH_TABLE_INITIAL_SIZE 31
 
 /**
    @brief The maximum load factor that can be allowed in the hash table.
