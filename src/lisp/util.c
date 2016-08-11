@@ -297,7 +297,7 @@ static lisp_value *lisp_builtin_minus(lisp_runtime *rt, lisp_scope *scope,
     val = i->x;
     args = (lisp_list*)args->right;
     while (!lisp_nil_p((lisp_value*)args)) {
-      if (!args->left->type == type_integer) {
+      if (args->left->type != type_integer) {
         return (lisp_value*)lisp_error_new(rt, "expected integer");
       }
       i = (lisp_integer*) args->left;
@@ -311,6 +311,155 @@ static lisp_value *lisp_builtin_minus(lisp_runtime *rt, lisp_scope *scope,
   return (lisp_value*)i;
 }
 
+static lisp_value *lisp_builtin_multiply(lisp_runtime *rt, lisp_scope *scope,
+                                         lisp_value *a)
+{
+  lisp_integer *i;
+  lisp_list *args = (lisp_list*) lisp_eval_list(rt, scope, a);
+  int product = 1;
+
+  while (!lisp_nil_p((lisp_value*)args)) {
+    if (args->left->type != type_integer) {
+      return (lisp_value*) lisp_error_new(rt, "expect integers for multiplication");
+    }
+    i = (lisp_integer*) args->left;
+    product *= i->x;
+    args = (lisp_list*)args->right;
+  }
+
+  i = (lisp_integer*)lisp_new(rt, type_integer);
+  i->x = product;
+  return (lisp_value*)i;
+}
+
+static lisp_value *lisp_builtin_divide(lisp_runtime *rt, lisp_scope *scope,
+                                       lisp_value *a)
+{
+  lisp_integer *i;
+  lisp_list *args = (lisp_list*)lisp_eval_list(rt, scope, a);
+  int val = 0;
+  int len = lisp_list_length(args);
+
+  if (len < 1) {
+    return (lisp_value*) lisp_error_new(rt, "expected at least one arg");
+  }
+  i = (lisp_integer*) args->left;
+  val = i->x;
+  args = (lisp_list*)args->right;
+  while (!lisp_nil_p((lisp_value*)args)) {
+    if (args->left->type != type_integer) {
+      return (lisp_value*)lisp_error_new(rt, "expected integer");
+    }
+    i = (lisp_integer*) args->left;
+    if (i->x == 0) {
+      return (lisp_value*) lisp_error_new(rt, "divide by zero");
+    }
+    val /= i->x;
+    args = (lisp_list*) args->right;
+  }
+
+  i = (lisp_integer*)lisp_new(rt, type_integer);
+  i->x = val;
+  return (lisp_value*)i;
+}
+
+static lisp_value *lisp_builtin_cmp_util(lisp_runtime *rt, lisp_scope *scope,
+                                         lisp_value *a)
+{
+  lisp_integer *first, *second;
+  lisp_list *args = (lisp_list*) lisp_eval_list(rt, scope, a);
+
+  if (!lisp_get_args((lisp_list*)args, "dd", &first, &second)) {
+    return (lisp_value*) lisp_error_new(rt, "expected two integers");
+  }
+
+  lisp_integer *result = (lisp_integer*)lisp_new(rt, type_integer);
+  result->x = first->x - second->x;
+  return (lisp_value*)result;
+}
+
+static lisp_value *lisp_builtin_eq(lisp_runtime *rt, lisp_scope *scope,
+                                   lisp_value *a)
+{
+  lisp_integer *v = (lisp_integer*)lisp_builtin_cmp_util(rt, scope, a);
+  if (v->type == type_integer) {
+    v->x = (v->x == 0);
+  }
+  return (lisp_value*)v;
+}
+
+static lisp_value *lisp_builtin_gt(lisp_runtime *rt, lisp_scope *scope,
+                                   lisp_value *a)
+{
+  lisp_integer *v = (lisp_integer*)lisp_builtin_cmp_util(rt, scope, a);
+  if (v->type == type_integer) {
+    v->x = (v->x > 0);
+  }
+  return (lisp_value*)v;
+}
+
+static lisp_value *lisp_builtin_ge(lisp_runtime *rt, lisp_scope *scope,
+                                   lisp_value *a)
+{
+  lisp_integer *v = (lisp_integer*)lisp_builtin_cmp_util(rt, scope, a);
+  if (v->type == type_integer) {
+    v->x = (v->x >= 0);
+  }
+  return (lisp_value*)v;
+}
+
+static lisp_value *lisp_builtin_lt(lisp_runtime *rt, lisp_scope *scope,
+                                   lisp_value *a)
+{
+  lisp_integer *v = (lisp_integer*)lisp_builtin_cmp_util(rt, scope, a);
+  if (v->type == type_integer) {
+    v->x = (v->x < 0);
+  }
+  return (lisp_value*)v;
+}
+
+static lisp_value *lisp_builtin_le(lisp_runtime *rt, lisp_scope *scope,
+                                   lisp_value *a)
+{
+  lisp_integer *v = (lisp_integer*)lisp_builtin_cmp_util(rt, scope, a);
+  if (v->type == type_integer) {
+    v->x = (v->x <= 0);
+  }
+  return (lisp_value*)v;
+}
+
+static lisp_value *lisp_builtin_if(lisp_runtime *rt, lisp_scope *scope,
+                                   lisp_value *a)
+{
+  lisp_value *condition, *body_true, *body_false;
+
+  if (!lisp_get_args((lisp_list*)a, "***", &condition, &body_true, &body_false)) {
+    return (lisp_value*) lisp_error_new(rt, "expected condition and two bodies");
+  }
+
+  condition = lisp_eval(rt, scope, condition);
+  if (condition->type == type_integer && ((lisp_integer*)condition)->x) {
+    return lisp_eval(rt, scope, body_true);
+  } else {
+    return lisp_eval(rt, scope, body_false);
+  }
+}
+
+static lisp_value *lisp_builtin_null_p(lisp_runtime *rt, lisp_scope *scope,
+                                       lisp_value *a)
+{
+  lisp_value *v;
+  lisp_list *args = (lisp_list*) lisp_eval_list(rt, scope, a);
+
+  if (!lisp_get_args(args, "*", &v)) {
+    return (lisp_value*) lisp_error_new(rt, "expected one argument");
+  }
+
+  lisp_integer *result = (lisp_integer*) lisp_new(rt, type_integer);
+  result->x = (int) lisp_nil_p(v);
+  return (lisp_value*)result;
+}
+
 void lisp_scope_populate_builtins(lisp_runtime *rt, lisp_scope *scope)
 {
   lisp_scope_add_builtin(rt, scope, "eval", lisp_builtin_eval);
@@ -322,4 +471,14 @@ void lisp_scope_populate_builtins(lisp_runtime *rt, lisp_scope *scope)
   lisp_scope_add_builtin(rt, scope, "define", lisp_builtin_define);
   lisp_scope_add_builtin(rt, scope, "+", lisp_builtin_plus);
   lisp_scope_add_builtin(rt, scope, "-", lisp_builtin_minus);
+  lisp_scope_add_builtin(rt, scope, "*", lisp_builtin_multiply);
+  lisp_scope_add_builtin(rt, scope, "/", lisp_builtin_divide);
+  lisp_scope_add_builtin(rt, scope, "==", lisp_builtin_eq);
+  lisp_scope_add_builtin(rt, scope, "=", lisp_builtin_eq);
+  lisp_scope_add_builtin(rt, scope, ">", lisp_builtin_gt);
+  lisp_scope_add_builtin(rt, scope, ">=", lisp_builtin_ge);
+  lisp_scope_add_builtin(rt, scope, "<", lisp_builtin_lt);
+  lisp_scope_add_builtin(rt, scope, "<=", lisp_builtin_le);
+  lisp_scope_add_builtin(rt, scope, "if", lisp_builtin_if);
+  lisp_scope_add_builtin(rt, scope, "null?", lisp_builtin_null_p);
 }
