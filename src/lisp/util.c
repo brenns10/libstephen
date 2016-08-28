@@ -460,6 +460,87 @@ static lisp_value *lisp_builtin_null_p(lisp_runtime *rt, lisp_scope *scope,
   return (lisp_value*)result;
 }
 
+static lisp_list *empty_list_of_length(lisp_runtime *rt, int l)
+{
+  if (l == 0) {
+    return (lisp_list*)lisp_nil_new(rt);
+  }
+  lisp_list *list = (lisp_list*) lisp_new(rt, type_list);
+  list->right = lisp_nil_new(rt);
+  list->left = NULL;
+  lisp_list *tmp;
+  for (; l > 0; l--) {
+    tmp = list;
+    list = (lisp_list*) lisp_new(rt, type_list);
+    list->right = (lisp_value*)tmp;
+    list->left = NULL;
+  }
+  return list;
+}
+
+static lisp_list *get_arglist_advance(lisp_runtime *rt, lisp_list **ar, int len)
+{
+  lisp_list *l = (lisp_list*)lisp_new(rt, type_list);
+  l->right = lisp_nil_new(rt);
+  while (len--) {
+    l->left = ar[len]->left;
+    printf("we're at ");
+    lisp_print(stdout, l->left);
+    printf("\n");
+    ar[len] = (lisp_list*) ar[len]->right;
+    lisp_list *tmp = (lisp_list*) lisp_new(rt, type_list);
+    tmp->right = (lisp_value*)l;
+    l = tmp;
+  }
+  return l;
+}
+
+static lisp_value *lisp_builtin_map(lisp_runtime *rt, lisp_scope *scope,
+                                    lisp_value *a)
+{
+  lisp_value *c;
+  lisp_list *arglists;
+  lisp_list *args = (lisp_list*) lisp_eval_list(rt, scope, a);
+
+  c = args->left;
+  arglists = (lisp_list*)args->right;
+
+  if (arglists->type != type_list || lisp_nil_p((lisp_value*)arglists)) {
+    return (lisp_value*)lisp_error_new(rt, "need at least one argument");
+  }
+
+  if (lisp_nil_p((lisp_value*)arglists->left)) {
+    return lisp_nil_new(rt);
+  }
+
+  int nargs = lisp_list_length(arglists);
+  lisp_list **first = smb_new(lisp_list*, nargs);
+  for (int i = 0; i < nargs; i++) {
+    lisp_print(stdout, arglists->left);
+    printf("\n");
+    first[i] = (lisp_list*)arglists->left;
+    arglists = (lisp_list*)arglists->right;
+    printf("a\n");
+  }
+
+  lisp_list *returns = (lisp_list*)lisp_new(rt, type_list);
+  lisp_list *returns_orig = returns;
+  while (!lisp_nil_p((lisp_value*)first[0])) {
+    //lisp_print(stdout, first[0]);
+    printf("foo\n");
+    lisp_list *callargs = get_arglist_advance(rt, first, nargs);
+    returns->left = lisp_call(rt, scope, (lisp_value*)callargs, c);
+    if (lisp_nil_p((lisp_value*)first[0])) {
+      returns->right = lisp_new(rt, type_list);
+    } else {
+      returns->right = lisp_nil_new(rt);
+    }
+    returns = (lisp_list*)returns->right;
+    printf("bar\n");
+  }
+  return (lisp_value*)returns_orig;
+}
+
 void lisp_scope_populate_builtins(lisp_runtime *rt, lisp_scope *scope)
 {
   lisp_scope_add_builtin(rt, scope, "eval", lisp_builtin_eval);
@@ -481,4 +562,5 @@ void lisp_scope_populate_builtins(lisp_runtime *rt, lisp_scope *scope)
   lisp_scope_add_builtin(rt, scope, "<=", lisp_builtin_le);
   lisp_scope_add_builtin(rt, scope, "if", lisp_builtin_if);
   lisp_scope_add_builtin(rt, scope, "null?", lisp_builtin_null_p);
+  lisp_scope_add_builtin(rt, scope, "map", lisp_builtin_map);
 }
