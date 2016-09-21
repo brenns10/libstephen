@@ -4,6 +4,7 @@ list(APPEND libstephen_TEST_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/bitfieldtest.c
   ${CMAKE_CURRENT_LIST_DIR}/charbuftest.c
   ${CMAKE_CURRENT_LIST_DIR}/hashtabletest.c
+  ${CMAKE_CURRENT_LIST_DIR}/hta.c
   ${CMAKE_CURRENT_LIST_DIR}/itertest.c
   ${CMAKE_CURRENT_LIST_DIR}/linkedlisttest.c
   ${CMAKE_CURRENT_LIST_DIR}/listtest.c

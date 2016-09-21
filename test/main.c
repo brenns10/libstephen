@@ -30,6 +30,7 @@ int main(int argc, char ** argv)
   linked_list_test();
   array_list_test();
   hash_table_test();
+  hta_test();
   bit_field_test();
   iter_test();
   list_test();

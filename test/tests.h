@@ -29,6 +29,11 @@ void array_list_test();
 void hash_table_test();
 
 /**
+   Run the hash table any data tests
+*/
+void hta_test();
+
+/**
    Run the bit field tests
  */
 void bit_field_test();

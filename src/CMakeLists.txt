@@ -4,6 +4,7 @@ list(APPEND libstephen_SOURCES
   ${CMAKE_CURRENT_LIST_DIR}/bitfield.c
   ${CMAKE_CURRENT_LIST_DIR}/charbuf.c
   ${CMAKE_CURRENT_LIST_DIR}/hashtable.c
+  ${CMAKE_CURRENT_LIST_DIR}/hta.c
   ${CMAKE_CURRENT_LIST_DIR}/iter.c
   ${CMAKE_CURRENT_LIST_DIR}/linkedlist.c
   ${CMAKE_CURRENT_LIST_DIR}/log.c

@@ -17,12 +17,58 @@
 #include <stdio.h>
 
 #include "libstephen/ht.h"
+#include "libstephen/re.h" // nelem()
 
 /*******************************************************************************
 
                                Private Functions
 
 *******************************************************************************/
+
+unsigned int ht_primes[] = {
+  31, // 2^5
+  61,
+  127,
+  257,
+  509,
+  1021,
+  2053,
+  4093,
+  8191,
+  16381,
+  32771,
+  65537,
+  131071,
+  262147,
+  524287,
+  1048573,
+  2097143,
+  4194301,
+  8388617,
+  16777213,
+  33554467,
+  67108859,
+  134217757,
+  268435459,
+  536870909,
+  1073741827,
+  2147483647,
+  4294967291 // 2^32
+};
+
+int binary_search(unsigned int *array, int len, unsigned int value)
+{
+  int lo = 0, hi = len, mid;
+  while (lo < hi) {
+    mid = (lo + hi) / 2;
+    if (value <= array[mid]) {
+      hi = mid;
+    } else {
+      lo = mid + 1;
+    }
+  }
+  return lo;
+}
 
 /**
    @brief Returns the next hashtable size.
@@ -32,10 +78,8 @@
  */
 int ht_next_size(int current)
 {
-  return 2 * current + 1; // Try not to use something with a common factor of 1.
-                          // I'm also striving for simplicity here.  It would
-                          // probably be best to use only prime numbers here,
-                          // but this is considerably simpler.
+  int curridx = binary_search(ht_primes, nelem(ht_primes), current);
+  return ht_primes[curridx + 1];
 }
 
 /**
@@ -86,7 +130,6 @@ unsigned int ht_find_retrieve(const smb_ht *obj, DATA key)
     index = (index + j) % obj->allocated;
     j += 2;
   }
-
   return index;
 }
 
@@ -202,7 +245,7 @@ void ht_delete(smb_ht *table)
 void ht_insert(smb_ht *table, DATA key, DATA value)
 {
   unsigned int index;
-  if (ht_load_factor(table) > HASH_TABLE_MAX_LOAD_FACTOR) {
+  if (ht_load_factor(table) >= HASH_TABLE_MAX_LOAD_FACTOR) {
     ht_resize(table);
   }
 

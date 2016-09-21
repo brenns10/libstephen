@@ -28,7 +28,7 @@
 /**
    @brief The maximum load factor that can be allowed in the hash table.
  */
-#define HASH_TABLE_MAX_LOAD_FACTOR 0.7
+#define HASH_TABLE_MAX_LOAD_FACTOR 0.5
 
 /**
    @brief A hash function declaration.
@@ -225,4 +225,8 @@ unsigned int ht_string_hash(DATA data);
  */
 void ht_print(smb_ht const *table, int full_mode);
 
+/**
+   The next hash table size.  Not really public, but shared for hta.
+ */
+int ht_next_size(int current);
 #endif // LIBSTEPHEN_HT_H
