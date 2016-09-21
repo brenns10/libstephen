@@ -31,18 +31,18 @@
             <td class="headerValue">coverage.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">114</td>
-            <td class="headerCovTableEntry">137</td>
-            <td class="headerCovTableEntryMed">83.2 %</td>
+            <td class="headerCovTableEntry">122</td>
+            <td class="headerCovTableEntry">146</td>
+            <td class="headerCovTableEntryMed">83.6 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2016-08-10 06:08:38</td>
+            <td class="headerValue">2016-09-21 02:02:00</td>
             <td></td>
             <td class="headerItem">Functions:</td>
-            <td class="headerCovTableEntry">18</td>
-            <td class="headerCovTableEntry">23</td>
-            <td class="headerCovTableEntryMed">78.3 %</td>
+            <td class="headerCovTableEntry">19</td>
+            <td class="headerCovTableEntry">24</td>
+            <td class="headerCovTableEntryMed">79.2 %</td>
           </tr>
           <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
         </table>
@@ -79,347 +79,390 @@
 <span class="lineNum">      17 </span>            : #include &lt;stdio.h&gt;
 <span class="lineNum">      18 </span>            : 
 <span class="lineNum">      19 </span>            : #include &quot;libstephen/ht.h&quot;
-<span class="lineNum">      20 </span>            : 
-<span class="lineNum">      21 </span>            : /*******************************************************************************
-<span class="lineNum">      22 </span>            : 
-<span class="lineNum">      23 </span>            :                                Private Functions
-<span class="lineNum">      24 </span>            : 
-<span class="lineNum">      25 </span>            : *******************************************************************************/
-<span class="lineNum">      26 </span>            : 
-<span class="lineNum">      27 </span>            : /**
-<span class="lineNum">      28 </span>            :    @brief Returns the next hashtable size.
-<span class="lineNum">      29 </span>            : 
-<span class="lineNum">      30 </span>            :    @param current The current size of the hash table.
-<a name="31"><span class="lineNum">      31 </span>            :    @returns The next size in the sequence for hash tables.</a>
-<span class="lineNum">      32 </span>            :  */
-<span class="lineNum">      33 </span><span class="lineCov">          1 : int ht_next_size(int current)</span>
-<span class="lineNum">      34 </span>            : {
-<span class="lineNum">      35 </span><span class="lineCov">          1 :   return 2 * current + 1; // Try not to use something with a common factor of 1.</span>
-<span class="lineNum">      36 </span>            :                           // I'm also striving for simplicity here.  It would
-<span class="lineNum">      37 </span>            :                           // probably be best to use only prime numbers here,
-<span class="lineNum">      38 </span>            :                           // but this is considerably simpler.
-<span class="lineNum">      39 </span>            : }
-<span class="lineNum">      40 </span>            : 
-<span class="lineNum">      41 </span>            : /**
-<span class="lineNum">      42 </span>            :    @brief Find the proper index for insertion into the table.
-<span class="lineNum">      43 </span>            :    @param obj Hash table object.
-<a name="44"><span class="lineNum">      44 </span>            :    @param key Key we're inserting.</a>
-<span class="lineNum">      45 </span>            :  */
-<span class="lineNum">      46 </span><span class="lineCov">        401 : unsigned int ht_find_insert(const smb_ht *obj, DATA key)</span>
-<span class="lineNum">      47 </span>            : {
-<span class="lineNum">      48 </span><span class="lineCov">        401 :   unsigned int index = obj-&gt;hash(key) % obj-&gt;allocated;</span>
-<span class="lineNum">      49 </span><span class="lineCov">        401 :   unsigned int j = 1;</span>
-<span class="lineNum">      50 </span>            : 
-<span class="lineNum">      51 </span>            :   // Continue searching until we either find a non-full slot, or we find the key
-<span class="lineNum">      52 </span>            :   // we're trying to insert.
-<span class="lineNum">      53 </span>            :   // until (cell.mark != full || cell.key == key)
-<span class="lineNum">      54 </span>            :   // while (cell.mark == full &amp;&amp; cell.key != key)
-<span class="lineNum">      55 </span><span class="lineCov">       1182 :   while (obj-&gt;table[index].mark == HT_FULL &amp;&amp;</span>
-<span class="lineNum">      56 </span><span class="lineCov">        190 :          obj-&gt;equal(key, obj-&gt;table[index].key) != 0) {</span>
-<span class="lineNum">      57 </span>            :     // This is quadratic probing, but I'm avoiding squaring numbers:
-<span class="lineNum">      58 </span>            :     // j:     1, 3, 5, 7,  9, 11, ..
-<span class="lineNum">      59 </span>            :     // index: 0, 1, 4, 9, 16, 25, 36
-<span class="lineNum">      60 </span><span class="lineCov">        190 :     index = (index + j) % obj-&gt;allocated;</span>
-<span class="lineNum">      61 </span><span class="lineCov">        190 :     j += 2;</span>
-<span class="lineNum">      62 </span>            :   }
-<span class="lineNum">      63 </span>            : 
-<span class="lineNum">      64 </span><span class="lineCov">        401 :   return index;</span>
-<span class="lineNum">      65 </span>            : }
-<span class="lineNum">      66 </span>            : 
-<span class="lineNum">      67 </span>            : /**
-<span class="lineNum">      68 </span>            :    @brief Find the proper index for retrieval from the table.
-<span class="lineNum">      69 </span>            :    @param obj Hash table object.
-<a name="70"><span class="lineNum">      70 </span>            :    @param key Key we're looking up.</a>
-<span class="lineNum">      71 </span>            :  */
-<span class="lineNum">      72 </span><span class="lineCov">        634 : unsigned int ht_find_retrieve(const smb_ht *obj, DATA key)</span>
-<span class="lineNum">      73 </span>            : {
-<span class="lineNum">      74 </span><span class="lineCov">        634 :   unsigned int index = obj-&gt;hash(key) % obj-&gt;allocated;</span>
-<span class="lineNum">      75 </span><span class="lineCov">        634 :   unsigned int j = 1;</span>
-<span class="lineNum">      76 </span>            : 
-<span class="lineNum">      77 </span>            :   // Continue searching until we either find an empty slot, or we find the key
-<span class="lineNum">      78 </span>            :   // we're trying to insert.
-<span class="lineNum">      79 </span>            :   // until (cell.mark == empty || cell.key == key)
-<span class="lineNum">      80 </span>            :   // while (cell.mark != empty &amp;&amp; cell.key != key)
-<span class="lineNum">      81 </span><span class="lineCov">       2260 :   while (obj-&gt;table[index].mark != HT_EMPTY &amp;&amp;</span>
-<span class="lineNum">      82 </span><span class="lineCov">        612 :          obj-&gt;equal(key, obj-&gt;table[index].key) != 0) {</span>
-<span class="lineNum">      83 </span>            :     // This is quadratic probing, but I'm avoiding squaring numbers:
-<span class="lineNum">      84 </span>            :     // j:     1, 3, 5, 7,  9, 11, ..
-<span class="lineNum">      85 </span>            :     // index: 0, 1, 4, 9, 16, 25, 36
-<span class="lineNum">      86 </span><span class="lineCov">        380 :     index = (index + j) % obj-&gt;allocated;</span>
-<span class="lineNum">      87 </span><span class="lineCov">        380 :     j += 2;</span>
-<span class="lineNum">      88 </span>            :   }
-<span class="lineNum">      89 </span>            : 
-<span class="lineNum">      90 </span><span class="lineCov">        634 :   return index;</span>
-<span class="lineNum">      91 </span>            : }
-<span class="lineNum">      92 </span>            : 
-<span class="lineNum">      93 </span>            : /**
-<span class="lineNum">      94 </span>            :    @brief Expand the hash table, adding increment to the capacity of the table.
-<span class="lineNum">      95 </span>            : 
-<a name="96"><span class="lineNum">      96 </span>            :    @param table The table to expand.</a>
-<span class="lineNum">      97 </span>            :  */
-<span class="lineNum">      98 </span><span class="lineCov">          1 : void ht_resize(smb_ht *table)</span>
-<span class="lineNum">      99 </span>            : {
-<span class="lineNum">     100 </span>            :   smb_ht_bckt *old_table;
-<span class="lineNum">     101 </span>            :   unsigned int index, old_allocated;
-<span class="lineNum">     102 </span>            : 
-<span class="lineNum">     103 </span>            :   // Step one: allocate new space for the table
-<span class="lineNum">     104 </span><span class="lineCov">          1 :   old_table = table-&gt;table;</span>
-<span class="lineNum">     105 </span><span class="lineCov">          1 :   old_allocated = table-&gt;allocated;</span>
-<span class="lineNum">     106 </span><span class="lineCov">          1 :   table-&gt;length = 0;</span>
-<span class="lineNum">     107 </span><span class="lineCov">          1 :   table-&gt;allocated = ht_next_size(old_allocated);</span>
-<span class="lineNum">     108 </span><span class="lineCov">          1 :   table-&gt;table = smb_new(smb_ht_bckt, table-&gt;allocated);</span>
-<span class="lineNum">     109 </span>            : 
-<span class="lineNum">     110 </span>            :   // Zero out the new block too.
-<span class="lineNum">     111 </span><span class="lineCov">          1 :   memset((void*)table-&gt;table, 0, table-&gt;allocated * sizeof(smb_ht_bckt));</span>
-<span class="lineNum">     112 </span>            : 
-<span class="lineNum">     113 </span>            :   // Step two, add the old items to the new table.
-<span class="lineNum">     114 </span><span class="lineCov">        258 :   for (index = 0; index &lt; old_allocated; index++) {</span>
-<span class="lineNum">     115 </span><span class="lineCov">        257 :     if (old_table[index].mark == HT_FULL) {</span>
-<span class="lineNum">     116 </span><span class="lineCov">        180 :       ht_insert(table, old_table[index].key, old_table[index].value);</span>
-<span class="lineNum">     117 </span>            :     }
-<span class="lineNum">     118 </span>            :   }
-<span class="lineNum">     119 </span>            : 
-<span class="lineNum">     120 </span>            :   // Step three: free old data.
-<span class="lineNum">     121 </span><span class="lineCov">          1 :   smb_free(old_table);</span>
-<span class="lineNum">     122 </span><span class="lineCov">          1 : }</span>
-<span class="lineNum">     123 </span>            : 
-<span class="lineNum">     124 </span>            : /**
-<span class="lineNum">     125 </span>            :    @brief Return the load factor of a hash table.
-<span class="lineNum">     126 </span>            : 
-<span class="lineNum">     127 </span>            :    @param table The table to find the load factor of.
-<a name="128"><span class="lineNum">     128 </span>            :    @returns The load factor of the hash table.</a>
-<span class="lineNum">     129 </span>            :  */
-<span class="lineNum">     130 </span><span class="lineCov">        404 : double ht_load_factor(smb_ht *table)</span>
-<span class="lineNum">     131 </span>            : {
-<span class="lineNum">     132 </span><span class="lineCov">        404 :   return ((double) table-&gt;length) / ((double) table-&gt;allocated);</span>
-<span class="lineNum">     133 </span>            : }
-<span class="lineNum">     134 </span>            : 
-<span class="lineNum">     135 </span>            : /*******************************************************************************
-<span class="lineNum">     136 </span>            : 
-<span class="lineNum">     137 </span>            :                            Public Interface Functions
+<span class="lineNum">      20 </span>            : #include &quot;libstephen/re.h&quot; // nelem()
+<span class="lineNum">      21 </span>            : 
+<span class="lineNum">      22 </span>            : /*******************************************************************************
+<span class="lineNum">      23 </span>            : 
+<span class="lineNum">      24 </span>            :                                Private Functions
+<span class="lineNum">      25 </span>            : 
+<span class="lineNum">      26 </span>            : *******************************************************************************/
+<span class="lineNum">      27 </span>            : 
+<span class="lineNum">      28 </span>            : unsigned int ht_primes[] = {
+<span class="lineNum">      29 </span>            :   31, // 2^5
+<span class="lineNum">      30 </span>            :   61,
+<span class="lineNum">      31 </span>            :   127,
+<span class="lineNum">      32 </span>            :   257,
+<span class="lineNum">      33 </span>            :   509,
+<span class="lineNum">      34 </span>            :   1021,
+<span class="lineNum">      35 </span>            :   2053,
+<span class="lineNum">      36 </span>            :   4093,
+<span class="lineNum">      37 </span>            :   8191,
+<span class="lineNum">      38 </span>            :   16381,
+<span class="lineNum">      39 </span>            :   32771,
+<span class="lineNum">      40 </span>            :   65537,
+<span class="lineNum">      41 </span>            :   131071,
+<span class="lineNum">      42 </span>            :   262147,
+<span class="lineNum">      43 </span>            :   524287,
+<span class="lineNum">      44 </span>            :   1048573,
+<span class="lineNum">      45 </span>            :   2097143,
+<span class="lineNum">      46 </span>            :   4194301,
+<span class="lineNum">      47 </span>            :   8388617,
+<span class="lineNum">      48 </span>            :   16777213,
+<span class="lineNum">      49 </span>            :   33554467,
+<span class="lineNum">      50 </span>            :   67108859,
+<span class="lineNum">      51 </span>            :   134217757,
+<span class="lineNum">      52 </span>            :   268435459,
+<span class="lineNum">      53 </span>            :   536870909,
+<span class="lineNum">      54 </span>            :   1073741827,
+<span class="lineNum">      55 </span>            :   2147483647,
+<span class="lineNum">      56 </span>            :   4294967291 // 2^32
+<a name="57"><span class="lineNum">      57 </span>            : };</a>
+<span class="lineNum">      58 </span>            : 
+<span class="lineNum">      59 </span><span class="lineCov">          4 : int binary_search(unsigned int *array, int len, unsigned int value)</span>
+<span class="lineNum">      60 </span>            : {
+<span class="lineNum">      61 </span><span class="lineCov">          4 :   int lo = 0, hi = len, mid;</span>
+<span class="lineNum">      62 </span><span class="lineCov">         28 :   while (lo &lt; hi) {</span>
+<span class="lineNum">      63 </span><span class="lineCov">         20 :     mid = (lo + hi) / 2;</span>
+<span class="lineNum">      64 </span><span class="lineCov">         20 :     if (value &lt;= array[mid]) {</span>
+<span class="lineNum">      65 </span><span class="lineCov">         20 :       hi = mid;</span>
+<span class="lineNum">      66 </span>            :     } else {
+<span class="lineNum">      67 </span><span class="lineNoCov">          0 :       lo = mid + 1;</span>
+<span class="lineNum">      68 </span>            :     }
+<span class="lineNum">      69 </span>            :   }
+<span class="lineNum">      70 </span><span class="lineCov">          4 :   return lo;</span>
+<span class="lineNum">      71 </span>            : }
+<span class="lineNum">      72 </span>            : 
+<span class="lineNum">      73 </span>            : /**
+<span class="lineNum">      74 </span>            :    @brief Returns the next hashtable size.
+<span class="lineNum">      75 </span>            : 
+<span class="lineNum">      76 </span>            :    @param current The current size of the hash table.
+<a name="77"><span class="lineNum">      77 </span>            :    @returns The next size in the sequence for hash tables.</a>
+<span class="lineNum">      78 </span>            :  */
+<span class="lineNum">      79 </span><span class="lineCov">          4 : int ht_next_size(int current)</span>
+<span class="lineNum">      80 </span>            : {
+<span class="lineNum">      81 </span><span class="lineCov">          4 :   int curridx = binary_search(ht_primes, nelem(ht_primes), current);</span>
+<span class="lineNum">      82 </span><span class="lineCov">          4 :   return ht_primes[curridx + 1];</span>
+<span class="lineNum">      83 </span>            : }
+<span class="lineNum">      84 </span>            : 
+<span class="lineNum">      85 </span>            : /**
+<span class="lineNum">      86 </span>            :    @brief Find the proper index for insertion into the table.
+<span class="lineNum">      87 </span>            :    @param obj Hash table object.
+<a name="88"><span class="lineNum">      88 </span>            :    @param key Key we're inserting.</a>
+<span class="lineNum">      89 </span>            :  */
+<span class="lineNum">      90 </span><span class="lineCov">         89 : unsigned int ht_find_insert(const smb_ht *obj, DATA key)</span>
+<span class="lineNum">      91 </span>            : {
+<span class="lineNum">      92 </span><span class="lineCov">         89 :   unsigned int index = obj-&gt;hash(key) % obj-&gt;allocated;</span>
+<span class="lineNum">      93 </span><span class="lineCov">         89 :   unsigned int j = 1;</span>
+<span class="lineNum">      94 </span>            : 
+<span class="lineNum">      95 </span>            :   // Continue searching until we either find a non-full slot, or we find the key
+<span class="lineNum">      96 </span>            :   // we're trying to insert.
+<span class="lineNum">      97 </span>            :   // until (cell.mark != full || cell.key == key)
+<span class="lineNum">      98 </span>            :   // while (cell.mark == full &amp;&amp; cell.key != key)
+<span class="lineNum">      99 </span><span class="lineCov">        798 :   while (obj-&gt;table[index].mark == HT_FULL &amp;&amp;</span>
+<span class="lineNum">     100 </span><span class="lineCov">        310 :          obj-&gt;equal(key, obj-&gt;table[index].key) != 0) {</span>
+<span class="lineNum">     101 </span>            :     // This is quadratic probing, but I'm avoiding squaring numbers:
+<span class="lineNum">     102 </span>            :     // j:     1, 3, 5, 7,  9, 11, ..
+<span class="lineNum">     103 </span>            :     // index: 0, 1, 4, 9, 16, 25, 36
+<span class="lineNum">     104 </span><span class="lineCov">        310 :     index = (index + j) % obj-&gt;allocated;</span>
+<span class="lineNum">     105 </span><span class="lineCov">        310 :     j += 2;</span>
+<span class="lineNum">     106 </span>            :   }
+<span class="lineNum">     107 </span>            : 
+<span class="lineNum">     108 </span><span class="lineCov">         89 :   return index;</span>
+<span class="lineNum">     109 </span>            : }
+<span class="lineNum">     110 </span>            : 
+<span class="lineNum">     111 </span>            : /**
+<span class="lineNum">     112 </span>            :    @brief Find the proper index for retrieval from the table.
+<span class="lineNum">     113 </span>            :    @param obj Hash table object.
+<a name="114"><span class="lineNum">     114 </span>            :    @param key Key we're looking up.</a>
+<span class="lineNum">     115 </span>            :  */
+<span class="lineNum">     116 </span><span class="lineCov">        158 : unsigned int ht_find_retrieve(const smb_ht *obj, DATA key)</span>
+<span class="lineNum">     117 </span>            : {
+<span class="lineNum">     118 </span><span class="lineCov">        158 :   unsigned int index = obj-&gt;hash(key) % obj-&gt;allocated;</span>
+<span class="lineNum">     119 </span><span class="lineCov">        158 :   unsigned int j = 1;</span>
+<span class="lineNum">     120 </span>            : 
+<span class="lineNum">     121 </span>            :   // Continue searching until we either find an empty slot, or we find the key
+<span class="lineNum">     122 </span>            :   // we're trying to insert.
+<span class="lineNum">     123 </span>            :   // until (cell.mark == empty || cell.key == key)
+<span class="lineNum">     124 </span>            :   // while (cell.mark != empty &amp;&amp; cell.key != key)
+<span class="lineNum">     125 </span><span class="lineCov">       1384 :   while (obj-&gt;table[index].mark != HT_EMPTY &amp;&amp;</span>
+<span class="lineNum">     126 </span><span class="lineCov">        568 :          obj-&gt;equal(key, obj-&gt;table[index].key) != 0) {</span>
+<span class="lineNum">     127 </span>            :     // This is quadratic probing, but I'm avoiding squaring numbers:
+<span class="lineNum">     128 </span>            :     // j:     1, 3, 5, 7,  9, 11, ..
+<span class="lineNum">     129 </span>            :     // index: 0, 1, 4, 9, 16, 25, 36
+<span class="lineNum">     130 </span><span class="lineCov">        500 :     index = (index + j) % obj-&gt;allocated;</span>
+<span class="lineNum">     131 </span><span class="lineCov">        500 :     j += 2;</span>
+<span class="lineNum">     132 </span>            :   }
+<span class="lineNum">     133 </span><span class="lineCov">        158 :   return index;</span>
+<span class="lineNum">     134 </span>            : }
+<span class="lineNum">     135 </span>            : 
+<span class="lineNum">     136 </span>            : /**
+<span class="lineNum">     137 </span>            :    @brief Expand the hash table, adding increment to the capacity of the table.
 <span class="lineNum">     138 </span>            : 
-<a name="139"><span class="lineNum">     139 </span>            : *******************************************************************************/</a>
-<span class="lineNum">     140 </span>            : 
-<span class="lineNum">     141 </span><span class="lineCov">          7 : void ht_init(smb_ht *table, HASH_FUNCTION hash_func, DATA_COMPARE equal)</span>
+<a name="139"><span class="lineNum">     139 </span>            :    @param table The table to expand.</a>
+<span class="lineNum">     140 </span>            :  */
+<span class="lineNum">     141 </span><span class="lineCov">          2 : void ht_resize(smb_ht *table)</span>
 <span class="lineNum">     142 </span>            : {
-<span class="lineNum">     143 </span>            :   // Initialize values
-<span class="lineNum">     144 </span><span class="lineCov">          7 :   table-&gt;length = 0;</span>
-<span class="lineNum">     145 </span><span class="lineCov">          7 :   table-&gt;allocated = HASH_TABLE_INITIAL_SIZE;</span>
-<span class="lineNum">     146 </span><span class="lineCov">          7 :   table-&gt;hash = hash_func;</span>
-<span class="lineNum">     147 </span><span class="lineCov">          7 :   table-&gt;equal = equal;</span>
-<span class="lineNum">     148 </span>            : 
-<span class="lineNum">     149 </span>            :   // Create the bucket list
-<span class="lineNum">     150 </span><span class="lineCov">          7 :   table-&gt;table = smb_new(smb_ht_bckt, HASH_TABLE_INITIAL_SIZE);</span>
-<span class="lineNum">     151 </span>            : 
-<span class="lineNum">     152 </span>            :   // Zero out the entries in the table so we don't get segmentation faults.
-<span class="lineNum">     153 </span><span class="lineCov">          7 :   memset((void*)table-&gt;table, 0, HASH_TABLE_INITIAL_SIZE * sizeof(smb_ht_bckt));</span>
-<a name="154"><span class="lineNum">     154 </span><span class="lineCov">          7 : }</span></a>
+<span class="lineNum">     143 </span>            :   smb_ht_bckt *old_table;
+<span class="lineNum">     144 </span>            :   unsigned int index, old_allocated;
+<span class="lineNum">     145 </span>            : 
+<span class="lineNum">     146 </span>            :   // Step one: allocate new space for the table
+<span class="lineNum">     147 </span><span class="lineCov">          2 :   old_table = table-&gt;table;</span>
+<span class="lineNum">     148 </span><span class="lineCov">          2 :   old_allocated = table-&gt;allocated;</span>
+<span class="lineNum">     149 </span><span class="lineCov">          2 :   table-&gt;length = 0;</span>
+<span class="lineNum">     150 </span><span class="lineCov">          2 :   table-&gt;allocated = ht_next_size(old_allocated);</span>
+<span class="lineNum">     151 </span><span class="lineCov">          2 :   table-&gt;table = smb_new(smb_ht_bckt, table-&gt;allocated);</span>
+<span class="lineNum">     152 </span>            : 
+<span class="lineNum">     153 </span>            :   // Zero out the new block too.
+<span class="lineNum">     154 </span><span class="lineCov">          2 :   memset((void*)table-&gt;table, 0, table-&gt;allocated * sizeof(smb_ht_bckt));</span>
 <span class="lineNum">     155 </span>            : 
-<span class="lineNum">     156 </span><span class="lineCov">          7 : smb_ht *ht_create(HASH_FUNCTION hash_func, DATA_COMPARE equal)</span>
-<span class="lineNum">     157 </span>            : {
-<span class="lineNum">     158 </span>            :   // Allocate and create the table.
-<span class="lineNum">     159 </span>            :   smb_ht *table;
-<span class="lineNum">     160 </span><span class="lineCov">          7 :   table = smb_new(smb_ht, 1);</span>
-<span class="lineNum">     161 </span><span class="lineCov">          7 :   ht_init(table, hash_func, equal);</span>
-<span class="lineNum">     162 </span><span class="lineCov">          7 :   return table;</span>
-<a name="163"><span class="lineNum">     163 </span>            : }</a>
-<span class="lineNum">     164 </span>            : 
-<span class="lineNum">     165 </span><span class="lineCov">          7 : void ht_destroy_act(smb_ht *table, DATA_ACTION deleter)</span>
-<span class="lineNum">     166 </span>            : {
-<span class="lineNum">     167 </span>            :   unsigned int i;
-<span class="lineNum">     168 </span>            : 
-<span class="lineNum">     169 </span>            :   // Do the action on all the items in the table, if provided.
-<span class="lineNum">     170 </span><span class="lineCov">          7 :   if (deleter) {</span>
-<span class="lineNum">     171 </span><span class="lineCov">       1290 :     for (i = 0; i &lt; table-&gt;allocated; i++) {</span>
-<span class="lineNum">     172 </span><span class="lineCov">       1286 :       if (table-&gt;table[i].mark == HT_FULL) {</span>
-<span class="lineNum">     173 </span><span class="lineCov">        203 :         deleter(table-&gt;table[i].value);</span>
-<span class="lineNum">     174 </span>            :       }
-<span class="lineNum">     175 </span>            :     }
-<span class="lineNum">     176 </span>            :   }
+<span class="lineNum">     156 </span>            :   // Step two, add the old items to the new table.
+<span class="lineNum">     157 </span><span class="lineCov">         64 :   for (index = 0; index &lt; old_allocated; index++) {</span>
+<span class="lineNum">     158 </span><span class="lineCov">         62 :     if (old_table[index].mark == HT_FULL) {</span>
+<span class="lineNum">     159 </span><span class="lineCov">         32 :       ht_insert(table, old_table[index].key, old_table[index].value);</span>
+<span class="lineNum">     160 </span>            :     }
+<span class="lineNum">     161 </span>            :   }
+<span class="lineNum">     162 </span>            : 
+<span class="lineNum">     163 </span>            :   // Step three: free old data.
+<span class="lineNum">     164 </span><span class="lineCov">          2 :   smb_free(old_table);</span>
+<span class="lineNum">     165 </span><span class="lineCov">          2 : }</span>
+<span class="lineNum">     166 </span>            : 
+<span class="lineNum">     167 </span>            : /**
+<span class="lineNum">     168 </span>            :    @brief Return the load factor of a hash table.
+<span class="lineNum">     169 </span>            : 
+<span class="lineNum">     170 </span>            :    @param table The table to find the load factor of.
+<a name="171"><span class="lineNum">     171 </span>            :    @returns The load factor of the hash table.</a>
+<span class="lineNum">     172 </span>            :  */
+<span class="lineNum">     173 </span><span class="lineCov">         92 : double ht_load_factor(smb_ht *table)</span>
+<span class="lineNum">     174 </span>            : {
+<span class="lineNum">     175 </span><span class="lineCov">         92 :   return ((double) table-&gt;length) / ((double) table-&gt;allocated);</span>
+<span class="lineNum">     176 </span>            : }
 <span class="lineNum">     177 </span>            : 
-<span class="lineNum">     178 </span>            :   // Delete the table.
-<span class="lineNum">     179 </span><span class="lineCov">          7 :   smb_free(table-&gt;table);</span>
-<a name="180"><span class="lineNum">     180 </span><span class="lineCov">          7 : }</span></a>
+<span class="lineNum">     178 </span>            : /*******************************************************************************
+<span class="lineNum">     179 </span>            : 
+<span class="lineNum">     180 </span>            :                            Public Interface Functions
 <span class="lineNum">     181 </span>            : 
-<span class="lineNum">     182 </span><span class="lineNoCov">          0 : void ht_destroy(smb_ht *table)</span>
-<span class="lineNum">     183 </span>            : {
-<span class="lineNum">     184 </span><span class="lineNoCov">          0 :   ht_destroy_act(table, NULL);</span>
-<a name="185"><span class="lineNum">     185 </span><span class="lineNoCov">          0 : }</span></a>
-<span class="lineNum">     186 </span>            : 
-<span class="lineNum">     187 </span><span class="lineCov">          7 : void ht_delete_act(smb_ht *table, DATA_ACTION deleter)</span>
-<span class="lineNum">     188 </span>            : {
-<span class="lineNum">     189 </span><span class="lineCov">          7 :   if (!table) {</span>
-<span class="lineNum">     190 </span><span class="lineCov">          7 :     return;</span>
-<span class="lineNum">     191 </span>            :   }
-<span class="lineNum">     192 </span>            : 
-<span class="lineNum">     193 </span><span class="lineCov">          7 :   ht_destroy_act(table, deleter);</span>
-<span class="lineNum">     194 </span><span class="lineCov">          7 :   smb_free(table);</span>
-<a name="195"><span class="lineNum">     195 </span>            : }</a>
-<span class="lineNum">     196 </span>            : 
-<span class="lineNum">     197 </span><span class="lineCov">          3 : void ht_delete(smb_ht *table)</span>
-<span class="lineNum">     198 </span>            : {
-<span class="lineNum">     199 </span><span class="lineCov">          3 :   ht_delete_act(table, NULL);</span>
-<a name="200"><span class="lineNum">     200 </span><span class="lineCov">          3 : }</span></a>
-<span class="lineNum">     201 </span>            : 
-<span class="lineNum">     202 </span><span class="lineCov">        404 : void ht_insert(smb_ht *table, DATA key, DATA value)</span>
-<span class="lineNum">     203 </span>            : {
-<span class="lineNum">     204 </span>            :   unsigned int index;
-<span class="lineNum">     205 </span><span class="lineCov">        404 :   if (ht_load_factor(table) &gt; HASH_TABLE_MAX_LOAD_FACTOR) {</span>
-<span class="lineNum">     206 </span><span class="lineCov">          1 :     ht_resize(table);</span>
-<span class="lineNum">     207 </span>            :   }
-<span class="lineNum">     208 </span>            : 
-<span class="lineNum">     209 </span>            :   // First, probe for the key as if we're trying to return it.  If we find it,
-<span class="lineNum">     210 </span>            :   // we update the existing key.
-<span class="lineNum">     211 </span><span class="lineCov">        404 :   index = ht_find_retrieve(table, key);</span>
-<span class="lineNum">     212 </span><span class="lineCov">        404 :   if (table-&gt;table[index].mark == HT_FULL) {</span>
-<span class="lineNum">     213 </span><span class="lineCov">          3 :     table-&gt;table[index].value = value;</span>
-<span class="lineNum">     214 </span><span class="lineCov">        407 :     return;</span>
-<span class="lineNum">     215 </span>            :   }
-<span class="lineNum">     216 </span>            : 
-<span class="lineNum">     217 </span>            :   // If we don't find the key, then we find the first open slot or gravestone.
-<span class="lineNum">     218 </span><span class="lineCov">        401 :   index = ht_find_insert(table, key);</span>
-<span class="lineNum">     219 </span><span class="lineCov">        401 :   table-&gt;table[index].key = key;</span>
-<span class="lineNum">     220 </span><span class="lineCov">        401 :   table-&gt;table[index].value = value;</span>
-<span class="lineNum">     221 </span><span class="lineCov">        401 :   table-&gt;table[index].mark = HT_FULL;</span>
-<span class="lineNum">     222 </span><span class="lineCov">        401 :   table-&gt;length++;</span>
-<a name="223"><span class="lineNum">     223 </span>            : }</a>
+<a name="182"><span class="lineNum">     182 </span>            : *******************************************************************************/</a>
+<span class="lineNum">     183 </span>            : 
+<span class="lineNum">     184 </span><span class="lineCov">          7 : void ht_init(smb_ht *table, HASH_FUNCTION hash_func, DATA_COMPARE equal)</span>
+<span class="lineNum">     185 </span>            : {
+<span class="lineNum">     186 </span>            :   // Initialize values
+<span class="lineNum">     187 </span><span class="lineCov">          7 :   table-&gt;length = 0;</span>
+<span class="lineNum">     188 </span><span class="lineCov">          7 :   table-&gt;allocated = HASH_TABLE_INITIAL_SIZE;</span>
+<span class="lineNum">     189 </span><span class="lineCov">          7 :   table-&gt;hash = hash_func;</span>
+<span class="lineNum">     190 </span><span class="lineCov">          7 :   table-&gt;equal = equal;</span>
+<span class="lineNum">     191 </span>            : 
+<span class="lineNum">     192 </span>            :   // Create the bucket list
+<span class="lineNum">     193 </span><span class="lineCov">          7 :   table-&gt;table = smb_new(smb_ht_bckt, HASH_TABLE_INITIAL_SIZE);</span>
+<span class="lineNum">     194 </span>            : 
+<span class="lineNum">     195 </span>            :   // Zero out the entries in the table so we don't get segmentation faults.
+<span class="lineNum">     196 </span><span class="lineCov">          7 :   memset((void*)table-&gt;table, 0, HASH_TABLE_INITIAL_SIZE * sizeof(smb_ht_bckt));</span>
+<a name="197"><span class="lineNum">     197 </span><span class="lineCov">          7 : }</span></a>
+<span class="lineNum">     198 </span>            : 
+<span class="lineNum">     199 </span><span class="lineCov">          7 : smb_ht *ht_create(HASH_FUNCTION hash_func, DATA_COMPARE equal)</span>
+<span class="lineNum">     200 </span>            : {
+<span class="lineNum">     201 </span>            :   // Allocate and create the table.
+<span class="lineNum">     202 </span>            :   smb_ht *table;
+<span class="lineNum">     203 </span><span class="lineCov">          7 :   table = smb_new(smb_ht, 1);</span>
+<span class="lineNum">     204 </span><span class="lineCov">          7 :   ht_init(table, hash_func, equal);</span>
+<span class="lineNum">     205 </span><span class="lineCov">          7 :   return table;</span>
+<a name="206"><span class="lineNum">     206 </span>            : }</a>
+<span class="lineNum">     207 </span>            : 
+<span class="lineNum">     208 </span><span class="lineCov">          7 : void ht_destroy_act(smb_ht *table, DATA_ACTION deleter)</span>
+<span class="lineNum">     209 </span>            : {
+<span class="lineNum">     210 </span>            :   unsigned int i;
+<span class="lineNum">     211 </span>            : 
+<span class="lineNum">     212 </span>            :   // Do the action on all the items in the table, if provided.
+<span class="lineNum">     213 </span><span class="lineCov">          7 :   if (deleter) {</span>
+<span class="lineNum">     214 </span><span class="lineCov">        188 :     for (i = 0; i &lt; table-&gt;allocated; i++) {</span>
+<span class="lineNum">     215 </span><span class="lineCov">        184 :       if (table-&gt;table[i].mark == HT_FULL) {</span>
+<span class="lineNum">     216 </span><span class="lineCov">         39 :         deleter(table-&gt;table[i].value);</span>
+<span class="lineNum">     217 </span>            :       }
+<span class="lineNum">     218 </span>            :     }
+<span class="lineNum">     219 </span>            :   }
+<span class="lineNum">     220 </span>            : 
+<span class="lineNum">     221 </span>            :   // Delete the table.
+<span class="lineNum">     222 </span><span class="lineCov">          7 :   smb_free(table-&gt;table);</span>
+<a name="223"><span class="lineNum">     223 </span><span class="lineCov">          7 : }</span></a>
 <span class="lineNum">     224 </span>            : 
-<span class="lineNum">     225 </span><span class="lineCov">          8 : void ht_remove_act(smb_ht *table, DATA key, DATA_ACTION deleter,</span>
-<span class="lineNum">     226 </span>            :                    smb_status *status)
-<span class="lineNum">     227 </span>            : {
-<span class="lineNum">     228 </span><span class="lineCov">          8 :   *status = SMB_SUCCESS;</span>
-<span class="lineNum">     229 </span><span class="lineCov">          8 :   unsigned int index = ht_find_retrieve(table, key);</span>
-<span class="lineNum">     230 </span>            : 
-<span class="lineNum">     231 </span>            :   // If the returned slot isn't full, that means we couldn't find it.
-<span class="lineNum">     232 </span><span class="lineCov">          8 :   if (table-&gt;table[index].mark != HT_FULL) {</span>
-<span class="lineNum">     233 </span><span class="lineNoCov">          0 :     *status = SMB_NOT_FOUND_ERROR;</span>
-<span class="lineNum">     234 </span><span class="lineCov">          8 :     return;</span>
-<span class="lineNum">     235 </span>            :   }
-<span class="lineNum">     236 </span>            : 
-<span class="lineNum">     237 </span>            :   // Perform the action if there is one.
-<span class="lineNum">     238 </span><span class="lineCov">          8 :   if (deleter) {</span>
-<span class="lineNum">     239 </span><span class="lineCov">          8 :     deleter(table-&gt;table[index].value);</span>
-<span class="lineNum">     240 </span>            :   }
-<span class="lineNum">     241 </span>            : 
-<span class="lineNum">     242 </span>            :   // Mark the slot with a &quot;grave stone&quot;, indicating it is deleted.
-<span class="lineNum">     243 </span><span class="lineCov">          8 :   table-&gt;table[index].mark = HT_GRAVE;</span>
-<span class="lineNum">     244 </span><span class="lineCov">          8 :   table-&gt;length--;</span>
-<a name="245"><span class="lineNum">     245 </span>            : }</a>
-<span class="lineNum">     246 </span>            : 
-<span class="lineNum">     247 </span><span class="lineNoCov">          0 : void ht_remove(smb_ht *table, DATA key, smb_status *status)</span>
-<span class="lineNum">     248 </span>            : {
-<span class="lineNum">     249 </span><span class="lineNoCov">          0 :   ht_remove_act(table, key, NULL, status);</span>
-<a name="250"><span class="lineNum">     250 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     225 </span><span class="lineNoCov">          0 : void ht_destroy(smb_ht *table)</span>
+<span class="lineNum">     226 </span>            : {
+<span class="lineNum">     227 </span><span class="lineNoCov">          0 :   ht_destroy_act(table, NULL);</span>
+<a name="228"><span class="lineNum">     228 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     229 </span>            : 
+<span class="lineNum">     230 </span><span class="lineCov">          7 : void ht_delete_act(smb_ht *table, DATA_ACTION deleter)</span>
+<span class="lineNum">     231 </span>            : {
+<span class="lineNum">     232 </span><span class="lineCov">          7 :   if (!table) {</span>
+<span class="lineNum">     233 </span><span class="lineCov">          7 :     return;</span>
+<span class="lineNum">     234 </span>            :   }
+<span class="lineNum">     235 </span>            : 
+<span class="lineNum">     236 </span><span class="lineCov">          7 :   ht_destroy_act(table, deleter);</span>
+<span class="lineNum">     237 </span><span class="lineCov">          7 :   smb_free(table);</span>
+<a name="238"><span class="lineNum">     238 </span>            : }</a>
+<span class="lineNum">     239 </span>            : 
+<span class="lineNum">     240 </span><span class="lineCov">          3 : void ht_delete(smb_ht *table)</span>
+<span class="lineNum">     241 </span>            : {
+<span class="lineNum">     242 </span><span class="lineCov">          3 :   ht_delete_act(table, NULL);</span>
+<a name="243"><span class="lineNum">     243 </span><span class="lineCov">          3 : }</span></a>
+<span class="lineNum">     244 </span>            : 
+<span class="lineNum">     245 </span><span class="lineCov">         92 : void ht_insert(smb_ht *table, DATA key, DATA value)</span>
+<span class="lineNum">     246 </span>            : {
+<span class="lineNum">     247 </span>            :   unsigned int index;
+<span class="lineNum">     248 </span><span class="lineCov">         92 :   if (ht_load_factor(table) &gt;= HASH_TABLE_MAX_LOAD_FACTOR) {</span>
+<span class="lineNum">     249 </span><span class="lineCov">          2 :     ht_resize(table);</span>
+<span class="lineNum">     250 </span>            :   }
 <span class="lineNum">     251 </span>            : 
-<span class="lineNum">     252 </span><span class="lineCov">        222 : DATA ht_get(smb_ht const *table, DATA key, smb_status *status)</span>
-<span class="lineNum">     253 </span>            : {
-<span class="lineNum">     254 </span><span class="lineCov">        222 :   *status = SMB_SUCCESS;</span>
-<span class="lineNum">     255 </span><span class="lineCov">        222 :   unsigned int index = ht_find_retrieve(table, key);</span>
-<span class="lineNum">     256 </span>            : 
-<span class="lineNum">     257 </span>            :   // If the slot is not marked full, we didn't find the key.
-<span class="lineNum">     258 </span><span class="lineCov">        222 :   if (table-&gt;table[index].mark != HT_FULL) {</span>
-<span class="lineNum">     259 </span><span class="lineCov">          1 :     *status = SMB_NOT_FOUND_ERROR;</span>
-<span class="lineNum">     260 </span><span class="lineCov">          1 :     return PTR(NULL);</span>
-<span class="lineNum">     261 </span>            :   }
-<span class="lineNum">     262 </span>            : 
-<span class="lineNum">     263 </span>            :   // Otherwise, return the key.
-<span class="lineNum">     264 </span><span class="lineCov">        221 :   return table-&gt;table[index].value;</span>
-<a name="265"><span class="lineNum">     265 </span>            : }</a>
-<span class="lineNum">     266 </span>            : 
-<span class="lineNum">     267 </span><span class="lineCov">          5 : bool ht_contains(smb_ht const *table, DATA key)</span>
-<span class="lineNum">     268 </span>            : {
-<span class="lineNum">     269 </span><span class="lineCov">          5 :   smb_status status = SMB_SUCCESS;</span>
-<span class="lineNum">     270 </span><span class="lineCov">          5 :   ht_get(table, key, &amp;status);</span>
-<span class="lineNum">     271 </span><span class="lineCov">          5 :   return status == SMB_SUCCESS;</span>
-<a name="272"><span class="lineNum">     272 </span>            : }</a>
+<span class="lineNum">     252 </span>            :   // First, probe for the key as if we're trying to return it.  If we find it,
+<span class="lineNum">     253 </span>            :   // we update the existing key.
+<span class="lineNum">     254 </span><span class="lineCov">         92 :   index = ht_find_retrieve(table, key);</span>
+<span class="lineNum">     255 </span><span class="lineCov">         92 :   if (table-&gt;table[index].mark == HT_FULL) {</span>
+<span class="lineNum">     256 </span><span class="lineCov">          3 :     table-&gt;table[index].value = value;</span>
+<span class="lineNum">     257 </span><span class="lineCov">         95 :     return;</span>
+<span class="lineNum">     258 </span>            :   }
+<span class="lineNum">     259 </span>            : 
+<span class="lineNum">     260 </span>            :   // If we don't find the key, then we find the first open slot or gravestone.
+<span class="lineNum">     261 </span><span class="lineCov">         89 :   index = ht_find_insert(table, key);</span>
+<span class="lineNum">     262 </span><span class="lineCov">         89 :   table-&gt;table[index].key = key;</span>
+<span class="lineNum">     263 </span><span class="lineCov">         89 :   table-&gt;table[index].value = value;</span>
+<span class="lineNum">     264 </span><span class="lineCov">         89 :   table-&gt;table[index].mark = HT_FULL;</span>
+<span class="lineNum">     265 </span><span class="lineCov">         89 :   table-&gt;length++;</span>
+<a name="266"><span class="lineNum">     266 </span>            : }</a>
+<span class="lineNum">     267 </span>            : 
+<span class="lineNum">     268 </span><span class="lineCov">          8 : void ht_remove_act(smb_ht *table, DATA key, DATA_ACTION deleter,</span>
+<span class="lineNum">     269 </span>            :                    smb_status *status)
+<span class="lineNum">     270 </span>            : {
+<span class="lineNum">     271 </span><span class="lineCov">          8 :   *status = SMB_SUCCESS;</span>
+<span class="lineNum">     272 </span><span class="lineCov">          8 :   unsigned int index = ht_find_retrieve(table, key);</span>
 <span class="lineNum">     273 </span>            : 
-<span class="lineNum">     274 </span><span class="lineCov">          5 : DATA ht_iter_next(smb_iter *iter, smb_status *status)</span>
-<span class="lineNum">     275 </span>            : {
-<span class="lineNum">     276 </span><span class="lineCov">          5 :   *status = SMB_SUCCESS;</span>
-<span class="lineNum">     277 </span><span class="lineCov">          5 :   long long int i = iter-&gt;state.data_llint + 1;</span>
-<span class="lineNum">     278 </span><span class="lineCov">          5 :   const smb_ht *ht = iter-&gt;ds;</span>
+<span class="lineNum">     274 </span>            :   // If the returned slot isn't full, that means we couldn't find it.
+<span class="lineNum">     275 </span><span class="lineCov">          8 :   if (table-&gt;table[index].mark != HT_FULL) {</span>
+<span class="lineNum">     276 </span><span class="lineNoCov">          0 :     *status = SMB_NOT_FOUND_ERROR;</span>
+<span class="lineNum">     277 </span><span class="lineCov">          8 :     return;</span>
+<span class="lineNum">     278 </span>            :   }
 <span class="lineNum">     279 </span>            : 
-<span class="lineNum">     280 </span>            :   // Move up until we either run off the table, or find a bucket that contains
-<span class="lineNum">     281 </span>            :   // something.
-<span class="lineNum">     282 </span><span class="lineCov">        234 :   while (i &lt; ht-&gt;allocated &amp;&amp; ht-&gt;table[i].mark != HT_FULL) {</span>
-<span class="lineNum">     283 </span><span class="lineCov">        224 :     i++;</span>
-<span class="lineNum">     284 </span>            :   }
-<span class="lineNum">     285 </span>            : 
-<span class="lineNum">     286 </span>            :   // save current index back to data structure
-<span class="lineNum">     287 </span><span class="lineCov">          5 :   iter-&gt;state.data_llint = i;</span>
-<span class="lineNum">     288 </span>            : 
-<span class="lineNum">     289 </span>            :   // If we hit the end of the table, stop iterating.
-<span class="lineNum">     290 </span><span class="lineCov">          5 :   if (i &gt;= ht-&gt;allocated) {</span>
-<span class="lineNum">     291 </span><span class="lineNoCov">          0 :     *status = SMB_STOP_ITERATION;</span>
-<span class="lineNum">     292 </span><span class="lineNoCov">          0 :     return LLINT(0);</span>
-<span class="lineNum">     293 </span>            :   } else {
-<span class="lineNum">     294 </span>            :     // Otherwise, return the key we found.
-<span class="lineNum">     295 </span><span class="lineCov">          5 :     iter-&gt;index++; // count the number of items we've found so far</span>
-<span class="lineNum">     296 </span><span class="lineCov">          5 :     return ht-&gt;table[i].key;</span>
-<span class="lineNum">     297 </span>            :   }
-<a name="298"><span class="lineNum">     298 </span>            : }</a>
+<span class="lineNum">     280 </span>            :   // Perform the action if there is one.
+<span class="lineNum">     281 </span><span class="lineCov">          8 :   if (deleter) {</span>
+<span class="lineNum">     282 </span><span class="lineCov">          8 :     deleter(table-&gt;table[index].value);</span>
+<span class="lineNum">     283 </span>            :   }
+<span class="lineNum">     284 </span>            : 
+<span class="lineNum">     285 </span>            :   // Mark the slot with a &quot;grave stone&quot;, indicating it is deleted.
+<span class="lineNum">     286 </span><span class="lineCov">          8 :   table-&gt;table[index].mark = HT_GRAVE;</span>
+<span class="lineNum">     287 </span><span class="lineCov">          8 :   table-&gt;length--;</span>
+<a name="288"><span class="lineNum">     288 </span>            : }</a>
+<span class="lineNum">     289 </span>            : 
+<span class="lineNum">     290 </span><span class="lineNoCov">          0 : void ht_remove(smb_ht *table, DATA key, smb_status *status)</span>
+<span class="lineNum">     291 </span>            : {
+<span class="lineNum">     292 </span><span class="lineNoCov">          0 :   ht_remove_act(table, key, NULL, status);</span>
+<a name="293"><span class="lineNum">     293 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     294 </span>            : 
+<span class="lineNum">     295 </span><span class="lineCov">         58 : DATA ht_get(smb_ht const *table, DATA key, smb_status *status)</span>
+<span class="lineNum">     296 </span>            : {
+<span class="lineNum">     297 </span><span class="lineCov">         58 :   *status = SMB_SUCCESS;</span>
+<span class="lineNum">     298 </span><span class="lineCov">         58 :   unsigned int index = ht_find_retrieve(table, key);</span>
 <span class="lineNum">     299 </span>            : 
-<span class="lineNum">     300 </span><span class="lineCov">          6 : bool ht_iter_has_next(smb_iter *iter)</span>
-<span class="lineNum">     301 </span>            : {
-<span class="lineNum">     302 </span><span class="lineCov">          6 :   const smb_ht *ht = iter-&gt;ds;</span>
-<span class="lineNum">     303 </span><span class="lineCov">          6 :   return iter-&gt;index &lt; (int)ht-&gt;length;</span>
-<a name="304"><span class="lineNum">     304 </span>            : }</a>
+<span class="lineNum">     300 </span>            :   // If the slot is not marked full, we didn't find the key.
+<span class="lineNum">     301 </span><span class="lineCov">         58 :   if (table-&gt;table[index].mark != HT_FULL) {</span>
+<span class="lineNum">     302 </span><span class="lineCov">          1 :     *status = SMB_NOT_FOUND_ERROR;</span>
+<span class="lineNum">     303 </span><span class="lineCov">          1 :     return PTR(NULL);</span>
+<span class="lineNum">     304 </span>            :   }
 <span class="lineNum">     305 </span>            : 
-<span class="lineNum">     306 </span><span class="lineNoCov">          0 : void ht_iter_destroy(smb_iter *iter)</span>
-<span class="lineNum">     307 </span>            : {
-<span class="lineNum">     308 </span>            :   (void)iter; //unused
-<a name="309"><span class="lineNum">     309 </span><span class="lineNoCov">          0 : }</span></a>
-<span class="lineNum">     310 </span>            : 
-<span class="lineNum">     311 </span><span class="lineNoCov">          0 : void ht_iter_delete(smb_iter *iter)</span>
-<span class="lineNum">     312 </span>            : {
-<span class="lineNum">     313 </span><span class="lineNoCov">          0 :   ht_iter_destroy(iter);</span>
-<span class="lineNum">     314 </span><span class="lineNoCov">          0 :   free(iter);</span>
-<a name="315"><span class="lineNum">     315 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     306 </span>            :   // Otherwise, return the key.
+<span class="lineNum">     307 </span><span class="lineCov">         57 :   return table-&gt;table[index].value;</span>
+<a name="308"><span class="lineNum">     308 </span>            : }</a>
+<span class="lineNum">     309 </span>            : 
+<span class="lineNum">     310 </span><span class="lineCov">          5 : bool ht_contains(smb_ht const *table, DATA key)</span>
+<span class="lineNum">     311 </span>            : {
+<span class="lineNum">     312 </span><span class="lineCov">          5 :   smb_status status = SMB_SUCCESS;</span>
+<span class="lineNum">     313 </span><span class="lineCov">          5 :   ht_get(table, key, &amp;status);</span>
+<span class="lineNum">     314 </span><span class="lineCov">          5 :   return status == SMB_SUCCESS;</span>
+<a name="315"><span class="lineNum">     315 </span>            : }</a>
 <span class="lineNum">     316 </span>            : 
-<span class="lineNum">     317 </span><span class="lineCov">          1 : smb_iter ht_get_iter(const smb_ht *ht)</span>
+<span class="lineNum">     317 </span><span class="lineCov">          5 : DATA ht_iter_next(smb_iter *iter, smb_status *status)</span>
 <span class="lineNum">     318 </span>            : {
-<span class="lineNum">     319 </span><span class="lineCov">          1 :   smb_iter iter = {</span>
-<span class="lineNum">     320 </span>            :     // Data:
-<span class="lineNum">     321 </span>            :     .ds = ht,           // A reference to the data structure.
-<span class="lineNum">     322 </span>            :     .state = LLINT(-1), // This tracks the actual index into the table.
-<span class="lineNum">     323 </span>            :     .index = 0,         // This tracks how many keys have been returned.
-<span class="lineNum">     324 </span>            : 
-<span class="lineNum">     325 </span>            :     // Functions
-<span class="lineNum">     326 </span>            :     .next = &amp;ht_iter_next,
-<span class="lineNum">     327 </span>            :     .has_next = &amp;ht_iter_has_next,
-<span class="lineNum">     328 </span>            :     .destroy = &amp;ht_iter_destroy,
-<span class="lineNum">     329 </span>            :     .delete = &amp;ht_iter_delete
-<span class="lineNum">     330 </span>            :   };
-<span class="lineNum">     331 </span><span class="lineCov">          1 :   return iter;</span>
-<a name="332"><span class="lineNum">     332 </span>            : }</a>
-<span class="lineNum">     333 </span>            : 
-<span class="lineNum">     334 </span><span class="lineCov">         72 : unsigned int ht_string_hash(DATA data)</span>
-<span class="lineNum">     335 </span>            : {
-<span class="lineNum">     336 </span><span class="lineCov">         72 :   char *theString = (char *)data.data_ptr;</span>
-<span class="lineNum">     337 </span><span class="lineCov">         72 :   unsigned int hash = 0;</span>
-<span class="lineNum">     338 </span>            : 
-<span class="lineNum">     339 </span><span class="lineCov">        820 :   while (theString &amp;&amp; *theString != '\0' ) {</span>
-<span class="lineNum">     340 </span><span class="lineCov">        676 :     hash = (hash &lt;&lt; 5) - hash + *theString;</span>
-<span class="lineNum">     341 </span><span class="lineCov">        676 :     theString++;</span>
-<span class="lineNum">     342 </span>            :   }
-<span class="lineNum">     343 </span>            : 
-<span class="lineNum">     344 </span>            :   // printf(&quot;Hash of \&quot;%s\&quot;: %u\n&quot;, (char*)data.data_ptr, hash);
-<span class="lineNum">     345 </span><span class="lineCov">         72 :   return hash;</span>
-<a name="346"><span class="lineNum">     346 </span>            : }</a>
-<span class="lineNum">     347 </span>            : 
-<span class="lineNum">     348 </span><span class="lineNoCov">          0 : void ht_print(smb_ht const *table, int full_mode)</span>
-<span class="lineNum">     349 </span>            : {
-<span class="lineNum">     350 </span>            :   unsigned int i;
-<span class="lineNum">     351 </span><span class="lineNoCov">          0 :   char *MARKS[] = {&quot;EMPTY&quot;, &quot; FULL&quot;, &quot;GRAVE&quot;};</span>
-<span class="lineNum">     352 </span>            : 
-<span class="lineNum">     353 </span><span class="lineNoCov">          0 :   for (i = 0; i &lt; table-&gt;allocated; i++) {</span>
-<span class="lineNum">     354 </span><span class="lineNoCov">          0 :     if (full_mode || table-&gt;table[i].mark == HT_FULL) {</span>
-<span class="lineNum">     355 </span><span class="lineNoCov">          0 :       printf(&quot;[%04d|%s]: key=0x%llx, value=0x%llx\n&quot;, i,</span>
-<span class="lineNum">     356 </span><span class="lineNoCov">          0 :              MARKS[table-&gt;table[i].mark], table-&gt;table[i].key.data_llint,</span>
-<span class="lineNum">     357 </span><span class="lineNoCov">          0 :              table-&gt;table[i].value.data_llint);</span>
-<span class="lineNum">     358 </span>            :     }
-<span class="lineNum">     359 </span>            :   }
-<span class="lineNum">     360 </span><span class="lineNoCov">          0 : }</span>
+<span class="lineNum">     319 </span><span class="lineCov">          5 :   *status = SMB_SUCCESS;</span>
+<span class="lineNum">     320 </span><span class="lineCov">          5 :   long long int i = iter-&gt;state.data_llint + 1;</span>
+<span class="lineNum">     321 </span><span class="lineCov">          5 :   const smb_ht *ht = iter-&gt;ds;</span>
+<span class="lineNum">     322 </span>            : 
+<span class="lineNum">     323 </span>            :   // Move up until we either run off the table, or find a bucket that contains
+<span class="lineNum">     324 </span>            :   // something.
+<span class="lineNum">     325 </span><span class="lineCov">         33 :   while (i &lt; ht-&gt;allocated &amp;&amp; ht-&gt;table[i].mark != HT_FULL) {</span>
+<span class="lineNum">     326 </span><span class="lineCov">         23 :     i++;</span>
+<span class="lineNum">     327 </span>            :   }
+<span class="lineNum">     328 </span>            : 
+<span class="lineNum">     329 </span>            :   // save current index back to data structure
+<span class="lineNum">     330 </span><span class="lineCov">          5 :   iter-&gt;state.data_llint = i;</span>
+<span class="lineNum">     331 </span>            : 
+<span class="lineNum">     332 </span>            :   // If we hit the end of the table, stop iterating.
+<span class="lineNum">     333 </span><span class="lineCov">          5 :   if (i &gt;= ht-&gt;allocated) {</span>
+<span class="lineNum">     334 </span><span class="lineNoCov">          0 :     *status = SMB_STOP_ITERATION;</span>
+<span class="lineNum">     335 </span><span class="lineNoCov">          0 :     return LLINT(0);</span>
+<span class="lineNum">     336 </span>            :   } else {
+<span class="lineNum">     337 </span>            :     // Otherwise, return the key we found.
+<span class="lineNum">     338 </span><span class="lineCov">          5 :     iter-&gt;index++; // count the number of items we've found so far</span>
+<span class="lineNum">     339 </span><span class="lineCov">          5 :     return ht-&gt;table[i].key;</span>
+<span class="lineNum">     340 </span>            :   }
+<a name="341"><span class="lineNum">     341 </span>            : }</a>
+<span class="lineNum">     342 </span>            : 
+<span class="lineNum">     343 </span><span class="lineCov">          6 : bool ht_iter_has_next(smb_iter *iter)</span>
+<span class="lineNum">     344 </span>            : {
+<span class="lineNum">     345 </span><span class="lineCov">          6 :   const smb_ht *ht = iter-&gt;ds;</span>
+<span class="lineNum">     346 </span><span class="lineCov">          6 :   return iter-&gt;index &lt; (int)ht-&gt;length;</span>
+<a name="347"><span class="lineNum">     347 </span>            : }</a>
+<span class="lineNum">     348 </span>            : 
+<span class="lineNum">     349 </span><span class="lineNoCov">          0 : void ht_iter_destroy(smb_iter *iter)</span>
+<span class="lineNum">     350 </span>            : {
+<span class="lineNum">     351 </span>            :   (void)iter; //unused
+<a name="352"><span class="lineNum">     352 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     353 </span>            : 
+<span class="lineNum">     354 </span><span class="lineNoCov">          0 : void ht_iter_delete(smb_iter *iter)</span>
+<span class="lineNum">     355 </span>            : {
+<span class="lineNum">     356 </span><span class="lineNoCov">          0 :   ht_iter_destroy(iter);</span>
+<span class="lineNum">     357 </span><span class="lineNoCov">          0 :   free(iter);</span>
+<a name="358"><span class="lineNum">     358 </span><span class="lineNoCov">          0 : }</span></a>
+<span class="lineNum">     359 </span>            : 
+<span class="lineNum">     360 </span><span class="lineCov">          1 : smb_iter ht_get_iter(const smb_ht *ht)</span>
+<span class="lineNum">     361 </span>            : {
+<span class="lineNum">     362 </span><span class="lineCov">          1 :   smb_iter iter = {</span>
+<span class="lineNum">     363 </span>            :     // Data:
+<span class="lineNum">     364 </span>            :     .ds = ht,           // A reference to the data structure.
+<span class="lineNum">     365 </span>            :     .state = LLINT(-1), // This tracks the actual index into the table.
+<span class="lineNum">     366 </span>            :     .index = 0,         // This tracks how many keys have been returned.
+<span class="lineNum">     367 </span>            : 
+<span class="lineNum">     368 </span>            :     // Functions
+<span class="lineNum">     369 </span>            :     .next = &amp;ht_iter_next,
+<span class="lineNum">     370 </span>            :     .has_next = &amp;ht_iter_has_next,
+<span class="lineNum">     371 </span>            :     .destroy = &amp;ht_iter_destroy,
+<span class="lineNum">     372 </span>            :     .delete = &amp;ht_iter_delete
+<span class="lineNum">     373 </span>            :   };
+<span class="lineNum">     374 </span><span class="lineCov">          1 :   return iter;</span>
+<a name="375"><span class="lineNum">     375 </span>            : }</a>
+<span class="lineNum">     376 </span>            : 
+<span class="lineNum">     377 </span><span class="lineCov">         72 : unsigned int ht_string_hash(DATA data)</span>
+<span class="lineNum">     378 </span>            : {
+<span class="lineNum">     379 </span><span class="lineCov">         72 :   char *theString = (char *)data.data_ptr;</span>
+<span class="lineNum">     380 </span><span class="lineCov">         72 :   unsigned int hash = 0;</span>
+<span class="lineNum">     381 </span>            : 
+<span class="lineNum">     382 </span><span class="lineCov">        820 :   while (theString &amp;&amp; *theString != '\0' ) {</span>
+<span class="lineNum">     383 </span><span class="lineCov">        676 :     hash = (hash &lt;&lt; 5) - hash + *theString;</span>
+<span class="lineNum">     384 </span><span class="lineCov">        676 :     theString++;</span>
+<span class="lineNum">     385 </span>            :   }
+<span class="lineNum">     386 </span>            : 
+<span class="lineNum">     387 </span>            :   // printf(&quot;Hash of \&quot;%s\&quot;: %u\n&quot;, (char*)data.data_ptr, hash);
+<span class="lineNum">     388 </span><span class="lineCov">         72 :   return hash;</span>
+<a name="389"><span class="lineNum">     389 </span>            : }</a>
+<span class="lineNum">     390 </span>            : 
+<span class="lineNum">     391 </span><span class="lineNoCov">          0 : void ht_print(smb_ht const *table, int full_mode)</span>
+<span class="lineNum">     392 </span>            : {
+<span class="lineNum">     393 </span>            :   unsigned int i;
+<span class="lineNum">     394 </span><span class="lineNoCov">          0 :   char *MARKS[] = {&quot;EMPTY&quot;, &quot; FULL&quot;, &quot;GRAVE&quot;};</span>
+<span class="lineNum">     395 </span>            : 
+<span class="lineNum">     396 </span><span class="lineNoCov">          0 :   for (i = 0; i &lt; table-&gt;allocated; i++) {</span>
+<span class="lineNum">     397 </span><span class="lineNoCov">          0 :     if (full_mode || table-&gt;table[i].mark == HT_FULL) {</span>
+<span class="lineNum">     398 </span><span class="lineNoCov">          0 :       printf(&quot;[%04d|%s]: key=0x%llx, value=0x%llx\n&quot;, i,</span>
+<span class="lineNum">     399 </span><span class="lineNoCov">          0 :              MARKS[table-&gt;table[i].mark], table-&gt;table[i].key.data_llint,</span>
+<span class="lineNum">     400 </span><span class="lineNoCov">          0 :              table-&gt;table[i].value.data_llint);</span>
+<span class="lineNum">     401 </span>            :     }
+<span class="lineNum">     402 </span>            :   }
+<span class="lineNum">     403 </span><span class="lineNoCov">          0 : }</span>
 </pre>
       </td>
     </tr>
