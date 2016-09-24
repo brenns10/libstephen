@@ -1,0 +1,301 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Type System &mdash; libstephen 0.1 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="libstephen 0.1 documentation" href="../index.html"/>
+        <link rel="up" title="Lisp Implementation Documentation" href="index.html"/>
+        <link rel="prev" title="Embedding the Interpreter" href="embedding.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> libstephen
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/index.html">Libstephen Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">Libstephen API Documentation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Lisp Implementation Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="embedding.html">Embedding the Interpreter</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Type System</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">libstephen</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="index.html">Lisp Implementation Documentation</a> &raquo;</li>
+      
+    <li>Type System</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/lisp/types.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="type-system">
+<h1>Type System<a class="headerlink" href="#type-system" title="Permalink to this headline">¶</a></h1>
+<p>As previous pages have mentions, lisp objects rely on a mark and sweep garbage
+collection system to manage their lifetimes. This page describes how the type
+system is implemented, which includes the garbage collection implementation.</p>
+<p>In Java, everything is an object. In this language, everything is a
+<code class="docutils literal"><span class="pre">lisp_value</span></code>.  This means two things:</p>
+<ol class="arabic simple">
+<li>Every object contains a <code class="docutils literal"><span class="pre">type</span></code> pointer.</li>
+<li>Every object has a variable to store its <code class="docutils literal"><span class="pre">mark</span></code>.</li>
+<li>Every object has a pointer to the object allocated after it, forming a linked
+list.</li>
+</ol>
+<p>Every type declares these using the <code class="docutils literal"><span class="pre">LISP_VALUE_HEAD</span></code> macro, like so:</p>
+<div class="code C highlight-c"><div class="highlight"><pre><span></span><span class="k">typedef</span> <span class="k">struct</span> <span class="p">{</span>
+  <span class="n">LISP_VALUE_HEAD</span><span class="p">;</span>
+  <span class="kt">int</span> <span class="n">x</span><span class="p">;</span>
+<span class="p">}</span> <span class="n">lisp_integer</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>You can cast pointers to these objects to <code class="docutils literal"><span class="pre">lisp_value*</span></code> and still access the
+type object. All objects are passed around as <code class="docutils literal"><span class="pre">lisp_value*</span></code>.</p>
+<p>In order to allow objects to be treated differently based on their type (but in
+a generic way to calling code), we use the type object.</p>
+<p>A type object is just another object, with type <code class="docutils literal"><span class="pre">lisp_type</span></code>. However, it is
+NOT managed by the garbage collector. It contains the string name of a type,
+along with pointers to implementations for the following functions: print, new,
+free, eval, call, and expand. Therefore, if you have <code class="docutils literal"><span class="pre">lisp_value</span> <span class="pre">*object</span></code> and
+you want to print it, you can do:</p>
+<div class="code C highlight-c"><div class="highlight"><pre><span></span><span class="n">object</span><span class="o">-&gt;</span><span class="n">type</span><span class="o">-&gt;</span><span class="n">print</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="n">object</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Unfortunately that&#8217;s very verbose. To simplify, each of the functions
+implemented by a type object has an associated helper function. So you can
+instead do:</p>
+<div class="code C highlight-c"><div class="highlight"><pre><span></span><span class="n">lisp_print</span><span class="p">(</span><span class="n">stdout</span><span class="p">,</span> <span class="n">object</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>But there&#8217;s no magic or switch statements involved here&#8211;we&#8217;re simply using the
+type object.</p>
+<p>This means that it&#8217;s not too difficult to add a type to the language! All you
+need to do is declare a struct for your type, implement the basic functions, and
+create a type object for it. Here is an example for a regex type built on
+libstephen&#8217;s regex implementation:</p>
+<div class="code C highlight-c"><div class="highlight"><pre><span></span><span class="c1">// HEADER</span>
+<span class="k">typedef</span> <span class="k">struct</span> <span class="p">{</span>
+  <span class="n">LISP_VALUE_HEAD</span><span class="p">;</span>
+  <span class="n">Regex</span> <span class="n">r</span><span class="p">;</span>
+<span class="p">}</span> <span class="n">lisp_regex</span><span class="p">;</span>
+<span class="k">extern</span> <span class="n">lisp_type</span> <span class="o">*</span><span class="n">type_regex</span><span class="p">;</span>
+
+<span class="c1">// CODE</span>
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">regex_print</span><span class="p">(</span><span class="kt">FILE</span> <span class="o">*</span><span class="n">f</span><span class="p">,</span> <span class="n">lisp_value</span> <span class="o">*</span><span class="n">v</span><span class="p">);</span>
+<span class="k">static</span> <span class="n">lisp_value</span> <span class="o">*</span><span class="nf">regex_new</span><span class="p">(</span><span class="kt">void</span><span class="p">);</span>
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">lisp_value_free</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">v</span><span class="p">);</span>
+<span class="k">static</span> <span class="n">lisp_value</span> <span class="o">*</span><span class="nf">regex_eval</span><span class="p">(</span><span class="n">lisp_runtime</span> <span class="o">*</span><span class="n">rt</span><span class="p">,</span> <span class="n">lisp_scope</span> <span class="o">*</span><span class="n">s</span><span class="p">,</span> <span class="n">lisp_value</span> <span class="o">*</span><span class="n">re</span><span class="p">);</span>
+<span class="k">static</span> <span class="n">lisp_value</span> <span class="o">*</span><span class="nf">regex_call</span><span class="p">(</span><span class="n">lisp_runtime</span> <span class="o">*</span><span class="n">rt</span><span class="p">,</span> <span class="n">lisp_scope</span> <span class="o">*</span><span class="n">s</span><span class="p">,</span> <span class="n">lisp_value</span> <span class="o">*</span><span class="n">c</span><span class="p">,</span> <span class="n">lisp_value</span> <span class="o">*</span><span class="n">a</span><span class="p">);</span>
+<span class="k">static</span> <span class="n">smb_iter</span> <span class="nf">regex_expand</span><span class="p">(</span><span class="n">lisp_value</span> <span class="o">*</span><span class="n">v</span><span class="p">);</span>
+
+<span class="k">static</span> <span class="n">lisp_type</span> <span class="o">*</span><span class="n">type_regex_obj</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="p">.</span><span class="n">type</span><span class="o">=</span><span class="n">type_type</span><span class="p">,</span>
+  <span class="p">.</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;regex&quot;</span><span class="p">,</span>
+  <span class="p">.</span><span class="n">print</span><span class="o">=</span><span class="n">regex_print</span><span class="p">,</span>
+  <span class="p">.</span><span class="n">new</span><span class="o">=</span><span class="n">regex_new</span><span class="p">,</span>
+  <span class="p">.</span><span class="n">free</span><span class="o">=</span><span class="n">regex_free</span><span class="p">,</span>
+  <span class="p">.</span><span class="n">call</span><span class="o">=</span><span class="n">regex_call</span><span class="p">,</span>
+  <span class="p">.</span><span class="n">expand</span><span class="o">=</span><span class="n">regex_expand</span><span class="p">,</span>
+<span class="p">};</span>
+<span class="n">lisp_type</span> <span class="o">*</span><span class="n">type_regex</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">type_regex_obj</span><span class="p">;</span>
+
+<span class="c1">// function implementations</span>
+</pre></div>
+</div>
+<p>Many function implementations in the type object are trivial. However, a few are
+rather important to get right:</p>
+<ul class="simple">
+<li>The print function should not print a newline.</li>
+<li>The new function should take no arguments. It does not need to bother to
+populate the <code class="docutils literal"><span class="pre">lisp_value</span></code> fields such as <code class="docutils literal"><span class="pre">type</span></code> or <code class="docutils literal"><span class="pre">next</span></code>. Instead,
+these will be called by the <code class="docutils literal"><span class="pre">lisp_new()</span></code> wrapper function. It may be wise to
+write a <code class="docutils literal"><span class="pre">lisp_new_TYPENAME(args...)</span></code> function so users can easily create an
+instance of a type from some arguments.</li>
+<li>The eval function is tricky. Many things just don&#8217;t get evaluated. For
+instance, a regex object would probably be returned by a builtin function, but
+never produced as raw code to be evaluated. So its eval function should
+probably return an error.</li>
+<li>Generally the call function should return an error. However it may not be the
+worst thing to make creative use of function call syntax. For instance, it
+would be interesting to have a regex type that, when called, matches on a
+string and returns the match object.</li>
+<li>The most critical function to implement correctly is expand. This must return
+a generator, which yields pointers to other <code class="docutils literal"><span class="pre">lisp_value</span></code> objects contained
+by this object. For simple objects, this will be trivial, but for data
+structures it is incredibly important to get right.</li>
+</ul>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="embedding.html" class="btn btn-neutral" title="Embedding the Interpreter" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2013-2016, Stephen Brennan.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

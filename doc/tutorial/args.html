@@ -1,0 +1,333 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Argument Parsing &mdash; libstephen 0.1 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="libstephen 0.1 documentation" href="../index.html"/>
+        <link rel="up" title="Libstephen Tutorial" href="index.html"/>
+        <link rel="next" title="Logging" href="logging.html"/>
+        <link rel="prev" title="Character Buffer" href="charbuf.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> libstephen
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Libstephen Tutorial</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="errors.html">Error Handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arraylist.html">Array List (smb_al)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linkedlist.html">Linked List</a></li>
+<li class="toctree-l2"><a class="reference internal" href="list.html">List Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="iterator.html">Iterator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hashtable.html">Hash Table</a></li>
+<li class="toctree-l2"><a class="reference internal" href="charbuf.html">Character Buffer</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Argument Parsing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#argument-types">Argument Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#initialization">Initialization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reading-argument-data">Reading Argument Data</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="logging.html">Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unittest.html">Unit Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="regex.html">Regular Expressions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">Libstephen API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lisp/index.html">Lisp Implementation Documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">libstephen</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="index.html">Libstephen Tutorial</a> &raquo;</li>
+      
+    <li>Argument Parsing</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/tutorial/args.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="argument-parsing">
+<h1>Argument Parsing<a class="headerlink" href="#argument-parsing" title="Permalink to this headline">¶</a></h1>
+<div class="code C highlight-c"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;libstephen/ad.h&quot;</span><span class="cp"></span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><a class="reference external" href="https://github.com/brenns10/libstephen/blob/master/inc/libstephen/ad.h">Header
+(master)</a></li>
+<li><a class="reference external" href="https://github.com/brenns10/libstephen/blob/master/src/args.c">Implementation
+(master)</a></li>
+</ul>
+<p>For practical programs, argument parsing is a large part of what you do.
+So, having a simple library to help you build normal command line
+interfaces can save you plenty of time. The library in
+<code class="docutils literal"><span class="pre">libstephen/ad.h</span></code> provides a basic argument parsing solution. I wrote
+it before I knew about the existence of well established solutions like
+<code class="docutils literal"><span class="pre">getopt</span></code>. It&#8217;s not a perfect solution, but it does the job for most of
+my use cases.</p>
+<div class="section" id="argument-types">
+<h2>Argument Types<a class="headerlink" href="#argument-types" title="Permalink to this headline">¶</a></h2>
+<p>My argument processor is based on four different types of arguments:</p>
+<ul class="simple">
+<li>Short flags: these are one letter flags that can be on or off. They
+are prefixed by a single hyphen. They can also be smooshed together.
+For instance, with the command <code class="docutils literal"><span class="pre">ls</span> <span class="pre">-la</span></code> has two short flags: <code class="docutils literal"><span class="pre">l</span></code>
+and <code class="docutils literal"><span class="pre">a</span></code>.</li>
+<li>Long flags: these are multi-letter flags that can be on or off. They
+have to be prefixed by a double hyphen. So, the command <code class="docutils literal"><span class="pre">ls</span> <span class="pre">--all</span></code>
+has a long flag: <code class="docutils literal"><span class="pre">all</span></code>.</li>
+<li>Parameters: both short and long flags may have parameters provided to
+them. For instance, <code class="docutils literal"><span class="pre">gcc</span> <span class="pre">-o</span> <span class="pre">code.o</span> <span class="pre">code.c</span></code> has <code class="docutils literal"><span class="pre">code.o</span></code> provided
+as an argument to the short flag <code class="docutils literal"><span class="pre">o</span></code>.</li>
+<li>Bare strings: these are neither short nor long flags. They are simply
+arguments provided to the program. They are typically the actual
+objects that the program is to operate on (input files, or input
+text). For instance, <code class="docutils literal"><span class="pre">gcc</span>&#160;&#160; <span class="pre">-o</span> <span class="pre">code.o</span> <span class="pre">code.c</span></code> has the bare string
+<code class="docutils literal"><span class="pre">code.c</span></code>.</li>
+</ul>
+</div>
+<div class="section" id="initialization">
+<h2>Initialization<a class="headerlink" href="#initialization" title="Permalink to this headline">¶</a></h2>
+<div class="code C highlight-c"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">arg_data_init</span><span class="p">(</span><span class="n">smb_ad</span> <span class="o">*</span><span class="n">data</span><span class="p">);</span>
+<span class="n">smb_ad</span> <span class="o">*</span><span class="nf">arg_data_create</span><span class="p">();</span>
+<span class="kt">void</span> <span class="nf">arg_data_destroy</span><span class="p">(</span><span class="n">smb_ad</span> <span class="o">*</span><span class="n">data</span><span class="p">);</span>
+<span class="kt">void</span> <span class="nf">arg_data_delete</span><span class="p">(</span><span class="n">smb_ad</span> <span class="o">*</span><span class="n">data</span><span class="p">);</span>
+
+<span class="kt">void</span> <span class="nf">process_args</span><span class="p">(</span><span class="n">smb_ad</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>In order to start using the arg parsing library, you create a <code class="docutils literal"><span class="pre">smb_ad</span></code>
+object. Typically you do this on the stack in your <code class="docutils literal"><span class="pre">main()</span></code> function,
+because why would your arguments need to last any longer than that? You
+call <code class="docutils literal"><span class="pre">arg_data_init()</span></code> with a pointer to the <code class="docutils literal"><span class="pre">smb_ad</span></code> to initialize
+it. To parse your program&#8217;s arguments, you call
+<code class="docutils literal"><span class="pre">process_args(smb_ad</span> <span class="pre">*,</span> <span class="pre">int</span> <span class="pre">argc,</span> <span class="pre">char</span> <span class="pre">**argv)</span></code>. You shouldn&#8217;t include
+the program name in <code class="docutils literal"><span class="pre">argc</span></code> and <code class="docutils literal"><span class="pre">argv</span></code> (unless you want it to be
+parsed as an argument).</p>
+<p>So, something like this would be the basic structure of your main
+function:</p>
+<div class="code C highlight-c"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span>
+<span class="p">{</span>
+  <span class="n">smb_ad</span> <span class="n">args</span><span class="p">;</span>
+  <span class="n">arg_data_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">args</span><span class="p">);</span>
+  <span class="n">process_args</span><span class="p">(</span><span class="o">&amp;</span><span class="n">args</span><span class="p">,</span> <span class="n">argc</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">argv</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
+
+  <span class="c1">// Get arguments and flags</span>
+
+  <span class="c1">// Do program logic</span>
+
+  <span class="n">arg_data_destroy</span><span class="p">(</span><span class="o">&amp;</span><span class="n">args</span><span class="p">);</span>
+  <span class="k">return</span> <span class="n">EXIT_SUCCESS</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="reading-argument-data">
+<h2>Reading Argument Data<a class="headerlink" href="#reading-argument-data" title="Permalink to this headline">¶</a></h2>
+<div class="code C highlight-c"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="nf">check_flag</span><span class="p">(</span><span class="n">smb_ad</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="kt">char</span> <span class="n">flag</span><span class="p">);</span>
+<span class="kt">int</span> <span class="nf">check_long_flag</span><span class="p">(</span><span class="n">smb_ad</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">flag</span><span class="p">);</span>
+<span class="kt">int</span> <span class="nf">check_bare_string</span><span class="p">(</span><span class="n">smb_ad</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">string</span><span class="p">);</span>
+<span class="kt">char</span> <span class="o">*</span><span class="nf">get_flag_parameter</span><span class="p">(</span><span class="n">smb_ad</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="kt">char</span> <span class="n">flag</span><span class="p">);</span>
+<span class="kt">char</span> <span class="o">*</span><span class="nf">get_long_flag_parameter</span><span class="p">(</span><span class="n">smb_ad</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">string</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Once you have processed the argument data, the <code class="docutils literal"><span class="pre">smb_ad</span></code> can be queried
+for each argument you&#8217;re expecting. Typically, you&#8217;ll pair short flags
+with long flags (e.g. <code class="docutils literal"><span class="pre">-h</span></code> and <code class="docutils literal"><span class="pre">--help</span></code>). You can check for long
+flags with <code class="docutils literal"><span class="pre">check_long_flag()</span></code>, and you can check for short flags with
+<code class="docutils literal"><span class="pre">check_flag()</span></code>. You can get flag and long flag parameters with
+<code class="docutils literal"><span class="pre">get_flag_parameter()</span></code> and <code class="docutils literal"><span class="pre">get_long_flag_parameter()</span></code> respectively.
+You can also use <code class="docutils literal"><span class="pre">check_bare_string()</span></code> to check if a bare string was
+provided. However, that&#8217;s not usually the most convenient way to access
+the bare strings (since you probably don&#8217;t already know the bare string
+before it&#8217;s provided). So, you can also access the linked list directly
+in the <code class="docutils literal"><span class="pre">bare_strings</span></code> field of the <code class="docutils literal"><span class="pre">smb_ad</span></code> struct.</p>
+<p>Here&#8217;s a typical example of how you might use <code class="docutils literal"><span class="pre">smb_ad</span></code> to parse
+arguments. It continues from the outline earlier.</p>
+<div class="code C highlight-c"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="p">(</span><span class="n">check_flag</span><span class="p">(</span><span class="o">&amp;</span><span class="n">args</span><span class="p">,</span> <span class="sc">&#39;h&#39;</span><span class="p">)</span> <span class="o">||</span> <span class="n">check_long_flag</span><span class="p">(</span><span class="o">&amp;</span><span class="n">args</span><span class="p">,</span> <span class="s">&quot;help&quot;</span><span class="p">))</span> <span class="p">{</span>
+  <span class="n">help</span><span class="p">();</span>
+<span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">check_flag</span><span class="p">(</span><span class="o">&amp;</span><span class="n">args</span><span class="p">,</span> <span class="sc">&#39;o&#39;</span><span class="p">)</span> <span class="o">||</span> <span class="n">check_long_flag</span><span class="p">(</span><span class="o">&amp;</span><span class="n">args</span><span class="p">,</span> <span class="s">&quot;output&quot;</span><span class="p">))</span> <span class="p">{</span>
+  <span class="n">output</span> <span class="o">=</span> <span class="n">get_flag_parameter</span><span class="p">(</span><span class="o">&amp;</span><span class="n">args</span><span class="p">,</span> <span class="sc">&#39;o&#39;</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">output</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">get_long_flag_parameter</span><span class="p">(</span><span class="o">&amp;</span><span class="n">args</span><span class="p">,</span> <span class="s">&quot;output&quot;</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">// Now you can do stuff with the output file name you got!</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="logging.html" class="btn btn-neutral float-right" title="Logging" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="charbuf.html" class="btn btn-neutral" title="Character Buffer" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2013-2016, Stephen Brennan.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,254 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage.info - src/log.c</title>
+  <link rel="stylesheet" type="text/css" href="../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../index.html">top level</a> - <a href="index.html">src</a> - log.c<span style="font-size: 80%;"> (source / <a href="log.c.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">70</td>
+            <td class="headerCovTableEntry">70</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2016-09-21 02:02:00</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">12</td>
+            <td class="headerCovTableEntry">12</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr><td><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /***************************************************************************//**</a>
+<span class="lineNum">       2 </span>            : 
+<span class="lineNum">       3 </span>            :   @file         log.c
+<span class="lineNum">       4 </span>            : 
+<span class="lineNum">       5 </span>            :   @author       Stephen Brennan
+<span class="lineNum">       6 </span>            : 
+<span class="lineNum">       7 </span>            :   @date         Created Sunday, 24 May 2015
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            :   @brief        Logging facilities implementation for libstephen.
+<span class="lineNum">      10 </span>            : 
+<span class="lineNum">      11 </span>            :   @copyright    Copyright (c) 2015-2016, Stephen Brennan.  Released under the
+<span class="lineNum">      12 </span>            :                 Revised BSD License.  See LICENSE.txt for details.
+<span class="lineNum">      13 </span>            : 
+<span class="lineNum">      14 </span>            : *******************************************************************************/
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            : #include &lt;stdio.h&gt;
+<span class="lineNum">      17 </span>            : #include &lt;stdarg.h&gt;
+<span class="lineNum">      18 </span>            : 
+<span class="lineNum">      19 </span>            : #include &quot;libstephen/cb.h&quot;
+<span class="lineNum">      20 </span>            : #include &quot;libstephen/log.h&quot;
+<span class="lineNum">      21 </span>            : 
+<span class="lineNum">      22 </span>            : /*
+<span class="lineNum">      23 </span>            :   This is the &quot;permanent&quot; default logger.  Even when you set your own default
+<span class="lineNum">      24 </span>            :   logger, this one still hangs around, waiting for you to call
+<span class="lineNum">      25 </span>            :   sl_set_default_logger(NULL).  It's declared here, but the default logger
+<span class="lineNum">      26 </span>            :   should go to standard out.  Unfortunately, you can't statically declare an
+<span class="lineNum">      27 </span>            :   instance of a struct that uses the variable stdout, so this is declared
+<span class="lineNum">      28 </span>            :   without any handlers, and the first time the default logger is referenced, the
+<span class="lineNum">      29 </span>            :   default log handler is added.
+<span class="lineNum">      30 </span>            :  */
+<span class="lineNum">      31 </span>            : static smb_logger default_logger = {
+<span class="lineNum">      32 </span>            :   .format = SMB_DEFAULT_LOGFORMAT,
+<span class="lineNum">      33 </span>            :   .num = 0
+<span class="lineNum">      34 </span>            : };
+<span class="lineNum">      35 </span>            : 
+<span class="lineNum">      36 </span>            : /*
+<span class="lineNum">      37 </span>            :   The only reason this pointer exists is so that reference_logger() knows
+<span class="lineNum">      38 </span>            :   whether or not the default logger has been set up yet.  This variable remains
+<span class="lineNum">      39 </span>            :   NULL until the first time the default logger is used, at which point the
+<span class="lineNum">      40 </span>            :   default handler is added to it, and then pdefault_logger is set to
+<span class="lineNum">      41 </span>            :   &amp;default_logger.
+<span class="lineNum">      42 </span>            :  */
+<span class="lineNum">      43 </span>            : static smb_logger *pdefault_logger = NULL;
+<span class="lineNum">      44 </span>            : 
+<span class="lineNum">      45 </span>            : static char *level_names[] = {&quot;NOTSET&quot;, &quot;DEBUG&quot;, &quot;INFO&quot;,
+<span class="lineNum">      46 </span>            :                               &quot;WARNING&quot;, &quot;ERROR&quot;, &quot;CRITICAL&quot;};
+<span class="lineNum">      47 </span>            : 
+<span class="lineNum">      48 </span>            : /*
+<span class="lineNum">      49 </span>            :   This function is used by most sl_ functions to initialize their `obj` pointer.
+<span class="lineNum">      50 </span>            :   Essentially, if obj=NULL, it replaces obj with a pointer to the default
+<a name="51"><span class="lineNum">      51 </span>            :   logger.  If the default logger hasn't been set up, it sets it up.</a>
+<span class="lineNum">      52 </span>            :  */
+<span class="lineNum">      53 </span><span class="lineCov">         37 : static void reference_logger(smb_logger **obj)</span>
+<span class="lineNum">      54 </span>            : {
+<span class="lineNum">      55 </span><span class="lineCov">         37 :   smb_status status = SMB_SUCCESS;</span>
+<span class="lineNum">      56 </span><span class="lineCov">         37 :   if (*obj == NULL) {</span>
+<span class="lineNum">      57 </span><span class="lineCov">         35 :     if (pdefault_logger == NULL) {</span>
+<span class="lineNum">      58 </span><span class="lineCov">          1 :       sl_add_handler(&amp;default_logger,</span>
+<span class="lineNum">      59 </span><span class="lineCov">          1 :                      (smb_loghandler){.level = SMB_DEFAULT_LOGLEVEL,</span>
+<span class="lineNum">      60 </span>            :                                       .dst   = SMB_DEFAULT_LOGDEST},
+<span class="lineNum">      61 </span>            :                      &amp;status);
+<span class="lineNum">      62 </span><span class="lineCov">          1 :       pdefault_logger = &amp;default_logger;</span>
+<span class="lineNum">      63 </span>            :     }
+<span class="lineNum">      64 </span><span class="lineCov">         35 :     *obj = pdefault_logger;</span>
+<span class="lineNum">      65 </span>            :   }
+<a name="66"><span class="lineNum">      66 </span><span class="lineCov">         37 : }</span></a>
+<span class="lineNum">      67 </span>            : 
+<span class="lineNum">      68 </span><span class="lineCov">          1 : void sl_init(smb_logger *obj)</span>
+<span class="lineNum">      69 </span>            : {
+<span class="lineNum">      70 </span><span class="lineCov">          1 :   obj-&gt;format = SMB_DEFAULT_LOGFORMAT;</span>
+<span class="lineNum">      71 </span><span class="lineCov">          1 :   obj-&gt;num = 0;</span>
+<a name="72"><span class="lineNum">      72 </span><span class="lineCov">          1 : }</span></a>
+<span class="lineNum">      73 </span>            : 
+<span class="lineNum">      74 </span><span class="lineCov">          1 : smb_logger *sl_create(void)</span>
+<span class="lineNum">      75 </span>            : {
+<span class="lineNum">      76 </span><span class="lineCov">          1 :   smb_logger *obj = smb_new(smb_logger, 1);</span>
+<span class="lineNum">      77 </span><span class="lineCov">          1 :   sl_init(obj);</span>
+<span class="lineNum">      78 </span><span class="lineCov">          1 :   return obj;</span>
+<a name="79"><span class="lineNum">      79 </span>            : }</a>
+<span class="lineNum">      80 </span>            : 
+<span class="lineNum">      81 </span><span class="lineCov">          1 : void sl_destroy(smb_logger *obj) {</span>
+<span class="lineNum">      82 </span>            :   (void)obj; // unused
+<span class="lineNum">      83 </span>            :   // nothing to delete
+<a name="84"><span class="lineNum">      84 </span><span class="lineCov">          1 : }</span></a>
+<span class="lineNum">      85 </span>            : 
+<span class="lineNum">      86 </span><span class="lineCov">          1 : void sl_delete(smb_logger *obj) {</span>
+<span class="lineNum">      87 </span><span class="lineCov">          1 :   sl_destroy(obj);</span>
+<span class="lineNum">      88 </span><span class="lineCov">          1 :   smb_free(obj);</span>
+<a name="89"><span class="lineNum">      89 </span><span class="lineCov">          1 : }</span></a>
+<span class="lineNum">      90 </span>            : 
+<span class="lineNum">      91 </span><span class="lineCov">          2 : void sl_set_level(smb_logger *obj, int level)</span>
+<span class="lineNum">      92 </span>            : {
+<span class="lineNum">      93 </span>            :   int i;
+<span class="lineNum">      94 </span><span class="lineCov">          2 :   reference_logger(&amp;obj);</span>
+<span class="lineNum">      95 </span><span class="lineCov">          8 :   for (i = 0; i &lt; obj-&gt;num; i++) {</span>
+<span class="lineNum">      96 </span><span class="lineCov">          6 :     obj-&gt;handlers[i].level = level;</span>
+<span class="lineNum">      97 </span>            :   }
+<a name="98"><span class="lineNum">      98 </span><span class="lineCov">          2 : }</span></a>
+<span class="lineNum">      99 </span>            : 
+<span class="lineNum">     100 </span><span class="lineCov">         18 : void sl_add_handler(smb_logger *obj, smb_loghandler h, smb_status *status)</span>
+<span class="lineNum">     101 </span>            : {
+<span class="lineNum">     102 </span><span class="lineCov">         18 :   reference_logger(&amp;obj);</span>
+<span class="lineNum">     103 </span><span class="lineCov">         18 :   if (obj-&gt;num &lt; SMB_MAX_LOGHANDLERS) {</span>
+<span class="lineNum">     104 </span><span class="lineCov">         17 :     obj-&gt;handlers[obj-&gt;num++] = h;</span>
+<span class="lineNum">     105 </span>            :   } else {
+<span class="lineNum">     106 </span><span class="lineCov">          1 :     *status = SMB_INDEX_ERROR;</span>
+<span class="lineNum">     107 </span>            :   }
+<a name="108"><span class="lineNum">     108 </span><span class="lineCov">         18 : }</span></a>
+<span class="lineNum">     109 </span>            : 
+<span class="lineNum">     110 </span><span class="lineCov">          3 : void sl_clear_handlers(smb_logger *obj)</span>
+<span class="lineNum">     111 </span>            : {
+<span class="lineNum">     112 </span><span class="lineCov">          3 :   reference_logger(&amp;obj);</span>
+<span class="lineNum">     113 </span><span class="lineCov">          3 :   obj-&gt;num = 0;</span>
+<a name="114"><span class="lineNum">     114 </span><span class="lineCov">          3 : }</span></a>
+<span class="lineNum">     115 </span>            : 
+<span class="lineNum">     116 </span><span class="lineCov">          2 : void sl_set_default_logger(smb_logger *obj)</span>
+<span class="lineNum">     117 </span>            : {
+<span class="lineNum">     118 </span><span class="lineCov">          2 :   if (obj == NULL)</span>
+<span class="lineNum">     119 </span><span class="lineCov">          1 :     obj = &amp;default_logger;</span>
+<span class="lineNum">     120 </span><span class="lineCov">          2 :   pdefault_logger = obj;</span>
+<span class="lineNum">     121 </span><span class="lineCov">          2 : }</span>
+<span class="lineNum">     122 </span>            : 
+<span class="lineNum">     123 </span>            : /*
+<span class="lineNum">     124 </span>            :   Returns a string representing a log level.  Very much not thread safe (but in
+<span class="lineNum">     125 </span>            :   reality, I don't think anything about this logger library is thread safe, so
+<a name="126"><span class="lineNum">     126 </span>            :   whatever ¯\_(ツ)_/¯ ).</a>
+<span class="lineNum">     127 </span>            :  */
+<span class="lineNum">     128 </span><span class="lineCov">          8 : static char *sl_level_string(int level) {</span>
+<span class="lineNum">     129 </span>            :   static char buf[20]; // plenty of space, to be safe.
+<span class="lineNum">     130 </span><span class="lineCov">          8 :   if (level % 10 == 0 &amp;&amp; level &gt;= LEVEL_NOTSET &amp;&amp; level &lt;= LEVEL_CRITICAL) {</span>
+<span class="lineNum">     131 </span><span class="lineCov">          7 :     return level_names[level / 10];</span>
+<span class="lineNum">     132 </span>            :   } else {
+<span class="lineNum">     133 </span><span class="lineCov">          1 :     snprintf(buf, 20, &quot;%d&quot;, level);</span>
+<span class="lineNum">     134 </span><span class="lineCov">          1 :     return buf;</span>
+<span class="lineNum">     135 </span>            :   }
+<a name="136"><span class="lineNum">     136 </span>            : }</a>
+<span class="lineNum">     137 </span>            : 
+<span class="lineNum">     138 </span><span class="lineCov">         14 : bool sl_will_log(smb_logger *obj, int level)</span>
+<span class="lineNum">     139 </span>            : {
+<span class="lineNum">     140 </span><span class="lineCov">         20 :   for (int i = 0; i &lt; obj-&gt;num; i++) {</span>
+<span class="lineNum">     141 </span><span class="lineCov">         14 :     if (obj-&gt;handlers[i].level &lt;= level) {</span>
+<span class="lineNum">     142 </span><span class="lineCov">          8 :       return true;</span>
+<span class="lineNum">     143 </span>            :     }
+<span class="lineNum">     144 </span>            :   }
+<span class="lineNum">     145 </span><span class="lineCov">          6 :   return false;</span>
+<a name="146"><span class="lineNum">     146 </span>            : }</a>
+<span class="lineNum">     147 </span>            : 
+<span class="lineNum">     148 </span><span class="lineCov">         14 : void sl_log(smb_logger *obj, char *file, int line, const char *function, int level, ...) {</span>
+<span class="lineNum">     149 </span>            :   cbuf file_line_buf, message_buf;
+<span class="lineNum">     150 </span>            :   char *level_string, *format;
+<span class="lineNum">     151 </span>            :   va_list va;
+<span class="lineNum">     152 </span>            :   int i;
+<span class="lineNum">     153 </span>            : 
+<span class="lineNum">     154 </span><span class="lineCov">         14 :   reference_logger(&amp;obj);</span>
+<span class="lineNum">     155 </span>            : 
+<span class="lineNum">     156 </span><span class="lineCov">         14 :   if (!sl_will_log(obj, level)) {</span>
+<span class="lineNum">     157 </span><span class="lineCov">         20 :     return; // early termination to prevent formatting if we can avoid it</span>
+<span class="lineNum">     158 </span>            :   }
+<span class="lineNum">     159 </span>            : 
+<span class="lineNum">     160 </span><span class="lineCov">          8 :   cb_init(&amp;file_line_buf, 256);</span>
+<span class="lineNum">     161 </span><span class="lineCov">          8 :   cb_printf(&amp;file_line_buf, &quot;%s:%d&quot;, file, line);</span>
+<span class="lineNum">     162 </span>            : 
+<span class="lineNum">     163 </span><span class="lineCov">          8 :   va_start(va, level);</span>
+<span class="lineNum">     164 </span><span class="lineCov">          8 :   format = va_arg(va, char*);</span>
+<span class="lineNum">     165 </span><span class="lineCov">          8 :   cb_init(&amp;message_buf, 1024);</span>
+<span class="lineNum">     166 </span><span class="lineCov">          8 :   cb_vprintf(&amp;message_buf, format, va);</span>
+<span class="lineNum">     167 </span><span class="lineCov">          8 :   va_end(va);</span>
+<span class="lineNum">     168 </span>            : 
+<span class="lineNum">     169 </span><span class="lineCov">          8 :   level_string = sl_level_string(level);</span>
+<span class="lineNum">     170 </span><span class="lineCov">         44 :   for (i = 0; i &lt; obj-&gt;num; i++) {</span>
+<span class="lineNum">     171 </span><span class="lineCov">         36 :     if (obj-&gt;handlers[i].level &lt;= level) {</span>
+<span class="lineNum">     172 </span><span class="lineCov">         26 :       fprintf(obj-&gt;handlers[i].dst, obj-&gt;format, file_line_buf.buf, function,</span>
+<span class="lineNum">     173 </span>            :               level_string, message_buf.buf);
+<span class="lineNum">     174 </span>            :     }
+<span class="lineNum">     175 </span>            :   }
+<span class="lineNum">     176 </span><span class="lineCov">          8 :   cb_destroy(&amp;file_line_buf);</span>
+<span class="lineNum">     177 </span><span class="lineCov">          8 :   cb_destroy(&amp;message_buf);</span>
+<span class="lineNum">     178 </span>            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.11</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

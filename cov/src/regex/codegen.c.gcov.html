@@ -1,0 +1,508 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage.info - src/regex/codegen.c</title>
+  <link rel="stylesheet" type="text/css" href="../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../index.html">top level</a> - <a href="index.html">src/regex</a> - codegen.c<span style="font-size: 80%;"> (source / <a href="codegen.c.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">190</td>
+            <td class="headerCovTableEntry">197</td>
+            <td class="headerCovTableEntryHi">96.4 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2016-09-21 02:02:00</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">12</td>
+            <td class="headerCovTableEntry">12</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /***************************************************************************//**</a>
+<span class="lineNum">       2 </span>            : 
+<span class="lineNum">       3 </span>            :   @file         codegen.c
+<span class="lineNum">       4 </span>            : 
+<span class="lineNum">       5 </span>            :   @author       Stephen Brennan
+<span class="lineNum">       6 </span>            : 
+<span class="lineNum">       7 </span>            :   @date         Created Saturday, 30 January 2016
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            :   @brief        Generating code from parse trees.
+<span class="lineNum">      10 </span>            : 
+<span class="lineNum">      11 </span>            :   @copyright    Copyright (c) 2016, Stephen Brennan.  Released under the Revised
+<span class="lineNum">      12 </span>            :                 BSD License.  See LICENSE.txt for details.
+<span class="lineNum">      13 </span>            : 
+<span class="lineNum">      14 </span>            :   Notes on how code generation works:
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            :   The difficult part of code generation is that you need to generate code with
+<span class="lineNum">      17 </span>            :   &quot;jump&quot; and &quot;split&quot; instructions that point to other instructions.  But since
+<span class="lineNum">      18 </span>            :   the jump and split targets are just (Instr*) pointers, and these frequently
+<span class="lineNum">      19 </span>            :   get moved around or freed during code generation, a naive implementation will
+<span class="lineNum">      20 </span>            :   end up with a bunch of dangling pointers.
+<span class="lineNum">      21 </span>            : 
+<span class="lineNum">      22 </span>            :   My solution to this issue is to use &quot;Fragments.&quot;  Fragments are stored in a
+<span class="lineNum">      23 </span>            :   singly linked list, and they contain an instruction along with an ID.  As code
+<span class="lineNum">      24 </span>            :   is generated, jump and split targets are stored using this ID rather than a
+<span class="lineNum">      25 </span>            :   raw pointer.  Once you have a final Fragment list that contains all of your
+<span class="lineNum">      26 </span>            :   code, it will be turned into an array, and all the IDs will be resolved
+<span class="lineNum">      27 </span>            :   efficiently to locations in the final array using a table.
+<span class="lineNum">      28 </span>            : 
+<span class="lineNum">      29 </span>            : *******************************************************************************/
+<span class="lineNum">      30 </span>            : 
+<span class="lineNum">      31 </span>            : #include &lt;stdio.h&gt;
+<span class="lineNum">      32 </span>            : #include &lt;assert.h&gt;
+<span class="lineNum">      33 </span>            : #include &lt;stdint.h&gt;
+<span class="lineNum">      34 </span>            : #include &lt;stdbool.h&gt;
+<span class="lineNum">      35 </span>            : #include &lt;string.h&gt;
+<span class="lineNum">      36 </span>            : 
+<span class="lineNum">      37 </span>            : #include &quot;libstephen/re.h&quot;
+<span class="lineNum">      38 </span>            : #include &quot;libstephen/re_internals.h&quot;
+<span class="lineNum">      39 </span>            : 
+<span class="lineNum">      40 </span>            : typedef struct Fragment Fragment;
+<span class="lineNum">      41 </span>            : struct Fragment {
+<span class="lineNum">      42 </span>            :   Instr in;
+<span class="lineNum">      43 </span>            :   intptr_t id;
+<span class="lineNum">      44 </span>            :   Fragment *next;
+<span class="lineNum">      45 </span>            : };
+<span class="lineNum">      46 </span>            : 
+<span class="lineNum">      47 </span>            : typedef struct State State;
+<span class="lineNum">      48 </span>            : struct State {
+<span class="lineNum">      49 </span>            :   intptr_t id; // &quot;global&quot; id counter
+<span class="lineNum">      50 </span>            :   size_t capture; // capture parentheses counter
+<a name="51"><span class="lineNum">      51 </span>            : };</a>
+<span class="lineNum">      52 </span>            : 
+<span class="lineNum">      53 </span><span class="lineCov">         41 : static Fragment *last(Fragment *f)</span>
+<span class="lineNum">      54 </span>            : {
+<span class="lineNum">      55 </span><span class="lineCov">        189 :   while (f-&gt;next) {</span>
+<span class="lineNum">      56 </span><span class="lineCov">        107 :     f = f-&gt;next;</span>
+<span class="lineNum">      57 </span>            :   }
+<span class="lineNum">      58 </span><span class="lineCov">         41 :   return f;</span>
+<span class="lineNum">      59 </span>            : }
+<span class="lineNum">      60 </span>            : 
+<span class="lineNum">      61 </span>            : /**
+<span class="lineNum">      62 </span>            :    @brief &quot;Join&quot; a fragment to the given ID.
+<span class="lineNum">      63 </span>            : 
+<span class="lineNum">      64 </span>            :    This replaces each &quot;match&quot; instruction with a &quot;jump&quot; instruction to the given
+<span class="lineNum">      65 </span>            :    ID.  Since it's assumed that the instruction with that ID will be placed
+<span class="lineNum">      66 </span>            :    after this one, if the last instruction of this fragment is a &quot;match&quot;, it
+<a name="67"><span class="lineNum">      67 </span>            :    will just be deleted.</a>
+<span class="lineNum">      68 </span>            :  */
+<span class="lineNum">      69 </span><span class="lineCov">         41 : static void join(Fragment *a, Fragment *b)</span>
+<span class="lineNum">      70 </span>            : {
+<span class="lineNum">      71 </span><span class="lineCov">         41 :   Fragment *prev = NULL;</span>
+<span class="lineNum">      72 </span><span class="lineCov">         41 :   Fragment *l = last(a);</span>
+<span class="lineNum">      73 </span>            :   Instr *lastid;
+<span class="lineNum">      74 </span>            : 
+<span class="lineNum">      75 </span>            :   // lastid will be set in case the last instruction is a Match, which will be
+<span class="lineNum">      76 </span>            :   // deleted later.
+<span class="lineNum">      77 </span><span class="lineCov">         41 :   if (l-&gt;in.code == Match) {</span>
+<span class="lineNum">      78 </span><span class="lineCov">         41 :     lastid = (Instr*) l-&gt;id;</span>
+<span class="lineNum">      79 </span>            :   } else {
+<span class="lineNum">      80 </span><span class="lineNoCov">          0 :     lastid = (Instr*) -1;</span>
+<span class="lineNum">      81 </span>            :   }
+<span class="lineNum">      82 </span>            : 
+<span class="lineNum">      83 </span><span class="lineCov">        189 :   while (a-&gt;next != NULL) {</span>
+<span class="lineNum">      84 </span>            :     // Matches should be replaced with jumps to the next fragment.
+<span class="lineNum">      85 </span><span class="lineCov">        107 :     if (a-&gt;in.code == Match) {</span>
+<span class="lineNum">      86 </span><span class="lineNoCov">          0 :       a-&gt;in.code = Jump;</span>
+<span class="lineNum">      87 </span><span class="lineNoCov">          0 :       a-&gt;in.x = (Instr*)b-&gt;id;</span>
+<span class="lineNum">      88 </span>            :     }
+<span class="lineNum">      89 </span>            :     // Jumps to the final match instruction should instead be targeted to the
+<span class="lineNum">      90 </span>            :     // next fragment.
+<span class="lineNum">      91 </span><span class="lineCov">        107 :     if ((a-&gt;in.code == Jump || a-&gt;in.code == Split) &amp;&amp; a-&gt;in.x == lastid) {</span>
+<span class="lineNum">      92 </span><span class="lineNoCov">          0 :       a-&gt;in.x = (Instr*) b-&gt;id;</span>
+<span class="lineNum">      93 </span>            :     }
+<span class="lineNum">      94 </span><span class="lineCov">        107 :     if (a-&gt;in.code == Split &amp;&amp; a-&gt;in.y == lastid) {</span>
+<span class="lineNum">      95 </span><span class="lineCov">          9 :       a-&gt;in.y = (Instr*) b-&gt;id;</span>
+<span class="lineNum">      96 </span>            :     }
+<span class="lineNum">      97 </span><span class="lineCov">        107 :     prev = a;</span>
+<span class="lineNum">      98 </span><span class="lineCov">        107 :     a = a-&gt;next;</span>
+<span class="lineNum">      99 </span>            :   }
+<span class="lineNum">     100 </span>            : 
+<span class="lineNum">     101 </span>            :   // If the last Instruction is a Match, delete it.
+<span class="lineNum">     102 </span><span class="lineCov">         41 :   if (prev != NULL &amp;&amp; a-&gt;in.code == Match) {</span>
+<span class="lineNum">     103 </span><span class="lineCov">         41 :     free(a);</span>
+<span class="lineNum">     104 </span><span class="lineCov">         41 :     prev-&gt;next = b;</span>
+<span class="lineNum">     105 </span>            :   }
+<a name="106"><span class="lineNum">     106 </span><span class="lineCov">         41 : }</span></a>
+<span class="lineNum">     107 </span>            : 
+<span class="lineNum">     108 </span><span class="lineCov">         37 : static size_t fraglen(Fragment *f)</span>
+<span class="lineNum">     109 </span>            : {
+<span class="lineNum">     110 </span><span class="lineCov">         37 :   size_t len = 0;</span>
+<span class="lineNum">     111 </span><span class="lineCov">        212 :   while (f) {</span>
+<span class="lineNum">     112 </span><span class="lineCov">        138 :     len++;</span>
+<span class="lineNum">     113 </span><span class="lineCov">        138 :     f = f-&gt;next;</span>
+<span class="lineNum">     114 </span>            :   }
+<span class="lineNum">     115 </span><span class="lineCov">         37 :   return len;</span>
+<a name="116"><span class="lineNum">     116 </span>            : }</a>
+<span class="lineNum">     117 </span>            : 
+<span class="lineNum">     118 </span><span class="lineCov">        179 : static Fragment *newfrag(enum code code, State *s)</span>
+<span class="lineNum">     119 </span>            : {
+<span class="lineNum">     120 </span><span class="lineCov">        179 :   Fragment *new = calloc(1, sizeof(Fragment));</span>
+<span class="lineNum">     121 </span><span class="lineCov">        179 :   new-&gt;in.code = code;</span>
+<span class="lineNum">     122 </span><span class="lineCov">        179 :   new-&gt;id = s-&gt;id++;</span>
+<span class="lineNum">     123 </span><span class="lineCov">        179 :   return new;</span>
+<a name="124"><span class="lineNum">     124 </span>            : }</a>
+<span class="lineNum">     125 </span>            : 
+<span class="lineNum">     126 </span><span class="lineCov">         37 : static void freefraglist(Fragment *f)</span>
+<span class="lineNum">     127 </span>            : {
+<span class="lineNum">     128 </span>            :   Fragment *next;
+<span class="lineNum">     129 </span><span class="lineCov">        212 :   while (f) {</span>
+<span class="lineNum">     130 </span><span class="lineCov">        138 :     next = f-&gt;next;</span>
+<span class="lineNum">     131 </span><span class="lineCov">        138 :     free(f);</span>
+<span class="lineNum">     132 </span><span class="lineCov">        138 :     f = next;</span>
+<span class="lineNum">     133 </span>            :   }
+<span class="lineNum">     134 </span><span class="lineCov">         37 : }</span>
+<span class="lineNum">     135 </span>            : 
+<span class="lineNum">     136 </span>            : static Fragment *regex(PTree *t, State *s);
+<span class="lineNum">     137 </span>            : static Fragment *term(PTree *t, State *s);
+<span class="lineNum">     138 </span>            : static Fragment *expr(PTree *t, State *s);
+<span class="lineNum">     139 </span>            : static Fragment *class(PTree *t, State *s, bool is_negative);
+<a name="140"><span class="lineNum">     140 </span>            : static Fragment *sub(PTree *t, State *s);</a>
+<span class="lineNum">     141 </span>            : 
+<span class="lineNum">     142 </span><span class="lineCov">          6 : static Fragment *special(char type, State *s)</span>
+<span class="lineNum">     143 </span>            : {
+<span class="lineNum">     144 </span>            :   Fragment *f;
+<span class="lineNum">     145 </span>            : 
+<span class="lineNum">     146 </span><span class="lineCov">          6 :   char whitespace[] = &quot;  \t\t\n\n\r\r\f\f\v\v&quot;;</span>
+<span class="lineNum">     147 </span><span class="lineCov">          6 :   char word[] = &quot;azAZ09__&quot;;</span>
+<span class="lineNum">     148 </span><span class="lineCov">          6 :   char number[] = &quot;09&quot;;</span>
+<span class="lineNum">     149 </span>            : 
+<span class="lineNum">     150 </span><span class="lineCov">          6 :   switch (type) {</span>
+<span class="lineNum">     151 </span>            :   case 's':
+<span class="lineNum">     152 </span>            :   case 'S':
+<span class="lineNum">     153 </span><span class="lineCov">          2 :     f = (type == 's') ? newfrag(Range, s) : newfrag(NRange, s);</span>
+<span class="lineNum">     154 </span><span class="lineCov">          2 :     f-&gt;in.s = nelem(whitespace) / 2;</span>
+<span class="lineNum">     155 </span><span class="lineCov">          2 :     f-&gt;in.x = calloc(nelem(whitespace), sizeof(char));</span>
+<span class="lineNum">     156 </span><span class="lineCov">          2 :     memcpy(f-&gt;in.x, whitespace, nelem(whitespace));</span>
+<span class="lineNum">     157 </span><span class="lineCov">          2 :     break;</span>
+<span class="lineNum">     158 </span>            :   case 'w':
+<span class="lineNum">     159 </span>            :   case 'W':
+<span class="lineNum">     160 </span><span class="lineCov">          2 :     f = (type == 'w') ? newfrag(Range, s) : newfrag(NRange, s);</span>
+<span class="lineNum">     161 </span><span class="lineCov">          2 :     f-&gt;in.s = nelem(word) / 2;</span>
+<span class="lineNum">     162 </span><span class="lineCov">          2 :     f-&gt;in.x = calloc(nelem(word), sizeof(char));</span>
+<span class="lineNum">     163 </span><span class="lineCov">          2 :     memcpy(f-&gt;in.x, word, nelem(word));</span>
+<span class="lineNum">     164 </span><span class="lineCov">          2 :     break;</span>
+<span class="lineNum">     165 </span>            :   case 'd':
+<span class="lineNum">     166 </span>            :   case 'D':
+<span class="lineNum">     167 </span><span class="lineCov">          2 :     f = (type == 'd') ? newfrag(Range, s) : newfrag(NRange, s);</span>
+<span class="lineNum">     168 </span><span class="lineCov">          2 :     f-&gt;in.s = nelem(number) / 2;</span>
+<span class="lineNum">     169 </span><span class="lineCov">          2 :     f-&gt;in.x = calloc(nelem(number), sizeof(char));</span>
+<span class="lineNum">     170 </span><span class="lineCov">          2 :     memcpy(f-&gt;in.x, number, nelem(number));</span>
+<span class="lineNum">     171 </span><span class="lineCov">          2 :     break;</span>
+<span class="lineNum">     172 </span>            :   default:
+<span class="lineNum">     173 </span><span class="lineNoCov">          0 :     fprintf(stderr, &quot;not implemented: special character class '%c'\n&quot;, type);</span>
+<span class="lineNum">     174 </span><span class="lineNoCov">          0 :     exit(EXIT_FAILURE);</span>
+<span class="lineNum">     175 </span>            :     break;
+<span class="lineNum">     176 </span>            :   }
+<span class="lineNum">     177 </span>            : 
+<span class="lineNum">     178 </span><span class="lineCov">          6 :   f-&gt;next = newfrag(Match, s);</span>
+<span class="lineNum">     179 </span><span class="lineCov">          6 :   return f;</span>
+<a name="180"><span class="lineNum">     180 </span>            : }</a>
+<span class="lineNum">     181 </span>            : 
+<span class="lineNum">     182 </span><span class="lineCov">         55 : static Fragment *term(PTree *t, State *s)</span>
+<span class="lineNum">     183 </span>            : {
+<span class="lineNum">     184 </span><span class="lineCov">         55 :   Fragment *f = NULL;</span>
+<span class="lineNum">     185 </span>            : 
+<span class="lineNum">     186 </span><span class="lineCov">         55 :   assert(t-&gt;nt == TERMnt);</span>
+<span class="lineNum">     187 </span>            : 
+<span class="lineNum">     188 </span><span class="lineCov">         55 :   if (t-&gt;production == 1) {</span>
+<span class="lineNum">     189 </span><span class="lineCov">         42 :     if (t-&gt;children[0]-&gt;tok.sym == CharSym || t-&gt;children[0]-&gt;tok.sym == Caret</span>
+<span class="lineNum">     190 </span><span class="lineCov">          9 :         || t-&gt;children[0]-&gt;tok.sym == Minus) {</span>
+<span class="lineNum">     191 </span>            :       // Character
+<span class="lineNum">     192 </span><span class="lineCov">         33 :       f = newfrag(Char, s);</span>
+<span class="lineNum">     193 </span><span class="lineCov">         33 :       f-&gt;in.c = t-&gt;children[0]-&gt;tok.c;</span>
+<span class="lineNum">     194 </span><span class="lineCov">         33 :       f-&gt;next = newfrag(Match, s);</span>
+<span class="lineNum">     195 </span><span class="lineCov">          9 :     } else if (t-&gt;children[0]-&gt;tok.sym == Dot) {</span>
+<span class="lineNum">     196 </span>            :       // Dot
+<span class="lineNum">     197 </span><span class="lineCov">          3 :       f = newfrag(Any, s);</span>
+<span class="lineNum">     198 </span><span class="lineCov">          3 :       f-&gt;next = newfrag(Match, s);</span>
+<span class="lineNum">     199 </span><span class="lineCov">          6 :     } else if (t-&gt;children[0]-&gt;tok.sym == Special) {</span>
+<span class="lineNum">     200 </span>            :       // Special
+<span class="lineNum">     201 </span><span class="lineCov">          6 :       f = special(t-&gt;children[0]-&gt;tok.c, s);</span>
+<span class="lineNum">     202 </span>            :     }
+<span class="lineNum">     203 </span><span class="lineCov">         13 :   } else if (t-&gt;production == 2) {</span>
+<span class="lineNum">     204 </span>            :     // Parenthesized expression
+<span class="lineNum">     205 </span><span class="lineCov">          7 :     f = newfrag(Save, s);</span>
+<span class="lineNum">     206 </span><span class="lineCov">          7 :     f-&gt;in.s = s-&gt;capture++;</span>
+<span class="lineNum">     207 </span><span class="lineCov">          7 :     size_t nextsave = s-&gt;capture++;</span>
+<span class="lineNum">     208 </span><span class="lineCov">          7 :     f-&gt;next = regex(t-&gt;children[1], s);</span>
+<span class="lineNum">     209 </span><span class="lineCov">          7 :     Fragment *n = newfrag(Save, s);</span>
+<span class="lineNum">     210 </span><span class="lineCov">          7 :     n-&gt;in.s = nextsave;</span>
+<span class="lineNum">     211 </span><span class="lineCov">          7 :     n-&gt;next = newfrag(Match, s);</span>
+<span class="lineNum">     212 </span><span class="lineCov">          7 :     join(f, n);</span>
+<span class="lineNum">     213 </span>            :   } else {
+<span class="lineNum">     214 </span>            :     // Character class
+<span class="lineNum">     215 </span><span class="lineCov">          6 :     f = class(t-&gt;children[1], s, (t-&gt;production == 4));</span>
+<span class="lineNum">     216 </span>            :   }
+<span class="lineNum">     217 </span><span class="lineCov">         55 :   return f;</span>
+<a name="218"><span class="lineNum">     218 </span>            : }</a>
+<span class="lineNum">     219 </span>            : 
+<span class="lineNum">     220 </span><span class="lineCov">         55 : static Fragment *expr(PTree *t, State *s)</span>
+<span class="lineNum">     221 </span>            : {
+<span class="lineNum">     222 </span><span class="lineCov">         55 :   Fragment *f = NULL, *a = NULL, *b = NULL, *c = NULL;</span>
+<span class="lineNum">     223 </span>            : 
+<span class="lineNum">     224 </span><span class="lineCov">         55 :   assert(t-&gt;nt == EXPRnt);</span>
+<span class="lineNum">     225 </span>            : 
+<span class="lineNum">     226 </span><span class="lineCov">         55 :   f = term(t-&gt;children[0], s);</span>
+<span class="lineNum">     227 </span><span class="lineCov">         55 :   if (t-&gt;nchildren == 1) {</span>
+<span class="lineNum">     228 </span><span class="lineCov">         33 :     return f;</span>
+<span class="lineNum">     229 </span>            :   } else {
+<span class="lineNum">     230 </span><span class="lineCov">         22 :     if (t-&gt;children[1]-&gt;tok.sym == Star) {</span>
+<span class="lineNum">     231 </span>            :       /*
+<span class="lineNum">     232 </span>            :         L1:
+<span class="lineNum">     233 </span>            :             split L2 L3   ;; this is &quot;a&quot;  [ non-greedy: split L3 L2 ]
+<span class="lineNum">     234 </span>            :         L2:
+<span class="lineNum">     235 </span>            :             BLOCK from f
+<span class="lineNum">     236 </span>            :             jump L1       ;; this is &quot;b&quot;
+<span class="lineNum">     237 </span>            :         L3:
+<span class="lineNum">     238 </span>            :             match         ;; this is &quot;c&quot;
+<span class="lineNum">     239 </span>            :        */
+<span class="lineNum">     240 </span><span class="lineCov">         15 :       a = newfrag(Split, s);</span>
+<span class="lineNum">     241 </span><span class="lineCov">         15 :       b = newfrag(Jump, s);</span>
+<span class="lineNum">     242 </span><span class="lineCov">         15 :       c = newfrag(Match, s);</span>
+<span class="lineNum">     243 </span><span class="lineCov">         15 :       if (t-&gt;nchildren == 3) {</span>
+<span class="lineNum">     244 </span>            :         // Non-greedy
+<span class="lineNum">     245 </span><span class="lineCov">          1 :         a-&gt;in.x = (Instr*) c-&gt;id;</span>
+<span class="lineNum">     246 </span><span class="lineCov">          1 :         a-&gt;in.y = (Instr*) f-&gt;id;</span>
+<span class="lineNum">     247 </span>            :       } else {
+<span class="lineNum">     248 </span>            :         // Greedy
+<span class="lineNum">     249 </span><span class="lineCov">         14 :         a-&gt;in.x = (Instr*) f-&gt;id;</span>
+<span class="lineNum">     250 </span><span class="lineCov">         14 :         a-&gt;in.y = (Instr*) c-&gt;id;</span>
+<span class="lineNum">     251 </span>            :       }
+<span class="lineNum">     252 </span><span class="lineCov">         15 :       b-&gt;in.x = (Instr*) a-&gt;id;</span>
+<span class="lineNum">     253 </span><span class="lineCov">         15 :       a-&gt;next = f;</span>
+<span class="lineNum">     254 </span><span class="lineCov">         15 :       b-&gt;next = c;</span>
+<span class="lineNum">     255 </span><span class="lineCov">         15 :       join(a, b);</span>
+<span class="lineNum">     256 </span><span class="lineCov">         15 :       return a;</span>
+<span class="lineNum">     257 </span><span class="lineCov">          7 :     } else if (t-&gt;children[1]-&gt;tok.sym == Plus) {</span>
+<span class="lineNum">     258 </span>            :       /*
+<span class="lineNum">     259 </span>            :         L1:
+<span class="lineNum">     260 </span>            :             BLOCK from f
+<span class="lineNum">     261 </span>            :             split L1 L2   ;; this is &quot;a&quot;  [ non-greedy: split L2 L1 ]
+<span class="lineNum">     262 </span>            :         L2:
+<span class="lineNum">     263 </span>            :             match         ;; this is &quot;b&quot;
+<span class="lineNum">     264 </span>            :        */
+<span class="lineNum">     265 </span><span class="lineCov">          5 :       a = newfrag(Split, s);</span>
+<span class="lineNum">     266 </span><span class="lineCov">          5 :       b = newfrag(Match, s);</span>
+<span class="lineNum">     267 </span><span class="lineCov">          5 :       if (t-&gt;nchildren == 3) {</span>
+<span class="lineNum">     268 </span>            :         // Non-greedy
+<span class="lineNum">     269 </span><span class="lineCov">          1 :         a-&gt;in.x = (Instr*) b-&gt;id;</span>
+<span class="lineNum">     270 </span><span class="lineCov">          1 :         a-&gt;in.y = (Instr*) f-&gt;id;</span>
+<span class="lineNum">     271 </span>            :       } else {
+<span class="lineNum">     272 </span>            :         // Greedy
+<span class="lineNum">     273 </span><span class="lineCov">          4 :         a-&gt;in.x = (Instr*) f-&gt;id;</span>
+<span class="lineNum">     274 </span><span class="lineCov">          4 :         a-&gt;in.y = (Instr*) b-&gt;id;</span>
+<span class="lineNum">     275 </span>            :       }
+<span class="lineNum">     276 </span><span class="lineCov">          5 :       join(f, a);</span>
+<span class="lineNum">     277 </span><span class="lineCov">          5 :       a-&gt;next = b;</span>
+<span class="lineNum">     278 </span><span class="lineCov">          5 :       return f;</span>
+<span class="lineNum">     279 </span><span class="lineCov">          2 :     } else if (t-&gt;children[1]-&gt;tok.sym == Question) {</span>
+<span class="lineNum">     280 </span>            :       /*
+<span class="lineNum">     281 </span>            :             split L1 L2   ;; this is &quot;a&quot;  [ non-greedy: split L2 L1 ]
+<span class="lineNum">     282 </span>            :         L1:
+<span class="lineNum">     283 </span>            :             BLOCK from f
+<span class="lineNum">     284 </span>            :         L2:
+<span class="lineNum">     285 </span>            :             match         ;; this is &quot;b&quot;
+<span class="lineNum">     286 </span>            :        */
+<span class="lineNum">     287 </span><span class="lineCov">          2 :       a = newfrag(Split, s);</span>
+<span class="lineNum">     288 </span><span class="lineCov">          2 :       b = newfrag(Match, s);</span>
+<span class="lineNum">     289 </span><span class="lineCov">          2 :       if (t-&gt;nchildren == 3) {</span>
+<span class="lineNum">     290 </span>            :         // Non-greedy
+<span class="lineNum">     291 </span><span class="lineCov">          1 :         a-&gt;in.x = (Instr*) b-&gt;id;</span>
+<span class="lineNum">     292 </span><span class="lineCov">          1 :         a-&gt;in.y = (Instr*) f-&gt;id;</span>
+<span class="lineNum">     293 </span>            :       } else {
+<span class="lineNum">     294 </span>            :         // Greedy
+<span class="lineNum">     295 </span><span class="lineCov">          1 :         a-&gt;in.x = (Instr*) f-&gt;id;</span>
+<span class="lineNum">     296 </span><span class="lineCov">          1 :         a-&gt;in.y = (Instr*) b-&gt;id;</span>
+<span class="lineNum">     297 </span>            :       }
+<span class="lineNum">     298 </span><span class="lineCov">          2 :       a-&gt;next = f;</span>
+<span class="lineNum">     299 </span><span class="lineCov">          2 :       join(f, b);</span>
+<span class="lineNum">     300 </span><span class="lineCov">          2 :       return a;</span>
+<span class="lineNum">     301 </span>            :     } else {
+<span class="lineNum">     302 </span><span class="lineNoCov">          0 :       assert(false);</span>
+<span class="lineNum">     303 </span>            :     }
+<span class="lineNum">     304 </span>            :   }
+<a name="305"><span class="lineNum">     305 </span>            : }</a>
+<span class="lineNum">     306 </span>            : 
+<span class="lineNum">     307 </span><span class="lineCov">         55 : static Fragment *sub(PTree *tree, State *state)</span>
+<span class="lineNum">     308 </span>            : {
+<span class="lineNum">     309 </span><span class="lineCov">         55 :   assert(tree-&gt;nt == SUBnt);</span>
+<span class="lineNum">     310 </span><span class="lineCov">         55 :   Fragment *e = expr(tree-&gt;children[0], state);</span>
+<span class="lineNum">     311 </span><span class="lineCov">         55 :   if (tree-&gt;nchildren == 2) {</span>
+<span class="lineNum">     312 </span>            :     /*
+<span class="lineNum">     313 </span>            :       BLOCK from e
+<span class="lineNum">     314 </span>            :       BLOCK from s
+<span class="lineNum">     315 </span>            :      */
+<span class="lineNum">     316 </span><span class="lineCov">         10 :     Fragment *s = sub(tree-&gt;children[1], state);</span>
+<span class="lineNum">     317 </span><span class="lineCov">         10 :     join(e, s);</span>
+<span class="lineNum">     318 </span>            :   }
+<span class="lineNum">     319 </span><span class="lineCov">         55 :   return e;</span>
+<a name="320"><span class="lineNum">     320 </span>            : }</a>
+<span class="lineNum">     321 </span>            : 
+<span class="lineNum">     322 </span><span class="lineCov">         45 : static Fragment *regex(PTree *tree, State *state)</span>
+<span class="lineNum">     323 </span>            : {
+<span class="lineNum">     324 </span><span class="lineCov">         45 :   assert(tree-&gt;nt == REGEXnt);</span>
+<span class="lineNum">     325 </span><span class="lineCov">         45 :   Fragment *s = sub(tree-&gt;children[0], state);</span>
+<span class="lineNum">     326 </span><span class="lineCov">         45 :   if (tree-&gt;nchildren == 3) {</span>
+<span class="lineNum">     327 </span>            :     /*
+<span class="lineNum">     328 </span>            :           split L1 L2     ;; this is &quot;pre&quot;
+<span class="lineNum">     329 </span>            :       L1:
+<span class="lineNum">     330 </span>            :           BLOCK from s
+<span class="lineNum">     331 </span>            :           jump L3         ;; this is &quot;j&quot;
+<span class="lineNum">     332 </span>            :       L2:
+<span class="lineNum">     333 </span>            :           BLOCK from r
+<span class="lineNum">     334 </span>            :       L3:
+<span class="lineNum">     335 </span>            :           match           ;; this is &quot;m&quot;
+<span class="lineNum">     336 </span>            :      */
+<span class="lineNum">     337 </span>            : 
+<span class="lineNum">     338 </span><span class="lineCov">          1 :     Fragment *r = regex(tree-&gt;children[2], state);</span>
+<span class="lineNum">     339 </span>            : 
+<span class="lineNum">     340 </span><span class="lineCov">          1 :     Fragment *pre = newfrag(Split, state);</span>
+<span class="lineNum">     341 </span><span class="lineCov">          1 :     pre-&gt;in.x = (Instr*) s-&gt;id;</span>
+<span class="lineNum">     342 </span><span class="lineCov">          1 :     pre-&gt;in.y = (Instr*) r-&gt;id;</span>
+<span class="lineNum">     343 </span><span class="lineCov">          1 :     pre-&gt;next = s;</span>
+<span class="lineNum">     344 </span>            : 
+<span class="lineNum">     345 </span><span class="lineCov">          1 :     Fragment *m = newfrag(Match, state);</span>
+<span class="lineNum">     346 </span><span class="lineCov">          1 :     Fragment *j = newfrag(Jump, state);</span>
+<span class="lineNum">     347 </span><span class="lineCov">          1 :     j-&gt;in.x = (Instr*) m-&gt;id;</span>
+<span class="lineNum">     348 </span><span class="lineCov">          1 :     j-&gt;next = r;</span>
+<span class="lineNum">     349 </span><span class="lineCov">          1 :     join(j, m);</span>
+<span class="lineNum">     350 </span><span class="lineCov">          1 :     join(pre, j);</span>
+<span class="lineNum">     351 </span>            : 
+<span class="lineNum">     352 </span><span class="lineCov">          1 :     return pre;</span>
+<span class="lineNum">     353 </span>            :   }
+<span class="lineNum">     354 </span><span class="lineCov">         44 :   return s;</span>
+<a name="355"><span class="lineNum">     355 </span>            : }</a>
+<span class="lineNum">     356 </span>            : 
+<span class="lineNum">     357 </span><span class="lineCov">          6 : static Fragment *class(PTree *tree, State *state, bool is_negative)</span>
+<span class="lineNum">     358 </span>            : {
+<span class="lineNum">     359 </span><span class="lineCov">          6 :   size_t nranges = 0;</span>
+<span class="lineNum">     360 </span>            :   PTree *curr;
+<span class="lineNum">     361 </span>            :   Fragment *f;
+<span class="lineNum">     362 </span>            : 
+<span class="lineNum">     363 </span><span class="lineCov">         26 :   for (curr = tree; curr-&gt;nt == CLASSnt; curr = curr-&gt;children[curr-&gt;nchildren-1]) {</span>
+<span class="lineNum">     364 </span><span class="lineCov">         20 :     nranges++;</span>
+<span class="lineNum">     365 </span>            :   }
+<span class="lineNum">     366 </span>            : 
+<span class="lineNum">     367 </span><span class="lineCov">          6 :   if (is_negative) {</span>
+<span class="lineNum">     368 </span><span class="lineCov">          3 :     f = newfrag(NRange, state);</span>
+<span class="lineNum">     369 </span>            :   } else {
+<span class="lineNum">     370 </span><span class="lineCov">          3 :     f = newfrag(Range, state);</span>
+<span class="lineNum">     371 </span>            :   }
+<span class="lineNum">     372 </span>            : 
+<span class="lineNum">     373 </span><span class="lineCov">          6 :   f-&gt;in.s = nranges;</span>
+<span class="lineNum">     374 </span><span class="lineCov">          6 :   f-&gt;in.x = calloc(nranges*2, sizeof(char));</span>
+<span class="lineNum">     375 </span><span class="lineCov">          6 :   char *block = (char*)f-&gt;in.x;</span>
+<span class="lineNum">     376 </span>            : 
+<span class="lineNum">     377 </span><span class="lineCov">          6 :   curr = tree;</span>
+<span class="lineNum">     378 </span><span class="lineCov">          6 :   nranges = 0;</span>
+<span class="lineNum">     379 </span><span class="lineCov">         32 :   while (curr-&gt;nt == CLASSnt) {</span>
+<span class="lineNum">     380 </span><span class="lineCov">         20 :     if (curr-&gt;production == 1 || curr-&gt;production == 2) {</span>
+<span class="lineNum">     381 </span>            :       // Range
+<span class="lineNum">     382 </span><span class="lineCov">          7 :       block[2*nranges] = curr-&gt;children[0]-&gt;tok.c;</span>
+<span class="lineNum">     383 </span><span class="lineCov">          7 :       block[2*nranges+1] = curr-&gt;children[1]-&gt;tok.c;</span>
+<span class="lineNum">     384 </span>            :     } else {
+<span class="lineNum">     385 </span>            :       // Single
+<span class="lineNum">     386 </span><span class="lineCov">         13 :       block[2*nranges] = curr-&gt;children[0]-&gt;tok.c;</span>
+<span class="lineNum">     387 </span><span class="lineCov">         13 :       block[2*nranges+1] = curr-&gt;children[0]-&gt;tok.c;</span>
+<span class="lineNum">     388 </span>            :     }
+<span class="lineNum">     389 </span><span class="lineCov">         20 :     curr = curr-&gt;children[curr-&gt;nchildren-1];</span>
+<span class="lineNum">     390 </span><span class="lineCov">         20 :     nranges++;</span>
+<span class="lineNum">     391 </span>            :   }
+<span class="lineNum">     392 </span>            : 
+<span class="lineNum">     393 </span><span class="lineCov">          6 :   f-&gt;next = newfrag(Match, state);</span>
+<span class="lineNum">     394 </span><span class="lineCov">          6 :   return f;</span>
+<a name="395"><span class="lineNum">     395 </span>            : }</a>
+<span class="lineNum">     396 </span>            : 
+<span class="lineNum">     397 </span><span class="lineCov">         37 : Regex codegen(PTree *tree)</span>
+<span class="lineNum">     398 </span>            : {
+<span class="lineNum">     399 </span>            :   // Generate code.
+<span class="lineNum">     400 </span><span class="lineCov">         37 :   State s = {0, 0};</span>
+<span class="lineNum">     401 </span><span class="lineCov">         37 :   Fragment *f = regex(tree, &amp;s);</span>
+<span class="lineNum">     402 </span>            :   size_t n;
+<span class="lineNum">     403 </span>            : 
+<span class="lineNum">     404 </span>            :   // Get the length of the code
+<span class="lineNum">     405 </span><span class="lineCov">         37 :   n = fraglen(f);</span>
+<span class="lineNum">     406 </span>            : 
+<span class="lineNum">     407 </span>            :   // Allocate buffers for the code, and for a lookup table of targets for jumps.
+<span class="lineNum">     408 </span><span class="lineCov">         37 :   Instr *code = calloc(n, sizeof(Instr));</span>
+<span class="lineNum">     409 </span><span class="lineCov">         37 :   size_t *targets = calloc(s.id, sizeof(size_t));</span>
+<span class="lineNum">     410 </span>            : 
+<span class="lineNum">     411 </span>            :   // Fill up the lookup table.
+<span class="lineNum">     412 </span><span class="lineCov">         37 :   size_t i = 0;</span>
+<span class="lineNum">     413 </span>            :   Fragment *curr;
+<span class="lineNum">     414 </span><span class="lineCov">        175 :   for (curr = f; curr; curr = curr-&gt;next, i++) {</span>
+<span class="lineNum">     415 </span><span class="lineCov">        138 :     targets[curr-&gt;id] = i;</span>
+<span class="lineNum">     416 </span>            :   }
+<span class="lineNum">     417 </span>            : 
+<span class="lineNum">     418 </span>            :   // Now, copy in the Instructions, replacing the jump targets from the table.
+<span class="lineNum">     419 </span><span class="lineCov">        175 :   for (curr = f, i = 0; curr; curr = curr-&gt;next, i++) {</span>
+<span class="lineNum">     420 </span><span class="lineCov">        138 :     code[i] = curr-&gt;in;</span>
+<span class="lineNum">     421 </span><span class="lineCov">        138 :     if (code[i].code == Jump || code[i].code == Split) {</span>
+<span class="lineNum">     422 </span><span class="lineCov">         39 :       code[i].x = code + targets[(intptr_t)code[i].x];</span>
+<span class="lineNum">     423 </span>            :     }
+<span class="lineNum">     424 </span><span class="lineCov">        138 :     if (code[i].code == Split) {</span>
+<span class="lineNum">     425 </span><span class="lineCov">         23 :       code[i].y = code + targets[(intptr_t)code[i].y];</span>
+<span class="lineNum">     426 </span>            :     }
+<span class="lineNum">     427 </span>            :   }
+<span class="lineNum">     428 </span>            : 
+<span class="lineNum">     429 </span><span class="lineCov">         37 :   free(targets);</span>
+<span class="lineNum">     430 </span><span class="lineCov">         37 :   freefraglist(f);</span>
+<span class="lineNum">     431 </span><span class="lineCov">         37 :   return (Regex){.n=n, .i=code};</span>
+<span class="lineNum">     432 </span>            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.11</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

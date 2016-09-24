@@ -1,0 +1,320 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage.info - src/fsm/datastructs.c</title>
+  <link rel="stylesheet" type="text/css" href="../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../index.html">top level</a> - <a href="index.html">src/fsm</a> - datastructs.c<span style="font-size: 80%;"> (source / <a href="datastructs.c.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">124</td>
+            <td class="headerCovTableEntry">124</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2016-03-11 22:05:55</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">20</td>
+            <td class="headerCovTableEntry">20</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /***************************************************************************//**</a>
+<span class="lineNum">       2 </span>            : 
+<span class="lineNum">       3 </span>            :   @file         fsm/datastructs.c
+<span class="lineNum">       4 </span>            : 
+<span class="lineNum">       5 </span>            :   @author       Stephen Brennan
+<span class="lineNum">       6 </span>            : 
+<span class="lineNum">       7 </span>            :   @date         Created Saturday, 26 July 2014
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            :   @brief        Data structure function declarations for FSMs.
+<span class="lineNum">      10 </span>            : 
+<span class="lineNum">      11 </span>            :   @copyright    Copyright (c) 2015, Stephen Brennan.  Released under the Revised
+<span class="lineNum">      12 </span>            :                 BSD License.  See the LICENSE.txt file for details.
+<span class="lineNum">      13 </span>            : 
+<span class="lineNum">      14 </span>            : *******************************************************************************/
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            : #include &lt;stdlib.h&gt;     // free
+<span class="lineNum">      17 </span>            : #include &lt;assert.h&gt;     // assert()
+<span class="lineNum">      18 </span>            : 
+<span class="lineNum">      19 </span>            : #include &quot;libstephen/fsm.h&quot;
+<span class="lineNum">      20 </span>            : #include &quot;libstephen/al.h&quot;
+<span class="lineNum">      21 </span>            : #include &quot;libstephen/log.h&quot;
+<span class="lineNum">      22 </span>            : 
+<span class="lineNum">      23 </span>            : ////////////////////////////////////////////////////////////////////////////////
+<span class="lineNum">      24 </span>            : // fsm_trans Fundamental Functions
+<a name="25"><span class="lineNum">      25 </span>            : ////////////////////////////////////////////////////////////////////////////////</a>
+<span class="lineNum">      26 </span>            : 
+<span class="lineNum">      27 </span><span class="lineCov">        587 : void fsm_trans_init(fsm_trans *ft, int n, unsigned int flags, int dest)</span>
+<span class="lineNum">      28 </span>            : {
+<span class="lineNum">      29 </span>            :   int i;
+<span class="lineNum">      30 </span><span class="lineCov">        587 :   ft-&gt;flags = flags;</span>
+<span class="lineNum">      31 </span>            : 
+<span class="lineNum">      32 </span>            :   // Allocate space for the range plus null terminator
+<span class="lineNum">      33 </span><span class="lineCov">        587 :   ft-&gt;start = smb_new(wchar_t, n + 1);</span>
+<span class="lineNum">      34 </span><span class="lineCov">        587 :   ft-&gt;end = smb_new(wchar_t, n + 1);</span>
+<span class="lineNum">      35 </span>            : 
+<span class="lineNum">      36 </span><span class="lineCov">       1320 :   for (i = 0; i &lt; n; i++) {</span>
+<span class="lineNum">      37 </span><span class="lineCov">        733 :     ft-&gt;start[i] = WEOF;</span>
+<span class="lineNum">      38 </span><span class="lineCov">        733 :     ft-&gt;end[i] = WEOF;</span>
+<span class="lineNum">      39 </span>            :   }
+<span class="lineNum">      40 </span><span class="lineCov">        587 :   ft-&gt;start[n] = L'\0';</span>
+<span class="lineNum">      41 </span><span class="lineCov">        587 :   ft-&gt;end[n] = L'\0';</span>
+<span class="lineNum">      42 </span>            : 
+<span class="lineNum">      43 </span><span class="lineCov">        587 :   ft-&gt;dest = dest;</span>
+<a name="44"><span class="lineNum">      44 </span><span class="lineCov">        587 : }</span></a>
+<span class="lineNum">      45 </span>            : 
+<span class="lineNum">      46 </span><span class="lineCov">        585 : fsm_trans *fsm_trans_create(int n, unsigned int flags, int dest)</span>
+<span class="lineNum">      47 </span>            : {
+<span class="lineNum">      48 </span><span class="lineCov">        585 :   fsm_trans *ft = smb_new(fsm_trans, 1);</span>
+<span class="lineNum">      49 </span><span class="lineCov">        585 :   fsm_trans_init(ft, n, flags, dest);</span>
+<span class="lineNum">      50 </span><span class="lineCov">        585 :   return ft;</span>
+<a name="51"><span class="lineNum">      51 </span>            : }</a>
+<span class="lineNum">      52 </span>            : 
+<span class="lineNum">      53 </span><span class="lineCov">        587 : void fsm_trans_destroy(fsm_trans *ft)</span>
+<span class="lineNum">      54 </span>            : {
+<span class="lineNum">      55 </span><span class="lineCov">        587 :   smb_free(ft-&gt;start);</span>
+<span class="lineNum">      56 </span><span class="lineCov">        587 :   smb_free(ft-&gt;end);</span>
+<a name="57"><span class="lineNum">      57 </span><span class="lineCov">        587 : }</span></a>
+<span class="lineNum">      58 </span>            : 
+<span class="lineNum">      59 </span><span class="lineCov">        585 : void fsm_trans_delete(fsm_trans *ft)</span>
+<span class="lineNum">      60 </span>            : {
+<span class="lineNum">      61 </span><span class="lineCov">        585 :   fsm_trans_destroy(ft);</span>
+<span class="lineNum">      62 </span><span class="lineCov">        585 :   smb_free(ft);</span>
+<span class="lineNum">      63 </span><span class="lineCov">        585 : }</span>
+<span class="lineNum">      64 </span>            : 
+<span class="lineNum">      65 </span>            : ////////////////////////////////////////////////////////////////////////////////
+<span class="lineNum">      66 </span>            : // fsm_trans Utilities
+<a name="67"><span class="lineNum">      67 </span>            : ////////////////////////////////////////////////////////////////////////////////</a>
+<span class="lineNum">      68 </span>            : 
+<span class="lineNum">      69 </span><span class="lineCov">          1 : void fsm_trans_init_single(fsm_trans *ft, wchar_t start, wchar_t end,</span>
+<span class="lineNum">      70 </span>            :                            unsigned int flags, int dest)
+<span class="lineNum">      71 </span>            : {
+<span class="lineNum">      72 </span><span class="lineCov">          1 :   fsm_trans_init(ft, 1, flags, dest);</span>
+<span class="lineNum">      73 </span><span class="lineCov">          1 :   ft-&gt;start[0] = start;</span>
+<span class="lineNum">      74 </span><span class="lineCov">          1 :   ft-&gt;end[0] = end;</span>
+<a name="75"><span class="lineNum">      75 </span><span class="lineCov">          1 : }</span></a>
+<span class="lineNum">      76 </span>            : 
+<span class="lineNum">      77 </span><span class="lineCov">        190 : fsm_trans *fsm_trans_create_single(wchar_t start, wchar_t end,</span>
+<span class="lineNum">      78 </span>            :                                    unsigned int flags, int dest)
+<span class="lineNum">      79 </span>            : {
+<span class="lineNum">      80 </span><span class="lineCov">        190 :   fsm_trans *ft = fsm_trans_create(1, flags, dest);</span>
+<span class="lineNum">      81 </span><span class="lineCov">        190 :   ft-&gt;start[0] = start;</span>
+<span class="lineNum">      82 </span><span class="lineCov">        190 :   ft-&gt;end[0] = end;</span>
+<span class="lineNum">      83 </span><span class="lineCov">        190 :   return ft;</span>
+<a name="84"><span class="lineNum">      84 </span>            : }</a>
+<span class="lineNum">      85 </span>            : 
+<span class="lineNum">      86 </span><span class="lineCov">       3985 : bool fsm_trans_check(const fsm_trans *ft, wchar_t c)</span>
+<span class="lineNum">      87 </span>            : {
+<span class="lineNum">      88 </span><span class="lineCov">       3985 :   wchar_t *start = ft-&gt;start, *end = ft-&gt;end;</span>
+<span class="lineNum">      89 </span>            : 
+<span class="lineNum">      90 </span><span class="lineCov">      11399 :   while (start &amp;&amp; end &amp;&amp; *start != '\0' &amp;&amp; *end != '\0') {</span>
+<span class="lineNum">      91 </span><span class="lineCov">       5243 :     if (c &gt;= *start &amp;&amp; c &lt;= *end) {</span>
+<span class="lineNum">      92 </span><span class="lineCov">       1814 :       return !FLAG_CHECK(ft-&gt;flags, FSM_TRANS_NEGATIVE);</span>
+<span class="lineNum">      93 </span>            :     }
+<span class="lineNum">      94 </span><span class="lineCov">       3429 :     start++; end++;</span>
+<span class="lineNum">      95 </span>            :   }
+<span class="lineNum">      96 </span>            : 
+<span class="lineNum">      97 </span><span class="lineCov">       2171 :   return FLAG_CHECK(ft-&gt;flags, FSM_TRANS_NEGATIVE);</span>
+<a name="98"><span class="lineNum">      98 </span>            : }</a>
+<span class="lineNum">      99 </span>            : 
+<span class="lineNum">     100 </span><span class="lineCov">        326 : fsm_trans *fsm_trans_copy(const fsm_trans *ft)</span>
+<span class="lineNum">     101 </span>            : {
+<span class="lineNum">     102 </span><span class="lineCov">        326 :   int i, rangeSize = wcslen(ft-&gt;start);</span>
+<span class="lineNum">     103 </span><span class="lineCov">        326 :   fsm_trans *new = fsm_trans_create(rangeSize, ft-&gt;flags, ft-&gt;dest);</span>
+<span class="lineNum">     104 </span><span class="lineCov">        757 :   for (i = 0; i &lt; rangeSize; i++) {</span>
+<span class="lineNum">     105 </span><span class="lineCov">        431 :     new-&gt;start[i] = ft-&gt;start[i];</span>
+<span class="lineNum">     106 </span><span class="lineCov">        431 :     new-&gt;end[i] = ft-&gt;end[i];</span>
+<span class="lineNum">     107 </span>            :   }
+<span class="lineNum">     108 </span><span class="lineCov">        326 :   return new;</span>
+<span class="lineNum">     109 </span>            : }
+<span class="lineNum">     110 </span>            : 
+<span class="lineNum">     111 </span>            : ////////////////////////////////////////////////////////////////////////////////
+<span class="lineNum">     112 </span>            : // fsm Fundamental Functions
+<a name="113"><span class="lineNum">     113 </span>            : ////////////////////////////////////////////////////////////////////////////////</a>
+<span class="lineNum">     114 </span>            : 
+<span class="lineNum">     115 </span><span class="lineCov">        137 : void fsm_init(fsm *f)</span>
+<span class="lineNum">     116 </span>            : {
+<span class="lineNum">     117 </span><span class="lineCov">        137 :   f-&gt;start = -1;</span>
+<span class="lineNum">     118 </span><span class="lineCov">        137 :   al_init(&amp;f-&gt;transitions);</span>
+<span class="lineNum">     119 </span><span class="lineCov">        137 :   al_init(&amp;f-&gt;accepting);</span>
+<a name="120"><span class="lineNum">     120 </span><span class="lineCov">        137 : }</span></a>
+<span class="lineNum">     121 </span>            : 
+<span class="lineNum">     122 </span><span class="lineCov">        135 : fsm *fsm_create(void)</span>
+<span class="lineNum">     123 </span>            : {
+<span class="lineNum">     124 </span><span class="lineCov">        135 :   fsm *f = smb_new(fsm, 1);</span>
+<span class="lineNum">     125 </span><span class="lineCov">        135 :   fsm_init(f);</span>
+<span class="lineNum">     126 </span><span class="lineCov">        135 :   return f;</span>
+<a name="127"><span class="lineNum">     127 </span>            : }</a>
+<span class="lineNum">     128 </span>            : 
+<span class="lineNum">     129 </span><span class="lineCov">        137 : void fsm_destroy(fsm *f, bool free_transitions)</span>
+<span class="lineNum">     130 </span>            : {
+<span class="lineNum">     131 </span>            :   int i, j;
+<span class="lineNum">     132 </span><span class="lineCov">        137 :   smb_status status = SMB_SUCCESS;</span>
+<span class="lineNum">     133 </span>            :   smb_al *list;
+<span class="lineNum">     134 </span>            : 
+<span class="lineNum">     135 </span><span class="lineCov">        772 :   for (i = 0; i &lt; al_length(&amp;f-&gt;transitions); i++) {</span>
+<span class="lineNum">     136 </span><span class="lineCov">        635 :     list = (smb_al *) al_get(&amp;f-&gt;transitions, i, &amp;status).data_ptr;</span>
+<span class="lineNum">     137 </span><span class="lineCov">        635 :     assert(status == SMB_SUCCESS);</span>
+<span class="lineNum">     138 </span><span class="lineCov">        635 :     if (free_transitions) {</span>
+<span class="lineNum">     139 </span><span class="lineCov">       1213 :       for (j = 0; j &lt; al_length(list); j++) {</span>
+<span class="lineNum">     140 </span><span class="lineCov">        578 :         fsm_trans_delete((fsm_trans *) al_get(list, j, &amp;status).data_ptr);</span>
+<span class="lineNum">     141 </span><span class="lineCov">        578 :         assert(status == SMB_SUCCESS);</span>
+<span class="lineNum">     142 </span>            :       }
+<span class="lineNum">     143 </span>            :     }
+<span class="lineNum">     144 </span><span class="lineCov">        635 :     al_delete(list);</span>
+<span class="lineNum">     145 </span>            :   }
+<span class="lineNum">     146 </span>            : 
+<span class="lineNum">     147 </span><span class="lineCov">        137 :   al_destroy(&amp;f-&gt;transitions);</span>
+<span class="lineNum">     148 </span><span class="lineCov">        137 :   al_destroy(&amp;f-&gt;accepting);</span>
+<a name="149"><span class="lineNum">     149 </span><span class="lineCov">        137 : }</span></a>
+<span class="lineNum">     150 </span>            : 
+<span class="lineNum">     151 </span><span class="lineCov">        135 : void fsm_delete(fsm *f, bool free_transitions)</span>
+<span class="lineNum">     152 </span>            : {
+<span class="lineNum">     153 </span><span class="lineCov">        135 :   fsm_destroy(f, free_transitions);</span>
+<span class="lineNum">     154 </span><span class="lineCov">        135 :   smb_free(f);</span>
+<span class="lineNum">     155 </span><span class="lineCov">        135 : }</span>
+<span class="lineNum">     156 </span>            : 
+<span class="lineNum">     157 </span>            : ////////////////////////////////////////////////////////////////////////////////
+<span class="lineNum">     158 </span>            : // fsm Utilities
+<a name="159"><span class="lineNum">     159 </span>            : ////////////////////////////////////////////////////////////////////////////////</a>
+<span class="lineNum">     160 </span>            : 
+<span class="lineNum">     161 </span><span class="lineCov">         34 : fsm *fsm_create_single_char(wchar_t character)</span>
+<span class="lineNum">     162 </span>            : {
+<span class="lineNum">     163 </span><span class="lineCov">         34 :   fsm *f = fsm_create();</span>
+<span class="lineNum">     164 </span><span class="lineCov">         34 :   int s0 = fsm_add_state(f, false);</span>
+<span class="lineNum">     165 </span><span class="lineCov">         34 :   int s1 = fsm_add_state(f, true);</span>
+<span class="lineNum">     166 </span><span class="lineCov">         34 :   fsm_add_single(f, s0, s1, character, character, 0);</span>
+<span class="lineNum">     167 </span><span class="lineCov">         34 :   f-&gt;start= s0;</span>
+<span class="lineNum">     168 </span><span class="lineCov">         34 :   return f;</span>
+<a name="169"><span class="lineNum">     169 </span>            : }</a>
+<span class="lineNum">     170 </span>            : 
+<span class="lineNum">     171 </span><span class="lineCov">        635 : int fsm_add_state(fsm *f, bool accepting)</span>
+<span class="lineNum">     172 </span>            : {
+<span class="lineNum">     173 </span>            :   DATA d;
+<span class="lineNum">     174 </span>            :   int index;
+<span class="lineNum">     175 </span><span class="lineCov">        635 :   d.data_ptr = (void *) al_create();</span>
+<span class="lineNum">     176 </span><span class="lineCov">        635 :   al_append(&amp;f-&gt;transitions, d);</span>
+<span class="lineNum">     177 </span><span class="lineCov">        635 :   index = al_length(&amp;f-&gt;transitions) - 1;</span>
+<span class="lineNum">     178 </span><span class="lineCov">        635 :   if (accepting) {</span>
+<span class="lineNum">     179 </span><span class="lineCov">        104 :     d.data_llint = index;</span>
+<span class="lineNum">     180 </span><span class="lineCov">        104 :     al_append(&amp;f-&gt;accepting, d);</span>
+<span class="lineNum">     181 </span>            :   }
+<span class="lineNum">     182 </span><span class="lineCov">        635 :   return index;</span>
+<a name="183"><span class="lineNum">     183 </span>            : }</a>
+<span class="lineNum">     184 </span>            : 
+<span class="lineNum">     185 </span><span class="lineCov">        578 : void fsm_add_trans(fsm *f, int state, const fsm_trans *ft)</span>
+<span class="lineNum">     186 </span>            : {
+<span class="lineNum">     187 </span>            :   DATA d;
+<span class="lineNum">     188 </span><span class="lineCov">        578 :   smb_status status = SMB_SUCCESS;</span>
+<span class="lineNum">     189 </span><span class="lineCov">        578 :   smb_al *list = (smb_al *) al_get(&amp;f-&gt;transitions, state, &amp;status).data_ptr;</span>
+<span class="lineNum">     190 </span><span class="lineCov">        578 :   assert(status == SMB_SUCCESS);</span>
+<span class="lineNum">     191 </span>            :   // TODO: Change this from an assertion to an error.
+<span class="lineNum">     192 </span><span class="lineCov">        578 :   d.data_ptr = (void *) ft;</span>
+<span class="lineNum">     193 </span><span class="lineCov">        578 :   al_append(list, d);</span>
+<a name="194"><span class="lineNum">     194 </span><span class="lineCov">        578 : }</span></a>
+<span class="lineNum">     195 </span>            : 
+<span class="lineNum">     196 </span><span class="lineCov">         54 : fsm_trans *fsm_add_single(fsm *f, int from, int to, wchar_t start, wchar_t end,</span>
+<span class="lineNum">     197 </span>            :                           unsigned int flags)
+<span class="lineNum">     198 </span>            : {
+<span class="lineNum">     199 </span><span class="lineCov">         54 :   fsm_trans *new = fsm_trans_create_single(start, end, flags, to);</span>
+<span class="lineNum">     200 </span><span class="lineCov">         54 :   fsm_add_trans(f, from, new);</span>
+<span class="lineNum">     201 </span><span class="lineCov">         54 :   return new;</span>
+<span class="lineNum">     202 </span>            : }
+<span class="lineNum">     203 </span>            : 
+<span class="lineNum">     204 </span>            : ////////////////////////////////////////////////////////////////////////////////
+<span class="lineNum">     205 </span>            : // fsm_sim Fundamental Functions
+<a name="206"><span class="lineNum">     206 </span>            : ////////////////////////////////////////////////////////////////////////////////</a>
+<span class="lineNum">     207 </span>            : 
+<span class="lineNum">     208 </span><span class="lineCov">        258 : void fsm_sim_init(fsm_sim *fs, fsm *f, smb_al *curr)</span>
+<span class="lineNum">     209 </span>            : {
+<span class="lineNum">     210 </span><span class="lineCov">        258 :   fs-&gt;f = f;</span>
+<span class="lineNum">     211 </span><span class="lineCov">        258 :   fs-&gt;curr = curr;</span>
+<span class="lineNum">     212 </span><span class="lineCov">        258 :   fs-&gt;cap = al_create();</span>
+<span class="lineNum">     213 </span><span class="lineCov">        258 :   al_append(fs-&gt;cap, PTR(al_create()));</span>
+<a name="214"><span class="lineNum">     214 </span><span class="lineCov">        258 : }</span></a>
+<span class="lineNum">     215 </span>            : 
+<span class="lineNum">     216 </span><span class="lineCov">        258 : fsm_sim *fsm_sim_create(fsm *f, smb_al *curr)</span>
+<span class="lineNum">     217 </span>            : {
+<span class="lineNum">     218 </span><span class="lineCov">        258 :   fsm_sim *fs = smb_new(fsm_sim, 1);</span>
+<span class="lineNum">     219 </span><span class="lineCov">        258 :   fsm_sim_init(fs, f, curr);</span>
+<span class="lineNum">     220 </span><span class="lineCov">        258 :   return fs;</span>
+<a name="221"><span class="lineNum">     221 </span>            : }</a>
+<span class="lineNum">     222 </span>            : 
+<span class="lineNum">     223 </span><span class="lineCov">        258 : void fsm_sim_destroy(fsm_sim *fs, bool free_curr)</span>
+<span class="lineNum">     224 </span>            : {
+<span class="lineNum">     225 </span>            :   smb_iter it;
+<span class="lineNum">     226 </span><span class="lineCov">        258 :   smb_status status = SMB_SUCCESS;</span>
+<span class="lineNum">     227 </span>            :   smb_al *cap;
+<span class="lineNum">     228 </span><span class="lineCov">        258 :   it = al_get_iter(fs-&gt;cap);</span>
+<span class="lineNum">     229 </span><span class="lineCov">        759 :   while (it.has_next(&amp;it)) {</span>
+<span class="lineNum">     230 </span><span class="lineCov">        243 :     cap = it.next(&amp;it, &amp;status).data_ptr;</span>
+<span class="lineNum">     231 </span><span class="lineCov">        243 :     assert(status == SMB_SUCCESS);</span>
+<span class="lineNum">     232 </span><span class="lineCov">        243 :     al_delete(cap);</span>
+<span class="lineNum">     233 </span>            :   }
+<span class="lineNum">     234 </span><span class="lineCov">        258 :   al_delete(fs-&gt;cap);</span>
+<span class="lineNum">     235 </span><span class="lineCov">        258 :   if (free_curr) {</span>
+<span class="lineNum">     236 </span><span class="lineCov">        258 :     al_delete(fs-&gt;curr);</span>
+<span class="lineNum">     237 </span>            :   }
+<a name="238"><span class="lineNum">     238 </span><span class="lineCov">        258 : }</span></a>
+<span class="lineNum">     239 </span>            : 
+<span class="lineNum">     240 </span><span class="lineCov">        258 : void fsm_sim_delete(fsm_sim *fs, bool free_curr)</span>
+<span class="lineNum">     241 </span>            : {
+<span class="lineNum">     242 </span><span class="lineCov">        258 :   fsm_sim_destroy(fs, free_curr);</span>
+<span class="lineNum">     243 </span><span class="lineCov">        258 :   smb_free(fs);</span>
+<span class="lineNum">     244 </span><span class="lineCov">        258 : }</span>
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.11</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

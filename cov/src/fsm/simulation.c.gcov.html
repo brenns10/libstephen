@@ -1,0 +1,432 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage.info - src/fsm/simulation.c</title>
+  <link rel="stylesheet" type="text/css" href="../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../index.html">top level</a> - <a href="index.html">src/fsm</a> - simulation.c<span style="font-size: 80%;"> (source / <a href="simulation.c.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">151</td>
+            <td class="headerCovTableEntry">152</td>
+            <td class="headerCovTableEntryHi">99.3 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2016-03-11 22:05:55</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">10</td>
+            <td class="headerCovTableEntry">10</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /***************************************************************************//**</a>
+<span class="lineNum">       2 </span>            : 
+<span class="lineNum">       3 </span>            :   @file         fsm/simulation.c
+<span class="lineNum">       4 </span>            : 
+<span class="lineNum">       5 </span>            :   @author       Stephen Brennan
+<span class="lineNum">       6 </span>            : 
+<span class="lineNum">       7 </span>            :   @date         Created Saturday, 26 July 2014
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            :   @brief        Simulation functions for FSMs.
+<span class="lineNum">      10 </span>            : 
+<span class="lineNum">      11 </span>            :   @copyright    Copyright (c) 2015, Stephen Brennan.  Released under the Revised
+<span class="lineNum">      12 </span>            :                 BSD License.  See the LICENSE.txt file for details.
+<span class="lineNum">      13 </span>            : 
+<span class="lineNum">      14 </span>            : *******************************************************************************/
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            : #include &lt;stdio.h&gt;      // for fprintf
+<span class="lineNum">      17 </span>            : #include &lt;stdbool.h&gt;    // for bool
+<span class="lineNum">      18 </span>            : #include &lt;assert.h&gt;
+<span class="lineNum">      19 </span>            : 
+<span class="lineNum">      20 </span>            : #include &quot;libstephen/fsm.h&quot;// funtions we're defining
+<span class="lineNum">      21 </span>            : #include &quot;libstephen/al.h&quot; // al_*, SMB_DP
+<span class="lineNum">      22 </span>            : #include &quot;libstephen/log.h&quot;
+<span class="lineNum">      23 </span>            : 
+<span class="lineNum">      24 </span>            : smb_logger fsm_sim_log = {
+<span class="lineNum">      25 </span>            :   .format = SMB_DEFAULT_LOGFORMAT,
+<span class="lineNum">      26 </span>            :   .num = 0,
+<span class="lineNum">      27 </span>            : };
+<span class="lineNum">      28 </span>            : 
+<span class="lineNum">      29 </span>            : /*******************************************************************************
+<span class="lineNum">      30 </span>            : 
+<span class="lineNum">      31 </span>            :                                Private Functions
+<span class="lineNum">      32 </span>            : 
+<a name="33"><span class="lineNum">      33 </span>            : ******************************************************************************/</a>
+<span class="lineNum">      34 </span>            : 
+<span class="lineNum">      35 </span><span class="lineCov">       1041 : static void add_eps_to_curr(fsm_sim *fs, int state, smb_al *cap)</span>
+<span class="lineNum">      36 </span>            : {
+<span class="lineNum">      37 </span><span class="lineCov">       1041 :   smb_status status = SMB_SUCCESS;</span>
+<span class="lineNum">      38 </span>            :   smb_al visit_queue;
+<span class="lineNum">      39 </span>            :   smb_al cap_queue;
+<span class="lineNum">      40 </span>            :   smb_al *trans_list;
+<span class="lineNum">      41 </span>            :   smb_al *new_cap;
+<span class="lineNum">      42 </span>            :   fsm_trans *ft;
+<span class="lineNum">      43 </span>            :   int i;
+<span class="lineNum">      44 </span>            :   DATA d;
+<span class="lineNum">      45 </span>            : 
+<span class="lineNum">      46 </span><span class="lineCov">       1041 :   al_init(&amp;visit_queue);</span>
+<span class="lineNum">      47 </span><span class="lineCov">       1041 :   al_init(&amp;cap_queue);</span>
+<span class="lineNum">      48 </span><span class="lineCov">       1041 :   al_push_back(&amp;visit_queue, LLINT(state));</span>
+<span class="lineNum">      49 </span><span class="lineCov">       1041 :   al_push_back(&amp;cap_queue, PTR(cap));</span>
+<span class="lineNum">      50 </span>            : 
+<span class="lineNum">      51 </span>            :   // THIS IS BREADTH FIRST SEARCH
+<span class="lineNum">      52 </span><span class="lineCov">       4122 :   while (al_length(&amp;visit_queue) &gt; 0) {</span>
+<span class="lineNum">      53 </span>            : 
+<span class="lineNum">      54 </span>            :     // GET THE NEXT ITEM IN THE BFS VISIT QUEUE
+<span class="lineNum">      55 </span><span class="lineCov">       2040 :     d = al_pop_front(&amp;visit_queue, &amp;status);</span>
+<span class="lineNum">      56 </span><span class="lineCov">       2040 :     assert(status == SMB_SUCCESS);</span>
+<span class="lineNum">      57 </span><span class="lineCov">       2040 :     cap = al_pop_front(&amp;cap_queue, &amp;status).data_ptr;</span>
+<span class="lineNum">      58 </span><span class="lineCov">       2040 :     LDEBUG(&amp;fsm_sim_log, &quot;expanding state %ld&quot;, d.data_llint);</span>
+<span class="lineNum">      59 </span>            : 
+<span class="lineNum">      60 </span>            :     // GET THE OUTGOING TRANSITION OF THE ITEM
+<span class="lineNum">      61 </span><span class="lineCov">       2040 :     trans_list = al_get(&amp;fs-&gt;f-&gt;transitions, d.data_llint, &amp;status).data_ptr;</span>
+<span class="lineNum">      62 </span><span class="lineCov">       2040 :     assert(status == SMB_SUCCESS);</span>
+<span class="lineNum">      63 </span>            : 
+<span class="lineNum">      64 </span>            :     // FOR EACH OUTGOING TRANSITION FROM THE STATE
+<span class="lineNum">      65 </span><span class="lineCov">       4102 :     for (i = 0; i &lt; al_length(trans_list); i++) {</span>
+<span class="lineNum">      66 </span>            : 
+<span class="lineNum">      67 </span>            :       // GET THE TRANSITION'S DESTINATION
+<span class="lineNum">      68 </span><span class="lineCov">       2062 :       ft = al_get(trans_list, i, &amp;status).data_ptr;</span>
+<span class="lineNum">      69 </span><span class="lineCov">       2062 :       assert(status == SMB_SUCCESS);</span>
+<span class="lineNum">      70 </span><span class="lineCov">       2062 :       d.data_llint = ft-&gt;dest;</span>
+<span class="lineNum">      71 </span><span class="lineCov">       2062 :       LDEBUG(&amp;fsm_sim_log, &quot; expanding transition to %ld&quot;, d.data_llint);</span>
+<span class="lineNum">      72 </span>            : 
+<span class="lineNum">      73 </span>            :       // IF THE DESTINATION STATE IS REACHABLE VIA EPSILON,
+<span class="lineNum">      74 </span>            :       // AND NOT IN THE VISIT QUEUE,
+<span class="lineNum">      75 </span>            :       // AND NOT ALREADY IN THE CURRENT STATE LIST...
+<span class="lineNum">      76 </span><span class="lineCov">       3128 :       if (fsm_trans_check(ft, EPSILON) &amp;&amp;</span>
+<span class="lineNum">      77 </span><span class="lineCov">       2122 :           al_index_of(&amp;visit_queue, d, &amp;data_compare_int) == -1 &amp;&amp;</span>
+<span class="lineNum">      78 </span><span class="lineCov">       1056 :           al_index_of(fs-&gt;curr, d, &amp;data_compare_int) == -1) {</span>
+<span class="lineNum">      79 </span>            : 
+<span class="lineNum">      80 </span><span class="lineCov">        999 :         LDEBUG(&amp;fsm_sim_log, &quot;  adding to epsilon closure!&quot;);</span>
+<span class="lineNum">      81 </span>            :         // CREATE A NEW CAPTURE LIST WITH THE OLD ITEMS
+<span class="lineNum">      82 </span><span class="lineCov">        999 :         new_cap = al_create();</span>
+<span class="lineNum">      83 </span><span class="lineCov">        999 :         al_copy_all(new_cap, cap);</span>
+<span class="lineNum">      84 </span>            : 
+<span class="lineNum">      85 </span>            :         // AND THE CURRENT INDEX, IF THERE IS A CAPTURE IN THIS TRANSITION
+<span class="lineNum">      86 </span><span class="lineCov">        999 :         if (FLAG_CHECK(ft-&gt;flags, FSM_TRANS_CAPTURE)) {</span>
+<span class="lineNum">      87 </span><span class="lineCov">         18 :           al_append(new_cap, LLINT(fs-&gt;index));</span>
+<span class="lineNum">      88 </span><span class="lineCov">         18 :           LDEBUG(&amp;fsm_sim_log, &quot;  adding capture at the current index&quot;);</span>
+<span class="lineNum">      89 </span>            :         }
+<span class="lineNum">      90 </span>            : 
+<span class="lineNum">      91 </span>            :         // FINALLY, ADD THE DESTINATION AND ITS CAPTURE LIST TO THE CURRENT
+<span class="lineNum">      92 </span>            :         // STATE LIST
+<span class="lineNum">      93 </span><span class="lineCov">        999 :         al_append(fs-&gt;curr, d);</span>
+<span class="lineNum">      94 </span><span class="lineCov">        999 :         al_append(fs-&gt;cap, PTR(new_cap));</span>
+<span class="lineNum">      95 </span>            : 
+<span class="lineNum">      96 </span>            :         // ALSO, ADD TO THE VISIT QUEUE SO WE CAN EXPAND ITS NEXT STATES
+<span class="lineNum">      97 </span><span class="lineCov">        999 :         al_append(&amp;visit_queue, d);</span>
+<span class="lineNum">      98 </span><span class="lineCov">        999 :         al_append(&amp;cap_queue, PTR(new_cap));</span>
+<span class="lineNum">      99 </span>            :       }
+<span class="lineNum">     100 </span>            :     }
+<span class="lineNum">     101 </span>            :   }
+<span class="lineNum">     102 </span>            : 
+<span class="lineNum">     103 </span><span class="lineCov">       1041 :   al_destroy(&amp;visit_queue);</span>
+<span class="lineNum">     104 </span><span class="lineCov">       1041 :   al_destroy(&amp;cap_queue);</span>
+<span class="lineNum">     105 </span><span class="lineCov">       1041 : }</span>
+<span class="lineNum">     106 </span>            : 
+<span class="lineNum">     107 </span>            : /**
+<span class="lineNum">     108 </span>            :    @brief Test if the intersection between the two lists is non-empty.
+<span class="lineNum">     109 </span>            :    @param first The first list
+<span class="lineNum">     110 </span>            :    @param second The second list
+<span class="lineNum">     111 </span>            :    @retval true when the intersection is NOT empty
+<a name="112"><span class="lineNum">     112 </span>            :    @retval false when the intersection IS empty</a>
+<span class="lineNum">     113 </span>            :  */
+<span class="lineNum">     114 </span><span class="lineCov">       1007 : static bool fsm_sim_nondet_non_empty_intersection(smb_al *first, smb_al *second)</span>
+<span class="lineNum">     115 </span>            : {
+<span class="lineNum">     116 </span>            :   smb_status status;
+<span class="lineNum">     117 </span>            :   int i;
+<span class="lineNum">     118 </span>            :   DATA d;
+<span class="lineNum">     119 </span><span class="lineCov">       1925 :   for (i = 0; i &lt; al_length(first); i++) {</span>
+<span class="lineNum">     120 </span><span class="lineCov">       1324 :     d = al_get(first, i, &amp;status);</span>
+<span class="lineNum">     121 </span><span class="lineCov">       1324 :     if (al_index_of(second, d, &amp;data_compare_int) != -1)</span>
+<span class="lineNum">     122 </span><span class="lineCov">        406 :       return true;</span>
+<span class="lineNum">     123 </span>            :   }
+<span class="lineNum">     124 </span><span class="lineCov">        601 :   return false;</span>
+<span class="lineNum">     125 </span>            : }
+<span class="lineNum">     126 </span>            : 
+<span class="lineNum">     127 </span>            : /*******************************************************************************
+<span class="lineNum">     128 </span>            : 
+<span class="lineNum">     129 </span>            :                                 Public Functions
+<span class="lineNum">     130 </span>            : 
+<a name="131"><span class="lineNum">     131 </span>            : *******************************************************************************/</a>
+<span class="lineNum">     132 </span>            : 
+<span class="lineNum">     133 </span><span class="lineCov">       1803 : void al_copy_all(smb_al *dest, const smb_al *from)</span>
+<span class="lineNum">     134 </span>            : {
+<span class="lineNum">     135 </span>            :   smb_status status;
+<span class="lineNum">     136 </span>            :   int i;
+<span class="lineNum">     137 </span><span class="lineCov">       2145 :   for (i = 0; i &lt; al_length(from); i++) {</span>
+<span class="lineNum">     138 </span><span class="lineCov">        342 :     al_append(dest, al_get(from, i, &amp;status));</span>
+<span class="lineNum">     139 </span>            :   }
+<a name="140"><span class="lineNum">     140 </span><span class="lineCov">       1803 : }</span></a>
+<span class="lineNum">     141 </span>            : 
+<span class="lineNum">     142 </span><span class="lineCov">         26 : bool fsm_sim_det(fsm *f, const wchar_t *input)</span>
+<span class="lineNum">     143 </span>            : {
+<span class="lineNum">     144 </span>            :   smb_status status;
+<span class="lineNum">     145 </span>            :   DATA d;
+<span class="lineNum">     146 </span>            :   int i, next, state;
+<span class="lineNum">     147 </span>            :   smb_al *list;
+<span class="lineNum">     148 </span>            :   fsm_trans *trans;
+<span class="lineNum">     149 </span><span class="lineCov">         26 :   state = f-&gt;start;</span>
+<span class="lineNum">     150 </span>            : 
+<span class="lineNum">     151 </span>            :   // While we have not exhausted our input
+<span class="lineNum">     152 </span><span class="lineCov">         80 :   while (*input != '\0') {</span>
+<span class="lineNum">     153 </span>            :     SMB_DP(&quot;State: %d, Input %Lc\n&quot;, state, *input);
+<span class="lineNum">     154 </span>            :     // Get the list of transitions from this state
+<span class="lineNum">     155 </span><span class="lineCov">         40 :     list = (smb_al *) al_get(&amp;f-&gt;transitions, state, &amp;status).data_ptr;</span>
+<span class="lineNum">     156 </span><span class="lineCov">         40 :     next = -1;</span>
+<span class="lineNum">     157 </span>            :     // Look for transitions that match this character
+<span class="lineNum">     158 </span><span class="lineCov">         79 :     for (i = 0; i &lt; al_length(list); i++) {</span>
+<span class="lineNum">     159 </span><span class="lineCov">         39 :       trans = (fsm_trans *) al_get(list, i, &amp;status).data_ptr;</span>
+<span class="lineNum">     160 </span><span class="lineCov">         39 :       if (fsm_trans_check(trans, *input)) {</span>
+<span class="lineNum">     161 </span><span class="lineCov">         28 :         if (next == -1) {</span>
+<span class="lineNum">     162 </span><span class="lineCov">         28 :           next = trans-&gt;dest;</span>
+<span class="lineNum">     163 </span>            :         } else {
+<span class="lineNum">     164 </span>            :           // If there are two matching transitions, error.
+<span class="lineNum">     165 </span><span class="lineNoCov">          0 :           fprintf(stderr, &quot;Error: non-deterministic FSM simulated as &quot;</span>
+<span class="lineNum">     166 </span>            :                   &quot;deterministic.\n&quot;);
+<span class="lineNum">     167 </span>            :         }
+<span class="lineNum">     168 </span>            :       }
+<span class="lineNum">     169 </span>            :     }
+<span class="lineNum">     170 </span>            :     // If there are no transitions, fail.
+<span class="lineNum">     171 </span><span class="lineCov">         40 :     if (next == -1) {</span>
+<span class="lineNum">     172 </span>            :       SMB_DP(&quot;No available transitions, reject.\n&quot;);
+<span class="lineNum">     173 </span><span class="lineCov">         12 :       return false;</span>
+<span class="lineNum">     174 </span>            :     }
+<span class="lineNum">     175 </span><span class="lineCov">         28 :     state = next;</span>
+<span class="lineNum">     176 </span><span class="lineCov">         28 :     input++;</span>
+<span class="lineNum">     177 </span>            :   }
+<span class="lineNum">     178 </span>            : 
+<span class="lineNum">     179 </span>            :   SMB_DP(&quot;State: %d, Input finished.\n&quot;, state);
+<span class="lineNum">     180 </span>            : 
+<span class="lineNum">     181 </span>            :   // If the state is in the accepting states, we accept, else reject
+<span class="lineNum">     182 </span><span class="lineCov">         14 :   d.data_llint = state;</span>
+<span class="lineNum">     183 </span><span class="lineCov">         14 :   return al_index_of(&amp;f-&gt;accepting, d, &amp;data_compare_int) != -1;</span>
+<a name="184"><span class="lineNum">     184 </span>            : }</a>
+<span class="lineNum">     185 </span>            : 
+<span class="lineNum">     186 </span><span class="lineCov">        257 : fsm_sim *fsm_sim_nondet_begin(fsm *f)</span>
+<span class="lineNum">     187 </span>            : {
+<span class="lineNum">     188 </span><span class="lineCov">        257 :   smb_status status = SMB_SUCCESS;</span>
+<span class="lineNum">     189 </span><span class="lineCov">        257 :   smb_al *curr = al_create();</span>
+<span class="lineNum">     190 </span><span class="lineCov">        257 :   fsm_sim *fs = fsm_sim_create(f, curr);</span>
+<span class="lineNum">     191 </span>            :   int i; //delete
+<span class="lineNum">     192 </span><span class="lineCov">        257 :   fs-&gt;index = 0;</span>
+<span class="lineNum">     193 </span><span class="lineCov">        257 :   al_append(curr, LLINT(f-&gt;start));</span>
+<span class="lineNum">     194 </span>            :   // For diagnostics, print out the entire current state set
+<span class="lineNum">     195 </span><span class="lineCov">        514 :   for (i = 0; i &lt; al_length(fs-&gt;curr); i++) {</span>
+<span class="lineNum">     196 </span><span class="lineCov">        257 :     LDEBUG(&amp;fsm_sim_log, &quot;state[%d] = %Ld&quot;, i, al_get(fs-&gt;curr, i, &amp;status).data_llint);</span>
+<span class="lineNum">     197 </span>            :   }
+<span class="lineNum">     198 </span>            : 
+<span class="lineNum">     199 </span><span class="lineCov">        257 :   add_eps_to_curr(fs, f-&gt;start, al_get(fs-&gt;cap, 0, &amp;status).data_ptr);</span>
+<span class="lineNum">     200 </span>            :   // For diagnostics, print out the entire current state set
+<span class="lineNum">     201 </span><span class="lineCov">        859 :   for (i = 0; i &lt; al_length(fs-&gt;curr); i++) {</span>
+<span class="lineNum">     202 </span><span class="lineCov">        602 :     LDEBUG(&amp;fsm_sim_log, &quot;state[%d] = %Ld &quot;, i, al_get(fs-&gt;curr, i, &amp;status).data_llint);</span>
+<span class="lineNum">     203 </span>            :   }
+<span class="lineNum">     204 </span><span class="lineCov">        257 :   assert(status == SMB_SUCCESS);</span>
+<span class="lineNum">     205 </span><span class="lineCov">        257 :   return fs;</span>
+<a name="206"><span class="lineNum">     206 </span>            : }</a>
+<span class="lineNum">     207 </span>            : 
+<span class="lineNum">     208 </span><span class="lineCov">       1143 : int fsm_sim_nondet_state(const fsm_sim *s, wchar_t input)</span>
+<span class="lineNum">     209 </span>            : {
+<span class="lineNum">     210 </span>            :   // If the current state is empty, REJECT
+<span class="lineNum">     211 </span><span class="lineCov">       1143 :   if (al_length(s-&gt;curr) == 0) {</span>
+<span class="lineNum">     212 </span><span class="lineCov">        136 :     LDEBUG(&amp;fsm_sim_log, &quot;current state is empty, reject&quot;);</span>
+<span class="lineNum">     213 </span><span class="lineCov">        136 :     return FSM_SIM_REJECTED;</span>
+<span class="lineNum">     214 </span>            :   }
+<span class="lineNum">     215 </span><span class="lineCov">       1007 :   if (fsm_sim_nondet_non_empty_intersection(&amp;s-&gt;f-&gt;accepting, s-&gt;curr)) {</span>
+<span class="lineNum">     216 </span><span class="lineCov">        406 :     LDEBUG(&amp;fsm_sim_log, &quot;in an accepting state&quot;);</span>
+<span class="lineNum">     217 </span>            :     // If one of our current states is accepting...
+<span class="lineNum">     218 </span><span class="lineCov">        406 :     if (input == L'\0') {</span>
+<span class="lineNum">     219 </span>            :       // ... and input is exhausted, ACCEPT
+<span class="lineNum">     220 </span><span class="lineCov">         84 :       return FSM_SIM_ACCEPTED;</span>
+<span class="lineNum">     221 </span>            :     } else {
+<span class="lineNum">     222 </span>            :       // ... and input remains, we are accepting, but not done
+<span class="lineNum">     223 </span><span class="lineCov">        322 :       return FSM_SIM_ACCEPTING;</span>
+<span class="lineNum">     224 </span>            :     }
+<span class="lineNum">     225 </span>            :   } else {
+<span class="lineNum">     226 </span><span class="lineCov">        601 :     LDEBUG(&amp;fsm_sim_log, &quot;in a rejecting state&quot;);</span>
+<span class="lineNum">     227 </span>            :     // If no current state is accepting ...
+<span class="lineNum">     228 </span><span class="lineCov">        601 :     if (input == L'\0') {</span>
+<span class="lineNum">     229 </span>            :       // ... and the input is exhausted, REJECT
+<span class="lineNum">     230 </span><span class="lineCov">         29 :       return FSM_SIM_REJECTED;</span>
+<span class="lineNum">     231 </span>            :     } else {
+<span class="lineNum">     232 </span>            :       // ... and input remains, we are not accepting, but not done
+<span class="lineNum">     233 </span><span class="lineCov">        572 :       return FSM_SIM_NOT_ACCEPTING;</span>
+<span class="lineNum">     234 </span>            :     }
+<span class="lineNum">     235 </span>            :   }
+<a name="236"><span class="lineNum">     236 </span>            : }</a>
+<span class="lineNum">     237 </span>            : 
+<span class="lineNum">     238 </span><span class="lineCov">        917 : void fsm_sim_nondet_step(fsm_sim *s, wchar_t input)</span>
+<span class="lineNum">     239 </span>            : {
+<span class="lineNum">     240 </span>            :   smb_status status;
+<span class="lineNum">     241 </span>            :   int i, j, state, original;
+<span class="lineNum">     242 </span>            :   DATA d;
+<span class="lineNum">     243 </span>            :   fsm_trans *t;
+<span class="lineNum">     244 </span><span class="lineCov">        917 :   smb_al *next = al_create(&amp;status);</span>
+<span class="lineNum">     245 </span><span class="lineCov">        917 :   smb_al *next_cap = al_create(&amp;status);</span>
+<span class="lineNum">     246 </span>            :   smb_al *cap;
+<span class="lineNum">     247 </span>            :   smb_al *trans;
+<span class="lineNum">     248 </span>            : 
+<span class="lineNum">     249 </span>            :   //// FIRST, we find every matching transition out of any current state.
+<span class="lineNum">     250 </span>            : 
+<span class="lineNum">     251 </span>            :   // For each current state:
+<span class="lineNum">     252 </span><span class="lineCov">       2715 :   for (i = 0; i &lt; al_length(s-&gt;curr); i++) {</span>
+<span class="lineNum">     253 </span><span class="lineCov">       1798 :     state = (int) al_get(s-&gt;curr, i, &amp;status).data_llint;</span>
+<span class="lineNum">     254 </span><span class="lineCov">       1798 :     trans = (smb_al *) al_get(&amp;s-&gt;f-&gt;transitions, state, &amp;status).data_ptr;</span>
+<span class="lineNum">     255 </span>            : 
+<span class="lineNum">     256 </span>            :     // For each transition out:
+<span class="lineNum">     257 </span><span class="lineCov">       3657 :     for (j = 0; j &lt; al_length(trans); j++) {</span>
+<span class="lineNum">     258 </span><span class="lineCov">       1859 :       t = (fsm_trans *)al_get(trans, j, &amp;status).data_ptr;</span>
+<span class="lineNum">     259 </span><span class="lineCov">       1859 :       d.data_llint = t-&gt;dest;</span>
+<span class="lineNum">     260 </span>            : 
+<span class="lineNum">     261 </span>            :       // If the transition contains the current input, and it's not already in
+<span class="lineNum">     262 </span>            :       // the next state list, add it to the next state list.
+<span class="lineNum">     263 </span><span class="lineCov">       1859 :       if (fsm_trans_check(t, input)) {</span>
+<span class="lineNum">     264 </span><span class="lineCov">        784 :         assert(!FLAG_CHECK(t-&gt;flags, FSM_TRANS_CAPTURE));</span>
+<span class="lineNum">     265 </span><span class="lineCov">        784 :         if (al_index_of(next, d, &amp;data_compare_int) == -1) {</span>
+<span class="lineNum">     266 </span><span class="lineCov">        784 :           cap = al_create();</span>
+<span class="lineNum">     267 </span><span class="lineCov">        784 :           al_copy_all(cap, al_get(s-&gt;cap, i, &amp;status).data_ptr);</span>
+<span class="lineNum">     268 </span><span class="lineCov">        784 :           al_append(next, d);</span>
+<span class="lineNum">     269 </span><span class="lineCov">        784 :           al_append(next_cap, PTR(cap));</span>
+<span class="lineNum">     270 </span>            :         }
+<span class="lineNum">     271 </span>            :       }
+<span class="lineNum">     272 </span>            :     }
+<span class="lineNum">     273 </span>            :   }
+<span class="lineNum">     274 </span>            : 
+<span class="lineNum">     275 </span>            :   //// NEXT, these next states become our new states
+<span class="lineNum">     276 </span>            : 
+<span class="lineNum">     277 </span>            :   // The current state is now the next state!
+<span class="lineNum">     278 </span><span class="lineCov">       2715 :   for (i = 0; i &lt; al_length(s-&gt;cap); i++) {</span>
+<span class="lineNum">     279 </span><span class="lineCov">       1798 :     al_delete(al_get(s-&gt;cap, i, &amp;status).data_ptr);</span>
+<span class="lineNum">     280 </span>            :   }
+<span class="lineNum">     281 </span><span class="lineCov">        917 :   al_delete(s-&gt;curr);</span>
+<span class="lineNum">     282 </span><span class="lineCov">        917 :   al_delete(s-&gt;cap);</span>
+<span class="lineNum">     283 </span><span class="lineCov">        917 :   s-&gt;cap = next_cap;</span>
+<span class="lineNum">     284 </span><span class="lineCov">        917 :   s-&gt;curr = next;</span>
+<span class="lineNum">     285 </span><span class="lineCov">        917 :   s-&gt;index++;  // index MUST be incremented here</span>
+<span class="lineNum">     286 </span>            : 
+<span class="lineNum">     287 </span>            :   //// FINALLY, we expand our current state list to be the &quot;epsilon closure&quot; of
+<span class="lineNum">     288 </span>            :   //// all its elements (i.e., all states reachable via epsilon-transition from
+<span class="lineNum">     289 </span>            :   //// any current state).
+<span class="lineNum">     290 </span>            : 
+<span class="lineNum">     291 </span><span class="lineCov">        917 :   original = al_length(s-&gt;curr);</span>
+<span class="lineNum">     292 </span><span class="lineCov">       1701 :   for (i = 0; i &lt; original; i++) {</span>
+<span class="lineNum">     293 </span>            :     smb_al *cap;
+<span class="lineNum">     294 </span><span class="lineCov">        784 :     state = al_get(s-&gt;curr, i, &amp;status).data_llint;</span>
+<span class="lineNum">     295 </span><span class="lineCov">        784 :     cap = al_get(s-&gt;cap, i, &amp;status).data_ptr;</span>
+<span class="lineNum">     296 </span><span class="lineCov">        784 :     add_eps_to_curr(s, state, cap);</span>
+<span class="lineNum">     297 </span>            :   }
+<span class="lineNum">     298 </span>            : 
+<span class="lineNum">     299 </span>            :   // For diagnostics, print the new state
+<span class="lineNum">     300 </span><span class="lineCov">       2355 :   for (i = 0; i &lt; al_length(s-&gt;curr); i++) {</span>
+<span class="lineNum">     301 </span><span class="lineCov">       1438 :     LDEBUG(&amp;fsm_sim_log, &quot;state[%d] = %Ld &quot;, i, al_get(s-&gt;curr, i, &amp;status).data_llint);</span>
+<span class="lineNum">     302 </span>            :   }
+<a name="303"><span class="lineNum">     303 </span><span class="lineCov">        917 : }</span></a>
+<span class="lineNum">     304 </span>            : 
+<span class="lineNum">     305 </span><span class="lineCov">          2 : smb_al *fsm_sim_get_captures(fsm_sim *sim)</span>
+<span class="lineNum">     306 </span>            : {
+<span class="lineNum">     307 </span><span class="lineCov">          2 :   smb_iter it = al_get_iter(sim-&gt;cap);</span>
+<span class="lineNum">     308 </span><span class="lineCov">          2 :   smb_status status = SMB_SUCCESS;</span>
+<span class="lineNum">     309 </span><span class="lineCov">          2 :   smb_al *captures, *retval = NULL;</span>
+<span class="lineNum">     310 </span><span class="lineCov">          2 :   int max = -1, max_idx = -1;</span>
+<span class="lineNum">     311 </span><span class="lineCov">         15 :   while (it.has_next(&amp;it)) {</span>
+<span class="lineNum">     312 </span><span class="lineCov">         11 :     captures = it.next(&amp;it, &amp;status).data_ptr;</span>
+<span class="lineNum">     313 </span><span class="lineCov">         11 :     assert(status == SMB_SUCCESS);</span>
+<span class="lineNum">     314 </span>            :     //iter_print(al_get_iter(captures), stdout, data_printer_int);
+<span class="lineNum">     315 </span><span class="lineCov">         11 :     if (al_length(captures) &gt; max &amp;&amp; al_length(captures) % 2 == 0) {</span>
+<span class="lineNum">     316 </span><span class="lineCov">          2 :       max = al_length(captures);</span>
+<span class="lineNum">     317 </span><span class="lineCov">          2 :       max_idx = it.index - 1;</span>
+<span class="lineNum">     318 </span>            :     }
+<span class="lineNum">     319 </span>            :   }
+<span class="lineNum">     320 </span><span class="lineCov">          2 :   if (max_idx &gt;= 0 &amp;&amp; max &gt; 0) {</span>
+<span class="lineNum">     321 </span><span class="lineCov">          2 :     retval = al_create();</span>
+<span class="lineNum">     322 </span><span class="lineCov">          2 :     al_copy_all(retval, al_get(sim-&gt;cap, max_idx, &amp;status).data_ptr);</span>
+<span class="lineNum">     323 </span><span class="lineCov">          2 :     assert(status == SMB_SUCCESS);</span>
+<span class="lineNum">     324 </span>            :   }
+<span class="lineNum">     325 </span><span class="lineCov">          2 :   return retval;</span>
+<a name="326"><span class="lineNum">     326 </span>            : }</a>
+<span class="lineNum">     327 </span>            : 
+<span class="lineNum">     328 </span><span class="lineCov">        226 : bool fsm_sim_nondet_capture(fsm *f, const wchar_t *input, smb_al **capture)</span>
+<span class="lineNum">     329 </span>            : {
+<span class="lineNum">     330 </span><span class="lineCov">        226 :   LDEBUG(&amp;fsm_sim_log, &quot;STARTING FSM SIMULATION&quot;);</span>
+<span class="lineNum">     331 </span><span class="lineCov">        226 :   fsm_sim *sim = fsm_sim_nondet_begin(f);</span>
+<span class="lineNum">     332 </span><span class="lineCov">        226 :   int i = 0;</span>
+<span class="lineNum">     333 </span><span class="lineCov">        226 :   int res = fsm_sim_nondet_state(sim, input[i]);</span>
+<span class="lineNum">     334 </span>            :   bool accepted;
+<span class="lineNum">     335 </span>            : 
+<span class="lineNum">     336 </span><span class="lineCov">       1289 :   while (res != FSM_SIM_REJECTED &amp;&amp; res != FSM_SIM_ACCEPTED) {</span>
+<span class="lineNum">     337 </span><span class="lineCov">        837 :     LDEBUG(&amp;fsm_sim_log, &quot;PROCESS INPUT '%lc'&quot;, input[i]);</span>
+<span class="lineNum">     338 </span><span class="lineCov">        837 :     fsm_sim_nondet_step(sim, input[i]);</span>
+<span class="lineNum">     339 </span><span class="lineCov">        837 :     i++;</span>
+<span class="lineNum">     340 </span><span class="lineCov">        837 :     res = fsm_sim_nondet_state(sim, input[i]);</span>
+<span class="lineNum">     341 </span><span class="lineCov">        837 :     LDEBUG(&amp;fsm_sim_log, &quot;Current result: %d\n&quot;, res);</span>
+<span class="lineNum">     342 </span>            :   }
+<span class="lineNum">     343 </span><span class="lineCov">        226 :   accepted = res != FSM_SIM_REJECTED;</span>
+<span class="lineNum">     344 </span>            : 
+<span class="lineNum">     345 </span><span class="lineCov">        226 :   if (accepted &amp;&amp; capture != NULL) {</span>
+<span class="lineNum">     346 </span><span class="lineCov">          2 :     *capture = fsm_sim_get_captures(sim);</span>
+<span class="lineNum">     347 </span>            :   }
+<span class="lineNum">     348 </span>            : 
+<span class="lineNum">     349 </span><span class="lineCov">        226 :   fsm_sim_delete(sim, true);</span>
+<span class="lineNum">     350 </span><span class="lineCov">        226 :   return accepted;</span>
+<a name="351"><span class="lineNum">     351 </span>            : }</a>
+<span class="lineNum">     352 </span>            : 
+<span class="lineNum">     353 </span><span class="lineCov">        224 : bool fsm_sim_nondet(fsm *f, const wchar_t *input)</span>
+<span class="lineNum">     354 </span>            : {
+<span class="lineNum">     355 </span><span class="lineCov">        224 :   return fsm_sim_nondet_capture(f, input, NULL);</span>
+<span class="lineNum">     356 </span>            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.11</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

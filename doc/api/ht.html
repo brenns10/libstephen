@@ -1,0 +1,657 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Hash Table &mdash; libstephen 0.1 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="libstephen 0.1 documentation" href="../index.html"/>
+        <link rel="up" title="Libstephen API Documentation" href="index.html"/>
+        <link rel="next" title="Bitfield" href="bf.html"/>
+        <link rel="prev" title="List Interface" href="list.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> libstephen
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/index.html">Libstephen Tutorial</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Libstephen API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="base.html">Libstephen Base</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ll.html">Linked List</a></li>
+<li class="toctree-l2"><a class="reference internal" href="al.html">Array List</a></li>
+<li class="toctree-l2"><a class="reference internal" href="list.html">List Interface</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Hash Table</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bf.html">Bitfield</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cb.html">Character Buffer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ad.html">Argument Parsing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="log.html">Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ut.html">Unit Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="re.html">Regular Expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="util.html">Utilities &amp; Miscellaneous</a></li>
+<li class="toctree-l2"><a class="reference internal" href="str.html">String Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../lisp/index.html">Lisp Implementation Documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">libstephen</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="index.html">Libstephen API Documentation</a> &raquo;</li>
+      
+    <li>Hash Table</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/api/ht.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="hash-table">
+<h1>Hash Table<a class="headerlink" href="#hash-table" title="Permalink to this headline">¶</a></h1>
+<p>A simple hash table and string hash function. </p>
+<p><dl class="docutils">
+<dt><strong>Author</strong></dt>
+<dd>Stephen Brennan</dd>
+<dt><strong>Date</strong></dt>
+<dd>Created Sunday, 3 August 2014</dd>
+<dt><strong>Copyright</strong></dt>
+<dd>Copyright (c) 2013-2016, Stephen Brennan. Released under the Revised BSD License. See the LICENSE.txt file for details. </dd>
+</dl>
+</p>
+<div class="breathe-sectiondef container">
+<p class="breathe-sectiondef-title rubric">Defines</p>
+<dl class="define">
+<dt id="c.HASH_TABLE_INITIAL_SIZE">
+<span class="target" id="libstephenht_8h_1a83b942531019795bfcc04ac9c23a1d50"></span><code class="descname">HASH_TABLE_INITIAL_SIZE</code><a class="headerlink" href="#c.HASH_TABLE_INITIAL_SIZE" title="Permalink to this definition">¶</a></dt>
+<dd><p>An initial amount of rows in the hash table. Something just off of a power of 2. </p>
+</dd></dl>
+
+<dl class="define">
+<dt id="c.HASH_TABLE_MAX_LOAD_FACTOR">
+<span class="target" id="libstephenht_8h_1a6e0fb71a828355b48f3e5faa9604df60"></span><code class="descname">HASH_TABLE_MAX_LOAD_FACTOR</code><a class="headerlink" href="#c.HASH_TABLE_MAX_LOAD_FACTOR" title="Permalink to this definition">¶</a></dt>
+<dd><p>The maximum load factor that can be allowed in the hash table. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef container">
+<p class="breathe-sectiondef-title rubric">Typedefs</p>
+<dl class="typedef">
+<dt id="c.HASH_FUNCTION">
+<span class="target" id="libstephenht_8h_1a465aa0b0851bf23294f79ee5828a8249"></span><em class="property">typedef </em><code class="descname">(* HASH_FUNCTION)</code><span class="sig-paren">(</span><a class="reference internal" href="base.html#c.DATA" title="DATA">DATA</a><em>&nbsp;toHash</em><span class="sig-paren">)</span><a class="headerlink" href="#c.HASH_FUNCTION" title="Permalink to this definition">¶</a></dt>
+<dd><p>A hash function declaration. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>The hash value </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">toHash</span></code> - <p>The data that will be passed to the hash function. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="typedef">
+<dt>
+<span class="target" id="libstephenht_8h_1ab6ccc586b3d40b05dfe1d741d29960ad"></span><em class="property">typedef </em><code class="descname">smb_ht_mark</code></dt>
+<dd><p>This mark goes in each table cell. </p>
+<p>In order for probing to work properly, you need to be able to tell whether or not a cell is empty because something was deleted out of it, or whether it has always been empty. So, the &#8220;GRAVE&#8221; mark is a grave stone. When you delete a key from a cell, you mark it with a grave stone. And when you&#8217;re searching for a key, you continue when you find a grave marker. </p>
+</dd></dl>
+
+<dl class="typedef">
+<dt id="c.smb_ht_bckt">
+<span class="target" id="libstephenht_8h_1a87c7b0aa5793b547164cb361c2457c4a"></span><em class="property">typedef </em><code class="descname">smb_ht_bckt</code><a class="headerlink" href="#c.smb_ht_bckt" title="Permalink to this definition">¶</a></dt>
+<dd><p>The bucket of a hash table. Contains key,value pairs, and is a singly linked list. </p>
+</dd></dl>
+
+<dl class="typedef">
+<dt id="c.smb_ht">
+<span class="target" id="libstephenht_8h_1a8e3f30adf428f90c80a0c5775550c2b2"></span><em class="property">typedef </em><code class="descname">smb_ht</code><a class="headerlink" href="#c.smb_ht" title="Permalink to this definition">¶</a></dt>
+<dd><p>A hash table data structure. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef container">
+<p class="breathe-sectiondef-title rubric">Enums</p>
+<dl class="enum">
+<dt id="c.smb_ht_mark">
+<span class="target" id="libstephenht_8h_1a0a96165a9a8ebe59f2aaaec9049e9443"></span><em class="property">enum </em><code class="descname">smb_ht_mark</code><a class="headerlink" href="#c.smb_ht_mark" title="Permalink to this definition">¶</a></dt>
+<dd><p>This mark goes in each table cell. </p>
+<p>In order for probing to work properly, you need to be able to tell whether or not a cell is empty because something was deleted out of it, or whether it has always been empty. So, the &#8220;GRAVE&#8221; mark is a grave stone. When you delete a key from a cell, you mark it with a grave stone. And when you&#8217;re searching for a key, you continue when you find a grave marker. </p>
+<p><em>Values:</em></p>
+<dl class="enumvalue">
+<dt id="c.HT_EMPTY">
+<span class="target" id="libstephenht_8h_1a0a96165a9a8ebe59f2aaaec9049e9443a0d1bef9ba062fe3fa38dd20fbb93c02f"></span><code class="descname">HT_EMPTY</code> = 0<a class="headerlink" href="#c.HT_EMPTY" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="enumvalue">
+<dt id="c.HT_FULL">
+<span class="target" id="libstephenht_8h_1a0a96165a9a8ebe59f2aaaec9049e9443a30ab608595348190813254221ccb6d27"></span><code class="descname">HT_FULL</code><a class="headerlink" href="#c.HT_FULL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="enumvalue">
+<dt id="c.HT_GRAVE">
+<span class="target" id="libstephenht_8h_1a0a96165a9a8ebe59f2aaaec9049e9443a7d1be735021aad0636f64d8265ff823e"></span><code class="descname">HT_GRAVE</code><a class="headerlink" href="#c.HT_GRAVE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef container">
+<p class="breathe-sectiondef-title rubric">Functions</p>
+<dl class="function">
+<dt id="c.ht_init">
+<span class="target" id="libstephenht_8h_1a6afde110c3289cb472117656701f7c88"></span>void <code class="descname">ht_init</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_ht" title="smb_ht">smb_ht</a>  *<em>&nbsp;table</em>, <a class="reference internal" href="#c.HASH_FUNCTION" title="HASH_FUNCTION">HASH_FUNCTION</a><em>&nbsp;hash_func</em>, <a class="reference internal" href="base.html#c.DATA_COMPARE" title="DATA_COMPARE">DATA_COMPARE</a><em>&nbsp;equal</em><span class="sig-paren">)</span><a class="headerlink" href="#c.ht_init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize a hash table in memory already allocated. </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">table</span></code> - <p>A pointer to the table to initialize. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">hash_func</span></code> - <p>A hash function for the table. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">equal</span></code> - <p>A comparison function for <a class="reference internal" href="base.html#libstephenunion_d_a_t_a"><span class="std std-ref">DATA</span></a>. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.ht_create">
+<span class="target" id="libstephenht_8h_1a703656e73ecab236ad303a3e98291c44"></span><a class="reference internal" href="#c.smb_ht" title="smb_ht">smb_ht</a>* <code class="descname">ht_create</code><span class="sig-paren">(</span><a class="reference internal" href="#c.HASH_FUNCTION" title="HASH_FUNCTION">HASH_FUNCTION</a><em>&nbsp;hash_func</em>, <a class="reference internal" href="base.html#c.DATA_COMPARE" title="DATA_COMPARE">DATA_COMPARE</a><em>&nbsp;equal</em><span class="sig-paren">)</span><a class="headerlink" href="#c.ht_create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Allocate and initialize a hash table. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>A pointer to the new hash table. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">hash_func</span></code> - <p>A function that takes one <a class="reference internal" href="base.html#libstephenunion_d_a_t_a"><span class="std std-ref">DATA</span></a> and returns a hash value generated from it. It should be a good hash function. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">equal</span></code> - <p>A comparison function for <a class="reference internal" href="base.html#libstephenunion_d_a_t_a"><span class="std std-ref">DATA</span></a>. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.ht_destroy_act">
+<span class="target" id="libstephenht_8h_1a5ccfba9e2426f5e1f444003054a503e0"></span>void <code class="descname">ht_destroy_act</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_ht" title="smb_ht">smb_ht</a>  *<em>&nbsp;table</em>, <a class="reference internal" href="base.html#c.DATA_ACTION" title="DATA_ACTION">DATA_ACTION</a><em>&nbsp;deleter</em><span class="sig-paren">)</span><a class="headerlink" href="#c.ht_destroy_act" title="Permalink to this definition">¶</a></dt>
+<dd><p>Free resources used by the hash table, but does not free the pointer itself. Perform an action on the data as it is deleted. </p>
+<p>Useful for stack valued hash tables. A deleter must be specified in this function call. <dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">table</span></code> - <p>The table to destroy. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">deleter</span></code> - <p>The deletion action on the data. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.ht_destroy">
+<span class="target" id="libstephenht_8h_1a6d003432e6c0919bb4e801e07a7db7f5"></span>void <code class="descname">ht_destroy</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_ht" title="smb_ht">smb_ht</a>  *<em>&nbsp;table</em><span class="sig-paren">)</span><a class="headerlink" href="#c.ht_destroy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Free any resources used by the hash table, but doesn&#8217;t free the pointer. Doesn&#8217;t perform any actions on the data as it is deleted. </p>
+<p>If pointers are contained within the hash table, they are not freed. Use <a class="reference internal" href="#libstephenht_8h_1a5ccfba9e2426f5e1f444003054a503e0"><span class="std std-ref">ht_destroy_act()</span></a> to specify a deletion action on the hash table. <dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">table</span></code> - <p>The table to destroy. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.ht_delete_act">
+<span class="target" id="libstephenht_8h_1ac866abb3fc0cce86f90688a8f788366d"></span>void <code class="descname">ht_delete_act</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_ht" title="smb_ht">smb_ht</a>  *<em>&nbsp;table</em>, <a class="reference internal" href="base.html#c.DATA_ACTION" title="DATA_ACTION">DATA_ACTION</a><em>&nbsp;deleter</em><span class="sig-paren">)</span><a class="headerlink" href="#c.ht_delete_act" title="Permalink to this definition">¶</a></dt>
+<dd><p>Free the hash table and its resources. Perform an action on each data before freeing the table. Useful for freeing pointers stored in the table. </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">table</span></code> - <p>The table to free. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">deleter</span></code> - <p>The action to perform on each value in the hash table before deletion. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.ht_delete">
+<span class="target" id="libstephenht_8h_1a541e1fd695222b176b9c041fb8c038eb"></span>void <code class="descname">ht_delete</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_ht" title="smb_ht">smb_ht</a>  *<em>&nbsp;table</em><span class="sig-paren">)</span><a class="headerlink" href="#c.ht_delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Free the hash table and its resources. No pointers contained in the table will be freed. </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">table</span></code> - <p>The table to free. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.ht_insert">
+<span class="target" id="libstephenht_8h_1a749dbe7e64edc0c0670193c4d7940fa8"></span>void <code class="descname">ht_insert</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_ht" title="smb_ht">smb_ht</a>  *<em>&nbsp;table</em>, <a class="reference internal" href="base.html#c.DATA" title="DATA">DATA</a><em>&nbsp;key</em>, <a class="reference internal" href="base.html#c.DATA" title="DATA">DATA</a><em>&nbsp;value</em><span class="sig-paren">)</span><a class="headerlink" href="#c.ht_insert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Insert data into the hash table. </p>
+<p>Expands the hash table if the load factor is below a threshold. If the key already exists in the table, then the function will overwrite it with the new data provided. <dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">table</span></code> - <p>A pointer to the hash table. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">key</span></code> - <p>The key to insert. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">value</span></code> - <p>The value to insert at the key. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.ht_remove_act">
+<span class="target" id="libstephenht_8h_1aa2adf9ee7f4f30d51a03a25dc594cad3"></span>void <code class="descname">ht_remove_act</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_ht" title="smb_ht">smb_ht</a>  *<em>&nbsp;table</em>, <a class="reference internal" href="base.html#c.DATA" title="DATA">DATA</a><em>&nbsp;key</em>, <a class="reference internal" href="base.html#c.DATA_ACTION" title="DATA_ACTION">DATA_ACTION</a><em>&nbsp;deleter</em>, <a class="reference internal" href="base.html#c.smb_status" title="smb_status">smb_status</a>  *<em>&nbsp;status</em><span class="sig-paren">)</span><a class="headerlink" href="#c.ht_remove_act" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove the key, value pair stored in the hash table. </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">table</span></code> - <p>A pointer to the hash table. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">key</span></code> - <p>The key to delete. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">deleter</span></code> - <p>The action to perform on the value before removing it. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">status</span></code> - <p>Status variable. </p>
+</li>
+</ul>
+</dd>
+<dt><strong>Exceptions</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">SMB_NOT_FOUND_ERROR</span></code> - <p>If an item with the given key is not found. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.ht_remove">
+<span class="target" id="libstephenht_8h_1a9f747cf3068fb047d818cd9e913c0e5e"></span>void <code class="descname">ht_remove</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_ht" title="smb_ht">smb_ht</a>  *<em>&nbsp;table</em>, <a class="reference internal" href="base.html#c.DATA" title="DATA">DATA</a><em>&nbsp;key</em>, <a class="reference internal" href="base.html#c.smb_status" title="smb_status">smb_status</a>  *<em>&nbsp;status</em><span class="sig-paren">)</span><a class="headerlink" href="#c.ht_remove" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove the key, value pair stored in the hash table. </p>
+<p>This function does not call a deleter on the stored data. <dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">table</span></code> - <p>A pointer to the hash table. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">key</span></code> - <p>The key to delete. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">status</span></code> - <p>Status variable. </p>
+</li>
+</ul>
+</dd>
+<dt><strong>Exceptions</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">SMB_NOT_FOUND_ERROR</span></code> - <p>If an item with the given key is not found. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.ht_get">
+<span class="target" id="libstephenht_8h_1a0c20a3162890a350e9222e09bcc338ea"></span><a class="reference internal" href="base.html#c.DATA" title="DATA">DATA</a> <code class="descname">ht_get</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_ht" title="smb_ht">smb_ht</a>  const *<em>&nbsp;table</em>, <a class="reference internal" href="base.html#c.DATA" title="DATA">DATA</a><em>&nbsp;key</em>, <a class="reference internal" href="base.html#c.smb_status" title="smb_status">smb_status</a>  *<em>&nbsp;status</em><span class="sig-paren">)</span><a class="headerlink" href="#c.ht_get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the value associated with the key provided. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>The value associated the key. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">table</span></code> - <p>A pointer to the hash table. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">key</span></code> - <p>The key whose value to retrieve. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">status</span></code> - <p>Status variable. </p>
+</li>
+</ul>
+</dd>
+<dt><strong>Exceptions</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">NOT_FOUND_ERROR</span></code> - <p></p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.ht_contains">
+<span class="target" id="libstephenht_8h_1a6b7b9df3f242a57e531fb21b4ef3c722"></span>bool <code class="descname">ht_contains</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_ht" title="smb_ht">smb_ht</a>  const *<em>&nbsp;table</em>, <a class="reference internal" href="base.html#c.DATA" title="DATA">DATA</a><em>&nbsp;key</em><span class="sig-paren">)</span><a class="headerlink" href="#c.ht_contains" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return true when a key is contained in the table. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>Whether the key is present. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">table</span></code> - <p>A pointer to the hash table. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">key</span></code> - <p>The key to search for. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.ht_get_iter">
+<span class="target" id="libstephenht_8h_1ae88e492a6b6672fc0bbd3d7a3a651e73"></span><a class="reference internal" href="list.html#c.smb_iter" title="smb_iter">smb_iter</a> <code class="descname">ht_get_iter</code><span class="sig-paren">(</span>const  <a class="reference internal" href="#c.smb_ht" title="smb_ht">smb_ht</a>  *<em>&nbsp;ht</em><span class="sig-paren">)</span><a class="headerlink" href="#c.ht_get_iter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an iterator over the keys of the table. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>An iterator struct. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">ht</span></code> - <p>A pointer to the hash table. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.ht_string_hash">
+<span class="target" id="libstephenht_8h_1ab8f1afde3ba45834d8d337d55b349463"></span>unsigned int <code class="descname">ht_string_hash</code><span class="sig-paren">(</span><a class="reference internal" href="base.html#c.DATA" title="DATA">DATA</a><em>&nbsp;data</em><span class="sig-paren">)</span><a class="headerlink" href="#c.ht_string_hash" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the hash of the data, interpreting it as a string. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>The hash value of the string. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">data</span></code> - <p>The string to hash, assuming that the value contained is a char*. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.ht_print">
+<span class="target" id="libstephenht_8h_1ac949d48d7cf3d65121104ce21bf570b1"></span>void <code class="descname">ht_print</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_ht" title="smb_ht">smb_ht</a>  const *<em>&nbsp;table</em>, int<em>&nbsp;full_mode</em><span class="sig-paren">)</span><a class="headerlink" href="#c.ht_print" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the entire hash table. </p>
+<p>This function is useful for diagnostics. It can show every row in the table (with full_mode) so you can see how well entries are distributed in the table. Or, it can be compact and show just the rows with data. <dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">table</span></code> - <p>The table to print. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">full_mode</span></code> - <p>Whether to print every row in the hash table. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.ht_next_size">
+<span class="target" id="libstephenht_8h_1a2f82dfc935dbbd2017d71e04fab4725a"></span>int <code class="descname">ht_next_size</code><span class="sig-paren">(</span>int<em>&nbsp;current</em><span class="sig-paren">)</span><a class="headerlink" href="#c.ht_next_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>The next hash table size. Not really public, but shared for hta. </p>
+</dd></dl>
+
+</div>
+<dl class="struct">
+<dt>
+<span class="target" id="libstephenstructsmb__ht__bckt"></span><em class="property">struct </em><code class="descname">smb_ht_bckt</code></dt>
+<dd><em>#include &lt;ht.h&gt;</em><p>The bucket of a hash table. Contains key,value pairs, and is a singly linked list. </p>
+<div class="breathe-sectiondef container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt id="c.key">
+<span class="target" id="libstephenstructsmb__ht__bckt_1a7a9778b087c9f52b737c2a4ccb1b9ee4"></span><a class="reference internal" href="base.html#c.DATA" title="DATA">DATA</a> <code class="descname">key</code><a class="headerlink" href="#c.key" title="Permalink to this definition">¶</a></dt>
+<dd><p>The key of this entry. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.value">
+<span class="target" id="libstephenstructsmb__ht__bckt_1ac8e1eb3e0293d1ba17bd0f1ff2cbacd1"></span><a class="reference internal" href="base.html#c.DATA" title="DATA">DATA</a> <code class="descname">value</code><a class="headerlink" href="#c.value" title="Permalink to this definition">¶</a></dt>
+<dd><p>The value of this entry. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.mark">
+<span class="target" id="libstephenstructsmb__ht__bckt_1a2b39b57e47be4efb3e1f184ec6fd6c15"></span><a class="reference internal" href="#c.smb_ht_mark" title="smb_ht_mark">smb_ht_mark</a> <code class="descname">mark</code><a class="headerlink" href="#c.mark" title="Permalink to this definition">¶</a></dt>
+<dd><p>Marker for whether or not the table is full or empty. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="struct">
+<dt>
+<span class="target" id="libstephenstructsmb__ht"></span><em class="property">struct </em><code class="descname">smb_ht</code></dt>
+<dd><em>#include &lt;ht.h&gt;</em><p>A hash table data structure. </p>
+<div class="breathe-sectiondef container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt id="c.length">
+<span class="target" id="libstephenstructsmb__ht_1ac8d42bcd4a44e078047ccd7291059238"></span>unsigned int <code class="descname">length</code><a class="headerlink" href="#c.length" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of items in the hash table. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.allocated">
+<span class="target" id="libstephenstructsmb__ht_1a44ac4c6a3693f3d2fa34a50428e42237"></span>unsigned int <code class="descname">allocated</code><a class="headerlink" href="#c.allocated" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of slots allocated in the hash table. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.hash">
+<span class="target" id="libstephenstructsmb__ht_1a15ae60834ae1a80149756acb7714d880"></span><a class="reference internal" href="#c.HASH_FUNCTION" title="HASH_FUNCTION">HASH_FUNCTION</a> <code class="descname">hash</code><a class="headerlink" href="#c.hash" title="Permalink to this definition">¶</a></dt>
+<dd><p>The hash function for this hash table. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.equal">
+<span class="target" id="libstephenstructsmb__ht_1aed61c5b760d271295f584036a842cf6e"></span><a class="reference internal" href="base.html#c.DATA_COMPARE" title="DATA_COMPARE">DATA_COMPARE</a> <code class="descname">equal</code><a class="headerlink" href="#c.equal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Function to use to compare equality. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.table">
+<span class="target" id="libstephenstructsmb__ht_1a0d0d15e96e22e7131182abd6a834c0e4"></span>struct <a class="reference internal" href="#c.smb_ht_bckt" title="smb_ht_bckt">smb_ht_bckt</a>* <code class="descname">table</code><a class="headerlink" href="#c.table" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pointer to the data of the table. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="bf.html" class="btn btn-neutral float-right" title="Bitfield" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="list.html" class="btn btn-neutral" title="List Interface" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2013-2016, Stephen Brennan.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

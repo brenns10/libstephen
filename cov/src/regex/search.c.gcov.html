@@ -1,0 +1,174 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+
+<html lang="en">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>LCOV - coverage.info - src/regex/search.c</title>
+  <link rel="stylesheet" type="text/css" href="../../gcov.css">
+</head>
+
+<body>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="title">LCOV - code coverage report</td></tr>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+
+    <tr>
+      <td width="100%">
+        <table cellpadding=1 border=0 width="100%">
+          <tr>
+            <td width="10%" class="headerItem">Current view:</td>
+            <td width="35%" class="headerValue"><a href="../../index.html">top level</a> - <a href="index.html">src/regex</a> - search.c<span style="font-size: 80%;"> (source / <a href="search.c.func-sort-c.html">functions</a>)</span></td>
+            <td width="5%"></td>
+            <td width="15%"></td>
+            <td width="10%" class="headerCovTableHead">Hit</td>
+            <td width="10%" class="headerCovTableHead">Total</td>
+            <td width="15%" class="headerCovTableHead">Coverage</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Test:</td>
+            <td class="headerValue">coverage.info</td>
+            <td></td>
+            <td class="headerItem">Lines:</td>
+            <td class="headerCovTableEntry">31</td>
+            <td class="headerCovTableEntry">31</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr>
+            <td class="headerItem">Date:</td>
+            <td class="headerValue">2016-03-11 22:05:55</td>
+            <td></td>
+            <td class="headerItem">Functions:</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
+          </tr>
+          <tr><td><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+        </table>
+      </td>
+    </tr>
+
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+  </table>
+
+  <table cellpadding=0 cellspacing=0 border=0>
+    <tr>
+      <td><br></td>
+    </tr>
+    <tr>
+      <td>
+<pre class="sourceHeading">          Line data    Source code</pre>
+<pre class="source">
+<a name="1"><span class="lineNum">       1 </span>            : /***************************************************************************//**</a>
+<span class="lineNum">       2 </span>            : 
+<span class="lineNum">       3 </span>            :   @file         regex/search.c
+<span class="lineNum">       4 </span>            : 
+<span class="lineNum">       5 </span>            :   @author       Stephen Brennan
+<span class="lineNum">       6 </span>            : 
+<span class="lineNum">       7 </span>            :   @date         Created Saturday, 26 July 2014
+<span class="lineNum">       8 </span>            : 
+<span class="lineNum">       9 </span>            :   @brief        Regular expression search functions.
+<span class="lineNum">      10 </span>            : 
+<span class="lineNum">      11 </span>            :   @copyright    Copyright (c) 2015, Stephen Brennan.  Released under the Revised
+<span class="lineNum">      12 </span>            :                 BSD License.  See the LICENSE.txt file for details.
+<span class="lineNum">      13 </span>            : 
+<span class="lineNum">      14 </span>            : *******************************************************************************/
+<span class="lineNum">      15 </span>            : 
+<span class="lineNum">      16 </span>            : #include &quot;libstephen/regex.h&quot; // functions we're implementing
+<span class="lineNum">      17 </span>            : #include &quot;libstephen/fsm.h&quot;   // for FSM's
+<a name="18"><span class="lineNum">      18 </span>            : #include &quot;libstephen/al.h&quot;    // for array lists</a>
+<span class="lineNum">      19 </span>            : 
+<span class="lineNum">      20 </span><span class="lineCov">          3 : smb_al *fsm_search(fsm *regex_fsm, const wchar_t *srchText, bool greedy,</span>
+<span class="lineNum">      21 </span>            :                    bool overlap)
+<span class="lineNum">      22 </span>            : {
+<span class="lineNum">      23 </span>            :   fsm_sim *curr_sim;
+<span class="lineNum">      24 </span><span class="lineCov">          3 :   int start = 0, length, last_length, res;</span>
+<span class="lineNum">      25 </span><span class="lineCov">          3 :   smb_al *results = al_create();</span>
+<span class="lineNum">      26 </span>            :   DATA d;
+<span class="lineNum">      27 </span>            : 
+<span class="lineNum">      28 </span>            :   SMB_DP(&quot;STARTING FSM SEARCH\n&quot;);
+<span class="lineNum">      29 </span>            : 
+<span class="lineNum">      30 </span>            :   // OUTER WHILE: iterate over starting characters.
+<span class="lineNum">      31 </span><span class="lineCov">         36 :   while (srchText[start] != L'\0') {</span>
+<span class="lineNum">      32 </span>            :     // Simulate the FSM at each character.
+<span class="lineNum">      33 </span><span class="lineCov">         31 :     curr_sim = fsm_sim_nondet_begin(regex_fsm);</span>
+<span class="lineNum">      34 </span><span class="lineCov">         31 :     length = 0;</span>
+<span class="lineNum">      35 </span><span class="lineCov">         31 :     last_length = -1;</span>
+<span class="lineNum">      36 </span><span class="lineCov">         31 :     res = -1;</span>
+<span class="lineNum">      37 </span>            : 
+<span class="lineNum">      38 </span>            :     SMB_DP(&quot;=&gt; Begin simulation at index %d: '%lc'.\n&quot;, start, srchText[start]);
+<span class="lineNum">      39 </span>            : 
+<span class="lineNum">      40 </span>            :     // INNER WHILE: iterate over lengths.
+<span class="lineNum">      41 </span><span class="lineCov">        119 :     while (srchText[start + length] != L'\0' &amp;&amp; res != FSM_SIM_REJECTED) {</span>
+<span class="lineNum">      42 </span>            :       // Step through the FSM simulation until we hit the end of the string, are
+<span class="lineNum">      43 </span>            :       // rejected, or are accepted.
+<span class="lineNum">      44 </span><span class="lineCov">         80 :       fsm_sim_nondet_step(curr_sim, srchText[start + length]);</span>
+<span class="lineNum">      45 </span><span class="lineCov">         80 :       res = fsm_sim_nondet_state(curr_sim, srchText[start + length]);</span>
+<span class="lineNum">      46 </span><span class="lineCov">         80 :       length++;</span>
+<span class="lineNum">      47 </span>            :       SMB_DP(&quot;   =&gt; On step (length %d), res=%d.\n&quot;, length, res);
+<span class="lineNum">      48 </span>            : 
+<span class="lineNum">      49 </span>            :       // When we encounter a possible match, mark it.  We will only return the
+<span class="lineNum">      50 </span>            :       // largest (last) match for each simulation.
+<span class="lineNum">      51 </span><span class="lineCov">         80 :       if (res == FSM_SIM_ACCEPTING || res == FSM_SIM_ACCEPTED) {</span>
+<span class="lineNum">      52 </span><span class="lineCov">         44 :         last_length = length;</span>
+<span class="lineNum">      53 </span>            :         SMB_DP(&quot;      Currently accepting!\n&quot;);
+<span class="lineNum">      54 </span>            :       }
+<span class="lineNum">      55 </span>            :       // If the search reports input exhausted, we leave the loop.
+<span class="lineNum">      56 </span><span class="lineCov">         80 :       if (res == FSM_SIM_ACCEPTED || res == FSM_SIM_REJECTED) {</span>
+<span class="lineNum">      57 </span>            :         break;
+<span class="lineNum">      58 </span>            :       }
+<span class="lineNum">      59 </span>            :     } // END INNER WHILE
+<span class="lineNum">      60 </span>            : 
+<span class="lineNum">      61 </span>            :     // Clean up the simulation.
+<span class="lineNum">      62 </span><span class="lineCov">         31 :     fsm_sim_delete(curr_sim, true);</span>
+<span class="lineNum">      63 </span>            : 
+<span class="lineNum">      64 </span><span class="lineCov">         31 :     if (last_length != -1) {</span>
+<span class="lineNum">      65 </span>            :       // If we encounter a match during this simulation, record it.
+<span class="lineNum">      66 </span>            :       SMB_DP(&quot;=&gt; Found match of length %d.\n&quot;, last_length);
+<span class="lineNum">      67 </span><span class="lineCov">         11 :       d.data_ptr = (void *) regex_hit_create(start, last_length);</span>
+<span class="lineNum">      68 </span><span class="lineCov">         11 :       al_append(results, d);</span>
+<span class="lineNum">      69 </span>            : 
+<span class="lineNum">      70 </span><span class="lineCov">         11 :       if (greedy) {</span>
+<span class="lineNum">      71 </span>            :         SMB_DP(&quot;=&gt; Greedy return.\n&quot;);
+<span class="lineNum">      72 </span><span class="lineCov">          1 :         return results; // return after first hit</span>
+<span class="lineNum">      73 </span>            :       }
+<span class="lineNum">      74 </span>            : 
+<span class="lineNum">      75 </span><span class="lineCov">         10 :       if (overlap) {</span>
+<span class="lineNum">      76 </span>            :         // If we allow overlapping hits, we only need to move one character
+<span class="lineNum">      77 </span>            :         // over.
+<span class="lineNum">      78 </span><span class="lineCov">          7 :         start++;</span>
+<span class="lineNum">      79 </span>            :       } else {
+<span class="lineNum">      80 </span>            :         // If we don't allow overlapping hits, the next search has to start
+<span class="lineNum">      81 </span>            :         // after the end of this hit.
+<span class="lineNum">      82 </span><span class="lineCov">          3 :         start += last_length;</span>
+<span class="lineNum">      83 </span>            :       }
+<span class="lineNum">      84 </span>            :     } else {
+<span class="lineNum">      85 </span><span class="lineCov">         20 :       start++;</span>
+<span class="lineNum">      86 </span>            :     }
+<span class="lineNum">      87 </span>            :   } // END OUTER WHILE
+<span class="lineNum">      88 </span><span class="lineCov">          2 :   return results;</span>
+<a name="89"><span class="lineNum">      89 </span>            : }</a>
+<span class="lineNum">      90 </span>            : 
+<span class="lineNum">      91 </span><span class="lineCov">          3 : smb_al *regex_search(const wchar_t *regex, const wchar_t *srchText, bool greedy,</span>
+<span class="lineNum">      92 </span>            :                      bool overlap)
+<span class="lineNum">      93 </span>            : {
+<span class="lineNum">      94 </span><span class="lineCov">          3 :   fsm *regex_fsm = regex_parse(regex);</span>
+<span class="lineNum">      95 </span><span class="lineCov">          3 :   smb_al *return_value = fsm_search(regex_fsm, srchText, greedy, overlap);</span>
+<span class="lineNum">      96 </span><span class="lineCov">          3 :   fsm_delete(regex_fsm, true);</span>
+<span class="lineNum">      97 </span><span class="lineCov">          3 :   return return_value;</span>
+<span class="lineNum">      98 </span>            : }
+</pre>
+      </td>
+    </tr>
+  </table>
+  <br>
+
+  <table width="100%" border=0 cellspacing=0 cellpadding=0>
+    <tr><td class="ruler"><img src="../../glass.png" width=3 height=3 alt=""></td></tr>
+    <tr><td class="versionInfo">Generated by: <a href="http://ltp.sourceforge.net/coverage/lcov.php" target="_parent">LCOV version 1.11</a></td></tr>
+  </table>
+  <br>
+
+</body>
+</html>

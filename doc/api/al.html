@@ -1,0 +1,674 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Array List &mdash; libstephen 0.1 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="libstephen 0.1 documentation" href="../index.html"/>
+        <link rel="up" title="Libstephen API Documentation" href="index.html"/>
+        <link rel="next" title="List Interface" href="list.html"/>
+        <link rel="prev" title="Linked List" href="ll.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> libstephen
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../tutorial/index.html">Libstephen Tutorial</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Libstephen API Documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="base.html">Libstephen Base</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ll.html">Linked List</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Array List</a></li>
+<li class="toctree-l2"><a class="reference internal" href="list.html">List Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ht.html">Hash Table</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bf.html">Bitfield</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cb.html">Character Buffer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ad.html">Argument Parsing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="log.html">Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ut.html">Unit Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="re.html">Regular Expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="util.html">Utilities &amp; Miscellaneous</a></li>
+<li class="toctree-l2"><a class="reference internal" href="str.html">String Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../lisp/index.html">Lisp Implementation Documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">libstephen</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="index.html">Libstephen API Documentation</a> &raquo;</li>
+      
+    <li>Array List</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/api/al.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="array-list">
+<h1>Array List<a class="headerlink" href="#array-list" title="Permalink to this headline">¶</a></h1>
+<p>An array based implementation of the list interface. </p>
+<p>
+arraylist.c provides an array implementation of the list interface. It has its own set of functions, prefixed with al_*, that do the same operations as the linked list ones. It also supports the use of the generic list interface, so both array lists and linked lists can be used interchangeably, in C!<dl class="docutils">
+<dt><strong>Author</strong></dt>
+<dd>Stephen Brennan</dd>
+<dt><strong>Date</strong></dt>
+<dd>Created Sunday, 3 August 2014</dd>
+</dl>
+</p>
+<p><dl class="docutils">
+<dt><strong>Copyright</strong></dt>
+<dd>Copyright (c) 2013-2016, Stephen Brennan. Released under the Revised BSD License. See the LICENSE.txt file for details. </dd>
+</dl>
+</p>
+<div class="breathe-sectiondef container">
+<p class="breathe-sectiondef-title rubric">Typedefs</p>
+<dl class="typedef">
+<dt id="c.smb_al">
+<span class="target" id="libstephenal_8h_1a2bf15e3f972eabeeed8c94251a9a80f2"></span><em class="property">typedef </em><code class="descname">smb_al</code><a class="headerlink" href="#c.smb_al" title="Permalink to this definition">¶</a></dt>
+<dd><p>The actual array list data type. </p>
+<p>&#8220;Bare&#8221; functions return a pointer to this structure. You should not use any of the members, as they are implementation specific and subject to change. </p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef container">
+<p class="breathe-sectiondef-title rubric">Functions</p>
+<dl class="function">
+<dt id="c.al_init">
+<span class="target" id="libstephenal_8h_1ac3cacf3f0b5a1010f1673cdec5899746"></span>void <code class="descname">al_init</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_al" title="smb_al">smb_al</a>  *<em>&nbsp;list</em><span class="sig-paren">)</span><a class="headerlink" href="#c.al_init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize an empty array list in memory already allocated. </p>
+<p>This function is useful if you would like to declare your array list on the stack and initialize it, rather than allocating space on the heap. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.al_create">
+<span class="target" id="libstephenal_8h_1a18607711104fad1288e322b03e41c596"></span><a class="reference internal" href="#c.smb_al" title="smb_al">smb_al</a>* <code class="descname">al_create</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#c.al_create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Allocate and initialize an empty array list. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>A pointer to the new array list. </dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.al_destroy">
+<span class="target" id="libstephenal_8h_1aaeb5e5c055ef08ebafeafd6be202a2f3"></span>void <code class="descname">al_destroy</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_al" title="smb_al">smb_al</a>  *<em>&nbsp;list</em><span class="sig-paren">)</span><a class="headerlink" href="#c.al_destroy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Free the resources used by the array list, but don&#8217;t actually free the pointer given. </p>
+<p>This is useful if you have a stack-allocated array list. <dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>A pointer to the list to &#8216;destroy.&#8217; </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.al_delete">
+<span class="target" id="libstephenal_8h_1a250be7ab3e3a65e7c9ea2df39aa97ebb"></span>void <code class="descname">al_delete</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_al" title="smb_al">smb_al</a>  *<em>&nbsp;list</em><span class="sig-paren">)</span><a class="headerlink" href="#c.al_delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Free the resources and the pointer to the array list. </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>A pointer to the list to delete. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.al_create_list">
+<span class="target" id="libstephenal_8h_1a70d651a20d1df9ff75d4f29ca0a5b8b7"></span><a class="reference internal" href="list.html#c.smb_list" title="smb_list">smb_list</a> <code class="descname">al_create_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#c.al_create_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a generic list as an array list. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>A generic list pointing to a new array list. </dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.al_cast_to_list">
+<span class="target" id="libstephenal_8h_1a4551ab11cdb215f9a4bd825be9d2d25f"></span><a class="reference internal" href="list.html#c.smb_list" title="smb_list">smb_list</a> <code class="descname">al_cast_to_list</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_al" title="smb_al">smb_al</a>  *<em>&nbsp;list</em><span class="sig-paren">)</span><a class="headerlink" href="#c.al_cast_to_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cast an array list to a generic list. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>A generic list pointing to the same array list. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>The list to cast. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.al_append">
+<span class="target" id="libstephenal_8h_1af55a49188f7b1a5f0bca96e418585f6e"></span>void <code class="descname">al_append</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_al" title="smb_al">smb_al</a>  *<em>&nbsp;list</em>, <a class="reference internal" href="base.html#c.DATA" title="DATA">DATA</a><em>&nbsp;newData</em><span class="sig-paren">)</span><a class="headerlink" href="#c.al_append" title="Permalink to this definition">¶</a></dt>
+<dd><p>Append an item to the end of a list. </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>A pointer to the list to append to. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">newData</span></code> - <p>The data to append </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.al_prepend">
+<span class="target" id="libstephenal_8h_1a405b21f1ec73d042f308106c8cc0125f"></span>void <code class="descname">al_prepend</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_al" title="smb_al">smb_al</a>  *<em>&nbsp;list</em>, <a class="reference internal" href="base.html#c.DATA" title="DATA">DATA</a><em>&nbsp;newData</em><span class="sig-paren">)</span><a class="headerlink" href="#c.al_prepend" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prepend an item to the beginning of the list. </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>A pointer to the list to prepend to. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">newData</span></code> - <p>The data to prepend. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.al_get">
+<span class="target" id="libstephenal_8h_1ae7575d45f393112c41d4f14da050cfb6"></span><a class="reference internal" href="base.html#c.DATA" title="DATA">DATA</a> <code class="descname">al_get</code><span class="sig-paren">(</span>const  <a class="reference internal" href="#c.smb_al" title="smb_al">smb_al</a>  *<em>&nbsp;list</em>, int<em>&nbsp;index</em>, <a class="reference internal" href="base.html#c.smb_status" title="smb_status">smb_status</a>  *<em>&nbsp;status</em><span class="sig-paren">)</span><a class="headerlink" href="#c.al_get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the data at a specified index. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>The data at the specified index. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>A pointer to the list to get from. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">index</span></code> - <p>The index to get from the list. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">status</span></code> - <p>Status variable. </p>
+</li>
+</ul>
+</dd>
+<dt><strong>Exceptions</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">SMB_INDEX_ERROR</span></code> - <p>If the specified index was out of range. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.al_remove">
+<span class="target" id="libstephenal_8h_1a2e6935b306640060057a42f8c8014112"></span>void <code class="descname">al_remove</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_al" title="smb_al">smb_al</a>  *<em>&nbsp;list</em>, int<em>&nbsp;index</em>, <a class="reference internal" href="base.html#c.smb_status" title="smb_status">smb_status</a>  *<em>&nbsp;status</em><span class="sig-paren">)</span><a class="headerlink" href="#c.al_remove" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes the node at the given index, if the index exists. </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>A pointer to the list to remove from. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">index</span></code> - <p>The index to remove from the list. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">status</span></code> - <p>Status variable. </p>
+</li>
+</ul>
+</dd>
+<dt><strong>Exceptions</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">SMB_INDEX_ERROR</span></code> - <p>If the specified index was out of range. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.al_insert">
+<span class="target" id="libstephenal_8h_1ab376bc79ed228b6f377bec52e9295f7d"></span>void <code class="descname">al_insert</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_al" title="smb_al">smb_al</a>  *<em>&nbsp;list</em>, int<em>&nbsp;index</em>, <a class="reference internal" href="base.html#c.DATA" title="DATA">DATA</a><em>&nbsp;newData</em><span class="sig-paren">)</span><a class="headerlink" href="#c.al_insert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Inserts an item at the specified location in the list. </p>
+<p>If the location is not the end of the list, every item at the given index is shifted up one index. If the provided location is less than 0, the location will be treated as 0. If the provided location is greater than the length of the list, the item will be added to the end of the list. <dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>A pointer to the list to insert into. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">index</span></code> - <p>The index to insert at. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">newData</span></code> - <p>The data to insert. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.al_set">
+<span class="target" id="libstephenal_8h_1a8a12f7d6bcdf4ec78dbb9efae94eb328"></span>void <code class="descname">al_set</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_al" title="smb_al">smb_al</a>  *<em>&nbsp;list</em>, int<em>&nbsp;index</em>, <a class="reference internal" href="base.html#c.DATA" title="DATA">DATA</a><em>&nbsp;newData</em>, <a class="reference internal" href="base.html#c.smb_status" title="smb_status">smb_status</a>  *<em>&nbsp;status</em><span class="sig-paren">)</span><a class="headerlink" href="#c.al_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the item at the given index. </p>
+<p>This can only be used to set *existing* indices. If the list is of size 10 and you try to set element 10 in order to expand it, you will fail. You need to use al_insert or al_append for that. <dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>A pointer to the list to modify. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">index</span></code> - <p>The index to set. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">newData</span></code> - <p>The new data. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">status</span></code> - <p>Status variable. </p>
+</li>
+</ul>
+</dd>
+<dt><strong>Exceptions</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">SMB_INDEX_ERROR</span></code> - <p>If the provided index was out of range. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.al_push_back">
+<span class="target" id="libstephenal_8h_1a8edb13307adf97fd11e12300884faf8a"></span>void <code class="descname">al_push_back</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_al" title="smb_al">smb_al</a>  *<em>&nbsp;list</em>, <a class="reference internal" href="base.html#c.DATA" title="DATA">DATA</a><em>&nbsp;newData</em><span class="sig-paren">)</span><a class="headerlink" href="#c.al_push_back" title="Permalink to this definition">¶</a></dt>
+<dd><p>Push the data to the back of the list. An alias for al_append. See <a class="reference internal" href="ll.html#libstephenll_8h_1a13d5085ba6443cc36e6d2c85da2b9223"><span class="std std-ref">ll_push_back()</span></a> if you don&#8217;t know the what &#8216;push&#8217; means. </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>A pointer to the list to push to. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">newData</span></code> - <p>The data to push to the back. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.al_pop_back">
+<span class="target" id="libstephenal_8h_1acd7ff2a4d0330ed1b49b0a12a74ea45d"></span><a class="reference internal" href="base.html#c.DATA" title="DATA">DATA</a> <code class="descname">al_pop_back</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_al" title="smb_al">smb_al</a>  *<em>&nbsp;list</em>, <a class="reference internal" href="base.html#c.smb_status" title="smb_status">smb_status</a>  *<em>&nbsp;status</em><span class="sig-paren">)</span><a class="headerlink" href="#c.al_pop_back" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pop the data from the back of the list. See <a class="reference internal" href="ll.html#libstephenll_8h_1a98deac6d90b0165f69711228e86aca45"><span class="std std-ref">ll_pop_back()</span></a> if you don&#8217;t know what &#8216;pop&#8217; means. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>The data from the back of the list. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>A pointer to the list to pop from. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">status</span></code> - <p>Status variable. </p>
+</li>
+</ul>
+</dd>
+<dt><strong>Exceptions</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">SMB_INDEX_ERROR</span></code> - <p>if the list is empty. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.al_peek_back">
+<span class="target" id="libstephenal_8h_1acf9ccd1e881914465cdd090727b37705"></span><a class="reference internal" href="base.html#c.DATA" title="DATA">DATA</a> <code class="descname">al_peek_back</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_al" title="smb_al">smb_al</a>  *<em>&nbsp;list</em>, <a class="reference internal" href="base.html#c.smb_status" title="smb_status">smb_status</a>  *<em>&nbsp;status</em><span class="sig-paren">)</span><a class="headerlink" href="#c.al_peek_back" title="Permalink to this definition">¶</a></dt>
+<dd><p>Peeks at the data from the back of the list. See <a class="reference internal" href="ll.html#libstephenll_8h_1a020f9e50639387120cf56ec43b5e9a27"><span class="std std-ref">ll_peek_back()</span></a> if you don&#8217;t know what &#8216;peek&#8217; means. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>The data at the back of the list. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>A pointer to the list to peek from. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">status</span></code> - <p>Status variable. </p>
+</li>
+</ul>
+</dd>
+<dt><strong>Exceptions</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">SMB_INDEX_ERROR</span></code> - <p>if the list is empty. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.al_push_front">
+<span class="target" id="libstephenal_8h_1aeb6a0721927200d74a8d549ab8c1f4c5"></span>void <code class="descname">al_push_front</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_al" title="smb_al">smb_al</a>  *<em>&nbsp;list</em>, <a class="reference internal" href="base.html#c.DATA" title="DATA">DATA</a><em>&nbsp;data</em><span class="sig-paren">)</span><a class="headerlink" href="#c.al_push_front" title="Permalink to this definition">¶</a></dt>
+<dd><p>Push the data to the front of the list. Alias for al_prepend. See <a class="reference internal" href="ll.html#libstephenll_8h_1a13d5085ba6443cc36e6d2c85da2b9223"><span class="std std-ref">ll_push_back()</span></a> if you don&#8217;t know what &#8216;push&#8217; means. </p>
+<p><dl class="docutils">
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>A pointer to the list to push to. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">data</span></code> - <p>The data to push to the front. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.al_pop_front">
+<span class="target" id="libstephenal_8h_1a28e2cb40a7e251b7f6bc271516f5987e"></span><a class="reference internal" href="base.html#c.DATA" title="DATA">DATA</a> <code class="descname">al_pop_front</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_al" title="smb_al">smb_al</a>  *<em>&nbsp;list</em>, <a class="reference internal" href="base.html#c.smb_status" title="smb_status">smb_status</a>  *<em>&nbsp;status</em><span class="sig-paren">)</span><a class="headerlink" href="#c.al_pop_front" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pop the data from the front of the list. See <a class="reference internal" href="ll.html#libstephenll_8h_1a98deac6d90b0165f69711228e86aca45"><span class="std std-ref">ll_pop_back()</span></a> if you don&#8217;t know what &#8216;pop&#8217; means. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>The data from the front of the list. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>A pointer to the list to pop from. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">status</span></code> - <p>Status variable. </p>
+</li>
+</ul>
+</dd>
+<dt><strong>Exceptions</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">SMB_INDEX_ERROR</span></code> - <p>If the list is empty. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.al_peek_front">
+<span class="target" id="libstephenal_8h_1a4d0e2e609e8f19f10d7c7a8d4416e820"></span><a class="reference internal" href="base.html#c.DATA" title="DATA">DATA</a> <code class="descname">al_peek_front</code><span class="sig-paren">(</span><a class="reference internal" href="#c.smb_al" title="smb_al">smb_al</a>  *<em>&nbsp;list</em>, <a class="reference internal" href="base.html#c.smb_status" title="smb_status">smb_status</a>  *<em>&nbsp;status</em><span class="sig-paren">)</span><a class="headerlink" href="#c.al_peek_front" title="Permalink to this definition">¶</a></dt>
+<dd><p>Peek at the data from the front of the list. See <a class="reference internal" href="ll.html#libstephenll_8h_1a020f9e50639387120cf56ec43b5e9a27"><span class="std std-ref">ll_peek_back()</span></a> if you don&#8217;t know what &#8216;peek&#8217; means. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>The data from the front of the list. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>A pointer to the list to peek from. </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">status</span></code> - <p>Status variable. </p>
+</li>
+</ul>
+</dd>
+<dt><strong>Exceptions</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">SMB_INDEX_ERROR</span></code> - <p>if the list is empty. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.al_length">
+<span class="target" id="libstephenal_8h_1a46b3b2ea25b02173ecb31d70a680e69b"></span>int <code class="descname">al_length</code><span class="sig-paren">(</span>const  <a class="reference internal" href="#c.smb_al" title="smb_al">smb_al</a>  *<em>&nbsp;list</em><span class="sig-paren">)</span><a class="headerlink" href="#c.al_length" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the length of the list. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>The length of the list. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>A pointer to the list. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.al_index_of">
+<span class="target" id="libstephenal_8h_1a13b2e95664a461be0f515137a850ae82"></span>int <code class="descname">al_index_of</code><span class="sig-paren">(</span>const  <a class="reference internal" href="#c.smb_al" title="smb_al">smb_al</a>  *<em>&nbsp;list</em>, <a class="reference internal" href="base.html#c.DATA" title="DATA">DATA</a><em>&nbsp;d</em>, <a class="reference internal" href="base.html#c.DATA_COMPARE" title="DATA_COMPARE">DATA_COMPARE</a><em>&nbsp;comp</em><span class="sig-paren">)</span><a class="headerlink" href="#c.al_index_of" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the index of the item in the array. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>Index of the item, or -1 if it&#8217;s not in the list. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>A pointer to the list </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">d</span></code> - <p>The item to search for </p>
+</li>
+<li><code class="first docutils literal"><span class="pre">comp</span></code> - <p>The comparator to use. NULL for bit comparison. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="c.al_get_iter">
+<span class="target" id="libstephenal_8h_1a592c46aff9cc23d9b10c3c72367d789e"></span><a class="reference internal" href="list.html#c.smb_iter" title="smb_iter">smb_iter</a> <code class="descname">al_get_iter</code><span class="sig-paren">(</span>const  <a class="reference internal" href="#c.smb_al" title="smb_al">smb_al</a>  *<em>&nbsp;list</em><span class="sig-paren">)</span><a class="headerlink" href="#c.al_get_iter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return an iterator on the array list. </p>
+<p><dl class="docutils">
+<dt><strong>Return</strong></dt>
+<dd>The <a class="reference internal" href="list.html#libstephenstructsmb__iter"><span class="std std-ref">smb_iter</span></a> to the list. </dd>
+<dt><strong>Parameters</strong></dt>
+<dd><ul class="breatheparameterlist first last">
+<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>A pointer to the list. </p>
+</li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<dl class="struct">
+<dt>
+<span class="target" id="libstephenstructsmb__al"></span><em class="property">struct </em><code class="descname">smb_al</code></dt>
+<dd><em>#include &lt;al.h&gt;</em><p>The actual array list data type. </p>
+<p>&#8220;Bare&#8221; functions return a pointer to this structure. You should not use any of the members, as they are implementation specific and subject to change. </p>
+<div class="breathe-sectiondef container">
+<p class="breathe-sectiondef-title rubric">Public Members</p>
+<dl class="variable">
+<dt id="c.data">
+<span class="target" id="libstephenstructsmb__al_1af45c696041b6243c2c71331b07f7f3b2"></span><a class="reference internal" href="base.html#c.DATA" title="DATA">DATA</a>* <code class="descname">data</code><a class="headerlink" href="#c.data" title="Permalink to this definition">¶</a></dt>
+<dd><p>The area of memory containing the data. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.length">
+<span class="target" id="libstephenstructsmb__al_1a9f59b34b1f25fe00023291b678246bcc"></span>int <code class="descname">length</code><a class="headerlink" href="#c.length" title="Permalink to this definition">¶</a></dt>
+<dd><p>The number of items in the list. </p>
+</dd></dl>
+
+<dl class="variable">
+<dt id="c.allocated">
+<span class="target" id="libstephenstructsmb__al_1a115235fc25fdf1c03d856bd072b6cead"></span>int <code class="descname">allocated</code><a class="headerlink" href="#c.allocated" title="Permalink to this definition">¶</a></dt>
+<dd><p>The space allocated for the list. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="list.html" class="btn btn-neutral float-right" title="List Interface" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="ll.html" class="btn btn-neutral" title="Linked List" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2013-2016, Stephen Brennan.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

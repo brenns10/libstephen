@@ -1,0 +1,263 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Welcome to libstephen’s documentation! &mdash; libstephen 0.1 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="libstephen 0.1 documentation" href="#"/>
+        <link rel="next" title="Libstephen Tutorial" href="tutorial/index.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="#" class="icon icon-home"> libstephen
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorial/index.html">Libstephen Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/index.html">Libstephen API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="lisp/index.html">Lisp Implementation Documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="#">libstephen</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="#">Docs</a> &raquo;</li>
+      
+    <li>Welcome to libstephen&#8217;s documentation!</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/index.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="welcome-to-libstephen-s-documentation">
+<h1>Welcome to libstephen&#8217;s documentation!<a class="headerlink" href="#welcome-to-libstephen-s-documentation" title="Permalink to this headline">¶</a></h1>
+<p>Here you will find documentation on libstephen, my personal C library.  The
+documentation below is split into two sections.  The first contains a brief
+tutorial for setting up a project with the library, and then commentary on each
+of the major modules of the library.  The second section contains API reference
+for every header file in the project.</p>
+<p><em>Please Note:</em> Libstephen is very much my own, personal library and creation.  I
+use it to experiment on how I should design, implement, and document APIs.  I
+heavily use some portions of the library (for instance, unit testing) while I
+rarely use some other portions (e.g. bitfields).  Sometimes I add, remove, or
+modify interfaces without warning.  And since I haven&#8217;t officially given a
+version number beyond 0.1 for this library, there&#8217;s no real guarantee for
+interface stability.  All that is to say: if you want your project to go into
+production, this is not the library you&#8217;re looking for.  If you&#8217;re just doing a
+personal project and you don&#8217;t mind using someone else&#8217;s personal project,
+you&#8217;re in the right place!</p>
+<p>Contents:</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorial/index.html">Libstephen Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/errors.html">Error Handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/arraylist.html">Array List (smb_al)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/linkedlist.html">Linked List</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/list.html">List Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/iterator.html">Iterator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/hashtable.html">Hash Table</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/charbuf.html">Character Buffer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/args.html">Argument Parsing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/logging.html">Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/unittest.html">Unit Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/regex.html">Regular Expressions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/index.html">Libstephen API Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/base.html">Libstephen Base</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/ll.html">Linked List</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/al.html">Array List</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/list.html">List Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/ht.html">Hash Table</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/bf.html">Bitfield</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/cb.html">Character Buffer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/ad.html">Argument Parsing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/log.html">Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/ut.html">Unit Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/re.html">Regular Expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/util.html">Utilities &amp; Miscellaneous</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/str.html">String Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="lisp/index.html">Lisp Implementation Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="lisp/embedding.html">Embedding the Interpreter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lisp/types.html">Type System</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
+<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
+</ul>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="tutorial/index.html" class="btn btn-neutral float-right" title="Libstephen Tutorial" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2013-2016, Stephen Brennan.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

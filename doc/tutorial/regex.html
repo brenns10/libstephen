@@ -1,0 +1,486 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Regular Expressions &mdash; libstephen 0.1 documentation</title>
+  
+
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="libstephen 0.1 documentation" href="../index.html"/>
+        <link rel="up" title="Libstephen Tutorial" href="index.html"/>
+        <link rel="next" title="Libstephen API Documentation" href="../api/index.html"/>
+        <link rel="prev" title="Unit Testing" href="unittest.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> libstephen
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+                <ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Libstephen Tutorial</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="errors.html">Error Handling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arraylist.html">Array List (smb_al)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linkedlist.html">Linked List</a></li>
+<li class="toctree-l2"><a class="reference internal" href="list.html">List Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="iterator.html">Iterator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="hashtable.html">Hash Table</a></li>
+<li class="toctree-l2"><a class="reference internal" href="charbuf.html">Character Buffer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="args.html">Argument Parsing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="logging.html">Logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unittest.html">Unit Testing</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Regular Expressions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#syntax">Syntax</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#usage">Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#implementation">Implementation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">Libstephen API Documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lisp/index.html">Lisp Implementation Documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">libstephen</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="index.html">Libstephen Tutorial</a> &raquo;</li>
+      
+    <li>Regular Expressions</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../_sources/tutorial/regex.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="regular-expressions">
+<h1>Regular Expressions<a class="headerlink" href="#regular-expressions" title="Permalink to this headline">¶</a></h1>
+<div class="code C highlight-c"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;libstephen/re.h&quot;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;libstephen/re_internals.h&quot;</span><span class="cp"></span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><a class="reference external" href="https://github.com/brenns10/libstephen/blob/master/inc/libstephen/re.h">Header - re
+(master)</a></li>
+<li><a class="reference external" href="https://github.com/brenns10/libstephen/blob/master/inc/libstephen/re_internals.h">Header - re_internals
+(master)</a></li>
+<li><a class="reference external" href="https://github.com/brenns10/libstephen/blob/master/src/regex/">Implementation - regex
+(master)</a></li>
+</ul>
+<p>Regular expressions are a pretty powerful tool for text processing.  They allow
+you to match or search for a certain type of text patterns.  POSIX defines
+<code class="docutils literal"><span class="pre">regcomp()</span></code>, but that&#8217;s a limited language, and it&#8217;s not in the C standard.
+Since I&#8217;m very interested in regular expressions, I implemented them myself.  My
+current implementation is based on a series of <a class="reference external" href="https://swtch.com/~rsc/regexp/">articles</a> by <a class="reference external" href="https://swtch.com/~rsc/">Russ Cox</a>.</p>
+<p>This first section of this document explains basic regular expression syntax.
+The next section discusses how to use my implementation.  The final section
+gives a discussion on the inner workings of my implementation.</p>
+<div class="section" id="syntax">
+<h2>Syntax<a class="headerlink" href="#syntax" title="Permalink to this headline">¶</a></h2>
+<p>Regular expressions are patterns that match text.  The basic regular expression
+is a single character, which matches itself.  If you append a <code class="docutils literal"><span class="pre">*</span></code>, the
+expression matches 0 or more instances of that character.  If you append a
+<code class="docutils literal"><span class="pre">?</span></code>, the expression matches 0 or 1, and if you append a <code class="docutils literal"><span class="pre">+</span></code>, the expression
+matches 1 or more.  You may also append a <code class="docutils literal"><span class="pre">?</span></code> to any of those repetition
+operators in order to make them &#8220;non-greedy&#8221; - that is, they will consume as few
+characters as possible.</p>
+<p>If you have two regular expressions, A and B, you can concatenate them (AB) so
+they will match the concatenated matches of A and B.  For example, <code class="docutils literal"><span class="pre">a</span></code> matches
+<code class="docutils literal"><span class="pre">a</span></code>, <code class="docutils literal"><span class="pre">b</span></code> matches <code class="docutils literal"><span class="pre">b</span></code>, and <code class="docutils literal"><span class="pre">ab</span></code> matches <code class="docutils literal"><span class="pre">ab</span></code>.  You can also combine
+regular expressions A and B with the pipe operator (<code class="docutils literal"><span class="pre">a|b</span></code>), which will match
+either the first, or the second expression.  Finally, you can group regular
+expressions using parentheses.  Text matched within parentheses will be
+&#8220;captured.&#8221;</p>
+<p>One other feature: character classes.  Imagine you want to match all lowercase
+letters.  Then, you would have to write <code class="docutils literal"><span class="pre">(a|b|c|....|x|y|z)</span></code> which would get
+really long and annoying.  So, character classes give you the ability to define
+whole sets of characters to match.  To define a character class, use brackets.
+So, you could do this instead: <code class="docutils literal"><span class="pre">[abc...xyz]</span></code>.  While this saved us 25
+characters, it&#8217;s not much of an improvement.  You can also define a range of
+characters, like so: <code class="docutils literal"><span class="pre">[a-z]</span></code>.  That&#8217;s even better.  If you&#8217;d like to match a
+hyphen, you can put it at the end of the class, or escape it with a backslash.
+You can also negate the character class with a caret: <code class="docutils literal"><span class="pre">[^a-z]</span></code>.  Special
+character classes are:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">\w</span></code> matches word characters: <code class="docutils literal"><span class="pre">[a-zA-Z0-9_]</span></code>.  <code class="docutils literal"><span class="pre">\W</span></code> negates it.</li>
+<li><code class="docutils literal"><span class="pre">\d</span></code> matches digits: <code class="docutils literal"><span class="pre">[0-9]</span></code>.  <code class="docutils literal"><span class="pre">\D</span></code> negates it.</li>
+<li><code class="docutils literal"><span class="pre">\s</span></code> matches whitespace: <code class="docutils literal"><span class="pre">[</span> <span class="pre">\n\r\t\v\f]</span></code>.  <code class="docutils literal"><span class="pre">\S</span></code> negates it.</li>
+</ul>
+<p>You also can backslash escape any metacharacter to use it like normal, and you
+can also backslash escape many whitespace characters.</p>
+<p>The operator precedence is as follows: repetition, concatenation, alternation.
+If you would like more information about regular expression grammar or
+tokenization, see the discussion of the implementation details in the last
+section.</p>
+</div>
+<div class="section" id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<p>A regular expression first needs to be compiled before it can be used.  To do
+this, use the <code class="docutils literal"><span class="pre">recomp()</span></code> function.  Its signature is:</p>
+<div class="code C highlight-c"><div class="highlight"><pre><span></span><span class="n">Regex</span> <span class="n">recomp</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">regex</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal"><span class="pre">Regex</span></code> is the type returned from <code class="docutils literal"><span class="pre">recomp</span></code>.  It is a small struct containing
+a pointer to a buffer of compiled instructions, as well as the instruction
+count.  So, you probably don&#8217;t need to ever pass around pointers to these
+objects, since they&#8217;re already pointers.  When you&#8217;re done with a regex, free it
+with <code class="docutils literal"><span class="pre">refree()</span></code>.</p>
+<p>If you want to use a regex, use the <code class="docutils literal"><span class="pre">reexec()</span></code> function.  Here is its call
+signature:</p>
+<div class="code C highlight-c"><div class="highlight"><pre><span></span><span class="kt">ssize_t</span> <span class="nf">reexec</span><span class="p">(</span><span class="n">Regex</span> <span class="n">r</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">input</span><span class="p">,</span> <span class="kt">size_t</span> <span class="o">**</span><span class="n">saved</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The first parameter is the regex returned by <code class="docutils literal"><span class="pre">recomp()</span></code>.  The second is the
+text you&#8217;d like to execute the regex on.  The function returns the length of the
+string match.  It returns -1 if there is no match at all.  The final parameter
+is a pointer to a pointer to the indices of the captures.  The function will set
+that pointer (if non-NULL) on return.</p>
+<p>To understand how captures work, let&#8217;s look at a phone number regex:
+<code class="docutils literal"><span class="pre">\(?(\d\d\d)\)?[</span> <span class="pre">-]?(\d\d\d)[</span> <span class="pre">-]?(\d\d\d\d)</span></code>.  This will match phone numbers
+like <code class="docutils literal"><span class="pre">(123)</span> <span class="pre">456-7890</span></code>, <code class="docutils literal"><span class="pre">1234567890</span></code>, <code class="docutils literal"><span class="pre">123-456-7890</span></code>, or <code class="docutils literal"><span class="pre">123</span> <span class="pre">456</span> <span class="pre">7890</span></code>,
+as well as some odd ones like <code class="docutils literal"><span class="pre">123)-4567890</span></code>.  In addition, it will capture
+the area code, first three, and last four digits.  When you run the regex on
+<code class="docutils literal"><span class="pre">(123)</span> <span class="pre">456-7890</span></code>, the indices will be: <code class="docutils literal"><span class="pre">{1,</span> <span class="pre">4,</span> <span class="pre">6,</span> <span class="pre">9,</span> <span class="pre">10,</span> <span class="pre">14}</span></code>.  They are
+organized in pairs.  The first index in the pair is the start index of the
+captured text, and the second in the pair is the index of the first character
+not included in tho capture.  The order of the pairs is determined by the
+opening parenthesis in the regular expression.</p>
+<p>Please note that you&#8217;ll need to free the capture buffer.  If you&#8217;re not
+interested in captures, you can just set the third parameter to NULL.  If you
+want to know how many indices are in the buffer, you can call <code class="docutils literal"><span class="pre">renumsaves()</span></code> on
+your regex.</p>
+<p>There are also functions for writing regex bytecode to a textual &#8220;assembly&#8221;
+representation.  This text representation can be read back in as well.  It&#8217;s
+actually pretty neat.  You can think of this as an implementation detail: not
+something to rely on, but very useful for debugging and learning about the regex
+implementation.  Here are the function signatures:</p>
+<div class="code C highlight-c"><div class="highlight"><pre><span></span><span class="n">Regex</span> <span class="nf">reread</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">str</span><span class="p">);</span>
+<span class="n">Regex</span> <span class="nf">refread</span><span class="p">(</span><span class="kt">FILE</span> <span class="o">*</span><span class="n">f</span><span class="p">);</span>
+<span class="kt">void</span> <span class="nf">rewrite</span><span class="p">(</span><span class="n">Regex</span> <span class="n">r</span><span class="p">,</span> <span class="kt">FILE</span> <span class="o">*</span><span class="n">f</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>Here is a complete example of a program that takes a regex as its first argument
+and tests it on the remaining ones.</p>
+<div class="code C highlight-c"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;stdlib.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">&quot;libstephen/re.h&quot;</span><span class="cp"></span>
+
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">**</span><span class="n">argv</span><span class="p">)</span>
+<span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">argc</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&quot;too few arguments</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+    <span class="n">fprintf</span><span class="p">(</span><span class="n">stderr</span><span class="p">,</span> <span class="s">&quot;usage: %s REGEXP string1 [string2 [...]]</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+    <span class="n">exit</span><span class="p">(</span><span class="n">EXIT_FAILURE</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="c1">// Try to open first arg as file.</span>
+  <span class="n">Regex</span> <span class="n">code</span><span class="p">;</span>
+  <span class="kt">FILE</span> <span class="o">*</span><span class="n">in</span> <span class="o">=</span> <span class="n">fopen</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s">&quot;r&quot;</span><span class="p">);</span>
+
+  <span class="k">if</span> <span class="p">(</span><span class="n">in</span> <span class="o">==</span> <span class="nb">NULL</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// If it doesn&#39;t open, it&#39;s a regex we should compile.</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;;; Regex: </span><span class="se">\&quot;</span><span class="s">%s</span><span class="se">\&quot;\n\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">recomp</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;;; BEGIN GENERATED CODE:</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="c1">// Otherwise, open it and read the code from it.</span>
+    <span class="n">code</span> <span class="o">=</span> <span class="n">refread</span><span class="p">(</span><span class="n">in</span><span class="p">);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">&quot;;; BEGIN READ CODE:</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+  <span class="p">}</span>
+  <span class="n">rewrite</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">stdout</span><span class="p">);</span>
+
+  <span class="kt">int</span> <span class="n">ns</span> <span class="o">=</span> <span class="n">renumsaves</span><span class="p">(</span><span class="n">code</span><span class="p">);</span>
+  <span class="n">printf</span><span class="p">(</span><span class="s">&quot;;; BEGIN TEST RUNS:</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">argc</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">size_t</span> <span class="o">*</span><span class="n">saves</span> <span class="o">=</span> <span class="nb">NULL</span><span class="p">;</span>
+    <span class="kt">ssize_t</span> <span class="n">match</span> <span class="o">=</span> <span class="n">reexec</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">argv</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="o">&amp;</span><span class="n">saves</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">match</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+      <span class="c1">// It matches, report the captured groups.</span>
+      <span class="n">printf</span><span class="p">(</span><span class="s">&quot;;; </span><span class="se">\&quot;</span><span class="s">%s</span><span class="se">\&quot;</span><span class="s">: match(%zd) &quot;</span><span class="p">,</span> <span class="n">argv</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">match</span><span class="p">);</span>
+      <span class="k">for</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">ns</span><span class="p">;</span> <span class="n">j</span> <span class="o">+=</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">&quot;(%zd, %zd) &quot;</span><span class="p">,</span> <span class="n">saves</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">saves</span><span class="p">[</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">]);</span>
+      <span class="p">}</span>
+      <span class="n">printf</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+      <span class="c1">// Otherwise, report no match.</span>
+      <span class="n">printf</span><span class="p">(</span><span class="s">&quot;;; </span><span class="se">\&quot;</span><span class="s">%s</span><span class="se">\&quot;</span><span class="s">: no match</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">argv</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+
+  <span class="n">refree</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">n</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="implementation">
+<h2>Implementation<a class="headerlink" href="#implementation" title="Permalink to this headline">¶</a></h2>
+<p><strong>Grammar:</strong></p>
+<div class="code highlight-c"><div class="highlight"><pre><span></span><span class="n">REGEX</span> <span class="p">(</span><span class="o">-</span><span class="p">)</span><span class="o">-&gt;</span> <span class="n">SUB</span>
+      <span class="p">(</span><span class="o">-</span><span class="p">)</span><span class="o">-&gt;</span> <span class="n">SUB</span> <span class="o">|</span> <span class="n">REGEX</span>
+
+<span class="n">SUB</span>   <span class="p">(</span><span class="o">-</span><span class="p">)</span><span class="o">-&gt;</span> <span class="n">EXPR</span>
+      <span class="p">(</span><span class="o">-</span><span class="p">)</span><span class="o">-&gt;</span> <span class="n">EXPR</span> <span class="n">SUB</span>
+
+<span class="n">EXPR</span>  <span class="p">(</span><span class="o">-</span><span class="p">)</span><span class="o">-&gt;</span> <span class="n">TERM</span>
+      <span class="p">(</span><span class="o">-</span><span class="p">)</span><span class="o">-&gt;</span> <span class="n">TERM</span> <span class="o">+</span>
+      <span class="p">(</span><span class="o">-</span><span class="p">)</span><span class="o">-&gt;</span> <span class="n">TERM</span> <span class="o">+</span> <span class="o">?</span>
+      <span class="p">(</span><span class="o">-</span><span class="p">)</span><span class="o">-&gt;</span> <span class="n">TERM</span> <span class="o">*</span>
+      <span class="p">(</span><span class="o">-</span><span class="p">)</span><span class="o">-&gt;</span> <span class="n">TERM</span> <span class="o">*</span> <span class="o">?</span>
+      <span class="p">(</span><span class="o">-</span><span class="p">)</span><span class="o">-&gt;</span> <span class="n">TERM</span> <span class="o">?</span>
+      <span class="p">(</span><span class="o">-</span><span class="p">)</span><span class="o">-&gt;</span> <span class="n">TERM</span> <span class="o">?</span> <span class="o">?</span>
+
+<span class="n">TERM</span>  <span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">-&gt;</span> <span class="kt">char</span> <span class="o">&lt;</span><span class="n">OR</span><span class="o">&gt;</span> <span class="p">.</span> <span class="o">&lt;</span><span class="n">OR</span><span class="o">&gt;</span> <span class="o">-</span> <span class="o">&lt;</span><span class="n">OR</span><span class="o">&gt;</span> <span class="o">^</span> <span class="o">&lt;</span><span class="n">OR</span><span class="o">&gt;</span> <span class="n">special</span>
+      <span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">-&gt;</span> <span class="p">(</span> <span class="n">REGEX</span> <span class="p">)</span>
+      <span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">-&gt;</span> <span class="p">[</span> <span class="n">CLASS</span> <span class="p">]</span>
+      <span class="p">(</span><span class="mi">4</span><span class="p">)</span><span class="o">-&gt;</span> <span class="p">[</span> <span class="o">^</span> <span class="n">CLASS</span> <span class="p">]</span>
+
+<span class="n">CLASS</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">-&gt;</span> <span class="n">CCHAR</span> <span class="o">-</span> <span class="n">CCHAR</span> <span class="n">CLASS</span>
+      <span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">-&gt;</span> <span class="n">CCHAR</span> <span class="o">-</span> <span class="n">CCHAR</span>
+      <span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">-&gt;</span> <span class="n">CCHAR</span> <span class="n">CLASS</span>
+      <span class="p">(</span><span class="mi">4</span><span class="p">)</span><span class="o">-&gt;</span> <span class="n">CCHAR</span>
+      <span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">-&gt;</span> <span class="o">-</span>
+
+<span class="n">CCHAR</span> <span class="p">(</span><span class="o">-</span><span class="p">)</span><span class="o">-&gt;</span> <span class="kt">char</span> <span class="o">&lt;</span><span class="n">or</span><span class="o">&gt;</span> <span class="p">.</span> <span class="o">&lt;</span><span class="n">OR</span><span class="o">&gt;</span> <span class="p">(</span> <span class="o">&lt;</span><span class="n">OR</span><span class="o">&gt;</span> <span class="p">)</span> <span class="o">&lt;</span><span class="n">OR</span><span class="o">&gt;</span> <span class="o">+</span> <span class="o">&lt;</span><span class="n">OR</span><span class="o">&gt;</span> <span class="o">*</span> <span class="o">&lt;</span><span class="n">OR</span><span class="o">&gt;</span> <span class="o">?</span> <span class="o">&lt;</span><span class="n">OR</span><span class="o">&gt;</span> <span class="o">|</span>
+</pre></div>
+</div>
+<p>The terminal symbols of the grammar are meta-characters: <code class="docutils literal"><span class="pre">(</span> <span class="pre">)</span> <span class="pre">[</span> <span class="pre">]</span> <span class="pre">+</span> <span class="pre">-</span> <span class="pre">*</span> <span class="pre">?</span> <span class="pre">^</span>
+<span class="pre">|</span></code>.  There is also <code class="docutils literal"><span class="pre">char</span></code> token, which represents any other character.
+Backslash escaped metacharacters are also <code class="docutils literal"><span class="pre">char</span></code> nonterminals, as well as
+backslash escaped whitespace characters.  Finally, any other backslash escaped
+character is interpreted as a <code class="docutils literal"><span class="pre">special</span></code> terminal, which is used for things
+like special character classes.</p>
+<p>In the above grammar, some non-terminals have numbered productions, which are
+stored within the parse tree itself to make it easier to generate code after the fact.</p>
+<p><strong>Lexer</strong></p>
+<p>The lexer generates the tokens described above.  It has a small buffer for
+putting tokens back into the lexer, which just makes the parser&#8217;s job a little
+easier.</p>
+<p><strong>Parser</strong></p>
+<p>The parser is just a recursive descent parser custom written for this grammar.
+The way this works is that there&#8217;s a function for each nonterminal symbol, and
+it has cases for each production.  These functions are co-recursive, so they
+call each other whenever they need to parse another non-terminal, and not just a
+terminal symbol from the lexer.  The parser generates a parse tree (the data
+structure is <code class="docutils literal"><span class="pre">PTree</span></code>).  This is used for code generation.</p>
+<p><strong>Code Generation</strong></p>
+<p>The code generator is also a mutually-recursive set of functions.  These go down
+the parse tree, generating code as they go.  I&#8217;d love to go into how I generate
+VM bytecode for each production, but I think for that you&#8217;ll just have to read
+through the code.  The idea behind the generation of all the code is based on
+<a class="reference external" href="https://en.wikipedia.org/wiki/Thompson%27s_construction">Thompson&#8217;s Construction Algorithm</a>, except for bytecode
+instead of NDFA fragments.</p>
+<p><strong>Virtual Machine</strong></p>
+<p>The code generation is for a virtual machine based on the following ideas.</p>
+<ul class="simple">
+<li>The machine has a string pointer and a program counter.  The string pointer
+points to the current input character from the string, and the program counter
+points at the current instruction.</li>
+<li>Each instruction manipulates these two values.  Instructions may also
+terminate the execution signalling success or failure, and they can also
+create new &#8220;threads&#8221; - new instances of the VM and program.</li>
+<li>The VM also has &#8220;slots&#8221; for saving values of the SP.  This is useful for
+capturing text.</li>
+</ul>
+<p>Here are the instructions of this VM:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">char</span> <span class="pre">C</span></code>: if the string pointer matches C, increment SP and PC.  Otherwise,
+fail.</li>
+<li><code class="docutils literal"><span class="pre">range</span> <span class="pre">A</span> <span class="pre">B</span> <span class="pre">C</span> <span class="pre">D</span></code>: if the SP is contained within the ranges A-B or C-D,
+increment SP and PC.  Otherwise, fail.  This instruction may have arbitrarily
+many ranges.</li>
+<li><code class="docutils literal"><span class="pre">nrange</span> <span class="pre">A</span> <span class="pre">B</span> <span class="pre">C</span> <span class="pre">D</span></code>: similar to the above, but instead it fails when the input is
+within the ranges, and continues when the input is not within the ranges.</li>
+<li><code class="docutils literal"><span class="pre">any</span></code>: increments SP and PC (so long as the SP isn&#8217;t at the NUL byte).</li>
+<li><code class="docutils literal"><span class="pre">jump</span> <span class="pre">LABEL</span></code>: sets the PC to LABEL</li>
+<li><code class="docutils literal"><span class="pre">split</span> <span class="pre">L1</span> <span class="pre">L2</span></code>: sets the current thread&#8217;s PC to L1, and creates a new thread
+with same SP, and PC equal to L2.</li>
+<li><code class="docutils literal"><span class="pre">match</span></code>: terminate execution, reporting success.</li>
+<li><code class="docutils literal"><span class="pre">save</span> <span class="pre">X</span></code>: save the current value of the SP in slot X.</li>
+</ul>
+<p>Given this framework, executing a program is all about running all of the
+threads, and selecting the one that terminated successfully with the largest
+value of the SP.  There are a number of ways to do this, but my implementation
+(modeled after Rob Pike&#8217;s VM, as written by Russ Cox) takes advantage of a few things:</p>
+<ul class="simple">
+<li>You can execute the threads in &#8220;lockstep&#8221;, where you run each thread up to the
+point where it consumes an input from the SP.</li>
+<li>If you do this, you can place an upper bound on the number of threads you&#8217;ll
+have at each step: it should be no more than the number of instructions in
+your program.</li>
+</ul>
+<p>There&#8217;s a lot going on behind the scenes, and giving an overview is tough.
+Check Russ Cox&#8217;s <a class="reference external" href="https://swtch.com/~rsc/regexp/regexp2.html">article</a> for a
+more thorough description of the virtual machine approach.  You&#8217;ll find the
+approach I use under &#8220;Pike&#8217;s Implementation&#8221;.</p>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../api/index.html" class="btn btn-neutral float-right" title="Libstephen API Documentation" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="unittest.html" class="btn btn-neutral" title="Unit Testing" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2013-2016, Stephen Brennan.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
