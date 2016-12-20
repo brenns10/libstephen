@@ -32,12 +32,12 @@
             <td></td>
             <td class="headerItem">Lines:</td>
             <td class="headerCovTableEntry">0</td>
-            <td class="headerCovTableEntry">93</td>
+            <td class="headerCovTableEntry">86</td>
             <td class="headerCovTableEntryLo">0.0 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2016-09-21 02:02:00</td>
+            <td class="headerValue">2016-12-20 06:03:26</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">0</td>
@@ -178,49 +178,42 @@
 <span class="lineNum">     116 </span>            : 
 <span class="lineNum">     117 </span><span class="lineNoCov">          0 : result lisp_parse_quote(lisp_runtime *rt, char *input, int index)</span>
 <span class="lineNum">     118 </span>            : {
-<span class="lineNum">     119 </span><span class="lineNoCov">          0 :   lisp_list *l = (lisp_list*)lisp_new(rt, type_list);</span>
-<span class="lineNum">     120 </span><span class="lineNoCov">          0 :   lisp_symbol *q = lisp_symbol_new(rt, &quot;quote&quot;);</span>
-<span class="lineNum">     121 </span><span class="lineNoCov">          0 :   l-&gt;left = (lisp_value*)q;</span>
-<span class="lineNum">     122 </span><span class="lineNoCov">          0 :   lisp_list *s = (lisp_list*) lisp_new(rt, type_list);</span>
-<span class="lineNum">     123 </span><span class="lineNoCov">          0 :   s-&gt;right = lisp_nil_new(rt);</span>
-<span class="lineNum">     124 </span><span class="lineNoCov">          0 :   l-&gt;right = (lisp_value*)s;</span>
-<span class="lineNum">     125 </span><span class="lineNoCov">          0 :   result r = lisp_parse_value(rt, input, index + 1);</span>
-<span class="lineNum">     126 </span><span class="lineNoCov">          0 :   s-&gt;left = r.result;</span>
-<span class="lineNum">     127 </span><span class="lineNoCov">          0 :   index = r.index;</span>
-<span class="lineNum">     128 </span><span class="lineNoCov">          0 :   return (result){(lisp_value*)l, r.index};</span>
-<a name="129"><span class="lineNum">     129 </span>            : }</a>
-<span class="lineNum">     130 </span>            : 
-<span class="lineNum">     131 </span><span class="lineNoCov">          0 : result lisp_parse_value(lisp_runtime *rt, char *input, int index)</span>
-<span class="lineNum">     132 </span>            : {
-<span class="lineNum">     133 </span><span class="lineNoCov">          0 :   while (isspace(input[index])) {</span>
-<span class="lineNum">     134 </span><span class="lineNoCov">          0 :     index++;</span>
+<span class="lineNum">     119 </span><span class="lineNoCov">          0 :   result r = lisp_parse_value(rt, input, index + 1);</span>
+<span class="lineNum">     120 </span><span class="lineNoCov">          0 :   r.result = lisp_quote(rt, r.result);</span>
+<span class="lineNum">     121 </span><span class="lineNoCov">          0 :   return r;</span>
+<a name="122"><span class="lineNum">     122 </span>            : }</a>
+<span class="lineNum">     123 </span>            : 
+<span class="lineNum">     124 </span><span class="lineNoCov">          0 : result lisp_parse_value(lisp_runtime *rt, char *input, int index)</span>
+<span class="lineNum">     125 </span>            : {
+<span class="lineNum">     126 </span><span class="lineNoCov">          0 :   while (isspace(input[index])) {</span>
+<span class="lineNum">     127 </span><span class="lineNoCov">          0 :     index++;</span>
+<span class="lineNum">     128 </span>            :   }
+<span class="lineNum">     129 </span>            : 
+<span class="lineNum">     130 </span><span class="lineNoCov">          0 :   if (input[index] == '&quot;') {</span>
+<span class="lineNum">     131 </span><span class="lineNoCov">          0 :     return lisp_parse_string(rt, input, index);</span>
+<span class="lineNum">     132 </span>            :   }
+<span class="lineNum">     133 </span><span class="lineNoCov">          0 :   if (input[index] == '\0') {</span>
+<span class="lineNum">     134 </span><span class="lineNoCov">          0 :     return (result){NULL, index};</span>
 <span class="lineNum">     135 </span>            :   }
-<span class="lineNum">     136 </span>            : 
-<span class="lineNum">     137 </span><span class="lineNoCov">          0 :   if (input[index] == '&quot;') {</span>
-<span class="lineNum">     138 </span><span class="lineNoCov">          0 :     return lisp_parse_string(rt, input, index);</span>
-<span class="lineNum">     139 </span>            :   }
-<span class="lineNum">     140 </span><span class="lineNoCov">          0 :   if (input[index] == '\0') {</span>
-<span class="lineNum">     141 </span><span class="lineNoCov">          0 :     return (result){NULL, index};</span>
-<span class="lineNum">     142 </span>            :   }
-<span class="lineNum">     143 </span><span class="lineNoCov">          0 :   if (input[index] == ')') {</span>
-<span class="lineNum">     144 </span><span class="lineNoCov">          0 :     return (result){lisp_nil_new(rt), index + 1};</span>
-<span class="lineNum">     145 </span>            :   }
-<span class="lineNum">     146 </span><span class="lineNoCov">          0 :   if (input[index] == '(') {</span>
-<span class="lineNum">     147 </span><span class="lineNoCov">          0 :     return lisp_parse_list_or_sexp(rt, input, index + 1);</span>
-<span class="lineNum">     148 </span>            :   }
-<span class="lineNum">     149 </span><span class="lineNoCov">          0 :   if (input[index] == '\'') {</span>
-<span class="lineNum">     150 </span><span class="lineNoCov">          0 :     return lisp_parse_quote(rt, input, index);</span>
-<span class="lineNum">     151 </span>            :   }
-<span class="lineNum">     152 </span><span class="lineNoCov">          0 :   if (isdigit(input[index])) {</span>
-<span class="lineNum">     153 </span><span class="lineNoCov">          0 :     return lisp_parse_integer(rt, input, index);</span>
-<span class="lineNum">     154 </span>            :   }
-<span class="lineNum">     155 </span><span class="lineNoCov">          0 :   return lisp_parse_symbol(rt, input, index);</span>
-<a name="156"><span class="lineNum">     156 </span>            : }</a>
-<span class="lineNum">     157 </span>            : 
-<span class="lineNum">     158 </span><span class="lineNoCov">          0 : lisp_value *lisp_parse(lisp_runtime *rt, char *input)</span>
-<span class="lineNum">     159 </span>            : {
-<span class="lineNum">     160 </span><span class="lineNoCov">          0 :   return lisp_parse_value(rt, input, 0).result;</span>
-<span class="lineNum">     161 </span>            : }
+<span class="lineNum">     136 </span><span class="lineNoCov">          0 :   if (input[index] == ')') {</span>
+<span class="lineNum">     137 </span><span class="lineNoCov">          0 :     return (result){lisp_nil_new(rt), index + 1};</span>
+<span class="lineNum">     138 </span>            :   }
+<span class="lineNum">     139 </span><span class="lineNoCov">          0 :   if (input[index] == '(') {</span>
+<span class="lineNum">     140 </span><span class="lineNoCov">          0 :     return lisp_parse_list_or_sexp(rt, input, index + 1);</span>
+<span class="lineNum">     141 </span>            :   }
+<span class="lineNum">     142 </span><span class="lineNoCov">          0 :   if (input[index] == '\'') {</span>
+<span class="lineNum">     143 </span><span class="lineNoCov">          0 :     return lisp_parse_quote(rt, input, index);</span>
+<span class="lineNum">     144 </span>            :   }
+<span class="lineNum">     145 </span><span class="lineNoCov">          0 :   if (isdigit(input[index])) {</span>
+<span class="lineNum">     146 </span><span class="lineNoCov">          0 :     return lisp_parse_integer(rt, input, index);</span>
+<span class="lineNum">     147 </span>            :   }
+<span class="lineNum">     148 </span><span class="lineNoCov">          0 :   return lisp_parse_symbol(rt, input, index);</span>
+<a name="149"><span class="lineNum">     149 </span>            : }</a>
+<span class="lineNum">     150 </span>            : 
+<span class="lineNum">     151 </span><span class="lineNoCov">          0 : lisp_value *lisp_parse(lisp_runtime *rt, char *input)</span>
+<span class="lineNum">     152 </span>            : {
+<span class="lineNum">     153 </span><span class="lineNoCov">          0 :   return lisp_parse_value(rt, input, 0).result;</span>
+<span class="lineNum">     154 </span>            : }
 </pre>
       </td>
     </tr>

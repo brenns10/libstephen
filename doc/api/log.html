@@ -30,6 +30,9 @@
   
 
   
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
     <link rel="top" title="libstephen 0.1 documentation" href="../index.html"/>
         <link rel="up" title="Libstephen API Documentation" href="index.html"/>
         <link rel="next" title="Unit Testing" href="ut.html"/>
@@ -137,7 +140,7 @@
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="../_sources/api/log.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/api/log.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -159,7 +162,7 @@
 <dd>Copyright (c) 2015-2016, Stephen Brennan. Released under the Revised BSD License. See LICENSE.txt for details. </dd>
 </dl>
 </p>
-<div class="breathe-sectiondef container">
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Defines</p>
 <dl class="define">
 <dt id="c.LEVEL_NOTSET">
@@ -228,13 +231,10 @@
 <dd><p>Log a message. </p>
 <p>This macro fills out the file, line, and function parameters of <a class="reference internal" href="#libstephenlog_8h_1a34e4f88b97b95c7fc598afbe05836438"><span class="std std-ref">sl_log()</span></a> so that you only need to figure out the logger, level, and message. <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">logger</span></code> - <p>Logger to log to. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">level</span></code> - <p>Level the message is at. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">...</span></code> - <p>Format string and format arguments. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">logger</span></code>: Logger to log to. </li>
+<li><code class="docutils literal"><span class="pre">level</span></code>: Level the message is at. </li>
+<li><code class="docutils literal"><span class="pre">...</span></code>: Format string and format arguments. </li>
 </ul>
 </dd>
 </dl>
@@ -247,9 +247,8 @@
 <dd><p>Log to default logger at LEVEL_DEBUG. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">...</span></code> - <p>Format string and format arguments. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">...</span></code>: Format string and format arguments. </li>
 </ul>
 </dd>
 </dl>
@@ -262,9 +261,8 @@
 <dd><p>Log to default logger at LEVEL_INFO. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">...</span></code> - <p>Format string and format arguments. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">...</span></code>: Format string and format arguments. </li>
 </ul>
 </dd>
 </dl>
@@ -277,9 +275,8 @@
 <dd><p>Log to default logger at LEVEL_WARNING. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">...</span></code> - <p>Format string and format arguments. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">...</span></code>: Format string and format arguments. </li>
 </ul>
 </dd>
 </dl>
@@ -292,9 +289,8 @@
 <dd><p>Log to default logger at LEVEL_ERROR. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">...</span></code> - <p>Format string and format arguments. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">...</span></code>: Format string and format arguments. </li>
 </ul>
 </dd>
 </dl>
@@ -307,9 +303,8 @@
 <dd><p>Log to default logger at LEVEL_CRITICAL. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">...</span></code> - <p>Format string and format arguments. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">...</span></code>: Format string and format arguments. </li>
 </ul>
 </dd>
 </dl>
@@ -322,11 +317,9 @@
 <dd><p>Log to any logger at LEVEL_DEBUG. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">logger</span></code> - <p>Logger to log to. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">...</span></code> - <p>Format string and format arguments. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">logger</span></code>: Logger to log to. </li>
+<li><code class="docutils literal"><span class="pre">...</span></code>: Format string and format arguments. </li>
 </ul>
 </dd>
 </dl>
@@ -339,11 +332,9 @@
 <dd><p>Log to any logger at LEVEL_INFO. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">logger</span></code> - <p>Logger to log to. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">...</span></code> - <p>Format string and format arguments. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">logger</span></code>: Logger to log to. </li>
+<li><code class="docutils literal"><span class="pre">...</span></code>: Format string and format arguments. </li>
 </ul>
 </dd>
 </dl>
@@ -356,11 +347,9 @@
 <dd><p>Log to any logger at LEVEL_WARNING. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">logger</span></code> - <p>Logger to log to. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">...</span></code> - <p>Format string and format arguments. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">logger</span></code>: Logger to log to. </li>
+<li><code class="docutils literal"><span class="pre">...</span></code>: Format string and format arguments. </li>
 </ul>
 </dd>
 </dl>
@@ -373,11 +362,9 @@
 <dd><p>Log to any logger at LEVEL_ERROR. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">logger</span></code> - <p>Logger to log to. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">...</span></code> - <p>Format string and format arguments. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">logger</span></code>: Logger to log to. </li>
+<li><code class="docutils literal"><span class="pre">...</span></code>: Format string and format arguments. </li>
 </ul>
 </dd>
 </dl>
@@ -390,11 +377,9 @@
 <dd><p>Log to any logger at LEVEL_CRITICAL. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">logger</span></code> - <p>Logger to log to. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">...</span></code> - <p>Format string and format arguments. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">logger</span></code>: Logger to log to. </li>
+<li><code class="docutils literal"><span class="pre">...</span></code>: Format string and format arguments. </li>
 </ul>
 </dd>
 </dl>
@@ -402,7 +387,7 @@
 </dd></dl>
 
 </div>
-<div class="breathe-sectiondef container">
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Functions</p>
 <dl class="function">
 <dt id="c.sl_init">
@@ -410,9 +395,8 @@
 <dd><p>Initialize a logger object. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">obj</span></code> - <p>Logger to initialize. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">obj</span></code>: Logger to initialize. </li>
 </ul>
 </dd>
 </dl>
@@ -436,9 +420,8 @@
 <dd><p>Free resources held by a logger object. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">obj</span></code> - <p>Logger to deinitialize. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">obj</span></code>: Logger to deinitialize. </li>
 </ul>
 </dd>
 </dl>
@@ -451,9 +434,8 @@
 <dd><p>Free resources and deallocate a logger object. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">obj</span></code> - <p>Logger to deallocate. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">obj</span></code>: Logger to deallocate. </li>
 </ul>
 </dd>
 </dl>
@@ -466,11 +448,9 @@
 <dd><p>Set the minimum level this logger will report. </p>
 <p>All loghandlers have levels, but log messages are first filtered by the log level of the logger. If the logger is set to have a higher level, then messages won&#8217;t even get sent to the handler. The level is inclusive. <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">l</span></code> - <p>The logger to set the level of. (NULL for default) </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">level</span></code> - <p>The level to set. Can be any integer, but specifically one of the `LEVEL_*` constants would be good. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">l</span></code>: The logger to set the level of. (NULL for default) </li>
+<li><code class="docutils literal"><span class="pre">level</span></code>: The level to set. Can be any integer, but specifically one of the `LEVEL_*` constants would be good. </li>
 </ul>
 </dd>
 </dl>
@@ -483,19 +463,15 @@
 <dd><p>Add a log handler to the logger. </p>
 <p>Loggers have limited space for loghandlers, so this could fail. Loggers are not intended to be array lists containing arbitrary amounts of handlers, and they&#8217;re not intended to provide convenient access, update, or removal. <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">l</span></code> - <p>Logger to add to. (NULL for default) </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">h</span></code> - <p>Handler to add to the logger. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">status</span></code> - <p>For error reporting. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">l</span></code>: Logger to add to. (NULL for default) </li>
+<li><code class="docutils literal"><span class="pre">h</span></code>: Handler to add to the logger. </li>
+<li><code class="docutils literal"><span class="pre">status</span></code>: For error reporting. </li>
 </ul>
 </dd>
 <dt><strong>Exceptions</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">SMB_INDEX_ERROR</span></code> - <p>If there is no more space for any more handlers. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">SMB_INDEX_ERROR</span></code>: If there is no more space for any more handlers. </li>
 </ul>
 </dd>
 </dl>
@@ -508,9 +484,8 @@
 <dd><p>Remove all handlers from the logger. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">l</span></code> - <p>Logger to clear out. (NULL for default) </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">l</span></code>: Logger to clear out. (NULL for default) </li>
 </ul>
 </dd>
 </dl>
@@ -523,9 +498,8 @@
 <dd><p>Set the static default logger to be your own. </p>
 <p>When you use the `D*` logger macros, the default logger is the one you log to. The default logger will report everything to stderr, unless you modify it or set the default logger to a new one. <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">l</span></code> - <p>New logger. NULL to reset it to the original one. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">l</span></code>: New logger. NULL to reset it to the original one. </li>
 </ul>
 </dd>
 </dl>
@@ -538,19 +512,13 @@
 <dd><p>Log a message. </p>
 <p>This is the function that actually carries out any logging operation. All the logging macros expand to a call to this function. You really don&#8217;t want to call this function directly, cause you have to provide a ton of information that you can&#8217;t keep up to date in code, and it can all be provided by preprocessor macros. <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">l</span></code> - <p>Logger to send log message to. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">file</span></code> - <p>Name of the code file the message originated from. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">line</span></code> - <p>Line number of the log message. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">function</span></code> - <p>Name of the function the message came from. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">level</span></code> - <p>The log level of this message. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">...</span></code> - <p>Format string and format arguments, forming the actual message. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">l</span></code>: Logger to send log message to. </li>
+<li><code class="docutils literal"><span class="pre">file</span></code>: Name of the code file the message originated from. </li>
+<li><code class="docutils literal"><span class="pre">line</span></code>: Line number of the log message. </li>
+<li><code class="docutils literal"><span class="pre">function</span></code>: Name of the function the message came from. </li>
+<li><code class="docutils literal"><span class="pre">level</span></code>: The log level of this message. </li>
+<li><code class="docutils literal"><span class="pre">...</span></code>: Format string and format arguments, forming the actual message. </li>
 </ul>
 </dd>
 </dl>
@@ -563,7 +531,7 @@
 <span class="target" id="libstephenstructsmb__loghandler"></span><em class="property">struct </em><code class="descname">smb_loghandler</code><a class="headerlink" href="#c.smb_loghandler" title="Permalink to this definition">¶</a></dt>
 <dd><em>#include &lt;log.h&gt;</em><p>Specifies a log handler. </p>
 <p>This struct contains the information necessary to deliver a log message to its destination. It has no memory management functions, since you should just pass it by value. </p>
-<div class="breathe-sectiondef container">
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Members</p>
 <dl class="variable">
 <dt id="c.level">
@@ -585,7 +553,7 @@
 <span class="target" id="libstephenstructsmb__logger"></span><em class="property">struct </em><code class="descname">smb_logger</code><a class="headerlink" href="#c.smb_logger" title="Permalink to this definition">¶</a></dt>
 <dd><em>#include &lt;log.h&gt;</em><p>Specifies a logger. </p>
 <p>This struct represents a logger. You can create it dynamically, but it is entirely possible to create a &#8220;literal&#8221; for it and declare it statically. </p>
-<div class="breathe-sectiondef container">
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Members</p>
 <dl class="variable">
 <dt>

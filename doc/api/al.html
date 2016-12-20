@@ -30,6 +30,9 @@
   
 
   
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
     <link rel="top" title="libstephen 0.1 documentation" href="../index.html"/>
         <link rel="up" title="Libstephen API Documentation" href="index.html"/>
         <link rel="next" title="List Interface" href="list.html"/>
@@ -137,7 +140,7 @@
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="../_sources/api/al.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/api/al.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -163,7 +166,7 @@ arraylist.c provides an array implementation of the list interface. It has its o
 <dd>Copyright (c) 2013-2016, Stephen Brennan. Released under the Revised BSD License. See the LICENSE.txt file for details. </dd>
 </dl>
 </p>
-<div class="breathe-sectiondef container">
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Typedefs</p>
 <dl class="typedef">
 <dt id="c.smb_al">
@@ -173,7 +176,7 @@ arraylist.c provides an array implementation of the list interface. It has its o
 </dd></dl>
 
 </div>
-<div class="breathe-sectiondef container">
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Functions</p>
 <dl class="function">
 <dt id="c.al_init">
@@ -199,9 +202,8 @@ arraylist.c provides an array implementation of the list interface. It has its o
 <dd><p>Free the resources used by the array list, but don&#8217;t actually free the pointer given. </p>
 <p>This is useful if you have a stack-allocated array list. <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>A pointer to the list to &#8216;destroy.&#8217; </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">list</span></code>: A pointer to the list to &#8216;destroy.&#8217; </li>
 </ul>
 </dd>
 </dl>
@@ -214,9 +216,8 @@ arraylist.c provides an array implementation of the list interface. It has its o
 <dd><p>Free the resources and the pointer to the array list. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>A pointer to the list to delete. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">list</span></code>: A pointer to the list to delete. </li>
 </ul>
 </dd>
 </dl>
@@ -242,9 +243,8 @@ arraylist.c provides an array implementation of the list interface. It has its o
 <dt><strong>Return</strong></dt>
 <dd>A generic list pointing to the same array list. </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>The list to cast. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">list</span></code>: The list to cast. </li>
 </ul>
 </dd>
 </dl>
@@ -257,11 +257,9 @@ arraylist.c provides an array implementation of the list interface. It has its o
 <dd><p>Append an item to the end of a list. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>A pointer to the list to append to. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">newData</span></code> - <p>The data to append </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">list</span></code>: A pointer to the list to append to. </li>
+<li><code class="docutils literal"><span class="pre">newData</span></code>: The data to append </li>
 </ul>
 </dd>
 </dl>
@@ -274,11 +272,9 @@ arraylist.c provides an array implementation of the list interface. It has its o
 <dd><p>Prepend an item to the beginning of the list. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>A pointer to the list to prepend to. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">newData</span></code> - <p>The data to prepend. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">list</span></code>: A pointer to the list to prepend to. </li>
+<li><code class="docutils literal"><span class="pre">newData</span></code>: The data to prepend. </li>
 </ul>
 </dd>
 </dl>
@@ -293,19 +289,15 @@ arraylist.c provides an array implementation of the list interface. It has its o
 <dt><strong>Return</strong></dt>
 <dd>The data at the specified index. </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>A pointer to the list to get from. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">index</span></code> - <p>The index to get from the list. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">status</span></code> - <p>Status variable. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">list</span></code>: A pointer to the list to get from. </li>
+<li><code class="docutils literal"><span class="pre">index</span></code>: The index to get from the list. </li>
+<li><code class="docutils literal"><span class="pre">status</span></code>: Status variable. </li>
 </ul>
 </dd>
 <dt><strong>Exceptions</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">SMB_INDEX_ERROR</span></code> - <p>If the specified index was out of range. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">SMB_INDEX_ERROR</span></code>: If the specified index was out of range. </li>
 </ul>
 </dd>
 </dl>
@@ -318,19 +310,15 @@ arraylist.c provides an array implementation of the list interface. It has its o
 <dd><p>Removes the node at the given index, if the index exists. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>A pointer to the list to remove from. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">index</span></code> - <p>The index to remove from the list. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">status</span></code> - <p>Status variable. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">list</span></code>: A pointer to the list to remove from. </li>
+<li><code class="docutils literal"><span class="pre">index</span></code>: The index to remove from the list. </li>
+<li><code class="docutils literal"><span class="pre">status</span></code>: Status variable. </li>
 </ul>
 </dd>
 <dt><strong>Exceptions</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">SMB_INDEX_ERROR</span></code> - <p>If the specified index was out of range. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">SMB_INDEX_ERROR</span></code>: If the specified index was out of range. </li>
 </ul>
 </dd>
 </dl>
@@ -343,13 +331,10 @@ arraylist.c provides an array implementation of the list interface. It has its o
 <dd><p>Inserts an item at the specified location in the list. </p>
 <p>If the location is not the end of the list, every item at the given index is shifted up one index. If the provided location is less than 0, the location will be treated as 0. If the provided location is greater than the length of the list, the item will be added to the end of the list. <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>A pointer to the list to insert into. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">index</span></code> - <p>The index to insert at. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">newData</span></code> - <p>The data to insert. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">list</span></code>: A pointer to the list to insert into. </li>
+<li><code class="docutils literal"><span class="pre">index</span></code>: The index to insert at. </li>
+<li><code class="docutils literal"><span class="pre">newData</span></code>: The data to insert. </li>
 </ul>
 </dd>
 </dl>
@@ -362,21 +347,16 @@ arraylist.c provides an array implementation of the list interface. It has its o
 <dd><p>Sets the item at the given index. </p>
 <p>This can only be used to set *existing* indices. If the list is of size 10 and you try to set element 10 in order to expand it, you will fail. You need to use al_insert or al_append for that. <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>A pointer to the list to modify. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">index</span></code> - <p>The index to set. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">newData</span></code> - <p>The new data. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">status</span></code> - <p>Status variable. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">list</span></code>: A pointer to the list to modify. </li>
+<li><code class="docutils literal"><span class="pre">index</span></code>: The index to set. </li>
+<li><code class="docutils literal"><span class="pre">newData</span></code>: The new data. </li>
+<li><code class="docutils literal"><span class="pre">status</span></code>: Status variable. </li>
 </ul>
 </dd>
 <dt><strong>Exceptions</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">SMB_INDEX_ERROR</span></code> - <p>If the provided index was out of range. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">SMB_INDEX_ERROR</span></code>: If the provided index was out of range. </li>
 </ul>
 </dd>
 </dl>
@@ -389,11 +369,9 @@ arraylist.c provides an array implementation of the list interface. It has its o
 <dd><p>Push the data to the back of the list. An alias for al_append. See <a class="reference internal" href="ll.html#libstephenll_8h_1a13d5085ba6443cc36e6d2c85da2b9223"><span class="std std-ref">ll_push_back()</span></a> if you don&#8217;t know the what &#8216;push&#8217; means. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>A pointer to the list to push to. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">newData</span></code> - <p>The data to push to the back. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">list</span></code>: A pointer to the list to push to. </li>
+<li><code class="docutils literal"><span class="pre">newData</span></code>: The data to push to the back. </li>
 </ul>
 </dd>
 </dl>
@@ -408,17 +386,14 @@ arraylist.c provides an array implementation of the list interface. It has its o
 <dt><strong>Return</strong></dt>
 <dd>The data from the back of the list. </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>A pointer to the list to pop from. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">status</span></code> - <p>Status variable. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">list</span></code>: A pointer to the list to pop from. </li>
+<li><code class="docutils literal"><span class="pre">status</span></code>: Status variable. </li>
 </ul>
 </dd>
 <dt><strong>Exceptions</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">SMB_INDEX_ERROR</span></code> - <p>if the list is empty. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">SMB_INDEX_ERROR</span></code>: if the list is empty. </li>
 </ul>
 </dd>
 </dl>
@@ -433,17 +408,14 @@ arraylist.c provides an array implementation of the list interface. It has its o
 <dt><strong>Return</strong></dt>
 <dd>The data at the back of the list. </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>A pointer to the list to peek from. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">status</span></code> - <p>Status variable. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">list</span></code>: A pointer to the list to peek from. </li>
+<li><code class="docutils literal"><span class="pre">status</span></code>: Status variable. </li>
 </ul>
 </dd>
 <dt><strong>Exceptions</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">SMB_INDEX_ERROR</span></code> - <p>if the list is empty. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">SMB_INDEX_ERROR</span></code>: if the list is empty. </li>
 </ul>
 </dd>
 </dl>
@@ -456,11 +428,9 @@ arraylist.c provides an array implementation of the list interface. It has its o
 <dd><p>Push the data to the front of the list. Alias for al_prepend. See <a class="reference internal" href="ll.html#libstephenll_8h_1a13d5085ba6443cc36e6d2c85da2b9223"><span class="std std-ref">ll_push_back()</span></a> if you don&#8217;t know what &#8216;push&#8217; means. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>A pointer to the list to push to. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">data</span></code> - <p>The data to push to the front. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">list</span></code>: A pointer to the list to push to. </li>
+<li><code class="docutils literal"><span class="pre">data</span></code>: The data to push to the front. </li>
 </ul>
 </dd>
 </dl>
@@ -475,17 +445,14 @@ arraylist.c provides an array implementation of the list interface. It has its o
 <dt><strong>Return</strong></dt>
 <dd>The data from the front of the list. </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>A pointer to the list to pop from. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">status</span></code> - <p>Status variable. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">list</span></code>: A pointer to the list to pop from. </li>
+<li><code class="docutils literal"><span class="pre">status</span></code>: Status variable. </li>
 </ul>
 </dd>
 <dt><strong>Exceptions</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">SMB_INDEX_ERROR</span></code> - <p>If the list is empty. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">SMB_INDEX_ERROR</span></code>: If the list is empty. </li>
 </ul>
 </dd>
 </dl>
@@ -500,17 +467,14 @@ arraylist.c provides an array implementation of the list interface. It has its o
 <dt><strong>Return</strong></dt>
 <dd>The data from the front of the list. </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>A pointer to the list to peek from. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">status</span></code> - <p>Status variable. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">list</span></code>: A pointer to the list to peek from. </li>
+<li><code class="docutils literal"><span class="pre">status</span></code>: Status variable. </li>
 </ul>
 </dd>
 <dt><strong>Exceptions</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">SMB_INDEX_ERROR</span></code> - <p>if the list is empty. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">SMB_INDEX_ERROR</span></code>: if the list is empty. </li>
 </ul>
 </dd>
 </dl>
@@ -525,9 +489,8 @@ arraylist.c provides an array implementation of the list interface. It has its o
 <dt><strong>Return</strong></dt>
 <dd>The length of the list. </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>A pointer to the list. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">list</span></code>: A pointer to the list. </li>
 </ul>
 </dd>
 </dl>
@@ -542,13 +505,10 @@ arraylist.c provides an array implementation of the list interface. It has its o
 <dt><strong>Return</strong></dt>
 <dd>Index of the item, or -1 if it&#8217;s not in the list. </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>A pointer to the list </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">d</span></code> - <p>The item to search for </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">comp</span></code> - <p>The comparator to use. NULL for bit comparison. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">list</span></code>: A pointer to the list </li>
+<li><code class="docutils literal"><span class="pre">d</span></code>: The item to search for </li>
+<li><code class="docutils literal"><span class="pre">comp</span></code>: The comparator to use. NULL for bit comparison. </li>
 </ul>
 </dd>
 </dl>
@@ -563,9 +523,8 @@ arraylist.c provides an array implementation of the list interface. It has its o
 <dt><strong>Return</strong></dt>
 <dd>The <a class="reference internal" href="list.html#libstephenstructsmb__iter"><span class="std std-ref">smb_iter</span></a> to the list. </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>A pointer to the list. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">list</span></code>: A pointer to the list. </li>
 </ul>
 </dd>
 </dl>
@@ -578,7 +537,7 @@ arraylist.c provides an array implementation of the list interface. It has its o
 <span class="target" id="libstephenstructsmb__al"></span><em class="property">struct </em><code class="descname">smb_al</code></dt>
 <dd><em>#include &lt;al.h&gt;</em><p>The actual array list data type. </p>
 <p>&#8220;Bare&#8221; functions return a pointer to this structure. You should not use any of the members, as they are implementation specific and subject to change. </p>
-<div class="breathe-sectiondef container">
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Members</p>
 <dl class="variable">
 <dt id="c.data">

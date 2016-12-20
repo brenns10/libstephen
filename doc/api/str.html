@@ -30,6 +30,9 @@
   
 
   
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
     <link rel="top" title="libstephen 0.1 documentation" href="../index.html"/>
         <link rel="up" title="Libstephen API Documentation" href="index.html"/>
         <link rel="next" title="Lisp Implementation Documentation" href="../lisp/index.html"/>
@@ -137,7 +140,7 @@
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="../_sources/api/str.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/api/str.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -159,7 +162,7 @@
 <dd>Copyright (c) 2015-2016, Stephen Brennan. Released under the Revised BSD License. See LICENSE.txt for details. </dd>
 </dl>
 </p>
-<div class="breathe-sectiondef container">
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Functions</p>
 <dl class="function">
 <dt id="c.read_file">
@@ -168,9 +171,8 @@
 <p>
 It is the caller&#8217;s responsibility to free() the returned pointer! <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">f</span></code> - <p>The file to read.</p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">f</span></code>: The file to read.</li>
 </ul>
 </dd>
 </dl>
@@ -184,9 +186,8 @@ It is the caller&#8217;s responsibility to free() the returned pointer! <dl clas
 <p>
 It is the caller&#8217;s responsibility to free() the returned pointer! <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">f</span></code> - <p>The file to read.</p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">f</span></code>: The file to read.</li>
 </ul>
 </dd>
 </dl>
@@ -200,9 +201,8 @@ It is the caller&#8217;s responsibility to free() the returned pointer! <dl clas
 <p>
 It is the caller&#8217;s responsibility to free() the returned pointer! <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">file</span></code> - <p>File to read line from.</p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">file</span></code>: File to read line from.</li>
 </ul>
 </dd>
 </dl>
@@ -216,9 +216,8 @@ It is the caller&#8217;s responsibility to free() the returned pointer! <dl clas
 <p>
 It is the caller&#8217;s responsibility to free() the returned pointer! <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">file</span></code> - <p>File to read line from.</p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">file</span></code>: File to read line from.</li>
 </ul>
 </dd>
 </dl>
@@ -234,9 +233,8 @@ The string is modified! You should make a copy before doing this. Also, it is th
 <dt><strong>Return</strong></dt>
 <dd>A linked list containing char* to each line.</dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">source</span></code> - <p>The string to split into lines. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">source</span></code>: The string to split into lines. </li>
 </ul>
 </dd>
 </dl>
@@ -252,9 +250,8 @@ The string is modified! You should make a copy before doing this. Also, it is th
 <dt><strong>Return</strong></dt>
 <dd>A linked list containing wchar_t* to each line.</dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">source</span></code> - <p>The string to split into lines. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">source</span></code>: The string to split into lines. </li>
 </ul>
 </dd>
 </dl>

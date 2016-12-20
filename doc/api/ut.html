@@ -30,6 +30,9 @@
   
 
   
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
     <link rel="top" title="libstephen 0.1 documentation" href="../index.html"/>
         <link rel="up" title="Libstephen API Documentation" href="index.html"/>
         <link rel="next" title="Regular Expressions" href="re.html"/>
@@ -137,7 +140,7 @@
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="../_sources/api/ut.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/api/ut.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -159,7 +162,7 @@
 <dd>Copyright (c) 2013-2016, Stephen Brennan. Released under the Revised BSD License. See the LICENSE.txt file for details. </dd>
 </dl>
 </p>
-<div class="breathe-sectiondef container">
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Defines</p>
 <dl class="define">
 <dt id="c.SMB_UNIT_DESCRIPTION_SIZE">
@@ -501,7 +504,7 @@
 <dd></dd></dl>
 
 </div>
-<div class="breathe-sectiondef container">
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Typedefs</p>
 <dl class="typedef">
 <dt id="c.smb_ut_test">
@@ -518,7 +521,7 @@
 </dd></dl>
 
 </div>
-<div class="breathe-sectiondef container">
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Functions</p>
 <dl class="function">
 <dt id="c.su_create_test">
@@ -528,11 +531,9 @@
 <dt><strong>Return</strong></dt>
 <dd>A pointer to the new test. </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">description</span></code> - <p>A description of the test. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">run</span></code> - <p>A function pointer to the test function. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">description</span></code>: A description of the test. </li>
+<li><code class="docutils literal"><span class="pre">run</span></code>: A function pointer to the test function. </li>
 </ul>
 </dd>
 </dl>
@@ -547,9 +548,8 @@
 <dt><strong>Return</strong></dt>
 <dd>A pointer to the test group. </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">description</span></code> - <p>A short description for the group. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">description</span></code>: A short description for the group. </li>
 </ul>
 </dd>
 </dl>
@@ -562,11 +562,9 @@
 <dd><p>Add a test to the given test group. </p>
 <p>A maximum of SMB_UNIT_TESTS_PER_GROUP may be added to the group. After the limit is reached, this function fails *silently*, so as to prevent interference with the actual tests. <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">group</span></code> - <p>A pointer to the group to add the test to. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">test</span></code> - <p>A pointer to the test. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">group</span></code>: A pointer to the group to add the test to. </li>
+<li><code class="docutils literal"><span class="pre">test</span></code>: A pointer to the test. </li>
 </ul>
 </dd>
 </dl>
@@ -581,11 +579,9 @@
 <dt><strong>Return</strong></dt>
 <dd>The line number of the failed assertion, or 0 if none occurred. </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">test</span></code> - <p>The test to run </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">file</span></code> - <p>The filename of the test (used for the error message). </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">test</span></code>: The test to run </li>
+<li><code class="docutils literal"><span class="pre">file</span></code>: The filename of the test (used for the error message). </li>
 </ul>
 </dd>
 </dl>
@@ -600,9 +596,8 @@
 <dt><strong>Return</strong></dt>
 <dd>An integer. Since the tests are run sequentially via the <a class="reference internal" href="#libstephenut_8h_1ac8c3c8ac882832c9bf369204e7ce49ec"><span class="std std-ref">su_run_test()</span></a> function, it returns 0 if all tests succeeded, or else the return code of the failed test from <a class="reference internal" href="#libstephenut_8h_1ac8c3c8ac882832c9bf369204e7ce49ec"><span class="std std-ref">su_run_test()</span></a>. </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">group</span></code> - <p>A pointer to the <a class="reference internal" href="#libstephenstructsmb__ut__group"><span class="std std-ref">smb_ut_group</span></a> to run. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">group</span></code>: A pointer to the <a class="reference internal" href="#libstephenstructsmb__ut__group"><span class="std std-ref">smb_ut_group</span></a> to run. </li>
 </ul>
 </dd>
 </dl>
@@ -615,9 +610,8 @@
 <dd><p>Frees the memory associated with the test, and performs cleanup. </p>
 <p>Note that no actual cleanup is required by the test, so the only benefit to using this function is that it is future-safe (updates to smbunit may require cleanup to be performed in this function). <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">test</span></code> - <p>The test to free </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">test</span></code>: The test to free </li>
 </ul>
 </dd>
 </dl>
@@ -630,9 +624,8 @@
 <dd><p>Free the memory associated with the group AND ALL TESTS WITHIN IT. You MUST use this to delete test groups. </p>
 <p>Note that if a pointer to a <a class="reference internal" href="#libstephenstructsmb__ut__test"><span class="std std-ref">smb_ut_test</span></a> within the <a class="reference internal" href="#libstephenstructsmb__ut__group"><span class="std std-ref">smb_ut_group</span></a> is already invalid (freed), then <a class="reference internal" href="#libstephenut_8h_1a63abf54d9afc1e99e2cd8f227a5df1ff"><span class="std std-ref">su_delete_group()</span></a> assumes that it has been freed and moves on. So you may include a single test in more than one group and safely delete them both (but after deleting the first group, the test will no longer be valid and a segmentation fault will occur if you try to run the second group). <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">group</span></code> - <p>A pointer to the group to free </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">group</span></code>: A pointer to the group to free </li>
 </ul>
 </dd>
 </dl>
@@ -645,7 +638,7 @@
 <span class="target" id="libstephenstructsmb__ut__test"></span><em class="property">struct </em><code class="descname">smb_ut_test</code></dt>
 <dd><em>#include &lt;ut.h&gt;</em><p>Defines a single unit test. </p>
 <p>Members should be modified with care, preferably not at all, except by using the smbunit functions. </p>
-<div class="breathe-sectiondef container">
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Members</p>
 <dl class="variable">
 <dt>
@@ -673,7 +666,7 @@
 <span class="target" id="libstephenstructsmb__ut__group"></span><em class="property">struct </em><code class="descname">smb_ut_group</code></dt>
 <dd><em>#include &lt;ut.h&gt;</em><p>A structure holding a group of unit tests that are all related. </p>
 <p>Members shouldn&#8217;t me modified by client code. All should be managed by the functions in smbunit. </p>
-<div class="breathe-sectiondef container">
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Members</p>
 <dl class="variable">
 <dt>

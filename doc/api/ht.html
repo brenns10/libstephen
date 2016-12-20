@@ -30,6 +30,9 @@
   
 
   
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
     <link rel="top" title="libstephen 0.1 documentation" href="../index.html"/>
         <link rel="up" title="Libstephen API Documentation" href="index.html"/>
         <link rel="next" title="Bitfield" href="bf.html"/>
@@ -137,7 +140,7 @@
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="../_sources/api/ht.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/api/ht.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -159,7 +162,7 @@
 <dd>Copyright (c) 2013-2016, Stephen Brennan. Released under the Revised BSD License. See the LICENSE.txt file for details. </dd>
 </dl>
 </p>
-<div class="breathe-sectiondef container">
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Defines</p>
 <dl class="define">
 <dt id="c.HASH_TABLE_INITIAL_SIZE">
@@ -174,7 +177,7 @@
 </dd></dl>
 
 </div>
-<div class="breathe-sectiondef container">
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Typedefs</p>
 <dl class="typedef">
 <dt id="c.HASH_FUNCTION">
@@ -184,9 +187,8 @@
 <dt><strong>Return</strong></dt>
 <dd>The hash value </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">toHash</span></code> - <p>The data that will be passed to the hash function. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">toHash</span></code>: The data that will be passed to the hash function. </li>
 </ul>
 </dd>
 </dl>
@@ -213,7 +215,7 @@
 </dd></dl>
 
 </div>
-<div class="breathe-sectiondef container">
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Enums</p>
 <dl class="enum">
 <dt id="c.smb_ht_mark">
@@ -239,7 +241,7 @@
 </dd></dl>
 
 </div>
-<div class="breathe-sectiondef container">
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Functions</p>
 <dl class="function">
 <dt id="c.ht_init">
@@ -247,13 +249,10 @@
 <dd><p>Initialize a hash table in memory already allocated. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">table</span></code> - <p>A pointer to the table to initialize. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">hash_func</span></code> - <p>A hash function for the table. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">equal</span></code> - <p>A comparison function for <a class="reference internal" href="base.html#libstephenunion_d_a_t_a"><span class="std std-ref">DATA</span></a>. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">table</span></code>: A pointer to the table to initialize. </li>
+<li><code class="docutils literal"><span class="pre">hash_func</span></code>: A hash function for the table. </li>
+<li><code class="docutils literal"><span class="pre">equal</span></code>: A comparison function for <a class="reference internal" href="base.html#libstephenunion_d_a_t_a"><span class="std std-ref">DATA</span></a>. </li>
 </ul>
 </dd>
 </dl>
@@ -268,11 +267,9 @@
 <dt><strong>Return</strong></dt>
 <dd>A pointer to the new hash table. </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">hash_func</span></code> - <p>A function that takes one <a class="reference internal" href="base.html#libstephenunion_d_a_t_a"><span class="std std-ref">DATA</span></a> and returns a hash value generated from it. It should be a good hash function. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">equal</span></code> - <p>A comparison function for <a class="reference internal" href="base.html#libstephenunion_d_a_t_a"><span class="std std-ref">DATA</span></a>. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">hash_func</span></code>: A function that takes one <a class="reference internal" href="base.html#libstephenunion_d_a_t_a"><span class="std std-ref">DATA</span></a> and returns a hash value generated from it. It should be a good hash function. </li>
+<li><code class="docutils literal"><span class="pre">equal</span></code>: A comparison function for <a class="reference internal" href="base.html#libstephenunion_d_a_t_a"><span class="std std-ref">DATA</span></a>. </li>
 </ul>
 </dd>
 </dl>
@@ -285,11 +282,9 @@
 <dd><p>Free resources used by the hash table, but does not free the pointer itself. Perform an action on the data as it is deleted. </p>
 <p>Useful for stack valued hash tables. A deleter must be specified in this function call. <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">table</span></code> - <p>The table to destroy. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">deleter</span></code> - <p>The deletion action on the data. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">table</span></code>: The table to destroy. </li>
+<li><code class="docutils literal"><span class="pre">deleter</span></code>: The deletion action on the data. </li>
 </ul>
 </dd>
 </dl>
@@ -302,9 +297,8 @@
 <dd><p>Free any resources used by the hash table, but doesn&#8217;t free the pointer. Doesn&#8217;t perform any actions on the data as it is deleted. </p>
 <p>If pointers are contained within the hash table, they are not freed. Use <a class="reference internal" href="#libstephenht_8h_1a5ccfba9e2426f5e1f444003054a503e0"><span class="std std-ref">ht_destroy_act()</span></a> to specify a deletion action on the hash table. <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">table</span></code> - <p>The table to destroy. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">table</span></code>: The table to destroy. </li>
 </ul>
 </dd>
 </dl>
@@ -317,11 +311,9 @@
 <dd><p>Free the hash table and its resources. Perform an action on each data before freeing the table. Useful for freeing pointers stored in the table. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">table</span></code> - <p>The table to free. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">deleter</span></code> - <p>The action to perform on each value in the hash table before deletion. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">table</span></code>: The table to free. </li>
+<li><code class="docutils literal"><span class="pre">deleter</span></code>: The action to perform on each value in the hash table before deletion. </li>
 </ul>
 </dd>
 </dl>
@@ -334,9 +326,8 @@
 <dd><p>Free the hash table and its resources. No pointers contained in the table will be freed. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">table</span></code> - <p>The table to free. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">table</span></code>: The table to free. </li>
 </ul>
 </dd>
 </dl>
@@ -349,13 +340,10 @@
 <dd><p>Insert data into the hash table. </p>
 <p>Expands the hash table if the load factor is below a threshold. If the key already exists in the table, then the function will overwrite it with the new data provided. <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">table</span></code> - <p>A pointer to the hash table. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">key</span></code> - <p>The key to insert. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">value</span></code> - <p>The value to insert at the key. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">table</span></code>: A pointer to the hash table. </li>
+<li><code class="docutils literal"><span class="pre">key</span></code>: The key to insert. </li>
+<li><code class="docutils literal"><span class="pre">value</span></code>: The value to insert at the key. </li>
 </ul>
 </dd>
 </dl>
@@ -368,21 +356,16 @@
 <dd><p>Remove the key, value pair stored in the hash table. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">table</span></code> - <p>A pointer to the hash table. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">key</span></code> - <p>The key to delete. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">deleter</span></code> - <p>The action to perform on the value before removing it. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">status</span></code> - <p>Status variable. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">table</span></code>: A pointer to the hash table. </li>
+<li><code class="docutils literal"><span class="pre">key</span></code>: The key to delete. </li>
+<li><code class="docutils literal"><span class="pre">deleter</span></code>: The action to perform on the value before removing it. </li>
+<li><code class="docutils literal"><span class="pre">status</span></code>: Status variable. </li>
 </ul>
 </dd>
 <dt><strong>Exceptions</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">SMB_NOT_FOUND_ERROR</span></code> - <p>If an item with the given key is not found. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">SMB_NOT_FOUND_ERROR</span></code>: If an item with the given key is not found. </li>
 </ul>
 </dd>
 </dl>
@@ -395,19 +378,15 @@
 <dd><p>Remove the key, value pair stored in the hash table. </p>
 <p>This function does not call a deleter on the stored data. <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">table</span></code> - <p>A pointer to the hash table. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">key</span></code> - <p>The key to delete. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">status</span></code> - <p>Status variable. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">table</span></code>: A pointer to the hash table. </li>
+<li><code class="docutils literal"><span class="pre">key</span></code>: The key to delete. </li>
+<li><code class="docutils literal"><span class="pre">status</span></code>: Status variable. </li>
 </ul>
 </dd>
 <dt><strong>Exceptions</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">SMB_NOT_FOUND_ERROR</span></code> - <p>If an item with the given key is not found. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">SMB_NOT_FOUND_ERROR</span></code>: If an item with the given key is not found. </li>
 </ul>
 </dd>
 </dl>
@@ -422,19 +401,15 @@
 <dt><strong>Return</strong></dt>
 <dd>The value associated the key. </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">table</span></code> - <p>A pointer to the hash table. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">key</span></code> - <p>The key whose value to retrieve. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">status</span></code> - <p>Status variable. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">table</span></code>: A pointer to the hash table. </li>
+<li><code class="docutils literal"><span class="pre">key</span></code>: The key whose value to retrieve. </li>
+<li><code class="docutils literal"><span class="pre">status</span></code>: Status variable. </li>
 </ul>
 </dd>
 <dt><strong>Exceptions</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">NOT_FOUND_ERROR</span></code> - <p></p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">NOT_FOUND_ERROR</span></code>: </li>
 </ul>
 </dd>
 </dl>
@@ -449,11 +424,9 @@
 <dt><strong>Return</strong></dt>
 <dd>Whether the key is present. </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">table</span></code> - <p>A pointer to the hash table. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">key</span></code> - <p>The key to search for. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">table</span></code>: A pointer to the hash table. </li>
+<li><code class="docutils literal"><span class="pre">key</span></code>: The key to search for. </li>
 </ul>
 </dd>
 </dl>
@@ -468,9 +441,8 @@
 <dt><strong>Return</strong></dt>
 <dd>An iterator struct. </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">ht</span></code> - <p>A pointer to the hash table. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">ht</span></code>: A pointer to the hash table. </li>
 </ul>
 </dd>
 </dl>
@@ -485,9 +457,8 @@
 <dt><strong>Return</strong></dt>
 <dd>The hash value of the string. </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">data</span></code> - <p>The string to hash, assuming that the value contained is a char*. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">data</span></code>: The string to hash, assuming that the value contained is a char*. </li>
 </ul>
 </dd>
 </dl>
@@ -500,11 +471,9 @@
 <dd><p>Print the entire hash table. </p>
 <p>This function is useful for diagnostics. It can show every row in the table (with full_mode) so you can see how well entries are distributed in the table. Or, it can be compact and show just the rows with data. <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">table</span></code> - <p>The table to print. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">full_mode</span></code> - <p>Whether to print every row in the hash table. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">table</span></code>: The table to print. </li>
+<li><code class="docutils literal"><span class="pre">full_mode</span></code>: Whether to print every row in the hash table. </li>
 </ul>
 </dd>
 </dl>
@@ -522,7 +491,7 @@
 <dt>
 <span class="target" id="libstephenstructsmb__ht__bckt"></span><em class="property">struct </em><code class="descname">smb_ht_bckt</code></dt>
 <dd><em>#include &lt;ht.h&gt;</em><p>The bucket of a hash table. Contains key,value pairs, and is a singly linked list. </p>
-<div class="breathe-sectiondef container">
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Members</p>
 <dl class="variable">
 <dt id="c.key">
@@ -549,7 +518,7 @@
 <dt>
 <span class="target" id="libstephenstructsmb__ht"></span><em class="property">struct </em><code class="descname">smb_ht</code></dt>
 <dd><em>#include &lt;ht.h&gt;</em><p>A hash table data structure. </p>
-<div class="breathe-sectiondef container">
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Members</p>
 <dl class="variable">
 <dt id="c.length">

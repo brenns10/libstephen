@@ -30,6 +30,9 @@
   
 
   
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
     <link rel="top" title="libstephen 0.1 documentation" href="../index.html"/>
         <link rel="up" title="Libstephen API Documentation" href="index.html"/>
         <link rel="next" title="Array List" href="al.html"/>
@@ -137,7 +140,7 @@
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="../_sources/api/ll.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/api/ll.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -163,7 +166,7 @@ This linked list data structure provides most basic features necessary in a link
 <dd>Copyright (c) 2013-2016, Stephen Brennan. Released under the Revised BSD License. See the LICENSE.txt file for details. </dd>
 </dl>
 </p>
-<div class="breathe-sectiondef container">
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Typedefs</p>
 <dl class="typedef">
 <dt id="c.smb_ll_node">
@@ -179,7 +182,7 @@ This linked list data structure provides most basic features necessary in a link
 </dd></dl>
 
 </div>
-<div class="breathe-sectiondef container">
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Functions</p>
 <dl class="function">
 <dt id="c.ll_init">
@@ -187,9 +190,8 @@ This linked list data structure provides most basic features necessary in a link
 <dd><p>Initializes a new list in memory which has already been allocated. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">new_list</span></code> - <p>A pointer to the memory to initialize. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">new_list</span></code>: A pointer to the memory to initialize. </li>
 </ul>
 </dd>
 </dl>
@@ -213,9 +215,8 @@ This linked list data structure provides most basic features necessary in a link
 <dd><p>Frees all the resources held by the linked list without freeing the actual pointer to the list. </p>
 <p>If you create a list on the stack and use ll_init to initialize it, calling ll_delete will attempt to free your stack memory (bad). Use this to free all the resources of the list without freeing the pointer. <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>The list to destroy. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">list</span></code>: The list to destroy. </li>
 </ul>
 </dd>
 </dl>
@@ -228,9 +229,8 @@ This linked list data structure provides most basic features necessary in a link
 <dd><p>Frees the resources held by the linked list, and the memory allocated to the <a class="reference internal" href="#libstephenstructsmb__ll"><span class="std std-ref">smb_ll</span></a> object. </p>
 <p>This is equivalent to calling ll_destroy on the pointer, and then calling <a class="reference internal" href="base.html#libstephenbase_8h_1aea21945861a8d1978f9b7e5989c18aba"><span class="std std-ref">smb_free()</span></a> on the pointer. <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>A pointer to the list to delete. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">list</span></code>: A pointer to the list to delete. </li>
 </ul>
 </dd>
 </dl>
@@ -260,9 +260,8 @@ This linked list data structure provides most basic features necessary in a link
 <dt><strong>Return</strong></dt>
 <dd>A generic list interface object. </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>The linked list to cast to a generic list. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">list</span></code>: The linked list to cast to a generic list. </li>
 </ul>
 </dd>
 </dl>
@@ -275,11 +274,9 @@ This linked list data structure provides most basic features necessary in a link
 <dd><p>Append the given data to the end of the list. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>A pointer to the list to append to. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">new_data</span></code> - <p>The data to append. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">list</span></code>: A pointer to the list to append to. </li>
+<li><code class="docutils literal"><span class="pre">new_data</span></code>: The data to append. </li>
 </ul>
 </dd>
 </dl>
@@ -292,11 +289,9 @@ This linked list data structure provides most basic features necessary in a link
 <dd><p>Prepend the given data to the beginning of the list. All other data is shifted forward one index. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>A pointer to the list. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">new_data</span></code> - <p>The data to prepend. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">list</span></code>: A pointer to the list. </li>
+<li><code class="docutils literal"><span class="pre">new_data</span></code>: The data to prepend. </li>
 </ul>
 </dd>
 </dl>
@@ -309,11 +304,9 @@ This linked list data structure provides most basic features necessary in a link
 <dd><p>Push the data to the back of the list. An alias for <a class="reference internal" href="#libstephenll_8h_1ad0fa08647833fbfb6badf3feb4a7e734"><span class="std std-ref">ll_append()</span></a>. </p>
 <p>Push, of course, refers to its usage in the context of stacks. In other words, the function appends an item at the end fo the list. <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>A pointer to the list to push to. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">new_data</span></code> - <p>The data to push. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">list</span></code>: A pointer to the list to push to. </li>
+<li><code class="docutils literal"><span class="pre">new_data</span></code>: The data to push. </li>
 </ul>
 </dd>
 </dl>
@@ -328,17 +321,14 @@ This linked list data structure provides most basic features necessary in a link
 <dt><strong>Return</strong></dt>
 <dd>The item from the back of the list. </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>A pointer to the list to pop from. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">status</span></code> - <p>Status variable. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">list</span></code>: A pointer to the list to pop from. </li>
+<li><code class="docutils literal"><span class="pre">status</span></code>: Status variable. </li>
 </ul>
 </dd>
 <dt><strong>Exceptions</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">SMB_INDEX_ERROR</span></code> - <p>If the list is empty. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">SMB_INDEX_ERROR</span></code>: If the list is empty. </li>
 </ul>
 </dd>
 </dl>
@@ -353,17 +343,14 @@ This linked list data structure provides most basic features necessary in a link
 <dt><strong>Return</strong></dt>
 <dd>The item from the back of the list. </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>A pointer to the list to peek from. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">status</span></code> - <p>Status variable. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">list</span></code>: A pointer to the list to peek from. </li>
+<li><code class="docutils literal"><span class="pre">status</span></code>: Status variable. </li>
 </ul>
 </dd>
 <dt><strong>Exceptions</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">SMB_INDEX_ERROR</span></code> - <p>If the list is empty. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">SMB_INDEX_ERROR</span></code>: If the list is empty. </li>
 </ul>
 </dd>
 </dl>
@@ -378,11 +365,9 @@ This linked list data structure provides most basic features necessary in a link
 <dt><strong>See</strong></dt>
 <dd><a class="reference internal" href="#libstephenll_8h_1a13d5085ba6443cc36e6d2c85da2b9223"><span class="std std-ref">ll_push_back</span></a> If the term &#8216;push&#8217; is unfamiliar. </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>A pointer to the list. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">new_data</span></code> - <p>The data to push. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">list</span></code>: A pointer to the list. </li>
+<li><code class="docutils literal"><span class="pre">new_data</span></code>: The data to push. </li>
 </ul>
 </dd>
 </dl>
@@ -399,17 +384,14 @@ This linked list data structure provides most basic features necessary in a link
 <dt><strong>Return</strong></dt>
 <dd>The data from the front of the list. </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>A pointer to the list to pop from </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">status</span></code> - <p>Status variable. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">list</span></code>: A pointer to the list to pop from </li>
+<li><code class="docutils literal"><span class="pre">status</span></code>: Status variable. </li>
 </ul>
 </dd>
 <dt><strong>Exceptions</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">SMB_INDEX_ERROR</span></code> - <p>If the list is empty. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">SMB_INDEX_ERROR</span></code>: If the list is empty. </li>
 </ul>
 </dd>
 </dl>
@@ -426,17 +408,14 @@ This linked list data structure provides most basic features necessary in a link
 <dt><strong>Return</strong></dt>
 <dd>The data from the front of the list. </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>A pointer to the list to peek from. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">status</span></code> - <p>Status variable. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">list</span></code>: A pointer to the list to peek from. </li>
+<li><code class="docutils literal"><span class="pre">status</span></code>: Status variable. </li>
 </ul>
 </dd>
 <dt><strong>Exceptions</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">SMB_INDEX_ERROR</span></code> - <p>If the list is empty. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">SMB_INDEX_ERROR</span></code>: If the list is empty. </li>
 </ul>
 </dd>
 </dl>
@@ -451,19 +430,15 @@ This linked list data structure provides most basic features necessary in a link
 <dt><strong>Return</strong></dt>
 <dd>The data at the specified index, if it exists. </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>A pointer to the list to get from. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">index</span></code> - <p>The index to get from the list. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">status</span></code> - <p>Status variable. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">list</span></code>: A pointer to the list to get from. </li>
+<li><code class="docutils literal"><span class="pre">index</span></code>: The index to get from the list. </li>
+<li><code class="docutils literal"><span class="pre">status</span></code>: Status variable. </li>
 </ul>
 </dd>
 <dt><strong>Exceptions</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">SMB_INDEX_ERROR</span></code> - <p>If the given index is out of range. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">SMB_INDEX_ERROR</span></code>: If the given index is out of range. </li>
 </ul>
 </dd>
 </dl>
@@ -476,19 +451,15 @@ This linked list data structure provides most basic features necessary in a link
 <dd><p>Removes the node at the given index, if the index exists. </p>
 <p>If the item is not at the end of the list, the index of every item after this one will be shifted down one. <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>A pointer to the list to remove from. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">index</span></code> - <p>The index to remove from the list. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">status</span></code> - <p>Status variable. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">list</span></code>: A pointer to the list to remove from. </li>
+<li><code class="docutils literal"><span class="pre">index</span></code>: The index to remove from the list. </li>
+<li><code class="docutils literal"><span class="pre">status</span></code>: Status variable. </li>
 </ul>
 </dd>
 <dt><strong>Exceptions</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">SMB_INDEX_ERROR</span></code> - <p>If the given index is out of range. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">SMB_INDEX_ERROR</span></code>: If the given index is out of range. </li>
 </ul>
 </dd>
 </dl>
@@ -501,13 +472,10 @@ This linked list data structure provides most basic features necessary in a link
 <dd><p>Inserts an item at the specified location in the list. </p>
 <p>If the location is not the end of the list, then every item at the given index and after will be shifted up one index. If the provided location is less than 0, the location will be treated as 0. If the provided location is greater than the length of the list, the item will be added to the end of the list. <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>A pointer to the list to insert into. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">index</span></code> - <p>The index to insert at. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">new_data</span></code> - <p>The data to insert. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">list</span></code>: A pointer to the list to insert into. </li>
+<li><code class="docutils literal"><span class="pre">index</span></code>: The index to insert at. </li>
+<li><code class="docutils literal"><span class="pre">new_data</span></code>: The data to insert. </li>
 </ul>
 </dd>
 </dl>
@@ -520,21 +488,16 @@ This linked list data structure provides most basic features necessary in a link
 <dd><p>Sets an existing element to a new value. </p>
 <p>It is illegal to call <a class="reference internal" href="#libstephenll_8h_1ad45a9374335d4b3bf517e1ea02878e87"><span class="std std-ref">ll_set()</span></a> on an out of bounds index. You must use <a class="reference internal" href="#libstephenll_8h_1a166d2fc859c7ca0de5ea9f497b7a6a0f"><span class="std std-ref">ll_insert()</span></a> for that. <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>The list to modify. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">index</span></code> - <p>The index of the item to set. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">new_data</span></code> - <p>The data to set the index to. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">status</span></code> - <p>Status variable. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">list</span></code>: The list to modify. </li>
+<li><code class="docutils literal"><span class="pre">index</span></code>: The index of the item to set. </li>
+<li><code class="docutils literal"><span class="pre">new_data</span></code>: The data to set the index to. </li>
+<li><code class="docutils literal"><span class="pre">status</span></code>: Status variable. </li>
 </ul>
 </dd>
 <dt><strong>Exceptions</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">INDEX_ERROR</span></code> - <p>If the index is out of bounds </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">INDEX_ERROR</span></code>: If the index is out of bounds </li>
 </ul>
 </dd>
 </dl>
@@ -549,9 +512,8 @@ This linked list data structure provides most basic features necessary in a link
 <dt><strong>Return</strong></dt>
 <dd>The length of the list. </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>A pointer to the list </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">list</span></code>: A pointer to the list </li>
 </ul>
 </dd>
 </dl>
@@ -564,13 +526,10 @@ This linked list data structure provides most basic features necessary in a link
 <dd><p>Returns whether or not the list contains the item. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>Pointer to the list. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">d</span></code> - <p>The item to search for. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">comp</span></code> - <p>The comparator to use. NULL for bit comparison. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">list</span></code>: Pointer to the list. </li>
+<li><code class="docutils literal"><span class="pre">d</span></code>: The item to search for. </li>
+<li><code class="docutils literal"><span class="pre">comp</span></code>: The comparator to use. NULL for bit comparison. </li>
 </ul>
 </dd>
 </dl>
@@ -585,11 +544,9 @@ This linked list data structure provides most basic features necessary in a link
 <dt><strong>Return</strong></dt>
 <dd>Nothing, but the list is sorted in place. </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>List to sort. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">cmp</span></code> - <p>Comparator for sorting. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">list</span></code>: List to sort. </li>
+<li><code class="docutils literal"><span class="pre">cmp</span></code>: Comparator for sorting. </li>
 </ul>
 </dd>
 </dl>
@@ -604,9 +561,8 @@ This linked list data structure provides most basic features necessary in a link
 <dt><strong>Return</strong></dt>
 <dd>an iterator </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>A pointer to the list. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">list</span></code>: A pointer to the list. </li>
 </ul>
 </dd>
 </dl>
@@ -619,11 +575,9 @@ This linked list data structure provides most basic features necessary in a link
 <dd><p>Remove every element for which test_function returns true. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>List to remove from. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">test_function</span></code> - <p>Returns true if an element should be removed. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">list</span></code>: List to remove from. </li>
+<li><code class="docutils literal"><span class="pre">test_function</span></code>: Returns true if an element should be removed. </li>
 </ul>
 </dd>
 </dl>
@@ -638,11 +592,9 @@ This linked list data structure provides most basic features necessary in a link
 <dt><strong>Return</strong></dt>
 <dd>nothing - the list is modified! </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>The list to map over. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">map_function</span></code> - <p>Function to apply. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">list</span></code>: The list to map over. </li>
+<li><code class="docutils literal"><span class="pre">map_function</span></code>: Function to apply. </li>
 </ul>
 </dd>
 </dl>
@@ -657,13 +609,10 @@ This linked list data structure provides most basic features necessary in a link
 <dt><strong>Return</strong></dt>
 <dd>the final result </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>List to reduce the function along. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">start_value</span></code> - <p>Initial value to give to the reduction. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">reduction</span></code> - <p>Function to reduce. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">list</span></code>: List to reduce the function along. </li>
+<li><code class="docutils literal"><span class="pre">start_value</span></code>: Initial value to give to the reduction. </li>
+<li><code class="docutils literal"><span class="pre">reduction</span></code>: Function to reduce. </li>
 </ul>
 </dd>
 </dl>
@@ -678,13 +627,10 @@ This linked list data structure provides most basic features necessary in a link
 <dt><strong>Return</strong></dt>
 <dd>the final result </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">list</span></code> - <p>List to reduce the function along. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">start_value</span></code> - <p>Initial value to give to the reduction. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">reduction</span></code> - <p>Function to reduce. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">list</span></code>: List to reduce the function along. </li>
+<li><code class="docutils literal"><span class="pre">start_value</span></code>: Initial value to give to the reduction. </li>
+<li><code class="docutils literal"><span class="pre">reduction</span></code>: Function to reduce. </li>
 </ul>
 </dd>
 </dl>
@@ -697,7 +643,7 @@ This linked list data structure provides most basic features necessary in a link
 <span class="target" id="libstephenstructsmb__ll__node"></span><em class="property">struct </em><code class="descname">smb_ll_node</code></dt>
 <dd><em>#include &lt;ll.h&gt;</em><p>Node structure for linked list. </p>
 <p>This must be exposed in order for other data types to be public. This should not be used by users of the library. </p>
-<div class="breathe-sectiondef container">
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Members</p>
 <dl class="variable">
 <dt id="c.prev">
@@ -724,7 +670,7 @@ This linked list data structure provides most basic features necessary in a link
 <dt>
 <span class="target" id="libstephenstructsmb__ll"></span><em class="property">struct </em><code class="descname">smb_ll</code></dt>
 <dd><em>#include &lt;ll.h&gt;</em><p>The actual linked list data type. &#8220;Bare&#8221; functions return a pointer to this structure. </p>
-<div class="breathe-sectiondef container">
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Members</p>
 <dl class="variable">
 <dt id="c.head">

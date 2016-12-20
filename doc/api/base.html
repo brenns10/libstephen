@@ -30,6 +30,9 @@
   
 
   
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
     <link rel="top" title="libstephen 0.1 documentation" href="../index.html"/>
         <link rel="up" title="Libstephen API Documentation" href="index.html"/>
         <link rel="next" title="Linked List" href="ll.html"/>
@@ -137,7 +140,7 @@
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="../_sources/api/base.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/api/base.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -159,7 +162,7 @@
 <dd>Copyright (c) 2013-2016, Stephen Brennan. Released under the Revised BSD License. See the LICENSE.txt file for details. </dd>
 </dl>
 </p>
-<div class="breathe-sectiondef container">
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Defines</p>
 <dl class="define">
 <dt id="c.smb_new">
@@ -170,11 +173,9 @@
 <dt><strong>Return</strong></dt>
 <dd>A pointer to the allocated memory, casted to the correct type. </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">type</span></code> - <p>The type of the memory to allocate. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">n</span></code> - <p>The number of instances to allocate. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">type</span></code>: The type of the memory to allocate. </li>
+<li><code class="docutils literal"><span class="pre">n</span></code>: The number of instances to allocate. </li>
 </ul>
 </dd>
 </dl>
@@ -190,13 +191,10 @@
 <dt><strong>Return</strong></dt>
 <dd>A pointer to the reallocated memory. </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">type</span></code> - <p>The type of the memory to reallocate. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">ptr</span></code> - <p>The memory to reallocate. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">newamt</span></code> - <p>The amount of items to allocate. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">type</span></code>: The type of the memory to reallocate. </li>
+<li><code class="docutils literal"><span class="pre">ptr</span></code>: The memory to reallocate. </li>
+<li><code class="docutils literal"><span class="pre">newamt</span></code>: The amount of items to allocate. </li>
 </ul>
 </dd>
 </dl>
@@ -209,9 +207,8 @@
 <dd><p>A nicer free function. </p>
 <p>This macro/function wraps free(). It exits on failure and adjusts the malloc counter. <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">ptr</span></code> - <p>The memory you&#8217;re freeing. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">ptr</span></code>: The memory you&#8217;re freeing. </li>
 </ul>
 </dd>
 </dl>
@@ -279,7 +276,7 @@
 <dd></dd></dl>
 
 </div>
-<div class="breathe-sectiondef container">
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Typedefs</p>
 <dl class="typedef">
 <dt id="c.DATA">
@@ -317,7 +314,7 @@
 </dd></dl>
 
 </div>
-<div class="breathe-sectiondef container">
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Functions</p>
 <dl class="function">
 <dt id="c.data_compare_string">
@@ -385,7 +382,7 @@
 <span class="target" id="libstephenunion_d_a_t_a"></span><em class="property">union </em><code class="descname">DATA</code></dt>
 <dd><em>#include &lt;base.h&gt;</em><p>Base data type for the data structures. </p>
 <p>Capable of containing long integers, double precision floats, or pointers. Takes up 8 bytes. </p>
-<div class="breathe-sectiondef container">
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Members</p>
 <dl class="variable">
 <dt id="c.data_llint">

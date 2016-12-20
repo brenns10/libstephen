@@ -30,6 +30,9 @@
   
 
   
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
     <link rel="top" title="libstephen 0.1 documentation" href="../index.html"/>
         <link rel="up" title="Libstephen API Documentation" href="index.html"/>
         <link rel="next" title="Hash Table" href="ht.html"/>
@@ -137,7 +140,7 @@
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="../_sources/api/list.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/api/list.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -163,7 +166,7 @@ This header contains the declarations for the list interface and the iterator in
 <dd>Copyright (c) 2013-2016, Stephen Brennan. Released under the Revised BSD License. See the LICENSE.txt file for details. </dd>
 </dl>
 </p>
-<div class="breathe-sectiondef container">
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Typedefs</p>
 <dl class="typedef">
 <dt id="c.smb_list">
@@ -182,7 +185,7 @@ This header contains the declarations for the list interface and the iterator in
 </dd></dl>
 
 </div>
-<div class="breathe-sectiondef container">
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Functions</p>
 <dl class="function">
 <dt id="c.iter_print">
@@ -190,13 +193,10 @@ This header contains the declarations for the list interface and the iterator in
 <dd><p>Prints anything with an iterator. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">it</span></code> - <p>The iterator. Will be invalidated after this use. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">f</span></code> - <p>The file to print to. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">printer</span></code> - <p>The printer for handling <a class="reference internal" href="base.html#libstephenunion_d_a_t_a"><span class="std std-ref">DATA</span></a> objects. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">it</span></code>: The iterator. Will be invalidated after this use. </li>
+<li><code class="docutils literal"><span class="pre">f</span></code>: The file to print to. </li>
+<li><code class="docutils literal"><span class="pre">printer</span></code>: The printer for handling <a class="reference internal" href="base.html#libstephenunion_d_a_t_a"><span class="std std-ref">DATA</span></a> objects. </li>
 </ul>
 </dd>
 </dl>
@@ -210,7 +210,7 @@ This header contains the declarations for the list interface and the iterator in
 <dd><em>#include &lt;list.h&gt;</em><p>A generic list data structure. </p>
 <p>Can represent an array list or a linked list. Uses function pointers to hide the implementation. Has heavyweight memory requirements (many pointers). Function calls must be made like this:</p>
 <p>list-&gt;functionName(list, &lt;params...&gt;) </p>
-<div class="breathe-sectiondef container">
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Members</p>
 <dl class="variable">
 <dt id="c.data">
@@ -396,19 +396,15 @@ This header contains the declarations for the list interface and the iterator in
 <dt><strong>Return</strong></dt>
 <dd>The index of the first occurrence of d, else -1. </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">l</span></code> - <p>A pointer to the list. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">d</span></code> - <p>The data to search for. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">comp</span></code> - <p>The comparator to use. If NULL, compares the bits of d. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">l</span></code>: A pointer to the list. </li>
+<li><code class="docutils literal"><span class="pre">d</span></code>: The data to search for. </li>
+<li><code class="docutils literal"><span class="pre">comp</span></code>: The comparator to use. If NULL, compares the bits of d. </li>
 </ul>
 </dd>
 <dt><strong>Exceptions</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">None.</span></code> - <p></p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">None.</span></code>: </li>
 </ul>
 </dd>
 </dl>
@@ -424,7 +420,7 @@ This header contains the declarations for the list interface and the iterator in
 <dd><em>#include &lt;list.h&gt;</em><p>A generic iterator type. </p>
 <p>This is a generic iterator type. It should be implemented for any data structure that has some semblance of sequential access. It can also be used to implement a (lazy) generator. It only provides one directional, read-only access, which makes it apply to a more general set of data structures and generators.</p>
 <p>The semantics of the iterator are as follows: An iterator points *between* any two elements in the sequential list. Its current index is the index of the element it will return next. </p>
-<div class="breathe-sectiondef container">
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Members</p>
 <dl class="variable">
 <dt id="c.ds">
@@ -455,9 +451,8 @@ This header contains the declarations for the list interface and the iterator in
 <dt><strong>Return</strong></dt>
 <dd>The next element of the iteration. </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">iter</span></code> - <p>The iterator being used. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">iter</span></code>: The iterator being used. </li>
 </ul>
 </dd>
 </dl>
@@ -472,9 +467,8 @@ This header contains the declarations for the list interface and the iterator in
 <dt><strong>Return</strong></dt>
 <dd>Whether the iteration has a next element. </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">iter</span></code> - <p>The iterator being used. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">iter</span></code>: The iterator being used. </li>
 </ul>
 </dd>
 </dl>
@@ -487,11 +481,9 @@ This header contains the declarations for the list interface and the iterator in
 <dd><p>Frees any resources held by the iterator (but not the iterator). </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">iter</span></code> - <p>The iterator being used. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">free_src</span></code> - <p>Whether to free the data structure used as the source. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">iter</span></code>: The iterator being used. </li>
+<li><code class="docutils literal"><span class="pre">free_src</span></code>: Whether to free the data structure used as the source. </li>
 </ul>
 </dd>
 </dl>
@@ -504,11 +496,9 @@ This header contains the declarations for the list interface and the iterator in
 <dd><p>Frees any resources held by the iterator, and the iterator. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">iter</span></code> - <p>The iterator being used. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">free_src</span></code> - <p>Whether to free the data structure used as the source. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">iter</span></code>: The iterator being used. </li>
+<li><code class="docutils literal"><span class="pre">free_src</span></code>: Whether to free the data structure used as the source. </li>
 </ul>
 </dd>
 </dl>

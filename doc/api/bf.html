@@ -30,6 +30,9 @@
   
 
   
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
     <link rel="top" title="libstephen 0.1 documentation" href="../index.html"/>
         <link rel="up" title="Libstephen API Documentation" href="index.html"/>
         <link rel="next" title="Character Buffer" href="cb.html"/>
@@ -137,7 +140,7 @@
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="../_sources/api/bf.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/api/bf.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -159,7 +162,7 @@
 <dd>Copyright (c) 2013-2016, Stephen Brennan. Released under the Revised BSD License. See the LICENSE.txt file for details. </dd>
 </dl>
 </p>
-<div class="breathe-sectiondef container">
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Defines</p>
 <dl class="define">
 <dt id="c.BIT_PER_CHAR">
@@ -176,9 +179,8 @@
 <dt><strong>Return</strong></dt>
 <dd>The number of bytes </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">num_bools</span></code> - <p>The number of booleans. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">num_bools</span></code>: The number of booleans. </li>
 </ul>
 </dd>
 </dl>
@@ -186,7 +188,7 @@
 </dd></dl>
 
 </div>
-<div class="breathe-sectiondef container">
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Functions</p>
 <dl class="function">
 <dt id="c.bf_init">
@@ -194,11 +196,9 @@
 <dd><p>Initialize the memory where a bitfield is contained to all 0&#8217;s. </p>
 <p>This is public so people can use the function to allocate their own bitfields on function stacks instead of via the heap. No errors are defined for this function. <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">data</span></code> - <p>A pointer to the bitfield. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">num_bools</span></code> - <p>The size of the bitfield, in number of bools (aka bits, not bytes). </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">data</span></code>: A pointer to the bitfield. </li>
+<li><code class="docutils literal"><span class="pre">num_bools</span></code>: The size of the bitfield, in number of bools (aka bits, not bytes). </li>
 </ul>
 </dd>
 </dl>
@@ -213,9 +213,8 @@
 <dt><strong>Return</strong></dt>
 <dd>A pointer to the bitfield. </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">num_bools</span></code> - <p>The number of bools to fit in the bit field. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">num_bools</span></code>: The number of bools to fit in the bit field. </li>
 </ul>
 </dd>
 </dl>
@@ -228,11 +227,9 @@
 <dd><p>Delete the bitfield pointed to. Only do this if you created the bitfield via <a class="reference internal" href="#libstephenbf_8h_1a474f677f64c4de76d1f0302d7492cf15"><span class="std std-ref">bf_create()</span></a>. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">data</span></code> - <p>A pointer to the bitfield. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">num_bools</span></code> - <p>The number of bools contained in the bitfield. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">data</span></code>: A pointer to the bitfield. </li>
+<li><code class="docutils literal"><span class="pre">num_bools</span></code>: The number of bools contained in the bitfield. </li>
 </ul>
 </dd>
 </dl>
@@ -245,19 +242,15 @@
 <dd><p>Check whether the given bit is set. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">data</span></code> - <p>A pointer to the bitfield. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">index</span></code> - <p>The index of the bit to Check </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">data</span></code>: A pointer to the bitfield. </li>
+<li><code class="docutils literal"><span class="pre">index</span></code>: The index of the bit to Check </li>
 </ul>
 </dd>
 <dt><strong>Return Value</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">0</span></code> - <p>if the bit is not set. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">Nonzero</span></code> - <p>if the bit is set. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">0</span></code>: if the bit is not set. </li>
+<li><code class="docutils literal"><span class="pre">Nonzero</span></code>: if the bit is set. </li>
 </ul>
 </dd>
 </dl>
@@ -270,11 +263,9 @@
 <dd><p>Set a bit. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">data</span></code> - <p>A pointer to the bitfield </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">index</span></code> - <p>The index of the bit to set. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">data</span></code>: A pointer to the bitfield </li>
+<li><code class="docutils literal"><span class="pre">index</span></code>: The index of the bit to set. </li>
 </ul>
 </dd>
 </dl>
@@ -287,11 +278,9 @@
 <dd><p>Clear a bit. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">data</span></code> - <p>A pointer to the bitfield. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">index</span></code> - <p>The index of the bit to clear. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">data</span></code>: A pointer to the bitfield. </li>
+<li><code class="docutils literal"><span class="pre">index</span></code>: The index of the bit to clear. </li>
 </ul>
 </dd>
 </dl>
@@ -304,11 +293,9 @@
 <dd><p>Clear a bit. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">data</span></code> - <p>A pointer to the bitfield. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">index</span></code> - <p>The index of the bit to flip. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">data</span></code>: A pointer to the bitfield. </li>
+<li><code class="docutils literal"><span class="pre">index</span></code>: The index of the bit to flip. </li>
 </ul>
 </dd>
 </dl>

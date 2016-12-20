@@ -30,6 +30,9 @@
   
 
   
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
     <link rel="top" title="libstephen 0.1 documentation" href="../index.html"/>
         <link rel="up" title="Libstephen API Documentation" href="index.html"/>
         <link rel="next" title="Argument Parsing" href="ad.html"/>
@@ -137,7 +140,7 @@
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="../_sources/api/cb.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/api/cb.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -166,7 +169,7 @@
 <dd>Copyright (c) 2016, Stephen Brennan. Released under the Revised BSD License. See the LICENSE.txt for details. </dd>
 </dl>
 </p>
-<div class="breathe-sectiondef container">
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Functions</p>
 <dl class="function">
 <dt id="c.cb_init">
@@ -174,11 +177,9 @@
 <dd><p>Initialize a brand-new character buffer. </p>
 <p>A buffer of the given capacity is initialized, and given an empty string value. <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">obj</span></code> - <p>The cbuf to initialize. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">capacity</span></code> - <p>Initial capacity of the buffer. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">obj</span></code>: The cbuf to initialize. </li>
+<li><code class="docutils literal"><span class="pre">capacity</span></code>: Initial capacity of the buffer. </li>
 </ul>
 </dd>
 </dl>
@@ -191,9 +192,8 @@
 <dd><p>Allocate and initialize a brand-new character buffer. </p>
 <p>A buffer of the given capacity is initialized, and given an empty string value. The cbuf struct is also allocated and the pointer returned. <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">capacity</span></code> - <p>Initial capacity of the buffer. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">capacity</span></code>: Initial capacity of the buffer. </li>
 </ul>
 </dd>
 </dl>
@@ -206,9 +206,8 @@
 <dd><p>Deallocate the contents of the string buffer. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">obj</span></code> - <p>The character buffer to deallocate. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">obj</span></code>: The character buffer to deallocate. </li>
 </ul>
 </dd>
 </dl>
@@ -221,9 +220,8 @@
 <dd><p>Deallocate the contents of, and delete the string buffer. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">obj</span></code> - <p>The character buffer to delete. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">obj</span></code>: The character buffer to delete. </li>
 </ul>
 </dd>
 </dl>
@@ -236,11 +234,9 @@
 <dd><p>Concat a string onto the end of the character buffer. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">obj</span></code> - <p>The buffer to concat onto. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">str</span></code> - <p>The string to concat. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">obj</span></code>: The buffer to concat onto. </li>
+<li><code class="docutils literal"><span class="pre">str</span></code>: The string to concat. </li>
 </ul>
 </dd>
 </dl>
@@ -253,11 +249,9 @@
 <dd><p>Append a character onto the end of the character buffer. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">obj</span></code> - <p>The buffer to append onto. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">next</span></code> - <p>The character to append. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">obj</span></code>: The buffer to append onto. </li>
+<li><code class="docutils literal"><span class="pre">next</span></code>: The character to append. </li>
 </ul>
 </dd>
 </dl>
@@ -270,9 +264,8 @@
 <dd><p>Reallocate the buffer to the exact size of the contained string. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">obj</span></code> - <p>The buffer to reallocate. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">obj</span></code>: The buffer to reallocate. </li>
 </ul>
 </dd>
 </dl>
@@ -285,9 +278,8 @@
 <dd><p>Empty the buffer of its contents. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">obj</span></code> - <p>The buffer to clear. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">obj</span></code>: The buffer to clear. </li>
 </ul>
 </dd>
 </dl>
@@ -300,13 +292,10 @@
 <dd><p>Format and print a string onto the end of a character buffer. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">obj</span></code> - <p>The object to print onto. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">format</span></code> - <p>The format string to print. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">...</span></code> - <p>The arguments to the format string. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">obj</span></code>: The object to print onto. </li>
+<li><code class="docutils literal"><span class="pre">format</span></code>: The format string to print. </li>
+<li><code class="docutils literal"><span class="pre">...</span></code>: The arguments to the format string. </li>
 </ul>
 </dd>
 </dl>
@@ -319,13 +308,10 @@
 <dd><p>Format and print a string onto the cbuf using a va_list. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">obj</span></code> - <p>The cbuf to print into. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">format</span></code> - <p>The format string to print. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">va</span></code> - <p>The vararg list. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">obj</span></code>: The cbuf to print into. </li>
+<li><code class="docutils literal"><span class="pre">format</span></code>: The format string to print. </li>
+<li><code class="docutils literal"><span class="pre">va</span></code>: The vararg list. </li>
 </ul>
 </dd>
 </dl>
@@ -338,11 +324,9 @@
 <dd><p>Initialize a string buffer to a given capacity. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">obj</span></code> - <p>The string buffer to initialize. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">capacity</span></code> - <p>The initial capacity to give it. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">obj</span></code>: The string buffer to initialize. </li>
+<li><code class="docutils literal"><span class="pre">capacity</span></code>: The initial capacity to give it. </li>
 </ul>
 </dd>
 </dl>
@@ -357,9 +341,8 @@
 <dt><strong>Return</strong></dt>
 <dd>A pointer to the buffer. </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">capacity</span></code> - <p>The capacity of the string buffer to create. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">capacity</span></code>: The capacity of the string buffer to create. </li>
 </ul>
 </dd>
 </dl>
@@ -372,9 +355,8 @@
 <dd><p>Destroy the wide buffer contained in the wcbuf struct. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">obj</span></code> - <p>The wide buffer to destroy. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">obj</span></code>: The wide buffer to destroy. </li>
 </ul>
 </dd>
 </dl>
@@ -387,9 +369,8 @@
 <dd><p>Destroy and delete the wide buffer and struct. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">obj</span></code> - <p>The wide buffer struct to destroy. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">obj</span></code>: The wide buffer struct to destroy. </li>
 </ul>
 </dd>
 </dl>
@@ -402,11 +383,9 @@
 <dd><p>Concat a wide character string into the wide buffer. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">obj</span></code> - <p>The wide buffer to concat onto. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">str</span></code> - <p>The wide string to concat on. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">obj</span></code>: The wide buffer to concat onto. </li>
+<li><code class="docutils literal"><span class="pre">str</span></code>: The wide string to concat on. </li>
 </ul>
 </dd>
 </dl>
@@ -419,11 +398,9 @@
 <dd><p>Append a single character onto the buffer. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">obj</span></code> - <p>The wide buffer to append onto. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">next</span></code> - <p>The wide character to append. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">obj</span></code>: The wide buffer to append onto. </li>
+<li><code class="docutils literal"><span class="pre">next</span></code>: The wide character to append. </li>
 </ul>
 </dd>
 </dl>
@@ -436,9 +413,8 @@
 <dd><p>Reallocate the buffer to the exact size of the contained string. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">obj</span></code> - <p>The buffer to reallocate. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">obj</span></code>: The buffer to reallocate. </li>
 </ul>
 </dd>
 </dl>
@@ -451,9 +427,8 @@
 <dd><p>Empty the buffer of its contents. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">obj</span></code> - <p>The buffer to clear. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">obj</span></code>: The buffer to clear. </li>
 </ul>
 </dd>
 </dl>
@@ -466,13 +441,10 @@
 <dd><p>Printf a wide character string onto the wide buffer. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">obj</span></code> - <p>The wide buffer to printf onto. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">format</span></code> - <p>Format string to print. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">...</span></code> - <p>The arguments to to put into the format string. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">obj</span></code>: The wide buffer to printf onto. </li>
+<li><code class="docutils literal"><span class="pre">format</span></code>: Format string to print. </li>
+<li><code class="docutils literal"><span class="pre">...</span></code>: The arguments to to put into the format string. </li>
 </ul>
 </dd>
 </dl>
@@ -485,13 +457,10 @@
 <dd><p>Format and print a string onto the wcbuf using a va_list. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">obj</span></code> - <p>The wcbuf to print into. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">format</span></code> - <p>The format string to print. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">va</span></code> - <p>The vararg list. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">obj</span></code>: The wcbuf to print into. </li>
+<li><code class="docutils literal"><span class="pre">format</span></code>: The format string to print. </li>
+<li><code class="docutils literal"><span class="pre">va</span></code>: The vararg list. </li>
 </ul>
 </dd>
 </dl>
@@ -504,7 +473,7 @@
 <span class="target" id="libstephenstructcbuf"></span><em class="property">struct </em><code class="descname">cbuf</code><a class="headerlink" href="#c.cbuf" title="Permalink to this definition">¶</a></dt>
 <dd><em>#include &lt;cb.h&gt;</em><p>A character buffer utility that is easier to handle than a char*. </p>
 <p>This character buffer provides an interface for string processing that allows you to be efficient, while not needing to handle nearly as much of the allocations that are necessary. It automatically expands as you add to it. </p>
-<div class="breathe-sectiondef container">
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Members</p>
 <dl class="variable">
 <dt id="c.buf">
@@ -532,7 +501,7 @@
 <span class="target" id="libstephenstructwcbuf"></span><em class="property">struct </em><code class="descname">wcbuf</code><a class="headerlink" href="#c.wcbuf" title="Permalink to this definition">¶</a></dt>
 <dd><em>#include &lt;cb.h&gt;</em><p>A wide character buffer. Similar to cbuf. </p>
 <p>Again, this buffer provides an interface for simpler string manipulation, by managing the buffer reallocations for you. Of course, the difference being that this one is for wide characters. </p>
-<div class="breathe-sectiondef container">
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Members</p>
 <dl class="variable">
 <dt>

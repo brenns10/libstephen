@@ -30,6 +30,9 @@
   
 
   
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
     <link rel="top" title="libstephen 0.1 documentation" href="../index.html"/>
         <link rel="up" title="Libstephen API Documentation" href="index.html"/>
         <link rel="next" title="Logging" href="log.html"/>
@@ -137,7 +140,7 @@
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="../_sources/api/ad.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/api/ad.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -165,7 +168,7 @@ The args library analyzes args as generally as possible. It recognizes three dif
 <dd>Copyright (c) 2013-2016, Stephen Brennan. Released under the Revised BSD License. See the LICENSE.txt file for details. </dd>
 </dl>
 </p>
-<div class="breathe-sectiondef container">
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Defines</p>
 <dl class="define">
 <dt id="c.MAX_FLAGS">
@@ -174,7 +177,7 @@ The args library analyzes args as generally as possible. It recognizes three dif
 </dd></dl>
 
 </div>
-<div class="breathe-sectiondef container">
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Typedefs</p>
 <dl class="typedef">
 <dt id="c.smb_ad">
@@ -183,7 +186,7 @@ The args library analyzes args as generally as possible. It recognizes three dif
 </dd></dl>
 
 </div>
-<div class="breathe-sectiondef container">
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Functions</p>
 <dl class="function">
 <dt id="c.arg_data_init">
@@ -191,9 +194,8 @@ The args library analyzes args as generally as possible. It recognizes three dif
 <dd><p>Initialize an <a class="reference internal" href="#libstephenstructsmb__ad"><span class="std std-ref">smb_ad</span></a> structure in memory that has already been allocated. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">data</span></code> - <p>The pointer to the memory to allocate in. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">data</span></code>: The pointer to the memory to allocate in. </li>
 </ul>
 </dd>
 </dl>
@@ -217,9 +219,8 @@ The args library analyzes args as generally as possible. It recognizes three dif
 <dd><p>Free the resources of an arg_data object, but do not free it. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">data</span></code> - <p>The arg data to destroy. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">data</span></code>: The arg data to destroy. </li>
 </ul>
 </dd>
 </dl>
@@ -232,9 +233,8 @@ The args library analyzes args as generally as possible. It recognizes three dif
 <dd><p>Free the resources of an arg data object, and then free the object itself. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">data</span></code> - <p>The arg data to delete. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">data</span></code>: The arg data to delete. </li>
 </ul>
 </dd>
 </dl>
@@ -248,13 +248,10 @@ The args library analyzes args as generally as possible. It recognizes three dif
 <p>Pass in the argc and argv, but make sure to decrement and increment each respective variable so they do not include the name of the program. Unless, of course, you want the program name to be processed as an argument. Once you have called this function, you can use the querying functions to find all the arguments.</p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">data</span></code> - <p>A pointer to an <a class="reference internal" href="#libstephenstructsmb__ad"><span class="std std-ref">smb_ad</span></a> object. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">argc</span></code> - <p>The number of arguments (not including program name). </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">argv</span></code> - <p>The arguments themselves (not including program name). </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">data</span></code>: A pointer to an <a class="reference internal" href="#libstephenstructsmb__ad"><span class="std std-ref">smb_ad</span></a> object. </li>
+<li><code class="docutils literal"><span class="pre">argc</span></code>: The number of arguments (not including program name). </li>
+<li><code class="docutils literal"><span class="pre">argv</span></code>: The arguments themselves (not including program name). </li>
 </ul>
 </dd>
 </dl>
@@ -267,19 +264,15 @@ The args library analyzes args as generally as possible. It recognizes three dif
 <dd><p>Check whether a flag is raised. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">data</span></code> - <p>The <a class="reference internal" href="#libstephenstructsmb__ad"><span class="std std-ref">smb_ad</span></a> returned by <a class="reference internal" href="#libstephenad_8h_1af41f795755de6840b9d7e4b0a23f7655"><span class="std std-ref">process_args()</span></a>. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">flag</span></code> - <p>The character flag to check. Alphabetical only. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">data</span></code>: The <a class="reference internal" href="#libstephenstructsmb__ad"><span class="std std-ref">smb_ad</span></a> returned by <a class="reference internal" href="#libstephenad_8h_1af41f795755de6840b9d7e4b0a23f7655"><span class="std std-ref">process_args()</span></a>. </li>
+<li><code class="docutils literal"><span class="pre">flag</span></code>: The character flag to check. Alphabetical only. </li>
 </ul>
 </dd>
 <dt><strong>Return Value</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">0</span></code> - <p>if the flag was not set. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">1</span></code> - <p>otherwise. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">0</span></code>: if the flag was not set. </li>
+<li><code class="docutils literal"><span class="pre">1</span></code>: otherwise. </li>
 </ul>
 </dd>
 </dl>
@@ -294,17 +287,14 @@ The args library analyzes args as generally as possible. It recognizes three dif
 <dt><strong>Return</strong></dt>
 <dd>the index of the flag + 1 if it is set. </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">data</span></code> - <p>The <a class="reference internal" href="#libstephenstructsmb__ad"><span class="std std-ref">smb_ad</span></a> returned by <a class="reference internal" href="#libstephenad_8h_1af41f795755de6840b9d7e4b0a23f7655"><span class="std std-ref">process_args()</span></a>. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">flag</span></code> - <p>The string flag to check for. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">data</span></code>: The <a class="reference internal" href="#libstephenstructsmb__ad"><span class="std std-ref">smb_ad</span></a> returned by <a class="reference internal" href="#libstephenad_8h_1af41f795755de6840b9d7e4b0a23f7655"><span class="std std-ref">process_args()</span></a>. </li>
+<li><code class="docutils literal"><span class="pre">flag</span></code>: The string flag to check for. </li>
 </ul>
 </dd>
 <dt><strong>Return Value</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">0</span></code> - <p>iff the flag was not set. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">0</span></code>: iff the flag was not set. </li>
 </ul>
 </dd>
 </dl>
@@ -319,17 +309,14 @@ The args library analyzes args as generally as possible. It recognizes three dif
 <dt><strong>Return</strong></dt>
 <dd>the index of the flag + 1 if it is set. </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">data</span></code> - <p>The <a class="reference internal" href="#libstephenstructsmb__ad"><span class="std std-ref">smb_ad</span></a> returned by <a class="reference internal" href="#libstephenad_8h_1af41f795755de6840b9d7e4b0a23f7655"><span class="std std-ref">process_args()</span></a>. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">string</span></code> - <p>The string to search for. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">data</span></code>: The <a class="reference internal" href="#libstephenstructsmb__ad"><span class="std std-ref">smb_ad</span></a> returned by <a class="reference internal" href="#libstephenad_8h_1af41f795755de6840b9d7e4b0a23f7655"><span class="std std-ref">process_args()</span></a>. </li>
+<li><code class="docutils literal"><span class="pre">string</span></code>: The string to search for. </li>
 </ul>
 </dd>
 <dt><strong>Return Value</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">0</span></code> - <p>iff the flag was not set. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">0</span></code>: iff the flag was not set. </li>
 </ul>
 </dd>
 </dl>
@@ -344,11 +331,9 @@ The args library analyzes args as generally as possible. It recognizes three dif
 <dt><strong>Return</strong></dt>
 <dd>The parameter of the flag. </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">data</span></code> - <p>The <a class="reference internal" href="#libstephenstructsmb__ad"><span class="std std-ref">smb_ad</span></a> returned by <a class="reference internal" href="#libstephenad_8h_1af41f795755de6840b9d7e4b0a23f7655"><span class="std std-ref">process_args()</span></a>. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">flag</span></code> - <p>The flag to find parameters of. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">data</span></code>: The <a class="reference internal" href="#libstephenstructsmb__ad"><span class="std std-ref">smb_ad</span></a> returned by <a class="reference internal" href="#libstephenad_8h_1af41f795755de6840b9d7e4b0a23f7655"><span class="std std-ref">process_args()</span></a>. </li>
+<li><code class="docutils literal"><span class="pre">flag</span></code>: The flag to find parameters of. </li>
 </ul>
 </dd>
 </dl>
@@ -363,17 +348,14 @@ The args library analyzes args as generally as possible. It recognizes three dif
 <dt><strong>Return</strong></dt>
 <dd>The parameter of the long flag. </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">data</span></code> - <p>The <a class="reference internal" href="#libstephenstructsmb__ad"><span class="std std-ref">smb_ad</span></a> returned by <a class="reference internal" href="#libstephenad_8h_1af41f795755de6840b9d7e4b0a23f7655"><span class="std std-ref">process_args()</span></a>. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">string</span></code> - <p>The long flag to find parameters of. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">data</span></code>: The <a class="reference internal" href="#libstephenstructsmb__ad"><span class="std std-ref">smb_ad</span></a> returned by <a class="reference internal" href="#libstephenad_8h_1af41f795755de6840b9d7e4b0a23f7655"><span class="std std-ref">process_args()</span></a>. </li>
+<li><code class="docutils literal"><span class="pre">string</span></code>: The long flag to find parameters of. </li>
 </ul>
 </dd>
 <dt><strong>Return Value</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">NULL</span></code> - <p>if no parameter or if flag not found. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">NULL</span></code>: if no parameter or if flag not found. </li>
 </ul>
 </dd>
 </dl>
@@ -386,11 +368,9 @@ The args library analyzes args as generally as possible. It recognizes three dif
 <dd><p>Print the contents of the arg data struct to a file for debugging. </p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">data</span></code> - <p>The struct to print. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">f</span></code> - <p>The file to print to. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">data</span></code>: The struct to print. </li>
+<li><code class="docutils literal"><span class="pre">f</span></code>: The file to print to. </li>
 </ul>
 </dd>
 </dl>
@@ -402,7 +382,7 @@ The args library analyzes args as generally as possible. It recognizes three dif
 <dt>
 <span class="target" id="libstephenstructsmb__ad"></span><em class="property">struct </em><code class="descname">smb_ad</code></dt>
 <dd><em>#include &lt;ad.h&gt;</em><p>Data structure to store information on arguments passed to the program. </p>
-<div class="breathe-sectiondef container">
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Members</p>
 <dl class="variable">
 <dt id="c.flags">

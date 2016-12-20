@@ -30,6 +30,9 @@
   
 
   
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
     <link rel="top" title="libstephen 0.1 documentation" href="../index.html"/>
         <link rel="up" title="Libstephen API Documentation" href="index.html"/>
         <link rel="next" title="Utilities &amp; Miscellaneous" href="util.html"/>
@@ -137,7 +140,7 @@
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="../_sources/api/re.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/api/re.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -149,7 +152,7 @@
             
   <div class="section" id="regular-expressions">
 <h1>Regular Expressions<a class="headerlink" href="#regular-expressions" title="Permalink to this headline">¶</a></h1>
-<div class="breathe-sectiondef container">
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Defines</p>
 <dl class="define">
 <dt id="c.nelem">
@@ -158,7 +161,7 @@
 </dd></dl>
 
 </div>
-<div class="breathe-sectiondef container">
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Typedefs</p>
 <dl class="typedef">
 <dt id="c.Regex">
@@ -167,7 +170,7 @@
 </dd></dl>
 
 </div>
-<div class="breathe-sectiondef container">
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Functions</p>
 <dl class="function">
 <dt id="c.reread">
@@ -178,9 +181,8 @@
 <dt><strong>Return</strong></dt>
 <dd>The bytecode of the program. </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">str</span></code> - <p>The text representation of the program. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">str</span></code>: The text representation of the program. </li>
 </ul>
 </dd>
 </dl>
@@ -194,9 +196,8 @@
 <dt><strong>Return</strong></dt>
 <dd>The regex bytecode. </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">f</span></code> - <p>File to read from. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">f</span></code>: File to read from. </li>
 </ul>
 </dd>
 </dl>
@@ -208,11 +209,9 @@
 <span class="target" id="libstephenre_8h_1afbe1a8683afaa245e30f7249dd4b8956"></span>void <code class="descname">rewrite</code><span class="sig-paren">(</span><a class="reference internal" href="#c.Regex" title="Regex">Regex</a><em>&nbsp;r</em>, FILE *<em>&nbsp;f</em><span class="sig-paren">)</span><a class="headerlink" href="#c.rewrite" title="Permalink to this definition">¶</a></dt>
 <dd><p>Writes a program to the same format as the reread() functions do. <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">r</span></code> - <p>The regex to write. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">f</span></code> - <p>The file to write to. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">r</span></code>: The regex to write. </li>
+<li><code class="docutils literal"><span class="pre">f</span></code>: The file to write to. </li>
 </ul>
 </dd>
 </dl>
@@ -224,9 +223,8 @@
 <span class="target" id="libstephenre_8h_1a92240e82578880c2daffb95173a38ce7"></span>void <code class="descname">refree</code><span class="sig-paren">(</span><a class="reference internal" href="#c.Regex" title="Regex">Regex</a><em>&nbsp;r</em><span class="sig-paren">)</span><a class="headerlink" href="#c.refree" title="Permalink to this definition">¶</a></dt>
 <dd><p>Free a <a class="reference internal" href="#libstephenstruct_regex"><span class="std std-ref">Regex</span></a> object. You must do this when you&#8217;re done with it. <dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">r</span></code> - <p><a class="reference internal" href="#libstephenstruct_regex"><span class="std std-ref">Regex</span></a> to free. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">r</span></code>: <a class="reference internal" href="#libstephenstruct_regex"><span class="std std-ref">Regex</span></a> to free. </li>
 </ul>
 </dd>
 </dl>
@@ -240,9 +238,8 @@
 <dt><strong>Return</strong></dt>
 <dd>The compiled bytecode for the regex. </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">regex</span></code> - <p>The text form of the regular expression. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">regex</span></code>: The text form of the regular expression. </li>
 </ul>
 </dd>
 </dl>
@@ -256,9 +253,8 @@
 <dt><strong>Return</strong></dt>
 <dd>The compiled bytecode for the regex. </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">regex</span></code> - <p>The text form of the regular expression. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">regex</span></code>: The text form of the regular expression. </li>
 </ul>
 </dd>
 </dl>
@@ -272,13 +268,10 @@
 <dt><strong>Return</strong></dt>
 <dd>Length of match, or -1 if no match. </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">r</span></code> - <p>Compiled regular expression bytecode to execute. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">input</span></code> - <p>Text to use as input. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">saved</span></code> - <p>Out pointer for captured indices. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">r</span></code>: Compiled regular expression bytecode to execute. </li>
+<li><code class="docutils literal"><span class="pre">input</span></code>: Text to use as input. </li>
+<li><code class="docutils literal"><span class="pre">saved</span></code>: Out pointer for captured indices. </li>
 </ul>
 </dd>
 </dl>
@@ -292,13 +285,10 @@
 <dt><strong>Return</strong></dt>
 <dd>Length of match, or -1 if no match. </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">r</span></code> - <p>Compiled regular expression bytecode to execute. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">input</span></code> - <p>Text to use as input. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">saved</span></code> - <p>Out pointer for captured indices. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">r</span></code>: Compiled regular expression bytecode to execute. </li>
+<li><code class="docutils literal"><span class="pre">input</span></code>: Text to use as input. </li>
+<li><code class="docutils literal"><span class="pre">saved</span></code>: Out pointer for captured indices. </li>
 </ul>
 </dd>
 </dl>
@@ -312,9 +302,8 @@
 <dt><strong>Return</strong></dt>
 <dd>Number of slots. </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">r</span></code> - <p>The regular expression bytecode. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">r</span></code>: The regular expression bytecode. </li>
 </ul>
 </dd>
 </dl>
@@ -330,13 +319,10 @@
 <dt><strong>Return</strong></dt>
 <dd>A new Capture object. </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">s</span></code> - <p>String to get strings from. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">l</span></code> - <p>List of captures returned from reexec(). </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">n</span></code> - <p>Number of saves - use renumsaves() if you don&#8217;t know. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">s</span></code>: String to get strings from. </li>
+<li><code class="docutils literal"><span class="pre">l</span></code>: List of captures returned from reexec(). </li>
+<li><code class="docutils literal"><span class="pre">n</span></code>: Number of saves - use renumsaves() if you don&#8217;t know. </li>
 </ul>
 </dd>
 </dl>
@@ -350,9 +336,8 @@
 <p>Since the array and strings were all newly allocated by recap(), they need to be cleaned up. This function does the cleanup. It&#8217;s nothing complicated - you can do it yourself, but it&#8217;s convenient to have this to do it for you. Note that if you want to keep one of the strings from the capture list, you&#8217;ll have to set its entry in the array to NULL (so free() does nothing), or else do manual cleanup.</p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">c</span></code> - <p><a class="reference internal" href="#libstephenstruct_captures"><span class="std std-ref">Captures</span></a> to free. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">c</span></code>: <a class="reference internal" href="#libstephenstruct_captures"><span class="std std-ref">Captures</span></a> to free. </li>
 </ul>
 </dd>
 </dl>
@@ -368,13 +353,10 @@
 <dt><strong>Return</strong></dt>
 <dd>A new Capture object. </dd>
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">s</span></code> - <p>String to get strings from. </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">l</span></code> - <p>List of captures returned from reexec(). </p>
-</li>
-<li><code class="first docutils literal"><span class="pre">n</span></code> - <p>Number of saves - use renumsaves() if you don&#8217;t know. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">s</span></code>: String to get strings from. </li>
+<li><code class="docutils literal"><span class="pre">l</span></code>: List of captures returned from reexec(). </li>
+<li><code class="docutils literal"><span class="pre">n</span></code>: Number of saves - use renumsaves() if you don&#8217;t know. </li>
 </ul>
 </dd>
 </dl>
@@ -388,9 +370,8 @@
 <p>Since the array and strings were all newly allocated by recap(), they need to be cleaned up. This function does the cleanup. It&#8217;s nothing complicated - you can do it yourself, but it&#8217;s convenient to have this to do it for you. Note that if you want to keep one of the strings from the capture list, you&#8217;ll have to set its entry in the array to NULL (so free() does nothing), or else do manual cleanup.</p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last">
-<li><code class="first docutils literal"><span class="pre">c</span></code> - <p><a class="reference internal" href="#libstephenstruct_captures"><span class="std std-ref">Captures</span></a> to free. </p>
-</li>
+<dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">c</span></code>: <a class="reference internal" href="#libstephenstruct_captures"><span class="std std-ref">Captures</span></a> to free. </li>
 </ul>
 </dd>
 </dl>
@@ -402,7 +383,7 @@
 <dt>
 <span class="target" id="libstephenstruct_regex"></span><em class="property">struct </em><code class="descname">Regex</code></dt>
 <dd><em>#include &lt;re.h&gt;</em><p>Represents a compiled regular expression. This consists of a pointer to the instructions, and a counter for how many instructions there are. This is not a large struct, so you shouldn&#8217;t pass around pointers to it. You might as well just pass around copies of this struct. </p>
-<div class="breathe-sectiondef container">
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Members</p>
 <dl class="variable">
 <dt id="c.n">
@@ -424,7 +405,7 @@
 <span class="target" id="libstephenstruct_captures"></span><em class="property">struct </em><code class="descname">Captures</code><a class="headerlink" href="#c.Captures" title="Permalink to this definition">¶</a></dt>
 <dd><em>#include &lt;re.h&gt;</em><p>A convenience data structure for getting copies of captured strings.</p>
 <p>The recomp() function returns an array of start and end points for captured strings, which is technically all you need. Functionally, though, you would like a slightly more convenient way to access your captures. So, you can use the recap() to convert the string and capture list to a list of freshly allocated strings. Be sure to call recapfree() on the capture list when you&#8217;re done (or manually clean up). </p>
-<div class="breathe-sectiondef container">
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Members</p>
 <dl class="variable">
 <dt>
@@ -445,7 +426,7 @@
 <dt id="c.WCaptures">
 <span class="target" id="libstephenstruct_w_captures"></span><em class="property">struct </em><code class="descname">WCaptures</code><a class="headerlink" href="#c.WCaptures" title="Permalink to this definition">¶</a></dt>
 <dd><em>#include &lt;re.h&gt;</em><p>A convenience data structure for getting copies of captured wide strings. This is just a wide version of <a class="reference internal" href="#libstephenstruct_captures"><span class="std std-ref">Captures</span></a>. </p>
-<div class="breathe-sectiondef container">
+<div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Members</p>
 <dl class="variable">
 <dt>
