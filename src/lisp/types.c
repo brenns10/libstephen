@@ -269,7 +269,7 @@ static void list_print_internal(FILE *f, lisp_list *list)
     fprintf(f, " . ");
     lisp_print(f, list->right);
     return;
-  } else {
+  } else if (!lisp_nil_p((lisp_value*)list)) {
     fprintf(f, " ");
     list_print_internal(f, (lisp_list*)list->right);
   }

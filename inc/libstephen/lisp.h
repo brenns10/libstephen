@@ -137,6 +137,7 @@ void lisp_scope_populate_builtins(lisp_runtime *rt, lisp_scope *scope);
 lisp_value *lisp_eval_list(lisp_runtime *rt, lisp_scope *scope, lisp_value *list);
 lisp_value *lisp_parse(lisp_runtime *rt, char *input);
 bool lisp_get_args(lisp_list *list, char *format, ...);
+lisp_value *lisp_quote(lisp_runtime *rt, lisp_value *value);
 // List functions
 int lisp_list_length(lisp_list *list);
 bool lisp_nil_p(lisp_value *l);

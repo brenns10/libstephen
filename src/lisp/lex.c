@@ -116,16 +116,9 @@ result lisp_parse_symbol(lisp_runtime *rt, char *input, int index)
 
 result lisp_parse_quote(lisp_runtime *rt, char *input, int index)
 {
-  lisp_list *l = (lisp_list*)lisp_new(rt, type_list);
-  lisp_symbol *q = lisp_symbol_new(rt, "quote");
-  l->left = (lisp_value*)q;
-  lisp_list *s = (lisp_list*) lisp_new(rt, type_list);
-  s->right = lisp_nil_new(rt);
-  l->right = (lisp_value*)s;
   result r = lisp_parse_value(rt, input, index + 1);
-  s->left = r.result;
-  index = r.index;
-  return (result){(lisp_value*)l, r.index};
+  r.result = lisp_quote(rt, r.result);
+  return r;
 }
 
 result lisp_parse_value(lisp_runtime *rt, char *input, int index)

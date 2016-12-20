@@ -110,6 +110,17 @@ int lisp_list_length(lisp_list *list)
   return length;
 }
 
+lisp_value *lisp_quote(lisp_runtime *rt, lisp_value *value) {
+  lisp_list *l = (lisp_list*)lisp_new(rt, type_list);
+  lisp_symbol *q = lisp_symbol_new(rt, "quote");
+  l->left = (lisp_value*)q;
+  lisp_list *s = (lisp_list*) lisp_new(rt, type_list);
+  s->right = lisp_nil_new(rt);
+  l->right = (lisp_value*)s;
+  s->left = value;
+  return (lisp_value*)l;
+}
+
 static lisp_type *lisp_get_type(char c)
 {
   switch (c) {
@@ -460,6 +471,84 @@ static lisp_value *lisp_builtin_null_p(lisp_runtime *rt, lisp_scope *scope,
   return (lisp_value*)result;
 }
 
+static lisp_list *get_quoted_left_items(lisp_runtime *rt, lisp_list *list_of_lists)
+{
+  lisp_list *left_items = NULL, *rv;
+  while (!lisp_nil_p((lisp_value*)list_of_lists)) {
+    // Create or advance left_items to the next list.
+    if (left_items == NULL) {
+      left_items = (lisp_list*) lisp_new(rt, type_list);
+      rv = left_items;
+    } else {
+      left_items->right = lisp_new(rt, type_list);
+      left_items = (lisp_list*) left_items->right;
+    }
+    // Check the next node in the list to make sure it's actually a list.
+    if (lisp_nil_p(list_of_lists->left)) {
+      return NULL;
+    }
+    // Get the next node in the list and get the argument.
+    lisp_list *l = (lisp_list*) list_of_lists->left;
+    left_items->left = lisp_quote(rt, l->left);
+    list_of_lists = (lisp_list*) list_of_lists->right;
+  }
+  left_items->right = lisp_nil_new(rt);
+  return rv;
+}
+
+static lisp_list *advance_lists(lisp_runtime *rt, lisp_list *list_of_lists)
+{
+  lisp_list *right_items = NULL, *rv;
+  while (!lisp_nil_p((lisp_value*)list_of_lists)) {
+    // Create or advance left_items to the next list.
+    if (right_items == NULL) {
+      right_items = (lisp_list*) lisp_new(rt, type_list);
+      rv = right_items;
+    } else {
+      right_items->right = lisp_new(rt, type_list);
+      right_items = (lisp_list*) right_items->right;
+    }
+    // Check the next node in the list to make sure it's actually a list.
+    if (list_of_lists->left->type != type_list) {
+      return NULL;
+    }
+    // Get the next node in the list and get the argument.
+    lisp_list *l = (lisp_list*) list_of_lists->left;
+    right_items->left = l->right;
+    list_of_lists = (lisp_list*) list_of_lists->right;
+  }
+  right_items->right = lisp_nil_new(rt);
+  return rv;
+}
+
+static lisp_value *lisp_builtin_map(lisp_runtime *rt, lisp_scope *scope,
+                                    lisp_value *a)
+{
+  lisp_value *f;
+  lisp_list *ret = NULL, *args, *rv;
+  lisp_list *map_args = (lisp_list *) lisp_eval_list(rt, scope, a);
+
+  // Get the function from the first argument in the list.
+  f = map_args->left;
+  if (map_args->right->type != type_list) {
+    return (lisp_value*) lisp_error_new(rt, "need at least two arguments");
+  }
+  map_args = (lisp_list*) map_args->right;
+  while ((args = get_quoted_left_items(rt, map_args)) != NULL) {
+    if (ret == NULL) {
+      ret = (lisp_list*) lisp_new(rt, type_list);
+      rv = ret;
+    } else {
+      ret->right = lisp_new(rt, type_list);
+      ret = (lisp_list*) ret->right;
+    }
+    ret->left = lisp_call(rt, scope, f, (lisp_value*)args);
+    map_args = advance_lists(rt, map_args);
+  }
+  ret->right = lisp_nil_new(rt);
+  return (lisp_value*) rv;
+}
+
 void lisp_scope_populate_builtins(lisp_runtime *rt, lisp_scope *scope)
 {
   lisp_scope_add_builtin(rt, scope, "eval", lisp_builtin_eval);
@@ -481,4 +570,5 @@ void lisp_scope_populate_builtins(lisp_runtime *rt, lisp_scope *scope)
   lisp_scope_add_builtin(rt, scope, "<=", lisp_builtin_le);
   lisp_scope_add_builtin(rt, scope, "if", lisp_builtin_if);
   lisp_scope_add_builtin(rt, scope, "null?", lisp_builtin_null_p);
+  lisp_scope_add_builtin(rt, scope, "map", lisp_builtin_map);
 }
