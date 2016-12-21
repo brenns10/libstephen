@@ -4,6 +4,17 @@
 
 #include "libstephen/lisp.h"
 
+static lisp_list *lisp_new_pair_list(lisp_runtime *rt, lisp_value *one, lisp_value *two)
+{
+  lisp_list *first_node = (lisp_list*) lisp_new(rt, type_list);
+  lisp_list *second_node = (lisp_list*) lisp_new(rt, type_list);
+  first_node->left = one;
+  first_node->right = (lisp_value*) second_node;
+  second_node->left = two;
+  second_node->right = lisp_nil_new(rt);
+  return first_node;
+}
+
 void lisp_scope_bind(lisp_scope *scope, lisp_symbol *symbol, lisp_value *value)
 {
   ht_insert(&scope->scope, PTR(symbol), PTR(value));
@@ -549,6 +560,41 @@ static lisp_value *lisp_builtin_map(lisp_runtime *rt, lisp_scope *scope,
   return (lisp_value*) rv;
 }
 
+static lisp_value *lisp_builtin_reduce(lisp_runtime *rt, lisp_scope *scope, lisp_value *a)
+{
+  lisp_list *args = (lisp_list*) lisp_eval_list(rt, scope, a);
+  int length = lisp_list_length(args);
+  lisp_value *callable, *initializer;
+  lisp_list *list;
+
+  if (length == 2) {
+    if (!lisp_get_args(args, "*l", &callable, &list)) {
+      return (lisp_value*) lisp_error_new(rt, "reduce: callable and list required");
+    }
+    if (lisp_list_length(list) < 2) {
+      return (lisp_value*) lisp_error_new(rt, "reduce: list must have at least 2 entries");
+    }
+    initializer = list->left;
+    list = (lisp_list*)list->right;
+ } else if (length == 3) {
+    if (!lisp_get_args(args, "**l", &callable, &initializer, &list)) {
+      return (lisp_value*) lisp_error_new(rt, "reduce: callable, initializer, and list required");
+    }
+    if (lisp_list_length(list) < 1) {
+      return (lisp_value*) lisp_error_new(rt, "reduce: list must have at least 1 entry");
+    }
+  } else {
+    return (lisp_value*) lisp_error_new(rt, "reduce: 2 or 3 arguments required");
+  }
+
+  while (!lisp_nil_p((lisp_value*)list)) {
+    initializer = lisp_call(rt, scope, callable,
+                            (lisp_value*) lisp_new_pair_list(rt, initializer, list->left));
+    list = (lisp_list*) list->right;
+  }
+  return initializer;
+}
+
 void lisp_scope_populate_builtins(lisp_runtime *rt, lisp_scope *scope)
 {
   lisp_scope_add_builtin(rt, scope, "eval", lisp_builtin_eval);
@@ -571,4 +617,5 @@ void lisp_scope_populate_builtins(lisp_runtime *rt, lisp_scope *scope)
   lisp_scope_add_builtin(rt, scope, "if", lisp_builtin_if);
   lisp_scope_add_builtin(rt, scope, "null?", lisp_builtin_null_p);
   lisp_scope_add_builtin(rt, scope, "map", lisp_builtin_map);
+  lisp_scope_add_builtin(rt, scope, "reduce", lisp_builtin_reduce);
 }
