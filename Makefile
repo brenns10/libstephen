@@ -1,29 +1,20 @@
 .PHONY: release debug test doc cov
 
-release:
-	cmake -Brelease -H.
-	cmake --build release
+build:
+	meson build
 
-debug:
-	cmake -DCMAKE_BUILD_TYPE=Debug -Bdebug -H.
-	cmake --build debug
+release: build
+	ninja -C build
 
-test: debug
-	valgrind debug/test_libstephen
+debug: build
+	ninja -C build
+
+test: build
+	ninja -C build test
 
 doc:
 	doxygen
 	make -C doc html
 
-cov: $(BINARY_DIR)/$(CFG)/$(TEST_TARGET)
-	# Run a special CMake build for coverage.
-	cmake -Bcoverage -H. -DCMAKE_BUILD_TYPE=COVERAGE
-	cmake --build coverage
-	# Run the built tests.
-	coverage/test_libstephen
-	# Create report.
-	lcov -c -d coverage/CMakeFiles/stephen.dir/src/ -b src -o coverage.info
-	lcov -e coverage.info "`pwd`/src/*" -o coverage.info
-	genhtml coverage.info -o cov
-	# Cleanup.
-	rm -rf coverage.info coverage
+cov:
+	true # we're not doing this for now

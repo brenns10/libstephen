@@ -21,6 +21,7 @@
 #include "libstephen/ut.h"
 #include "libstephen/str.h"
 
+/*
 int test_read_file(void)
 {
   FILE *f = fopen("res/file.txt", "r");
@@ -89,7 +90,7 @@ int test_read_linew(void)
   }
   fclose(f);
   return 0;
-}
+}*/
 
 int test_split_lines(void)
 {
@@ -163,6 +164,7 @@ void string_test(void)
 {
   smb_ut_group *group = su_create_test_group("test/stringtest.c");
 
+  /*
   smb_ut_test *read_file = su_create_test("read_file", test_read_file);
   su_add_test(group, read_file);
 
@@ -174,6 +176,7 @@ void string_test(void)
 
   smb_ut_test *read_linew = su_create_test("read_linew", test_read_linew);
   su_add_test(group, read_linew);
+  */
 
   smb_ut_test *split_lines = su_create_test("split_lines", test_split_lines);
   su_add_test(group, split_lines);
